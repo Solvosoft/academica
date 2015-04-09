@@ -21,12 +21,12 @@ def enrollme(request, pk):
         Enroll.objects.create(group=group,
                               student=request.user)
         return { "inner-fragments": {"#count_" + str(group.pk): group.enroll_set.count(),
-                                "#group_message": '<div class="alert alert-success" role="alert">' + _('Enrollment success...') + '</div>'
+                                "#group_message": _('<div class="alert alert-success" role="alert">Enrollment success...</div>')
                                 },
             }
 
     return { "inner-fragments": {"#count_" + str(group.pk): group.enroll_set.count(),
-                                "#group_message": '<div class="alert alert-info" role="alert">' + _('You are already enrolled ...') + '</div>'
+                                "#group_message": _('<div class="alert alert-info" role="alert">You are already enrolled ...</div>')
                                 },
             }
 
