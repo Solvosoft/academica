@@ -9,7 +9,7 @@ from matricula.models import Group, Enroll
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.utils import timezone
-
+from django.utils.translation import ugettext_lazy as _
 
 
 @ajax
@@ -21,12 +21,12 @@ def enrollme(request, pk):
         Enroll.objects.create(group=group,
                               student=request.user)
         return { "inner-fragments": {"#count_" + str(group.pk): group.enroll_set.count(),
-                                "#group_message": '<div class="alert alert-success" role="alert">Enrollment success...</div>'
+                                "#group_message": '<div class="alert alert-success" role="alert">' + _('Enrollment success...') + '</div>'
                                 },
             }
 
     return { "inner-fragments": {"#count_" + str(group.pk): group.enroll_set.count(),
-                                "#group_message": '<div class="alert alert-info" role="alert">You are alredy enrollment ...</div>'
+                                "#group_message": '<div class="alert alert-info" role="alert">' + _('You are already enrolled ...') + '</div>'
                                 },
             }
 

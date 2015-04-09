@@ -18,7 +18,7 @@ def create_user(request):
             user = Student.objects.create_user(form.cleaned_data['name'],
                                                form.cleaned_data['email'],
                                                form.cleaned_data['password'])
-            send_mail('email confirmation',
+            send_mail(_('Email confirmation'),
                       'Url confirmation %s?id=%d&key=%s' % (request.build_absolute_uri(reverse('confirm_email')),
                                                user.pk,
                                                user.confirmation_key
