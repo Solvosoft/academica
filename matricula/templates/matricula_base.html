@@ -1,0 +1,64 @@
+{%load static %}
+<html >
+		<head>
+			
+			<title> Matricula </title>
+			<meta charset="UTF-8">
+			<meta name="description" content="cursos">
+			<meta name="keywords" content="HTML,CSS,XML,JavaScript">
+
+{%block header%}
+<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+{%endblock%}			
+		</head>
+
+<body>
+
+{%block nav%}
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+<div class="navbar-header">
+	<a class="navbar-brand" href="#">Académia de tecnología</a>
+</div>
+<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">  	
+<ul class="nav navbar-nav">
+  <li role="presentation" ><a href="{% url 'courses' %}">Cursos</a></li>
+{% if not request.user.is_authenticated %}  <li role="presentation"><a href="{% url 'create_user' %}">Registrarme</a></li> {%endif%}
+  <li role="presentation"><a href="{% url 'enrollment' %}">Matricula</a></li>
+</ul>
+
+{% if request.user.is_authenticated %}
+
+<a href="{% url 'logout'%}" class="nav navbar-nav navbar-right btn">{{request.user.username}} Logout </a>
+{%else%}
+<form class="navbar-form navbar-right" role="search" method="post" action="{% url 'authenticate'%}" >
+        <div class="form-group">
+        	{% csrf_token %}
+          <input type="text" class="form-control" name='username' placeholder="Username">
+          <input type="password" class="form-control" name='password' placeholder="Password">
+        </div>
+        <button type="submit" class="btn btn-default">Login</button>
+    </form>
+{%endif%}    
+</div>
+</div>
+</nav>
+{%endblock%}
+
+<div class="container">
+    {%block content%}
+
+	{%endblock%}
+</div>
+
+
+
+{%block footer%}
+	<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"> </script>	
+	<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"> </script>
+	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
+{%endblock%}
+
+</body>
+</html>

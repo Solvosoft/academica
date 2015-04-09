@@ -1,0 +1,20 @@
+{% extends 'matricula_base.html'%}
+
+{%block content%}
+    	
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title text-center">{{course.name}}</h3>
+	</div>
+	<div class="panel-body">
+		{{course.content|safe}}
+	</div>
+	<div class="well">
+		<div id="group_message"> </div>
+	{% include 'groups.html' %}
+	</div>
+</div>
+
+    	
+
+{%endblock%}

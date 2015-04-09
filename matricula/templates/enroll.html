@@ -1,0 +1,35 @@
+{% extends 'matricula_base.html'%}
+
+{%block content%}
+
+
+
+<h1> Cursos por Matricular </h1>
+<ul class="list-group">
+	{% for enroll in list_enroll%}
+		<li class="list-group-item">
+			<span class="badge">
+				<a class="btn-sm btn-default" href="{% url 'finish_enroll' enroll.pk %}">
+				Matricularme 
+				</a></span>
+			{{enroll.group }} {{enroll.group.schedule}}
+		</li>
+
+	{%empty%}
+	<div class="alert alert-info" role="alert">No tiene ningún curso que matricular</div>
+	{%endfor%}
+</ul>
+	
+<h1> Cursos matriculados </h1>
+<ul class="list-group">
+	{% for enroll in finished_enroll%}
+		<li class="list-group-item">
+			{{enroll.group }} {{enroll.group.schedule}}
+		</li>
+
+	{%empty%}
+	<div class="alert alert-info" role="alert">No tiene ningún curso matriculado </div>
+	{%endfor%}
+</ul>
+{%endblock%}
+
