@@ -1,0 +1,70 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-04-08 20:19-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: enroll.py:24
+msgid ""
+"<div class=\"alert alert-success\" role=\"alert\">Enrollment success...</div>"
+msgstr "<div class=\"alert alert-success\" role=\"alert\"> Pre-matriculado satisfactoriamente...</div>"
+
+#: enroll.py:29
+msgid ""
+"<div class=\"alert alert-info\" role=\"alert\">You are already enrolled ...</"
+"div>"
+msgstr "<div class=\"alert alert-info\" role=\"alert\">Ya se encuentra prematiculado ...</"
+
+#: forms.py:13
+msgid "Your name"
+msgstr "Su nombre"
+
+#: forms.py:16
+msgid "Password"
+msgstr "Contraseña"
+
+#: forms.py:17
+msgid "Repeat password"
+msgstr "Repita su contraseña"
+
+#: forms.py:23
+msgid "User name exist "
+msgstr "El nombre de usuario existe"
+
+#: forms.py:26
+msgid "Password not match "
+msgstr "Contraseñas no coinciden"
+
+#: views.py:21
+msgid "Email confirmation"
+msgstr "Confirmación por correo"
+
+#: views.py:32
+msgid "Thank you, We will send you an email soon"
+msgstr "Gracias, Pronto le llegará un correo de confirmación"
+
+#: views.py:49 views.py:65
+msgid "Key not found"
+msgstr "Llave no existe"
+
+#: views.py:58
+msgid "Congratulations, now you can login"
+msgstr "Felicitaciones, ahora puede iniciar sesión"
+
+#: views.py:88
+msgid "Login failed"
+msgstr "Falló la autenticación"
