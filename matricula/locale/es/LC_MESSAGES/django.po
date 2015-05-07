@@ -27,7 +27,7 @@ msgstr "<div class=\"alert alert-success\" role=\"alert\"> Pre-matriculado satis
 msgid ""
 "<div class=\"alert alert-info\" role=\"alert\">You are already enrolled ...</"
 "div>"
-msgstr "<div class=\"alert alert-info\" role=\"alert\">Ya se encuentra prematiculado ...</"
+msgstr "<div class=\"alert alert-info\" role=\"alert\">Ya se encuentra prematiculado ...</div>"
 
 #: forms.py:13
 msgid "Your name"
