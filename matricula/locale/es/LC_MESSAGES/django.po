@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-08 20:19-0600\n"
+"POT-Creation-Date: 2015-05-06 21:17-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,13 +21,17 @@ msgstr ""
 #: enroll.py:24
 msgid ""
 "<div class=\"alert alert-success\" role=\"alert\">Enrollment success...</div>"
-msgstr "<div class=\"alert alert-success\" role=\"alert\"> Pre-matriculado satisfactoriamente...</div>"
+msgstr ""
+"<div class=\"alert alert-success\" role=\"alert\"> Pre-matriculado "
+"satisfactoriamente...</div>"
 
 #: enroll.py:29
 msgid ""
 "<div class=\"alert alert-info\" role=\"alert\">You are already enrolled ...</"
 "div>"
-msgstr "<div class=\"alert alert-info\" role=\"alert\">Ya se encuentra prematiculado ...</div>"
+msgstr ""
+"<div class=\"alert alert-info\" role=\"alert\">Ya se encuentra "
+"prematiculado ...</div>"
 
 #: forms.py:13
 msgid "Your name"
@@ -48,6 +52,74 @@ msgstr "El nombre de usuario existe"
 #: forms.py:26
 msgid "Password not match "
 msgstr "Contraseñas no coinciden"
+
+#: models.py:19 models.py:32
+msgid "Name"
+msgstr "Nombre"
+
+#: models.py:20
+msgid "Content"
+msgstr "Contenido"
+
+#: models.py:26 models.py:31
+msgid "Course"
+msgstr "Curso"
+
+#: models.py:27
+msgid "Courses"
+msgstr "Cursos"
+
+#: models.py:33
+msgid "Schedule"
+msgstr "Horario"
+
+#: models.py:35
+msgid "Pre enroll start hour"
+msgstr "Hora de inicio de Pre-matricula"
+
+#: models.py:36
+msgid "Pre enroll finish hour"
+msgstr "Hora de finalización de Pre-matricula"
+
+#: models.py:38
+msgid "Enroll start hour"
+msgstr "Hora de inicio de matricula"
+
+#: models.py:39
+msgid "Enroll finish hour"
+msgstr "Hora de finalización de matricula"
+
+#: models.py:51 models.py:59
+msgid "Group"
+msgstr "Grupo"
+
+#: models.py:52
+msgid "Groups"
+msgstr "Grupos"
+
+#: models.py:57
+msgid "Is enroll finished?"
+msgstr "¿Está finalizada la matricula?"
+
+#: models.py:58
+msgid "Is active for enroll?"
+msgstr "¿Está activo para la matricula?"
+
+#: models.py:60
+msgid "Student"
+msgstr "Estudiante"
+
+#: models.py:61
+msgid "Enroll date"
+msgstr "Fecha de matricula"
+
+#: models.py:67
+msgid "Enrollment"
+msgstr "Matricula"
+
+#: models.py:68
+msgid "Enrollments"
+msgstr "Matriculas"
 
 #: views.py:21
 msgid "Email confirmation"

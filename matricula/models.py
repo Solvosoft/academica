@@ -8,6 +8,7 @@ from simple_email_confirmation import SimpleEmailConfirmationUserMixin
 from ckeditor.fields import RichTextField
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 
 class Student(SimpleEmailConfirmationUserMixin, AbstractUser):
     pass
@@ -15,45 +16,53 @@ class Student(SimpleEmailConfirmationUserMixin, AbstractUser):
 
 @python_2_unicode_compatible
 class Course(models.Model):
-    name = models.CharField(max_length=300)
-    content = RichTextField()
+    name = models.CharField(max_length=300, verbose_name=_("Name"))
+    content = RichTextField(verbose_name=_("Content"))
 
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = _("Course")
+        verbose_name_plural = _("Courses")
 
 @python_2_unicode_compatible
 class Group(models.Model):
-    course = models.ForeignKey(Course)
-    name = models.CharField(max_length=50)
-    schedule = models.CharField(max_length=300)
+    course = models.ForeignKey(Course, verbose_name=_("Course"))
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
+    schedule = models.CharField(max_length=300, verbose_name=_("Schedule"))
 
-    pre_enroll_start = models.DateTimeField()
-    pre_enroll_finish = models.DateTimeField()
+    pre_enroll_start = models.DateTimeField(verbose_name=_("Pre enroll start hour"))
+    pre_enroll_finish = models.DateTimeField(verbose_name=_("Pre enroll finish hour"))
 
-    enroll_start = models.DateTimeField()
-    enroll_finish = models.DateTimeField()
+    enroll_start = models.DateTimeField(verbose_name=_("Enroll start hour"))
+    enroll_finish = models.DateTimeField(verbose_name=_("Enroll finish hour"))
 
     @property
     def in_enrollment(self):
-        print(self.name,
-              self.pre_enroll_start , "(" , timezone.now(), ")" , self.pre_enroll_finish)
         if self.pre_enroll_start <= timezone.now() <= self.pre_enroll_finish:
             return True
         return False
 
-
     def __str__(self):
         return str(self.course) + " -- " + self.name
+
+    class Meta:
+        verbose_name = _("Group")
+        verbose_name_plural = _("Groups")
 
 
 @python_2_unicode_compatible
 class Enroll(models.Model):
-    enroll_finished = models.BooleanField(default=False)
-    enroll_activate = models.BooleanField(default=False)
-    group = models.ForeignKey(Group)
-    student = models.ForeignKey(Student)
-    enroll_date = models.DateTimeField(auto_now_add=True)
+    enroll_finished = models.BooleanField(default=False, verbose_name=_("Is enroll finished?"))
+    enroll_activate = models.BooleanField(default=False, verbose_name=_("Is active for enroll?"))
+    group = models.ForeignKey(Group, verbose_name=_("Group"))
+    student = models.ForeignKey(Student, verbose_name=_("Student"))
+    enroll_date = models.DateTimeField(auto_now_add=True, verbose_name=_("Enroll date"))
 
     def __str__(self):
         return self.student.username + " -- " + str(self.group)
+
+    class Meta:
+        verbose_name = _("Enrollment")
+        verbose_name_plural = _("Enrollments")
