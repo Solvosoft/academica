@@ -2,3 +2,4 @@ django
 django-simple-email-confirmation
 django-ckeditor
 djangoajax
+django-paypal

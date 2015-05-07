@@ -37,7 +37,8 @@ class Group(models.Model):
 
     enroll_start = models.DateTimeField(verbose_name=_("Enroll start hour"))
     enroll_finish = models.DateTimeField(verbose_name=_("Enroll finish hour"))
-
+    cost = models.DecimalField(max_digits=4, decimal_places=2, verbose_name=_("Course cost"))
+    
     @property
     def in_enrollment(self):
         if self.pre_enroll_start <= timezone.now() <= self.pre_enroll_finish:
@@ -59,6 +60,7 @@ class Enroll(models.Model):
     group = models.ForeignKey(Group, verbose_name=_("Group"))
     student = models.ForeignKey(Student, verbose_name=_("Student"))
     enroll_date = models.DateTimeField(auto_now_add=True, verbose_name=_("Enroll date"))
+    bill_created = models.BooleanField(default=False)  # is needed by bill sistem 
 
     def __str__(self):
         return self.student.username + " -- " + str(self.group)
@@ -66,3 +68,22 @@ class Enroll(models.Model):
     class Meta:
         verbose_name = _("Enrollment")
         verbose_name_plural = _("Enrollments")
+
+
+@python_2_unicode_compatible
+class Bill(models.Model):
+    short_description = models.CharField(max_length=300, verbose_name=_("Short description"))
+    description = models.TextField(verbose_name=_("Description"))
+    amount = models.DecimalField(max_digits=4, decimal_places=2, verbose_name=_("Amount"))
+    student = models.ForeignKey(Student, verbose_name=_("Student"))
+    is_paid = models.BooleanField(default=False)
+    paid_date = models.DateTimeField(auto_now_add=True)
+    # transaction_id = models.TextField(max_length=300, null=True, blank=True)
+
+
+    def __str__(self):
+        return self.short_description
+
+    class Meta:
+        verbose_name = _("Bill")
+        verbose_name_plural = _("Bills")

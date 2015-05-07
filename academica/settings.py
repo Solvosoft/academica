@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'matricula',
     'ckeditor',
     'django_ajax',
+    'paypal.standard.ipn',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -129,3 +130,7 @@ TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
 "django.contrib.messages.context_processors.messages",
 'django.core.context_processors.request'
 )
+
+PAYPAL_TEST = True
+PAYPAL_RECEIVER_EMAIL = "luisza14-buyer@gmail.com"
+MY_PAYPAL_HOST = "http://academica.ngrok.io"

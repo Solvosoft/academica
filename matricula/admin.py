@@ -1,12 +1,12 @@
 from django.contrib import admin
-from matricula.models import Student, Course, Group, Enroll
+from matricula.models import Student, Course, Group, Enroll, Bill
 
 # Register your models here.
 
 class EnrollAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
-            'fields': (('enroll_finished', 'enroll_activate'), 'group', 'student')
+            'fields': (('enroll_finished', 'enroll_activate'), 'group', 'student', 'bill_created')
         }),)
 
     list_display = ('student', 'group', 'enroll_finished', 'enroll_activate')
@@ -27,7 +27,7 @@ class EnrollAdmin(admin.ModelAdmin):
 class GroupAdmin(admin.ModelAdmin):
     fieldsets = (
                 (None, {'classes': ('wide', 'extrapretty'),
-                        'fields': ('course', 'name', 'schedule',
+                        'fields': ('course', 'name', 'cost', 'schedule',
                                     ('pre_enroll_start', 'pre_enroll_finish'),
                                     ('enroll_start' , 'enroll_finish'))
                         }),
@@ -36,3 +36,4 @@ admin.site.register(Student)
 admin.site.register(Course)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(Enroll, EnrollAdmin)
+admin.site.register(Bill)
