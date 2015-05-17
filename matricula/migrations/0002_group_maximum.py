@@ -7,13 +7,14 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matricula', '0002_auto_20150407_2204'),
+        ('matricula', '0001_initial'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='enroll',
-            name='enroll_activate',
-            field=models.BooleanField(default=False),
+            model_name='group',
+            name='maximum',
+            field=models.SmallIntegerField(verbose_name='Maximum number of students', default=0),
+            preserve_default=False,
         ),
     ]

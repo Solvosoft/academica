@@ -1,9 +1,8 @@
 '''
-Created on 7/5/2015
+Created on 17/5/2015
 
 @author: luisza
 '''
-
 
 from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
@@ -38,4 +37,3 @@ def get_my_bills(request):
 
     return render(request, 'bills.html', {'paid': paid,
                                    'not_paid': not_paid_forms})
-    

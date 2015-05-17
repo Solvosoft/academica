@@ -1,0 +1,15 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+
+<h1>{{group.name}}</h1>
+<br>
+<ul>
+{% for enroll in group.enroll_set.all%}
+<li>{{enroll.student.get_full_name}} -- {{enroll.student.email}}</li>
+{%endfor%}
+</ul>
+<br>
+
+<a href="{% url 'admin:matricula_group_changelist'%}"> Atras </a>
+
+{% endblock %}

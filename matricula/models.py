@@ -10,12 +10,40 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+
+
 class Student(SimpleEmailConfirmationUserMixin, AbstractUser):
     pass
 
+@python_2_unicode_compatible
+class Period(models.Model):
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
+    start_date = models.DateField(verbose_name=_("Period start date"))
+    finish_date = models.DateField(verbose_name=_("Period finish date"))
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _("Period")
+        verbose_name_plural = _("Periods")
+
+
+@python_2_unicode_compatible
+class Category(models.Model):
+    name = models.CharField(max_length=300, verbose_name=_("Name"))
+    description = RichTextField(verbose_name=_("Description"))
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _("Category")
+        verbose_name_plural = _("Categories")
 
 @python_2_unicode_compatible
 class Course(models.Model):
+    category = models.ForeignKey(Category, verbose_name=_("Category"))
     name = models.CharField(max_length=300, verbose_name=_("Name"))
     content = RichTextField(verbose_name=_("Content"))
 
@@ -28,6 +56,7 @@ class Course(models.Model):
 
 @python_2_unicode_compatible
 class Group(models.Model):
+    period = models.ForeignKey(Period, verbose_name=_("Period"))
     course = models.ForeignKey(Course, verbose_name=_("Course"))
     name = models.CharField(max_length=50, verbose_name=_("Name"))
     schedule = models.CharField(max_length=300, verbose_name=_("Schedule"))
@@ -38,7 +67,8 @@ class Group(models.Model):
     enroll_start = models.DateTimeField(verbose_name=_("Enroll start hour"))
     enroll_finish = models.DateTimeField(verbose_name=_("Enroll finish hour"))
     cost = models.DecimalField(max_digits=4, decimal_places=2, verbose_name=_("Course cost"))
-    
+    maximum = models.SmallIntegerField(verbose_name=_("Maximum number of students"))
+
     @property
     def in_enrollment(self):
         if self.pre_enroll_start <= timezone.now() <= self.pre_enroll_finish:
@@ -79,7 +109,6 @@ class Bill(models.Model):
     is_paid = models.BooleanField(default=False)
     paid_date = models.DateTimeField(auto_now_add=True)
     # transaction_id = models.TextField(max_length=300, null=True, blank=True)
-
 
     def __str__(self):
         return self.short_description

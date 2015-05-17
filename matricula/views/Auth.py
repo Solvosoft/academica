@@ -1,6 +1,11 @@
-from django.shortcuts import render, redirect, get_object_or_404
+'''
+Created on 17/5/2015
+
+@author: luisza
+'''
+from django.shortcuts import render, redirect
 from matricula.forms import StudentCreateForm
-from matricula.models import Student, Course
+from matricula.models import Student
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.conf import settings
@@ -101,18 +106,5 @@ def logout(request):
     return redirect(reverse('index'))
 
 
-def courses(request):
-    courses = Course.objects.all()
-    user_auth = request.user.is_authenticated()
-    return render(request, 'courses.html', {'courses': courses,
-                                            'user_auth': user_auth})
-
-
-def course(request, pk):
-    course = get_object_or_404(Course, pk=pk)
-    user_auth = request.user.is_authenticated()
-    
-    return render(request, 'course.html',
-                        {'course': course,
-                        'add_schedule':True,
-                        'user_auth': user_auth})    
+def login(request):
+    return render(request, 'login.html')

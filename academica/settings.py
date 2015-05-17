@@ -122,15 +122,18 @@ CKEDITOR_CONFIGS = {
 }
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
-"django.template.context_processors.debug",
-"django.template.context_processors.i18n",
-"django.template.context_processors.media",
-"django.template.context_processors.static",
-"django.template.context_processors.tz",
-"django.contrib.messages.context_processors.messages",
-'django.core.context_processors.request'
-)
+                                "django.template.context_processors.debug",
+                                "django.template.context_processors.i18n",
+                                "django.template.context_processors.media",
+                                "django.template.context_processors.static",
+                                "django.template.context_processors.tz",
+                                "django.contrib.messages.context_processors.messages",
+                                'django.core.context_processors.request'
+                                )
 
 PAYPAL_TEST = True
 PAYPAL_RECEIVER_EMAIL = "luisza14-buyer@gmail.com"
 MY_PAYPAL_HOST = "http://academica.ngrok.io"
+
+
+LOGIN_URL = "/matricula/accounts/login/"

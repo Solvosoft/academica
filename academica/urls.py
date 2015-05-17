@@ -11,5 +11,4 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^matricula/', include('matricula.urls')),
     url(r'^ckeditor/', include('ckeditor.urls')),
-    
 ]

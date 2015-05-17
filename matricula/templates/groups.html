@@ -8,7 +8,7 @@
 		
 
 		<span class="badge">
-		{% if user_auth and group.in_enrollment%}
+		{% if request.user.is_authenticated and group.in_enrollment%}
 			<a data-href="{% url 'enrollme' group.pk%}"  data-ajax="true" class="btn-sm btn-default">Prematricularme</a>
 		{%endif%}
 		<span id="count_{{group.pk}}">{{group.enroll_set.count}} </span>

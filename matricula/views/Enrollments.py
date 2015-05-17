@@ -1,8 +1,9 @@
 '''
-Created on 8/4/2015
+Created on 17/5/2015
 
 @author: luisza
 '''
+
 from django_ajax.decorators import ajax
 from django.shortcuts import get_object_or_404, render, redirect
 from matricula.models import Group, Enroll
@@ -21,12 +22,12 @@ def enrollme(request, pk):
         Enroll.objects.create(group=group,
                               student=request.user)
         return { "inner-fragments": {"#count_" + str(group.pk): group.enroll_set.count(),
-                                "#group_message": str( _('<div class="alert alert-success" role="alert">Enrollment success...</div>') )
+                                "#group_message": str(_('<div class="alert alert-success" role="alert">Enrollment success...</div>'))
                                 },
             }
 
     return { "inner-fragments": {"#count_" + str(group.pk): group.enroll_set.count(),
-                                "#group_message": str( _('<div class="alert alert-info" role="alert">You are already enrolled ...</div>') )
+                                "#group_message": str(_('<div class="alert alert-info" role="alert">You are already enrolled ...</div>'))
                                 },
             }
 
