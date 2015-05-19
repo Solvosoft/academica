@@ -15,7 +15,8 @@ Para registrar en el menú puede hacer algo como esto en el archivo admin.py del
 modulo que acaba de crear
 
 	from matricula.menues import add_main_menu
-	add_main_menu((_("Bills"), 'bills', True, 3, True))
+	
+	add_main_menu(  (_("Bills"), 'bills', True, 3, True)  )
 
 Puede ser una lista de tuplas o una tupla con el siguiente formato
 
@@ -27,6 +28,6 @@ por ejemplo
 
 también es válido
 
-    [ (..), ("Curso", "courses", False, 0, True), (...)]
+    [   (..), ("Curso", "courses", False, 0, True), (...)  ]
 
 No olvide registrar las url en url.py
