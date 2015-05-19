@@ -1,4 +1,4 @@
-{%load static %}
+{%load static menu %}
 <html >
 		<head>
 			
@@ -21,15 +21,7 @@
 	<a class="navbar-brand" href="#">Académia de tecnología</a>
 </div>
 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">  	
-<ul class="nav navbar-nav">
-  <li role="presentation" ><a href="{% url 'courses' %}">Cursos</a></li>
-{% if not request.user.is_authenticated %}  <li role="presentation"><a href="{% url 'create_user' %}">Registrarme</a></li> {%endif%}
-
-{% if request.user.is_authenticated %}
-  <li role="presentation"><a href="{% url 'enrollment' %}">Matricula</a></li>
-  <li role="presentation"><a href="{% url 'bills' %}">Facturas</a></li>
-{% endif%}
-</ul>
+{% show_menu request.user.is_authenticated %}
 
 {% if request.user.is_authenticated %}
 

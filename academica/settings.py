@@ -39,9 +39,10 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'simple_email_confirmation',
     'matricula',
+    'matricula.contrib.bills',
     'ckeditor',
-    'django_ajax',
     'paypal.standard.ipn',
+    'django_ajax',
 )
 
 MIDDLEWARE_CLASSES = (

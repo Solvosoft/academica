@@ -12,12 +12,13 @@ Este repositorio es un proyecto de django, el cual está configurado para tener 
 * Pre-matricula
 * Matricula 
 * Conteo de estudiantes pre-matriculados 
+* Sistema de pagos mediante paypal (opcional, ver matricula.contrib.bills)
 
 Para instalarlo se recomienda utilizar python 3.4 o python 2.7 
 
 	$ git clone https://github.com/luisza/academica.git
 	$ cd academica/
-	$ pip install -r matricula/requirement.txt
+	$ pip install -r matricula/requirements/matricula.txt
 	
 Configure la base de datos
 

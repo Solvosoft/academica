@@ -1,0 +1,42 @@
+{% extends 'matricula_base.html'%}
+
+{%block content%}
+
+<h1> Facturas por pagar </h1>
+<ul class="list-group">
+	{% for bill in not_paid%}
+	<li class="list-group-item">
+
+		<div class="row">
+			<div class="col-md-8">
+				{{bill.obj.description |linebreaks}}
+			</div>
+			<div class="col-md-4">
+				{{bill.form.render}}
+			</div>
+		</div>
+
+	</li>
+
+	{%empty%}
+	<div class="alert alert-info" role="alert">
+		No tiene ninguna factura pendiente
+	</div>
+	{%endfor%}
+</ul>
+
+<h1> Facturas pagas </h1>
+<ul class="list-group">
+	{% for bill in paid%}
+	<li class="list-group-item">
+		{{bill.description}}
+	</li>
+
+	{%empty%}
+	<div class="alert alert-info" role="alert">
+		No tiene facturas pagas
+	</div>
+	{%endfor%}
+</ul>
+
+{%endblock%}

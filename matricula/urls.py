@@ -5,7 +5,6 @@ Created on 7/4/2015
 '''
 
 from django.conf.urls import patterns, url, include
-from . import signals
 from django.contrib.auth import views as auth_views
 
 urlpatterns = patterns('matricula.views.Auth',
@@ -26,11 +25,6 @@ urlpatterns += patterns('matricula.views.Enrollments',
                         url('^finish_enroll/(?P<pk>\d+)$', 'finish_enroll', name="finish_enroll"),
                         )
 
-urlpatterns += patterns('matricula.views.Bills',
-                        url('^bills/$', 'get_my_bills', name="bills"),
-                        )
-
 urlpatterns += patterns('',
-                        url(r'^paybills/paypal/', include('paypal.standard.ipn.urls')),
                         url(r'^accounts/login/$', auth_views.login, name="login"),
                         )

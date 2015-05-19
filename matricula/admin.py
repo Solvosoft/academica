@@ -1,11 +1,12 @@
 from django.contrib import admin
-from matricula.models import Student, Course, Group, Enroll, Bill, Period, Category
+from matricula.models import Student, Course, Group, Enroll, Period, Category
 from django.utils.translation import ugettext_lazy as _
 from django.template.response import TemplateResponse
 from django.conf.urls import url
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.utils.html import format_html
+
 # Register your models here.
 
 class EnrollAdmin(admin.ModelAdmin):
@@ -83,7 +84,6 @@ admin.site.register(Student)
 admin.site.register(Course)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(Enroll, EnrollAdmin)
-admin.site.register(Bill)
 admin.site.register(Period)
 admin.site.register(Category)
 
