@@ -12,4 +12,6 @@ urlpatterns = [
     url(r'^matricula/', include('matricula.urls')),
     url(r'^matricula_bills/', include('matricula.contrib.bills.urls')),
     url(r'^ckeditor/', include('ckeditor.urls')),
+    url(r'^accounts/', include('allauth.urls')),
+    url('^accounts/profile/?$', RedirectView.as_view(url='/matricula/courses', permanent=False)),
 ]

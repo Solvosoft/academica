@@ -12,6 +12,8 @@ urlpatterns = patterns('matricula.views.Auth',
                        url('^confirm_email$', 'confirm_email', name="confirm_email"),
                        url('^authenticate$', 'authenticate', name="authenticate"),
                        url('^logout$', 'logout', name="logout"),
+                       url('^recover_password$', 'recover_password', name="recover_password"),
+                       url('^mail_recover_pass$', 'mail_recover_pass', name='mail_recover_pass')
                        )
 
 urlpatterns += patterns('matricula.views.Courses',

@@ -1,0 +1,17 @@
+	
+<h2>Olvidó su contraseña</h2> 
+<form class="form-inline" method="post" action="{% url 'mail_recover_pass'%}" 
+data-ajax-submit="" onsubmit="return false;"
+>
+    <div class="form-group">
+    	{% csrf_token %}
+      <input type="text" class="form-control" name='email' placeholder="Email Address">
+	</div>        
+    <button type="submit" class="btn btn-default">Recuperar contraseña</button>
+</form>
+
+<p> Se le enviará un correo electrónico con la información necesaria para modificar su contraseña</p>
+
+{%if recover_message%}
+	<div class="alert alert-{{recover_message_type}}" role="alert"> {{recover_message}} </div>
+{% endif %}
