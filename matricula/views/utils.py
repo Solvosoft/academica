@@ -14,4 +14,4 @@ def get_active_period():
 
     if period.exists():
         return period.last()
-    raise Http404
+    raise Http404("No Active period")

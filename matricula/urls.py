@@ -5,7 +5,7 @@ Created on 7/4/2015
 '''
 
 from django.conf.urls import patterns, url, include
-from django.contrib.auth import views as auth_views
+from matricula.views.Auth import StudentEdit
 
 urlpatterns = patterns('matricula.views.Auth',
                        url('^create_user$', 'create_user', name="create_user"),
@@ -13,7 +13,8 @@ urlpatterns = patterns('matricula.views.Auth',
                        url('^authenticate$', 'authenticate', name="authenticate"),
                        url('^logout$', 'logout', name="logout"),
                        url('^recover_password$', 'recover_password', name="recover_password"),
-                       url('^mail_recover_pass$', 'mail_recover_pass', name='mail_recover_pass')
+                       url('^mail_recover_pass$', 'mail_recover_pass', name='mail_recover_pass'),
+                       url('^user/profile/(?P<pk>[0-9]+)/$', StudentEdit.as_view(), name='myprofile'),
                        )
 
 urlpatterns += patterns('matricula.views.Courses',
@@ -25,8 +26,4 @@ urlpatterns += patterns('matricula.views.Enrollments',
                         url('^enrollme/(?P<pk>\d+)$', 'enrollme', name="enrollme"),
                         url('^enrollment$', 'list_enroll', name="enrollment"),
                         url('^finish_enroll/(?P<pk>\d+)$', 'finish_enroll', name="finish_enroll"),
-                        )
-
-urlpatterns += patterns('',
-                        url(r'^accounts/login/$', auth_views.login, name="login"),
                         )

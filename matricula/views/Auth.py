@@ -5,9 +5,9 @@ Created on 17/5/2015
 '''
 from django.shortcuts import render, redirect, get_object_or_404
 from matricula.forms import StudentCreateForm
-from matricula.models import Student
+from matricula.models import Student, Enroll
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.conf import settings
 # Create your views here.
 from django.utils.translation import ugettext_lazy as _
@@ -18,6 +18,7 @@ from django_ajax.decorators import ajax
 from django.template.loader import render_to_string
 from django.template.context import RequestContext
 
+from django.views.generic.edit import UpdateView
 
 def create_user(request):
     if request.method == 'POST':
@@ -172,10 +173,27 @@ def mail_recover_pass(request):
     else:
         recover_message_type = 'warning'
         recover_message = _('Not user found')
-        
+
     return {'inner-fragments': {'#recover_pass': render_to_string('recover.html', context={'recover_message_type': recover_message_type,
                                  'recover_message': recover_message
                                  }, context_instance=RequestContext(request))
                         }
             }
 
+
+def get_profile(request):
+    return redirect(reverse('myprofile', kwargs={'pk': request.user.pk}))
+
+
+class StudentEdit(UpdateView):
+    model = Student
+    fields = ['first_name', 'last_name', 'email']
+    success_url = reverse_lazy('index')
+
+    def get_context_data(self, **kwargs):
+
+        context = UpdateView.get_context_data(self, **kwargs)
+        enroll = Enroll.objects.filter(student=self.object).order_by('enroll_date')
+        context['enroll'] = enroll.filter(enroll_activate=True, enroll_finished=True)
+        context['pre_enroll'] = enroll.filter(enroll_activate=True, enroll_finished=False)
+        return context
