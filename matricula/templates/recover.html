@@ -1,5 +1,5 @@
-	
-<h2>Olvidó su contraseña</h2> 
+{%load i18n %}	
+<h2>{% trans 'Forget your password?' %}</h2> 
 <form class="form-inline" method="post" action="{% url 'mail_recover_pass'%}" 
 data-ajax-submit="" onsubmit="return false;"
 >
@@ -7,10 +7,11 @@ data-ajax-submit="" onsubmit="return false;"
     	{% csrf_token %}
       <input type="text" class="form-control" name='email' placeholder="Email Address">
 	</div>        
-    <button type="submit" class="btn btn-default">Recuperar contraseña</button>
+    <button type="submit" class="btn btn-default">{% trans 'Recover my password' %}</button>
 </form>
 
-<p> Se le enviará un correo electrónico con la información necesaria para modificar su contraseña</p>
+
+<p> {% trans 'We will send you an email with necessary information for change your password' %} </p>
 
 {%if recover_message%}
 	<div class="alert alert-{{recover_message_type}}" role="alert"> {{recover_message}} </div>

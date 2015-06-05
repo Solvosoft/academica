@@ -7,6 +7,8 @@ from django.utils.html import format_html
 from matricula.admins import BaseGroup
 from django_ajax.decorators import ajax
 
+from django.contrib.admin import AdminSite
+
 # Register your models here.
 
 
@@ -103,3 +105,14 @@ admin.site.register(Period)
 admin.site.register(Category)
 
 admin.site.site_header = "Academica administrator"
+
+
+admin_site = AdminSite(name='matricula_admin')
+admin_site.site_header = "Academica administrator"
+
+admin_site.register(Student)
+admin_site.register(Course)
+admin_site.register(Group, GroupAdmin)
+admin_site.register(Enroll, EnrollAdmin)
+admin_site.register(Period)
+admin_site.register(Category)

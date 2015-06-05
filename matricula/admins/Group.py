@@ -66,7 +66,7 @@ class ViewsGroup:
     def get_email_message_close(self, *args, **kargs):
 
         val = args[0]
-        return "Attention: %(group)s was closed" % val
+        return _("Attention: %(group)s was closed") % val
 
     def student_list(self, request, pk):
         print("Antes")
@@ -93,7 +93,7 @@ class ViewsGroup:
         enrolls.update(enroll_activate=True)
 
         if request.GET.get('sendemail', '0') == '1':
-            send_mail(_('%s is open now') % (str(group),),
+            send_mail(_('%(group)s is open now') % {'group': str(group)},
                       self.get_email_message_open({'group': group}),
                       settings.DEFAULT_FROM_EMAIL,
                       [enroll.student.email for enroll in enrolls],
@@ -112,7 +112,7 @@ class ViewsGroup:
         enrolls.update(enroll_activate=False)
 
         if request.GET.get('sendemail', '0') == '1':
-            send_mail(_('%s was closed') % (str(group),),
+            send_mail(_('%(group)s was closed') % {'group': str(group)},
                       self.get_email_message_close({'group': group}),
                       settings.DEFAULT_FROM_EMAIL,
                       [enroll.student.email for enroll in enrolls],

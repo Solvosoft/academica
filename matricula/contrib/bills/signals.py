@@ -16,13 +16,13 @@ def create_bill(sender, **kwargs):
         instance.bill_created = True
         Bill.objects.create(short_description=_("Enroll in %s" % (str(instance.group))),
                              description=_("""
-                             User %s 
-                             Enroll in %s
-                             At %s
-                            """ % (instance.student.username,
-                                   str(instance.group),
-                                   str(instance.enroll_date)
-                                  )),
+                             User %(username)s 
+                             Enroll in %(enroll)s
+                             At %(date)s
+                            """) % {'username': instance.student.username,
+                                   'enroll': str(instance.group),
+                                   'date':str(instance.enroll_date)
+                                   },
                             amount=instance.group.cost,
                             student=instance.student
                             )
@@ -40,7 +40,7 @@ def paypal_bill_paid(sender, **kwargs):
             bill.save()
         except:
             pass
-        
+
     print(ipn_obj.invoice, ipn_obj.payment_status, ipn_obj.pending_reason) 
-    
+
 valid_ipn_received.connect(paypal_bill_paid)

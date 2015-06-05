@@ -91,7 +91,7 @@ class Enroll(models.Model):
     group = models.ForeignKey(Group, verbose_name=_("Group"))
     student = models.ForeignKey(Student, verbose_name=_("Student"))
     enroll_date = models.DateTimeField(auto_now_add=True, verbose_name=_("Enroll date"))
-    bill_created = models.BooleanField(default=False)  # is needed by bill sistem 
+    bill_created = models.BooleanField(default=False, verbose_name=_("Bill created"))  # is needed by bill sistem 
 
     def __str__(self):
         return self.student.username + " -- " + str(self.group)

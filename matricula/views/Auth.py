@@ -172,7 +172,7 @@ def mail_recover_pass(request):
         recover_message = _('You will recive a message soon, check your email')
     else:
         recover_message_type = 'warning'
-        recover_message = _('Not user found')
+        recover_message = _('User not found')
 
     return {'inner-fragments': {'#recover_pass': render_to_string('recover.html', context={'recover_message_type': recover_message_type,
                                  'recover_message': recover_message

@@ -2,13 +2,13 @@
 
 
 {%block content%}
-{% load socialaccount static %}
+{% load socialaccount static i18n %}
 
 
 <link rel="stylesheet" href="{% static 'css/auth-buttons.css'%}">
 
 <div class="panel panel-default">
-  <div class="panel-heading">Ingreso por</div>
+  <div class="panel-heading">{% trans 'Sign up' %}</div>
   <div class="panel-body">
 
 <div class="row">
@@ -28,7 +28,7 @@ data-ajax-submit="" onsubmit="return false;"
           <input type="text" class="form-control" name='username' placeholder="Username">
           <input type="password" class="form-control" name='password' placeholder="Password">
         
-        <button type="submit" class="btn btn-default">Ingresar</button></div>
+        <button type="submit" class="btn btn-default">{% trans 'Sign in' %}</button></div>
     </form>
 </div>
 </div>
@@ -39,12 +39,12 @@ data-ajax-submit="" onsubmit="return false;"
 
 
 <div class="panel panel-default">
-  <div class="panel-heading">Registro mediante correo electrónico </div>
+  <div class="panel-heading">{% trans 'Sign up by email' %} </div>
   <div class="panel-body">
 
 <div class="row">
 <div class="table-responsive col-md-6" style="border-right-style: solid;">
-	<h2> Ingrese sus datos</h2>
+	<h2> {% trans 'Your data' %}</h2>
 	<form method="post" id="{% url 'create_user'%}" class="form">
 		<table class="table table-striped">
 			{% csrf_token %}
@@ -52,7 +52,7 @@ data-ajax-submit="" onsubmit="return false;"
 	<td></td><td>
 		<button type="submit" class="btn btn-success" value="Save" >
 		<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
-		Enviar
+		{% trans 'Send' %}
 		 </button>
 	</td>
 		</table>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-06 21:17-0600\n"
+"POT-Creation-Date: 2015-06-05 13:35-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,20 +18,76 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: enroll.py:24
-msgid ""
-"<div class=\"alert alert-success\" role=\"alert\">Enrollment success...</div>"
-msgstr ""
-"<div class=\"alert alert-success\" role=\"alert\"> Pre-matriculado "
-"satisfactoriamente...</div>"
+#: admin.py:29
+#, fuzzy
+#| msgid "Is active for enroll?"
+msgid "Active user for enrollment"
+msgstr "¿Está activo para la matricula?"
 
-#: enroll.py:29
-msgid ""
-"<div class=\"alert alert-info\" role=\"alert\">You are already enrolled ...</"
-"div>"
-msgstr ""
-"<div class=\"alert alert-info\" role=\"alert\">Ya se encuentra "
-"prematiculado ...</div>"
+#: admin.py:33
+#, fuzzy
+#| msgid "Is active for enroll?"
+msgid "Active user for pre-enrollment"
+msgstr "¿Está activo para la matricula?"
+
+#: admin.py:60
+#, fuzzy
+#| msgid "Student"
+msgid "List students"
+msgstr "Estudiante"
+
+#: admin.py:68
+msgid "# student pre-enroll"
+msgstr "# estudiante prematriculados"
+
+#: admin.py:77
+msgid "# student enroll"
+msgstr "# estudiantes matriculados"
+
+#: admin.py:81
+msgid "Total cash"
+msgstr "Dinero total "
+
+#: admins/Group.py:43
+msgid "Open group"
+msgstr "Abrir grupo"
+
+#: admins/Group.py:44
+msgid "Copy in the last period"
+msgstr "Copiar en el último periodo"
+
+#: admins/Group.py:69
+#, python-format
+msgid "Attention: %(group)s was closed"
+msgstr "Atención %(group)s fue cerrado"
+
+#: admins/Group.py:81
+#, fuzzy
+#| msgid "Student"
+msgid "Student List"
+msgstr "Lista de Estudiantes"
+
+#: admins/Group.py:91 admins/Group.py:110
+msgid "Group Not Found"
+msgstr "Grupo no encontrado"
+
+#: admins/Group.py:96
+#, python-format
+msgid "%(group)s is open now"
+msgstr "%(group)s está abierto"
+
+#: admins/Group.py:102
+msgid "This Group is open now"
+msgstr "Este grupo está abierto"
+
+#: admins/Group.py:115
+#, python-format
+msgid "%(group)s was closed"
+msgstr "%(group)s fue cerrado"
+
+#: admins/Group.py:121
+msgid "This Group was closed"
+msgstr "Este grupo fue cerrado"
 
 #: forms.py:13
 msgid "Your name"
@@ -53,90 +109,341 @@ msgstr "El nombre de usuario existe"
 msgid "Password not match "
 msgstr "Contraseñas no coinciden"
 
-#: models.py:19 models.py:32
-msgid "Name"
-msgstr "Nombre"
-
-#: models.py:20
-msgid "Content"
-msgstr "Contenido"
-
-#: models.py:26 models.py:31
-msgid "Course"
-msgstr "Curso"
-
-#: models.py:27
+#: menues.py:12 models.py:55
 msgid "Courses"
 msgstr "Cursos"
 
-#: models.py:33
-msgid "Schedule"
-msgstr "Horario"
-
-#: models.py:35
-msgid "Pre enroll start hour"
-msgstr "Hora de inicio de Pre-matricula"
-
-#: models.py:36
-msgid "Pre enroll finish hour"
-msgstr "Hora de finalización de Pre-matricula"
-
-#: models.py:38
-msgid "Enroll start hour"
-msgstr "Hora de inicio de matricula"
-
-#: models.py:39
-msgid "Enroll finish hour"
-msgstr "Hora de finalización de matricula"
-
-#: models.py:51 models.py:59
-msgid "Group"
-msgstr "Grupo"
-
-#: models.py:52
-msgid "Groups"
-msgstr "Grupos"
-
-#: models.py:57
-msgid "Is enroll finished?"
-msgstr "¿Está finalizada la matricula?"
-
-#: models.py:58
-msgid "Is active for enroll?"
-msgstr "¿Está activo para la matricula?"
-
-#: models.py:60
-msgid "Student"
-msgstr "Estudiante"
-
-#: models.py:61
-msgid "Enroll date"
-msgstr "Fecha de matricula"
-
-#: models.py:67
+#: menues.py:13 models.py:100
 msgid "Enrollment"
 msgstr "Matricula"
 
+#: models.py:20 models.py:34 models.py:47 models.py:61
+#: templates/Pdf/student_list.html:50
+msgid "Name"
+msgstr "Nombre"
+
+#: models.py:21
+msgid "Period start date"
+msgstr "Fecha de inicio de periodo"
+
+#: models.py:22
+#, fuzzy
+#| msgid "Pre enroll finish hour"
+msgid "Period finish date"
+msgstr "Hora de finalización de Pre-matricula"
+
+#: models.py:28 models.py:59
+msgid "Period"
+msgstr "Periodo"
+
+#: models.py:29
+msgid "Periods"
+msgstr "Periodos"
+
+#: models.py:35
+msgid "Description"
+msgstr "Descripción"
+
+#: models.py:41 models.py:46
+msgid "Category"
+msgstr "Categoría"
+
+#: models.py:42
+msgid "Categories"
+msgstr "Categorías"
+
+#: models.py:48
+msgid "Content"
+msgstr "Contenido"
+
+#: models.py:54 models.py:60
+msgid "Course"
+msgstr "Curso"
+
+#: models.py:62
+msgid "Schedule"
+msgstr "Horario"
+
+#: models.py:64
+msgid "Pre enroll start hour"
+msgstr "Hora de inicio de Pre-matricula"
+
+#: models.py:65
+msgid "Pre enroll finish hour"
+msgstr "Hora de finalización de Pre-matricula"
+
+#: models.py:67
+msgid "Enroll start hour"
+msgstr "Hora de inicio de matricula"
+
 #: models.py:68
+msgid "Enroll finish hour"
+msgstr "Hora de finalización de matricula"
+
+#: models.py:69
+#, fuzzy
+#| msgid "Courses"
+msgid "Course cost"
+msgstr "Cursos"
+
+#: models.py:70
+msgid "Maximum number of students"
+msgstr "Máximo número de estudiantes"
+
+#: models.py:83 models.py:91
+msgid "Group"
+msgstr "Grupo"
+
+#: models.py:84 templates/groups.html:3
+msgid "Groups"
+msgstr "Grupos"
+
+#: models.py:89
+msgid "Is enroll finished?"
+msgstr "¿Está finalizada la matricula?"
+
+#: models.py:90
+msgid "Is active for enroll?"
+msgstr "¿Está activo para la matricula?"
+
+#: models.py:92
+msgid "Student"
+msgstr "Estudiante"
+
+#: models.py:93
+msgid "Enroll date"
+msgstr "Fecha de matricula"
+
+#: models.py:94
+msgid "Bill created"
+msgstr "Factura creada"
+
+#: models.py:101
 msgid "Enrollments"
 msgstr "Matriculas"
 
-#: views.py:21
+#: templates/Pdf/student_list.html:51
+msgid "Email"
+msgstr "Correo electrónico"
+
+#: templates/bills.html:5
+msgid "Bills for pay"
+msgstr "Facturas por pagar"
+
+#: templates/bills.html:23
+msgid "You don't have bills to pay"
+msgstr "No tiene facturas por pagar"
+
+#: templates/bills.html:28
+msgid "Bills paid"
+msgstr "Facturas pagadas"
+
+#: templates/bills.html:37
+msgid "You don't have paid bills "
+msgstr "No tiene facturas pagadas"
+
+#: templates/categories.html:5
+msgid "List of categories with available courses"
+msgstr "Lista de categorías con cursos disponibles"
+
+#: templates/courses.html:4
+msgid "List of available courses"
+msgstr "Lista de cursos disponible"
+
+#: templates/courses.html:17
+msgid "Read more"
+msgstr "Leer más"
+
+#: templates/enroll.html:7
+msgid "List of courses to enroll"
+msgstr "Lista de cursos para matricular"
+
+#: templates/enroll.html:13
+#, fuzzy
+#| msgid "Enrollment"
+msgid "Enrollme"
+msgstr "Matricularme"
+
+#: templates/enroll.html:20
+msgid "You don't have any courses to enroll"
+msgstr "Usted no tiene ningún curso para matricular"
+
+#: templates/enroll.html:24
+#, fuzzy
+#| msgid "Enroll start hour"
+msgid "Enrolled courses"
+msgstr "Hora de inicio de matricula"
+
+#: templates/enroll.html:33
+msgid "You don't have any enrolled courses"
+msgstr "No tiene cursos matriculados"
+
+#: templates/login.html:12
+msgid "Login"
+msgstr "Ingresar"
+
+#: templates/recover.html:2
+#, fuzzy
+#| msgid "Password"
+msgid "Forget your password?"
+msgstr "Contraseña"
+
+#: templates/recover.html:10
+#, fuzzy
+#| msgid "Repeat password"
+msgid "Recover my password"
+msgstr "Repita su contraseña"
+
+#: templates/recover.html:14
+msgid ""
+"We will send you an email with necessary information for change your password"
+msgstr ""
+"Le enviaremos un correo con la información necesaria para cambiar su "
+"contraseña"
+
+#: templates/recover_password.html:7 views/Auth.py:161
+#, fuzzy
+#| msgid "Password"
+msgid "Password recovery"
+msgstr "Contraseña"
+
+#: templates/recover_password.html:9
+msgid "Dear"
+msgstr "Estimado"
+
+#: templates/recover_password.html:18
+#, fuzzy
+#| msgid "Password"
+msgid "Change password"
+msgstr "Contraseña"
+
+#: templates/recover_password.html:25
+#, fuzzy
+#| msgid "Repeat password"
+msgid "Repeat your password"
+msgstr "Repita su contraseña"
+
+#: templates/student_create.html:11
+msgid "Sign up"
+msgstr "Registrarse"
+
+#: templates/student_create.html:31
+msgid "Sign in"
+msgstr "Ingresar"
+
+#: templates/student_create.html:42
+msgid "Sign up by email"
+msgstr "Registrarse mediante correo"
+
+#: templates/student_create.html:47
+#, fuzzy
+#| msgid "Your name"
+msgid "Your data"
+msgstr "Su nombre"
+
+#: templates/student_create.html:55
+msgid "Send"
+msgstr "Enviar"
+
+#: templates/student_list.html:7
+msgid "Home"
+msgstr "Casa"
+
+#: templates/student_list.html:48
+msgid "back"
+msgstr "Atras"
+
+#: templates/student_list.html:51
+#, fuzzy
+#| msgid "Group"
+msgid "Open Group"
+msgstr "Abrir Grupo"
+
+#: templates/student_list.html:52
+msgid "Open Group and notify"
+msgstr "Abrir grupo y notificar"
+
+#: templates/student_list.html:56
+#, fuzzy
+#| msgid "Group"
+msgid "Close Group"
+msgstr "Cerrar Grupo"
+
+#: templates/student_list.html:57
+msgid "Close Group and notify"
+msgstr "Cerrar grupo y notificar"
+
+#: templates/student_list.html:66
+#, fuzzy
+#| msgid "Enrollments"
+msgid "All Enrollments"
+msgstr "Matriculas"
+
+#: templates/student_list.html:67
+#, fuzzy
+#| msgid "Enrollments"
+msgid "All Pre-enrollments"
+msgstr "Matriculas"
+
+#: templates/student_list.html:68
+#, fuzzy
+#| msgid "Pre enroll start hour"
+msgid "Pre-enroll but not enroll"
+msgstr "Hora de inicio de Pre-matricula"
+
+#: views/Auth.py:30
 msgid "Email confirmation"
 msgstr "Confirmación por correo"
 
-#: views.py:32
+#: views/Auth.py:41
 msgid "Thank you, We will send you an email soon"
 msgstr "Gracias, Pronto le llegará un correo de confirmación"
 
-#: views.py:49 views.py:65
+#: views/Auth.py:58 views/Auth.py:74
 msgid "Key not found"
 msgstr "Llave no existe"
 
-#: views.py:58
+#: views/Auth.py:67
 msgid "Congratulations, now you can login"
 msgstr "Felicitaciones, ahora puede iniciar sesión"
 
-#: views.py:88
+#: views/Auth.py:99
 msgid "Login failed"
 msgstr "Falló la autenticación"
+
+#: views/Auth.py:137
+#, fuzzy
+#| msgid "Password"
+msgid "Password changed"
+msgstr "Contraseña"
+
+#: views/Auth.py:140
+#, fuzzy
+#| msgid "Password"
+msgid "Wrong password"
+msgstr "Contraseña"
+
+#: views/Auth.py:148
+#, fuzzy
+#| msgid "Email confirmation"
+msgid "Wrong confirmation key"
+msgstr "Confirmación por correo"
+
+#: views/Auth.py:172
+msgid "You will recive a message soon, check your email"
+msgstr "Usted recibirá pronto un correo, revise su bandeja de entrada"
+
+#: views/Auth.py:175
+msgid "User not found"
+msgstr "No existe usuario"
+
+#: views/Enrollments.py:25
+msgid "<div class=\"alert alert-success\" role=\"alert\">Enrollment success...</div>"
+msgstr "<div class=\"alert alert-success\" role=\"alert\"> Pre-matriculado "
+"satisfactoriamente...</div>"
+
+#: views/Enrollments.py:30
+msgid "<div class=\"alert alert-info\" role=\"alert\">You are already enrolled ...</"
+"div>"
+msgstr "<div class=\"alert alert-info\" role=\"alert\">Ya se encuentra "
+"prematiculado ...</div>"

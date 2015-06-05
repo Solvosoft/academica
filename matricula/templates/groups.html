@@ -1,5 +1,6 @@
+{%load i18n %}
 
-<h4 class="text-center"> Grupos </h4>
+<h4 class="text-center"> {% trans 'Groups' %} </h4>
 <ul class="list-group">
 	{% for group in course.group_set.all%}
 

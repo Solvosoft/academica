@@ -7,6 +7,8 @@ Created on 7/4/2015
 from django.conf.urls import patterns, url, include
 from matricula.views.Auth import StudentEdit
 
+from .admin import admin_site
+
 urlpatterns = patterns('matricula.views.Auth',
                        url('^create_user$', 'create_user', name="create_user"),
                        url('^confirm_email$', 'confirm_email', name="confirm_email"),
@@ -26,4 +28,8 @@ urlpatterns += patterns('matricula.views.Enrollments',
                         url('^enrollme/(?P<pk>\d+)$', 'enrollme', name="enrollme"),
                         url('^enrollment$', 'list_enroll', name="enrollment"),
                         url('^finish_enroll/(?P<pk>\d+)$', 'finish_enroll', name="finish_enroll"),
+                        )
+
+urlpatterns += patterns('',
+                        url(r'^admin/', include(admin_site.urls)),
                         )

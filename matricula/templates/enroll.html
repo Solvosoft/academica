@@ -1,26 +1,27 @@
 {% extends 'matricula_base.html'%}
-
+{%load i18n %}
 {%block content%}
 
 
 
-<h1> Cursos por Matricular </h1>
+<h1>{% trans 'List of courses to enroll' %} </h1>
 <ul class="list-group">
 	{% for enroll in list_enroll%}
 		<li class="list-group-item">
 			<span class="badge">
 				<a class="btn-sm btn-default" href="{% url 'finish_enroll' enroll.pk %}">
-				Matricularme 
+				{% trans 'Enrollme' %}
 				</a></span>
 			{{enroll.group }} {{enroll.group.schedule}}
 		</li>
 
 	{%empty%}
-	<div class="alert alert-info" role="alert">No tiene ningún curso que matricular</div>
+	<div class="alert alert-info" role="alert">
+		{% trans "You don't have any courses to enroll"%} </div>
 	{%endfor%}
 </ul>
 	
-<h1> Cursos matriculados </h1>
+<h1>{% trans "Enrolled courses"%} </h1>
 <ul class="list-group">
 	{% for enroll in finished_enroll%}
 		<li class="list-group-item">
@@ -28,7 +29,8 @@
 		</li>
 
 	{%empty%}
-	<div class="alert alert-info" role="alert">No tiene ningún curso matriculado </div>
+	<div class="alert alert-info" role="alert">
+		{% trans "You don't have any enrolled courses"%} </div>
 	{%endfor%}
 </ul>
 {%endblock%}
