@@ -68,6 +68,7 @@ class Group(models.Model):
     enroll_finish = models.DateTimeField(verbose_name=_("Enroll finish hour"))
     cost = models.DecimalField(max_digits=4, decimal_places=2, verbose_name=_("Course cost"))
     maximum = models.SmallIntegerField(verbose_name=_("Maximum number of students"))
+    is_open = models.BooleanField(default=True)
 
     @property
     def in_enrollment(self):

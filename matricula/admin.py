@@ -1,15 +1,14 @@
 from django.contrib import admin
 from matricula.models import Student, Course, Group, Enroll, Period, Category
 from django.utils.translation import ugettext_lazy as _
-from django.template.response import TemplateResponse
 from django.conf.urls import url
-from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.utils.html import format_html
-
-from .views.utils import get_active_period
+from matricula.admins import BaseGroup
+from django_ajax.decorators import ajax
 
 # Register your models here.
+
 
 class EnrollAdmin(admin.ModelAdmin):
     fieldsets = (
@@ -31,8 +30,8 @@ class EnrollAdmin(admin.ModelAdmin):
         queryset.update(enroll_finished=True)
     set_enroll_finished_true.short_description = _("Active user for pre-enrollment")
 
-    
-class GroupAdmin(admin.ModelAdmin):
+
+class GroupAdmin(admin.ModelAdmin, BaseGroup):
     fieldsets = (
                 (None, {'classes': ('wide', 'extrapretty'),
                         'fields': ('period', 'course', 'name', 'maximum', 'cost', 'schedule',
@@ -46,15 +45,18 @@ class GroupAdmin(admin.ModelAdmin):
 
     list_filter = ('period',)
     ordering = ('pre_enroll_start',)
-    actions = ['action_copy_last_period', ]
+    actions = ['action_copy_last_period', 'action_open_group']
 
     def count_student_preenroll(self, obj):
-        return obj.enroll_set.filter(enroll_finished=False).count()
+        # return obj.enroll_set.filter(enroll_finished=False).count()
+        return format_html('<a href={}>{}</a>',
+                           reverse('admin:student_list', kwargs={'pk': obj.pk}),
+                           obj.enroll_set.count()
+                          )
     count_student_preenroll.short_description = _("# student pre-enroll")
 
     def count_student_enroll(self, obj):
-
-        return format_html('<a href={}>{}</a>',
+        return format_html('<a href={}?enroll=1>{}</a>',
                            reverse('admin:student_list', kwargs={'pk': obj.pk}),
                            obj.enroll_set.filter(enroll_finished=True).count()
                            )
@@ -71,31 +73,14 @@ class GroupAdmin(admin.ModelAdmin):
         my_urls = [
             url(r'^student_list/(?P<pk>\d+)$', self.admin_site.admin_view(self.student_list),
                 name="student_list"),
+            url(r'^open_group/(?P<pk>\d+)$', self.admin_site.admin_view(ajax(self.open_group)),
+                name="open_group"),
+            url(r'^close_group/(?P<pk>\d+)$', self.admin_site.admin_view(ajax(self.close_group)),
+                name="close_group"),
         ]
+
         return my_urls + urls
 
-    def student_list(self, request, pk):
-        group = get_object_or_404(Group, pk=pk)
-        context = dict(
-           # Include common variables for rendering the admin template.
-           self.admin_site.each_context(request),
-           group=group,
-           title=_('Student List')
-        )
-
-        return TemplateResponse(request, "student_list.html", context)
-
-    def action_copy_last_period(self, request, queryset):
-        period = get_active_period()
-        groups = []
-        for group in queryset:
-            group.pk = None
-            group.period = period
-            groups.append(group)
-
-        self.model.objects.bulk_create(groups)
-
-    action_copy_last_period.short_description = _("Copy in the last period")
 
 admin.site.register(Student)
 admin.site.register(Course)
