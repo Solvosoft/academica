@@ -8,9 +8,18 @@ from matricula.models import Enroll, Group
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
+from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.conf import settings
 
+
+from django.template.loader import  get_template
+from django.template.context import Context
+
+
+from xhtml2pdf import pisa  
+import io
+import tempfile
 
 class ActionsGroup:
     '''
@@ -60,10 +69,10 @@ class ViewsGroup:
         return "Attention: %(group)s was closed" % val
 
     def student_list(self, request, pk):
+        print("Antes")
         group = get_object_or_404(Group, pk=pk)
         enrolls = group.enroll_set.all()
         if request.GET.get('enroll', '0') == '1':
-            print (request.GET.get('enroll', '0'))
             enrolls = enrolls.filter(enroll_finished=True)
         context = dict(
            # Include common variables for rendering the admin template.
@@ -112,3 +121,35 @@ class ViewsGroup:
         message = self.get_message(_("This Group was closed"), 'success')
         message['inner-fragments']['#status'] = '<span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>'
         return message
+
+    def export_pdf(self, request, pk):
+        group = get_object_or_404(Group, pk=pk)
+        attrs = {'group__pk': pk}
+
+        if request.GET.get('finished', '0') == '1':
+            attrs['enroll_finished'] = True
+
+        elif request.GET.get('finished', '0') == '2':
+            attrs['enroll_finished'] = False
+
+        if request.GET.get('activate', '0') == '1':
+            attrs['enroll_activate'] = True
+
+        elif request.GET.get('activate', '0') == '2':
+            attrs['enroll_activate'] = False
+
+        student_list = Enroll.objects.filter(**attrs)
+
+        template = get_template('Pdf/student_list.html')
+        html = template.render(Context({'student_list': student_list,
+                                        'group': group}))
+
+        result = io.StringIO()
+        pdf = pisa.pisaDocument(io.StringIO(html), result)
+        if not pdf.err:
+            response = HttpResponse(result.getvalue(), content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="student_list_%s.pdf"' % (group.name)
+            return response
+
+        return HttpResponse("Error " + str(pdf.err) + "  " + html)
+

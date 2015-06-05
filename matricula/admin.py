@@ -34,7 +34,7 @@ class EnrollAdmin(admin.ModelAdmin):
 class GroupAdmin(admin.ModelAdmin, BaseGroup):
     fieldsets = (
                 (None, {'classes': ('wide', 'extrapretty'),
-                        'fields': (('period', 'course', 'student_list'), 'name', 'maximum', 'cost', 'schedule',
+                        'fields': (('period', 'course', 'student_list_ref'), 'name', 'maximum', 'cost', 'schedule',
                                     ('pre_enroll_start', 'pre_enroll_finish'),
                                     ('enroll_start' , 'enroll_finish'))
                         }),
@@ -47,15 +47,15 @@ class GroupAdmin(admin.ModelAdmin, BaseGroup):
     ordering = ('pre_enroll_start',)
     actions = ['action_copy_last_period', 'action_open_group']
     search_fields = ('course__name',)
-    readonly_fields = ('student_list',)
+    readonly_fields = ('student_list_ref',)
 
-    def student_list(self, obj):
+    def student_list_ref(self, obj):
         # return obj.enroll_set.filter(enroll_finished=False).count()
         return format_html('<a href={}> List of students</a>',
                            reverse('admin:student_list', kwargs={'pk': obj.pk})
                            )
 
-    student_list.short_description = _("List students")
+    student_list_ref.short_description = _("List students")
 
     def count_student_preenroll(self, obj):
         # return obj.enroll_set.filter(enroll_finished=False).count()
@@ -87,6 +87,9 @@ class GroupAdmin(admin.ModelAdmin, BaseGroup):
                 name="open_group"),
             url(r'^close_group/(?P<pk>\d+)$', self.admin_site.admin_view(ajax(self.close_group)),
                 name="close_group"),
+            url(r'^export_pdf/(?P<pk>\d+)$', self.admin_site.admin_view(self.export_pdf),
+                name="export_pdf"),
+
         ]
 
         return my_urls + urls

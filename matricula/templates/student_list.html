@@ -57,6 +57,19 @@
 <a data-ajax="true" href="{% url 'admin:close_group' group.pk %}?sendemail=1" class="btn btn-default"> {% trans 'Close Group and notify' %} </a>
 </div>
 
+
+<div class="btn-group pull-right">
+  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+    PDF<span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu">
+    <li><a href="{% url 'admin:export_pdf' group.pk %}?finished=1" >{% trans 'All Enrollments' %}</a></li>
+    <li><a href="{% url 'admin:export_pdf' group.pk %}">{% trans 'All Pre-enrollments' %} </a></li>
+    <li><a href="{% url 'admin:export_pdf' group.pk %}?finished=2&activate=1">{% trans 'Pre-enroll but not enroll' %}</a></li>
+  </ul>
+</div>
+
+
 {% endblock %}
 
 {% block footer %}<div id="footer"></div>
