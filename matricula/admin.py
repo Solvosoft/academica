@@ -7,6 +7,8 @@ from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.utils.html import format_html
 
+from .views.utils import get_active_period
+
 # Register your models here.
 
 class EnrollAdmin(admin.ModelAdmin):
@@ -38,10 +40,13 @@ class GroupAdmin(admin.ModelAdmin):
                                     ('enroll_start' , 'enroll_finish'))
                         }),
                 )
-    list_display = ('name', 'course', 'period', 'maximum', 'count_student_preenroll',
+    list_display = ('name', 'course', 'period', 'maximum',
+                    'pre_enroll_start', 'pre_enroll_finish', 'count_student_preenroll',
                     'count_student_enroll', 'payments')
+
     list_filter = ('period',)
     ordering = ('pre_enroll_start',)
+    actions = ['action_copy_last_period', ]
 
     def count_student_preenroll(self, obj):
         return obj.enroll_set.filter(enroll_finished=False).count()
@@ -77,8 +82,20 @@ class GroupAdmin(admin.ModelAdmin):
            group=group,
            title=_('Student List')
         )
-        
+
         return TemplateResponse(request, "student_list.html", context)
+
+    def action_copy_last_period(self, request, queryset):
+        period = get_active_period()
+        groups = []
+        for group in queryset:
+            group.pk = None
+            group.period = period
+            groups.append(group)
+
+        self.model.objects.bulk_create(groups)
+
+    action_copy_last_period.short_description = _("Copy in the last period")
 
 admin.site.register(Student)
 admin.site.register(Course)
