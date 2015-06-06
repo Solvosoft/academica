@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-
+from django.db import IntegrityError, transaction
 
 @ajax
 @login_required
@@ -19,15 +19,22 @@ def enrollme(request, pk):
     group = get_object_or_404(Group, pk=pk)
     list_enroll = Enroll.objects.filter(group=group, student=request.user)
     if not list_enroll.exists():
-        Enroll.objects.create(group=group,
-                              student=request.user)
+        try:
+            with transaction.atomic():
+                Enroll.objects.create(group=group, student=request.user)
+        except IntegrityError:
+            return { "inner-fragments": {"#count_" + str(group.pk): group.enroll_set.count(),
+                                        "#group_message": '<div class="alert alert-info" role="alert">' + str(_('We have some problems with your enroll, try again')) + ' </div>'
+                                        },
+                    }
+
         return { "inner-fragments": {"#count_" + str(group.pk): group.enroll_set.count(),
-                                "#group_message": str(_('<div class="alert alert-success" role="alert">Enrollment success...</div>'))
+                                "#group_message": '<div class="alert alert-success" role="alert">' + str(_('Enrollment success')) + '</div>'
                                 },
             }
 
     return { "inner-fragments": {"#count_" + str(group.pk): group.enroll_set.count(),
-                                "#group_message": str(_('<div class="alert alert-info" role="alert">You are already enrolled ...</div>'))
+                                "#group_message": '<div class="alert alert-info" role="alert">' + str(_('You are already enrolled')) + '</div>'
                                 },
             }
 
@@ -47,5 +54,12 @@ def list_enroll(request):
 def finish_enroll(request, pk):
     enroll = get_object_or_404(Enroll, pk=pk)
     enroll.enroll_finished = True
-    enroll.save()
+    
+    try:
+        with transaction.atomic():
+            enroll.save()
+    except IntegrityError:
+        return { "inner-fragments": {"#group_message": '<div class="alert alert-info" role="alert">' + str(_('We have some problems with your enroll, try again')) + ' </div>'
+                                    },
+                }
     return redirect(reverse('enrollment'))
