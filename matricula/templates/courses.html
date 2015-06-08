@@ -5,16 +5,16 @@
 
 <div id="group_message"> </div>
 <ul class="list-group">
-{% for course in courses%}
+{% for pk, course in courses.items%}
 
   <li class="list-group-item">
   	<div class="row">
   		<div class="col-md-8">
-  		<a href="{% url 'course' course.pk%}" >
-  		<h3 class="list-group-item-heading text-center">{{course.name}}</h3></a>
+  		<a href="{% url 'course' course.course.pk%}" >
+  		<h3 class="list-group-item-heading text-center">{{course.course.name}}</h3></a>
   		<br>
-    	<p class="list-group-item-text text-justify">{{course.content|truncatewords_html:60|safe}}</p>
-    	<a class= "btn btn-success" href="{% url 'course' course.pk%}" > {% trans 'Read more' %} </a>
+    	<p class="list-group-item-text text-justify">{{course.course.content|truncatewords_html:60|safe}}</p>
+    	<a class= "btn btn-success" href="{% url 'course' course.course.pk%}" > {% trans 'Read more' %} </a>
   		</div>
   
   		<div class="col-md-4">
