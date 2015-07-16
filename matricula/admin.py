@@ -100,7 +100,26 @@ class GroupAdmin(admin.ModelAdmin, BaseGroup):
         return my_urls + urls
 
 
-admin.site.register(Student, UserAdmin)
+
+class MyUserAdmin(UserAdmin):
+    def get_fieldsets(self, request, obj=None):
+        if not obj:
+            return self.add_fieldsets
+
+        if request.user.is_superuser:
+            perm_fields = ('is_active', 'is_staff', 'is_superuser',
+                           'groups', 'user_permissions')
+        else:
+            # modify these to suit the fields you want your
+            # staff user to be able to edit
+            perm_fields = ('is_active', 'is_staff')
+
+        return [(None, {'fields': ('username', 'password')}),
+                (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
+                (_('Permissions'), {'fields': perm_fields}),
+                (_('Important dates'), {'fields': ('last_login', 'date_joined')})]
+    
+admin.site.register(Student, MyUserAdmin)
 admin.site.register(Course)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(Enroll, EnrollAdmin)
@@ -113,7 +132,9 @@ admin.site.site_header = "Academica administrator"
 admin_site = AdminSite(name='matricula_admin')
 admin_site.site_header = "Academica administrator"
 
-admin_site.register(Student, UserAdmin)
+
+
+admin_site.register(Student, MyUserAdmin)
 admin_site.register(Course)
 admin_site.register(Group, GroupAdmin)
 admin_site.register(Enroll, EnrollAdmin)
