@@ -10,6 +10,7 @@ from matricula.admins import BaseGroup
 from django_ajax.decorators import ajax
 
 from django.contrib.admin import AdminSite
+from django.contrib.auth.admin import UserAdmin
 
 # Register your models here.
 
@@ -99,7 +100,7 @@ class GroupAdmin(admin.ModelAdmin, BaseGroup):
         return my_urls + urls
 
 
-admin.site.register(Student)
+admin.site.register(Student, UserAdmin)
 admin.site.register(Course)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(Enroll, EnrollAdmin)
@@ -112,7 +113,7 @@ admin.site.site_header = "Academica administrator"
 admin_site = AdminSite(name='matricula_admin')
 admin_site.site_header = "Academica administrator"
 
-admin_site.register(Student)
+admin_site.register(Student, UserAdmin)
 admin_site.register(Course)
 admin_site.register(Group, GroupAdmin)
 admin_site.register(Enroll, EnrollAdmin)
