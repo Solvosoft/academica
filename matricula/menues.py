@@ -1,8 +1,11 @@
+# encoding: utf-8
 '''
 Created on 18/5/2015
 
 @author: luisza
 '''
+from __future__ import unicode_literals
+
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
