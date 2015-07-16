@@ -2,4 +2,5 @@ django
 django-simple-email-confirmation
 django-ckeditor
 djangoajax
-https://github.com/ebar0n/xhtml2pdf.git
+-e git+https://github.com/ebar0n/xhtml2pdf.git#egg=xhtml2pdf
+django-allauth
