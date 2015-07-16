@@ -1,8 +1,10 @@
+# encoding: utf-8
 '''
 Created on 17/5/2015
 
 @author: luisza
 '''
+
 from django.shortcuts import render, redirect, get_object_or_404
 from matricula.forms import StudentCreateForm
 from matricula.models import Student, Enroll

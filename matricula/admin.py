@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 from django.contrib import admin
 from matricula.models import Student, Course, Group, Enroll, Period, Category
 from django.utils.translation import ugettext_lazy as _

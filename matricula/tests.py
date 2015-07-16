@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 from django.test import TestCase, RequestFactory
 from matricula.models import Period, Category, Course, Student, Group
 
