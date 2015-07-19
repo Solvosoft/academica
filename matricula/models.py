@@ -7,7 +7,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from simple_email_confirmation import SimpleEmailConfirmationUserMixin
 from ckeditor.fields import RichTextField
-from django.utils.encoding import python_2_unicode_compatible
+from django.utils.encoding import python_2_unicode_compatible, smart_text
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
@@ -78,7 +78,7 @@ class Group(models.Model):
         return False
 
     def __str__(self):
-        return str(self.course) + " -- " + self.name
+        return smart_text(self.course) + " -- " + self.name
 
     class Meta:
         verbose_name = _("Group")
@@ -95,7 +95,7 @@ class Enroll(models.Model):
     bill_created = models.BooleanField(default=False, verbose_name=_("Bill created"))  # is needed by bill sistem 
 
     def __str__(self):
-        return self.student.username + " -- " + str(self.group)
+        return self.student.username + " -- " + smart_text(self.group)
 
     class Meta:
         verbose_name = _("Enrollment")

@@ -3,51 +3,52 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Matricula Bills \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-06 02:26-0600\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2015-07-18 18:24-0600\n"
+"PO-Revision-Date: 2015-07-18 18:33-0600\n"
+"Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
+"Language-Team: ES <es@solvosoft.com>\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.10\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
-#: contrib/bills/admin.py:10 contrib/bills/models.py:23
+#: contrib/bills/admin.py:12 contrib/bills/models.py:25
 msgid "Bills"
 msgstr "Facturas"
 
-#: contrib/bills/models.py:10
+#: contrib/bills/models.py:12
 msgid "Short description"
 msgstr "Descripción Corta"
 
-#: contrib/bills/models.py:11
+#: contrib/bills/models.py:13
 msgid "Description"
 msgstr "Descripción"
 
-#: contrib/bills/models.py:12
+#: contrib/bills/models.py:14
 msgid "Amount"
 msgstr "Monto"
 
-#: contrib/bills/models.py:13
+#: contrib/bills/models.py:15
 msgid "Student"
 msgstr "Estudiante"
 
-#: contrib/bills/models.py:22
+#: contrib/bills/models.py:24
 msgid "Bill"
 msgstr "Factura"
 
-#: contrib/bills/signals.py:17
+#: contrib/bills/signals.py:18
 #, python-format
 msgid "Enroll in %s"
 msgstr "Matriculado en %s"
 
-#: contrib/bills/signals.py:18
+#: contrib/bills/signals.py:19
 #, python-format
 msgid ""
 "\n"

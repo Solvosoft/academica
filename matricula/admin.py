@@ -54,8 +54,10 @@ class GroupAdmin(admin.ModelAdmin, BaseGroup):
     search_fields = ('course__name',)
     readonly_fields = ('student_list_ref',)
 
-    def student_list_ref(self, obj):
-        # return obj.enroll_set.filter(enroll_finished=False).count()
+    def student_list_ref(self, obj=None):
+        if obj.pk is None:
+            return _("Student list don't exist yet")
+
         return format_html('<a href={}> List of students</a>',
                            reverse('admin:student_list', kwargs={'pk': obj.pk})
                            )

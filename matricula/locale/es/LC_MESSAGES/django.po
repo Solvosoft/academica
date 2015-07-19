@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: matricula\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-06 02:26-0600\n"
+"POT-Creation-Date: 2015-07-18 18:24-0600\n"
 "PO-Revision-Date: 2015-06-06 02:47-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: Es <es@li.org>\n"
@@ -19,29 +19,45 @@ msgstr ""
 "X-Generator: Poedit 1.6.10\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: admin.py:29
+#: admin.py:32
 msgid "Active user for enrollment"
 msgstr "Activar usuario para matricular"
 
-#: admin.py:33
+#: admin.py:36
 msgid "Active user for pre-enrollment"
 msgstr "Activar usuario para prematricula"
 
-#: admin.py:60
+#: admin.py:59
+msgid "Student list don't exist yet"
+msgstr "La lista de estudiantes no existe aún"
+
+#: admin.py:65
 msgid "List students"
 msgstr "Lista de estudiantes"
 
-#: admin.py:68
+#: admin.py:73
 msgid "# student pre-enroll"
 msgstr "# estudiante prematriculados"
 
-#: admin.py:77
+#: admin.py:82
 msgid "# student enroll"
 msgstr "# estudiantes matriculados"
 
-#: admin.py:81
+#: admin.py:86
 msgid "Total cash"
 msgstr "Dinero total "
+
+#: admin.py:120
+msgid "Personal info"
+msgstr ""
+
+#: admin.py:121
+msgid "Permissions"
+msgstr ""
+
+#: admin.py:122
+msgid "Important dates"
+msgstr ""
 
 #: admins/Group.py:43
 msgid "Open group"
@@ -82,132 +98,132 @@ msgstr "Atención %(group)s fue cerrado"
 msgid "This Group was closed"
 msgstr "Este grupo fue cerrado"
 
-#: forms.py:13
+#: forms.py:15
 msgid "Your name"
 msgstr "Su nombre"
 
-#: forms.py:16
+#: forms.py:18
 msgid "Password"
 msgstr "Contraseña"
 
-#: forms.py:17
+#: forms.py:19
 msgid "Repeat password"
 msgstr "Repita su contraseña"
 
-#: forms.py:23
+#: forms.py:25
 msgid "User name exist "
 msgstr "El nombre de usuario existe"
 
-#: forms.py:26
+#: forms.py:28
 msgid "Password not match "
 msgstr "Contraseñas no coinciden"
 
-#: menues.py:12 models.py:55
+#: menues.py:15 models.py:56
 msgid "Courses"
 msgstr "Cursos"
 
-#: menues.py:13 models.py:100
+#: menues.py:16 models.py:101
 msgid "Enrollment"
 msgstr "Matricula"
 
-#: models.py:20 models.py:34 models.py:47 models.py:61
+#: models.py:21 models.py:35 models.py:48 models.py:62
 #: templates/Pdf/student_list.html:50
 msgid "Name"
 msgstr "Nombre"
 
-#: models.py:21
+#: models.py:22
 msgid "Period start date"
 msgstr "Fecha de inicio de periodo"
 
-#: models.py:22
+#: models.py:23
 msgid "Period finish date"
 msgstr "Fecha de inicio de periodo"
 
-#: models.py:28 models.py:59
+#: models.py:29 models.py:60
 msgid "Period"
 msgstr "Periodo"
 
-#: models.py:29
+#: models.py:30
 msgid "Periods"
 msgstr "Periodos"
 
-#: models.py:35
+#: models.py:36
 msgid "Description"
 msgstr "Descripción"
 
-#: models.py:41 models.py:46
+#: models.py:42 models.py:47
 msgid "Category"
 msgstr "Categoría"
 
-#: models.py:42
+#: models.py:43
 msgid "Categories"
 msgstr "Categorías"
 
-#: models.py:48
+#: models.py:49
 msgid "Content"
 msgstr "Contenido"
 
-#: models.py:54 models.py:60
+#: models.py:55 models.py:61
 msgid "Course"
 msgstr "Curso"
 
-#: models.py:62
+#: models.py:63
 msgid "Schedule"
 msgstr "Horario"
 
-#: models.py:64
+#: models.py:65
 msgid "Pre enroll start hour"
 msgstr "Hora de inicio de Pre-matricula"
 
-#: models.py:65
+#: models.py:66
 msgid "Pre enroll finish hour"
 msgstr "Hora de finalización de Pre-matricula"
 
-#: models.py:67
+#: models.py:68
 msgid "Enroll start hour"
 msgstr "Hora de inicio de matricula"
 
-#: models.py:68
+#: models.py:69
 msgid "Enroll finish hour"
 msgstr "Hora de finalización de matricula"
 
-#: models.py:69
+#: models.py:70
 msgid "Course cost"
 msgstr "costo del curso"
 
-#: models.py:70
+#: models.py:71
 msgid "Maximum number of students"
 msgstr "Máximo número de estudiantes"
 
-#: models.py:83 models.py:91
+#: models.py:84 models.py:92
 msgid "Group"
 msgstr "Grupo"
 
-#: models.py:84 templates/groups.html:3
+#: models.py:85 templates/groups.html:3
 msgid "Groups"
 msgstr "Grupos"
 
-#: models.py:89
+#: models.py:90
 msgid "Is enroll finished?"
 msgstr "¿Está finalizada la matricula?"
 
-#: models.py:90
+#: models.py:91
 msgid "Is active for enroll?"
 msgstr "¿Está activo para la matricula?"
 
-#: models.py:92
+#: models.py:93
 msgid "Student"
 msgstr "Estudiante"
 
-#: models.py:93
+#: models.py:94
 msgid "Enroll date"
 msgstr "Fecha de matricula"
 
-#: models.py:94
+#: models.py:95
 msgid "Bill created"
 msgstr "Factura creada"
 
-#: models.py:101
+#: models.py:102
 msgid "Enrollments"
 msgstr "Matriculas"
 
@@ -282,7 +298,7 @@ msgstr ""
 "Le enviaremos un correo con la información necesaria para cambiar su "
 "contraseña"
 
-#: templates/recover_password.html:7 views/Auth.py:161
+#: templates/recover_password.html:7 views/Auth.py:163
 msgid "Password recovery"
 msgstr "Recuperar contraseña"
 
@@ -354,54 +370,54 @@ msgstr "Todas las matriculas"
 msgid "Pre-enroll but not enroll"
 msgstr "Prematriculado pero no matriculado"
 
-#: views/Auth.py:30
+#: views/Auth.py:32
 msgid "Email confirmation"
 msgstr "Confirmación por correo"
 
-#: views/Auth.py:41
+#: views/Auth.py:43
 msgid "Thank you, We will send you an email soon"
 msgstr "Gracias, Pronto le llegará un correo de confirmación"
 
-#: views/Auth.py:58 views/Auth.py:74
+#: views/Auth.py:60 views/Auth.py:76
 msgid "Key not found"
 msgstr "Llave no existe"
 
-#: views/Auth.py:67
+#: views/Auth.py:69
 msgid "Congratulations, now you can login"
 msgstr "Felicitaciones, ahora puede iniciar sesión"
 
-#: views/Auth.py:99
+#: views/Auth.py:101
 msgid "Login failed"
 msgstr "Falló la autenticación"
 
-#: views/Auth.py:137
+#: views/Auth.py:139
 msgid "Password changed"
 msgstr "Contraseña cambiada"
 
-#: views/Auth.py:140
+#: views/Auth.py:142
 msgid "Wrong password"
 msgstr "Contraseña inválida"
 
-#: views/Auth.py:148
+#: views/Auth.py:150
 msgid "Wrong confirmation key"
 msgstr "Mala clave de confirmación"
 
-#: views/Auth.py:172
+#: views/Auth.py:174
 msgid "You will recive a message soon, check your email"
 msgstr "Usted recibirá pronto un correo, revise su bandeja de entrada"
 
-#: views/Auth.py:175
+#: views/Auth.py:177
 msgid "User not found"
 msgstr "No existe usuario"
 
-#: views/Enrollments.py:27 views/Enrollments.py:62
+#: views/Enrollments.py:29 views/Enrollments.py:64
 msgid "We have some problems with your enroll, try again"
 msgstr "Tenemos problemas con la matricula, trate de nuevo"
 
-#: views/Enrollments.py:32
+#: views/Enrollments.py:34
 msgid "Enrollment success"
 msgstr "Pre-matriculado satisfactoriamente"
 
-#: views/Enrollments.py:37
+#: views/Enrollments.py:39
 msgid "You are already enrolled"
 msgstr "Usted ya está matriculado"
