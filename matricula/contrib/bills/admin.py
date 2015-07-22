@@ -10,3 +10,7 @@ from matricula.contrib.bills.models import Bill
 admin.site.register(Bill)
 
 add_main_menu((_("Bills"), 'bills', True, 3, True))
+
+from matricula.admin import admin_site
+
+admin_site.register(Bill)

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: matricula\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-18 18:24-0600\n"
-"PO-Revision-Date: 2015-06-06 02:47-0600\n"
+"POT-Creation-Date: 2015-07-22 15:37-0600\n"
+"PO-Revision-Date: 2015-07-22 15:46-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: Es <es@li.org>\n"
 "Language: es\n"
@@ -49,15 +49,15 @@ msgstr "Dinero total "
 
 #: admin.py:120
 msgid "Personal info"
-msgstr ""
+msgstr "Información personal"
 
 #: admin.py:121
 msgid "Permissions"
-msgstr ""
+msgstr "Permisos"
 
 #: admin.py:122
 msgid "Important dates"
-msgstr ""
+msgstr "Fechas importantes"
 
 #: admins/Group.py:43
 msgid "Open group"
@@ -66,6 +66,10 @@ msgstr "Abrir grupo"
 #: admins/Group.py:44
 msgid "Copy in the last period"
 msgstr "Copiar en el último periodo"
+
+#: admins/Group.py:64
+msgid "Go to academica and enroll you"
+msgstr "Ir a academica y matricularse"
 
 #: admins/Group.py:69
 #, python-format
@@ -122,7 +126,7 @@ msgstr "Contraseñas no coinciden"
 msgid "Courses"
 msgstr "Cursos"
 
-#: menues.py:16 models.py:101
+#: menues.py:16 models.py:101 templates/matricula_base.html:6
 msgid "Enrollment"
 msgstr "Matricula"
 
@@ -231,19 +235,19 @@ msgstr "Matriculas"
 msgid "Email"
 msgstr "Correo electrónico"
 
-#: templates/bills.html:5
+#: templates/bills.html:6
 msgid "Bills for pay"
 msgstr "Facturas por pagar"
 
-#: templates/bills.html:23
+#: templates/bills.html:24
 msgid "You don't have bills to pay"
 msgstr "No tiene facturas por pagar"
 
-#: templates/bills.html:28
+#: templates/bills.html:29
 msgid "Bills paid"
 msgstr "Facturas pagadas"
 
-#: templates/bills.html:37
+#: templates/bills.html:38
 msgid "You don't have paid bills "
 msgstr "No tiene facturas pagadas"
 
@@ -279,9 +283,41 @@ msgstr "Cursos matriculados"
 msgid "You don't have any enrolled courses"
 msgstr "No tiene cursos matriculados"
 
+#: templates/groups.html:13
+msgid "Pre-enroll me"
+msgstr "Matricularme"
+
 #: templates/login.html:12
 msgid "Login"
 msgstr "Ingresar"
+
+#: templates/matricula/student_form.html:18
+msgid "Save"
+msgstr "Guardar"
+
+#: templates/matricula/student_form.html:22
+msgid "Pre-enrolled groups"
+msgstr "Grupos prematriculados"
+
+#: templates/matricula/student_form.html:27
+msgid "You don't have pre-enrolled groups yet"
+msgstr "No tiene grupos matriculados aún"
+
+#: templates/matricula/student_form.html:30
+msgid "Enrolled groups"
+msgstr "Grupos matriculados"
+
+#: templates/matricula/student_form.html:35
+msgid "You don't have enrolled groups yet"
+msgstr "No tiene grupos matriculados"
+
+#: templates/matricula_base.html:27
+msgid "Exit"
+msgstr "Salir"
+
+#: templates/matricula_base.html:29
+msgid "Sign in/Sing up"
+msgstr "Ingresar/Registrarse"
 
 #: templates/recover.html:2
 msgid "Forget your password?"

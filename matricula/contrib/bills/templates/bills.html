@@ -1,8 +1,9 @@
 {% extends 'matricula_base.html'%}
 
 {%block content%}
+{%load i18n %}
 
-<h1> Facturas por pagar </h1>
+<h1> {% trans 'Unpaid bills' %}</h1>
 <ul class="list-group">
 	{% for bill in not_paid%}
 	<li class="list-group-item">
@@ -20,12 +21,13 @@
 
 	{%empty%}
 	<div class="alert alert-info" role="alert">
-		No tiene ninguna factura pendiente
+		
+		{% trans "You don't have Unpaid bills" %}
 	</div>
 	{%endfor%}
 </ul>
 
-<h1> Facturas pagas </h1>
+<h1> {% trans "Paid bills" %} </h1>
 <ul class="list-group">
 	{% for bill in paid%}
 	<li class="list-group-item">
@@ -34,7 +36,7 @@
 
 	{%empty%}
 	<div class="alert alert-info" role="alert">
-		No tiene facturas pagas
+		{% trans "You don't have paid bills" %}
 	</div>
 	{%endfor%}
 </ul>

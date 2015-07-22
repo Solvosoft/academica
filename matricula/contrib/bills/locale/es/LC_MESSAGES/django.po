@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Matricula Bills \n"
+"Project-Id-Version: Matricula Bills\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-18 18:24-0600\n"
-"PO-Revision-Date: 2015-07-18 18:33-0600\n"
+"POT-Creation-Date: 2015-07-22 15:38-0600\n"
+"PO-Revision-Date: 2015-07-22 15:48-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: ES <es@solvosoft.com>\n"
 "Language: es\n"
@@ -19,36 +19,36 @@ msgstr ""
 "X-Generator: Poedit 1.6.10\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: contrib/bills/admin.py:12 contrib/bills/models.py:25
+#: admin.py:12 models.py:25
 msgid "Bills"
 msgstr "Facturas"
 
-#: contrib/bills/models.py:12
+#: models.py:12
 msgid "Short description"
 msgstr "Descripción Corta"
 
-#: contrib/bills/models.py:13
+#: models.py:13
 msgid "Description"
 msgstr "Descripción"
 
-#: contrib/bills/models.py:14
+#: models.py:14
 msgid "Amount"
 msgstr "Monto"
 
-#: contrib/bills/models.py:15
+#: models.py:15
 msgid "Student"
 msgstr "Estudiante"
 
-#: contrib/bills/models.py:24
+#: models.py:24
 msgid "Bill"
 msgstr "Factura"
 
-#: contrib/bills/signals.py:18
+#: signals.py:19
 #, python-format
 msgid "Enroll in %s"
 msgstr "Matriculado en %s"
 
-#: contrib/bills/signals.py:19
+#: signals.py:20
 #, python-format
 msgid ""
 "\n"
@@ -62,3 +62,19 @@ msgstr ""
 "                             Matriculado en %(enroll)s\n"
 "                             Fecha %(date)s\n"
 "                            "
+
+#: templates/bills.html:6
+msgid "Unpaid bills"
+msgstr "Facturas sin pagar"
+
+#: templates/bills.html:25
+msgid "You don't have Unpaid bills"
+msgstr "No tiene facturas sin pagar"
+
+#: templates/bills.html:30
+msgid "Paid bills"
+msgstr "Facturas pagas"
+
+#: templates/bills.html:39
+msgid "You don't have paid bills"
+msgstr "No tiene facturas pagas"

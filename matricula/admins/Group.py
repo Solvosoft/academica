@@ -13,13 +13,13 @@ from django.core.mail import send_mail
 from django.conf import settings
 
 
-from django.template.loader import  get_template
+from django.template.loader import get_template
 from django.template.context import Context
 
 
-from xhtml2pdf import pisa  
+from xhtml2pdf import pisa
 import io
-import tempfile
+
 
 class ActionsGroup:
     '''
@@ -61,7 +61,7 @@ class ViewsGroup:
         return extras
 
     def get_email_message_open(self, *args, **kargs):
-        return "Go to academica and enroll you"
+        return _("Go to academica and enroll you")
 
     def get_email_message_close(self, *args, **kargs):
 
@@ -69,7 +69,7 @@ class ViewsGroup:
         return _("Attention: %(group)s was closed") % val
 
     def student_list(self, request, pk):
-        print("Antes")
+
         group = get_object_or_404(Group, pk=pk)
         enrolls = group.enroll_set.all()
         if request.GET.get('enroll', '0') == '1':
@@ -143,7 +143,6 @@ class ViewsGroup:
         template = get_template('Pdf/student_list.html')
         html = template.render(Context({'student_list': student_list,
                                         'group': group}))
-
         result = io.StringIO()
         pdf = pisa.pisaDocument(io.StringIO(html), result)
         if not pdf.err:

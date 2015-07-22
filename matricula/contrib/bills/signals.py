@@ -9,6 +9,7 @@ from paypal.standard.ipn.signals import valid_ipn_received
 
 from paypal.standard.models import ST_PP_COMPLETED
 from datetime import datetime
+from django.utils.encoding import smart_text
 
 @receiver(post_save, sender=Enroll)
 def create_bill(sender, **kwargs):
@@ -21,8 +22,8 @@ def create_bill(sender, **kwargs):
                              Enroll in %(enroll)s
                              At %(date)s
                             """) % {'username': instance.student.username,
-                                   'enroll': str(instance.group),
-                                   'date':str(instance.enroll_date)
+                                   'enroll': smart_text(instance.group),
+                                   'date': instance.enroll_date.strftime("%Y-%m-%d %H:%M")
                                    },
                             amount=instance.group.cost,
                             student=instance.student
