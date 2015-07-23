@@ -39,7 +39,9 @@ class EnrollAdmin(admin.ModelAdmin):
 class GroupAdmin(admin.ModelAdmin, BaseGroup):
     fieldsets = (
                 (None, {'classes': ('wide', 'extrapretty'),
-                        'fields': (('period', 'course', 'student_list_ref'), 'name', 'maximum', 'cost', 'schedule',
+                        'fields': (('period', 'course', 'student_list_ref'),
+                                   'name', 'maximum',
+                                   ('cost', 'currency'), 'schedule',
                                     ('pre_enroll_start', 'pre_enroll_finish'),
                                     ('enroll_start' , 'enroll_finish'))
                         }),

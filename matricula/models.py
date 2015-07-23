@@ -57,6 +57,13 @@ class Course(models.Model):
 
 @python_2_unicode_compatible
 class Group(models.Model):
+
+    COURRENCY_CHOICES = (
+            ("USD", "US Dollar"),
+            ("EUR", "Euro"),
+            ("CRC", "Costa Rican Colon"),
+                         )
+
     period = models.ForeignKey(Period, verbose_name=_("Period"))
     course = models.ForeignKey(Course, verbose_name=_("Course"))
     name = models.CharField(max_length=50, verbose_name=_("Name"))
@@ -67,7 +74,8 @@ class Group(models.Model):
 
     enroll_start = models.DateTimeField(verbose_name=_("Enroll start hour"))
     enroll_finish = models.DateTimeField(verbose_name=_("Enroll finish hour"))
-    cost = models.DecimalField(max_digits=4, decimal_places=2, verbose_name=_("Course cost"))
+    currency = models.CharField(max_length=3, verbose_name=_("Currency"), choices=COURRENCY_CHOICES, default="CRC")
+    cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("Course cost"))
     maximum = models.SmallIntegerField(verbose_name=_("Maximum number of students"))
     is_open = models.BooleanField(default=True)
 
