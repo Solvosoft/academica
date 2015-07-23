@@ -40,7 +40,7 @@ Configure the database
 	
 # Run in development mode
 
-Using two shells in the first shell run
+Using two shells, in the first shell run
 
 	$ python manage.py runserver
 	
