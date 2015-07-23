@@ -80,5 +80,5 @@ MY_PAYPAL_HOST = "http://miserver.com"
 
 # Donations
 
-Donation is always welcome by paypal [donar aquí](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=DYR7VVLUED6V6&lc=AL&item_name=Academia%20desarrollo&item_number=22&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
+Donation is always welcome by paypal [donate here](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=DYR7VVLUED6V6&lc=AL&item_name=Academia%20desarrollo&item_number=22&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
 or contac us in info[at ] solvosoft.com o by github.
