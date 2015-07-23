@@ -9,14 +9,28 @@ Created on 7/4/2015
 from django import forms
 from matricula.models import Student
 from django.utils.translation import ugettext_lazy as _
+from django.core import validators
 
 
 class StudentCreateForm(forms.Form):
-    name = forms.CharField(label=_('Your name'), max_length=100, required=True)
+    name = forms.CharField(label=_('Your username'), max_length=30,
+        help_text=_('Required. 30 characters or fewer. Letters, digits and '
+                    '@/./+/-/_ only.'),
+        validators=[
+            validators.RegexValidator(r'^[\w.@+-]+$',
+                                      _('Enter a valid username. '
+                                        'This value may contain only letters, numbers '
+                                        'and @/./+/-/_ characters.'), 'invalid'),
+        ], required=True)
+    
+    first_name = forms.CharField(label=_('first name'), max_length=30, required=True)
+    last_name = forms.CharField(label=_('last name'), max_length=30, required=True)
+    
     email = forms.EmailField(required=True)
 
     password = forms.CharField(widget=forms.PasswordInput(), required=True, label=_("Password"))
     password_check = forms.CharField(widget=forms.PasswordInput(), required=True, label=_("Repeat password"))
+
 
 
     def clean(self):

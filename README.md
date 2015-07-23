@@ -40,9 +40,15 @@ Configure the database
 	
 # Run in development mode
 
+Using two shells in the first shell run
+
 	$ python manage.py runserver
 	
+In the second shell run a debug email server 
 
+	$ python -m smtpd -n -c DebuggingServer localhost:1025
+
+**note:** For paypal payment you will need a public access point see https://ngrok.com/ for secure tunnels
 
 # Run in production mode
 
