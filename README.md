@@ -50,27 +50,33 @@ Take a look [django deploy documentation](https://docs.djangoproject.com/en/1.8/
 
 Change in academica/settings.py all variables that you want but especially this variables
 
-** SECURITY WARNING: keep the secret key used in production secret! **
+**SECURITY WARNING: keep the secret key used in production secret!**
+
 SECRET_KEY = '*****'
 
-** SECURITY WARNING: don't run with debug turned on in production! **
+**SECURITY WARNING: don't run with debug turned on in production!**
+```
 DEBUG = False
-
 ALLOWED_HOSTS = ["your domain", "your subdomain"]
+```
 
-** Put your email account correctly **
+**Put your email account correctly**
 
+```
 EMAIL_HOST = "localhost"
 EMAIL_PORT = 1025
 DEFAULT_FROM_EMAIL = 'sitio@localhost'
+```
 
 see [Django email documentation](https://docs.djangoproject.com/en/1.8/topics/email/)
 
-** Change paypal account **
+**Change paypal account**
 
+```
 PAYPAL_TEST = False
 PAYPAL_RECEIVER_EMAIL = "user-buyer@example.com"
 MY_PAYPAL_HOST = "http://miserver.com"
+```
 
 # Donations
 
