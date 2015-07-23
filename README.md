@@ -17,6 +17,7 @@ easy to use.
 * Enrollment 
 * Student list (Pre-enrolled, enrolled) 
 * Paypal payment System (optional, see matricula.contrib.bills)
+* Multilingual (spanish and english, translators are welcome)  
 
 # Install 
 
@@ -29,10 +30,9 @@ To install this program you need python 3  (tested with python 3.4)
 
 To install billing system
 	
-	$ pip install -r pip install matricula/requirements/bills.txt
+	$ pip install -r matricula/requirements/bills.txt
 		
 
-	
 Configure the database
 
 	$ python manage.py migrate
