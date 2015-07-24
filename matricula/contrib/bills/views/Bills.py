@@ -34,7 +34,7 @@ def get_my_bills(request):
             {'obj': bill,
              'form': PayPalPaymentsForm(initial={
                     "business": settings.PAYPAL_RECEIVER_EMAIL,
-                    "amount": str(amount),
+                    "amount": "%.2f" % (amount),
                     "currency_code": currency,
                     "item_name": bill.short_description,
                     "invoice": str(bill.pk),
