@@ -6,9 +6,13 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 # Create your models here.
 
+@python_2_unicode_compatible
 class Colon_Exchange(models.Model):
-    is_dolar = models.DecimalField(max_digits=6, decimal_places=2, verbose_name=_("Amount"))
+    is_dolar = models.DecimalField(max_digits=10, decimal_places=4, verbose_name=_("Amount"))
 
+    def __str__(self):
+        return "%.4f" % self.is_dolar
+    
 @python_2_unicode_compatible
 class Bill(models.Model):
     short_description = models.CharField(max_length=300, verbose_name=_("Short description"))

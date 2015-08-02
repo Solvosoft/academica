@@ -2,6 +2,12 @@
 
 {%block content%}
 {%load i18n %}
+<style>
+	td{
+		padding-right: 20px;
+	}
+	
+</style>
 
 <h1> {% trans 'Unpaid bills' %}</h1>
 <ul class="list-group">
@@ -10,7 +16,9 @@
 
 		<div class="row">
 			<div class="col-md-8">
-				{{bill.obj.description |linebreaks}}
+				
+				{{bill.obj.description|safe}}
+
 			</div>
 			<div class="col-md-4">
 				{{bill.form.render}}
@@ -31,7 +39,7 @@
 <ul class="list-group">
 	{% for bill in paid%}
 	<li class="list-group-item">
-		{{bill.description}}
+		{{bill.description|safe}}
 	</li>
 
 	{%empty%}
