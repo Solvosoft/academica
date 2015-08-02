@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Matricula Bills\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-08-02 15:00-0600\n"
-"PO-Revision-Date: 2015-07-22 15:48-0600\n"
+"PO-Revision-Date: 2015-08-02 15:22-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: ES <es@solvosoft.com>\n"
 "Language: es\n"
@@ -42,7 +42,7 @@ msgstr "Estudiante"
 
 #: contrib/bills/models.py:22
 msgid "Currency"
-msgstr ""
+msgstr "Moneda"
 
 #: contrib/bills/models.py:31
 msgid "Bill"
@@ -55,11 +55,11 @@ msgstr "Matriculado en %s"
 
 #: contrib/bills/signals.py:57
 msgid "Academica Invoice paid"
-msgstr ""
+msgstr "Factura de Académica pagada"
 
 #: contrib/bills/signals.py:58
 msgid "Go to Academica"
-msgstr ""
+msgstr "Ir a Académica"
 
 #: contrib/bills/templates/bills.html:12
 msgid "Unpaid bills"
@@ -79,33 +79,31 @@ msgstr "No tiene facturas pagas"
 
 #: contrib/bills/templates/email_invoice.html:16
 msgid "Invoice paid"
-msgstr ""
+msgstr "Factura pagada"
 
 #: contrib/bills/templates/email_invoice.html:16
 msgid "Invoice unpaid"
-msgstr ""
+msgstr "Factura no pagada"
 
 #: contrib/bills/templates/email_invoice.html:17
 msgid "Unique Transaction ID"
-msgstr ""
+msgstr "ID único de transacción"
 
 #: contrib/bills/templates/email_invoice.html:22
 msgid "Paid Date"
-msgstr ""
+msgstr "Fecha de pago"
 
 #: contrib/bills/templates/invoice.html:2
 msgid "Academica Invoice"
-msgstr ""
+msgstr "Factura de Académica"
 
 #: contrib/bills/templates/invoice.html:9
-#, fuzzy
-#| msgid "Short description"
 msgid "Enrollment description"
-msgstr "Descripción Corta"
+msgstr "Descripción de matricula"
 
 #: contrib/bills/templates/invoice.html:17
 msgid "Date"
-msgstr ""
+msgstr "Fecha"
 
 #~ msgid ""
 #~ "\n"
