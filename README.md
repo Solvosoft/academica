@@ -1,3 +1,5 @@
+ **Note:** this branch is unmaintained and is not tested I did this because I want to do credit card payment feature, but stripe is not supported in my country :(
+
 # academica
 University courses enrollment
 
