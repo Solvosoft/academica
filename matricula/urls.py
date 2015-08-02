@@ -9,6 +9,7 @@ from django.conf.urls import patterns, url, include
 from matricula.views.Auth import StudentEdit
 
 from .admin import admin_site
+from matricula.views.Pages import PageDetail
 
 urlpatterns = patterns('matricula.views.Auth',
                        url('^create_user$', 'create_user', name="create_user"),
@@ -33,4 +34,5 @@ urlpatterns += patterns('matricula.views.Enrollments',
 
 urlpatterns += patterns('',
                         url(r'^admin/', include(admin_site.urls)),
+                        url(r'^pages/(?P<pk>\d+)$', PageDetail.as_view(), name="academica_pages"),
                         )

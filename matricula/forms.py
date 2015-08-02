@@ -7,7 +7,7 @@ Created on 7/4/2015
 '''
 
 from django import forms
-from matricula.models import Student
+from matricula.models import Student, Page, MenuItem
 from django.utils.translation import ugettext_lazy as _
 from django.core import validators
 
@@ -40,3 +40,23 @@ class StudentCreateForm(forms.Form):
 
         if cleaned_data.get('password') != cleaned_data.get('password_check'):
             raise forms.ValidationError(_("Password not match "))
+
+
+class MenuItemFormPage(forms.ModelForm):
+    name = forms.ModelChoiceField(queryset=Page.objects.all(), label=_("Page"))
+
+    def __init__(self, *args, **kwargs):
+        super(MenuItemFormPage, self).__init__(*args, **kwargs)
+        if 'instance' in kwargs and kwargs['instance']:
+            self.fields['name'] = forms.ModelChoiceField(queryset=Page.objects.all(), label=_("Page"), initial=kwargs['instance'].name)
+
+    def save(self, *args, **kwargs):
+        dev = super(MenuItemFormPage, self).save(*args, **kwargs)
+        dev.name = self.cleaned_data['name'].pk
+        return dev
+
+    class Meta:
+        model = MenuItem
+        exclude = ("name",)
+        fields = ["name", 'type', 'description', 'require_authentication',
+                  'order', 'parent', 'publicated', 'is_index']

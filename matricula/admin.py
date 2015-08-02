@@ -1,7 +1,8 @@
 # encoding: utf-8
 
 from django.contrib import admin
-from matricula.models import Student, Course, Group, Enroll, Period, Category
+from matricula.models import Student, Course, Group, Enroll, Period, Category, \
+    MenuItem, Page
 from django.utils.translation import ugettext_lazy as _
 from django.conf.urls import url
 from django.core.urlresolvers import reverse
@@ -11,6 +12,7 @@ from django_ajax.decorators import ajax
 
 from django.contrib.admin import AdminSite
 from django.contrib.auth.admin import UserAdmin
+from matricula.forms import MenuItemFormPage
 
 # Register your models here.
 
@@ -122,13 +124,28 @@ class MyUserAdmin(UserAdmin):
                 (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
                 (_('Permissions'), {'fields': perm_fields}),
                 (_('Important dates'), {'fields': ('last_login', 'date_joined')})]
-    
+
+
+class MenuItemAdmin(admin.ModelAdmin):
+    obj = None
+    def get_form(self, request, obj=None, **kwargs):
+        self.obj = obj
+        if obj is None or obj.type == 1:
+            kwargs['form'] = MenuItemFormPage
+        return super(MenuItemAdmin, self).get_form(request, obj, **kwargs)
+
+    def get_changeform_initial_data(self, request):
+        dev = {"type": 1}
+        return dev
+
 admin.site.register(Student, MyUserAdmin)
 admin.site.register(Course)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(Enroll, EnrollAdmin)
 admin.site.register(Period)
 admin.site.register(Category)
+admin.site.register(MenuItem, MenuItemAdmin)
+admin.site.register(Page)
 
 admin.site.site_header = "Academica administrator"
 
@@ -144,3 +161,4 @@ admin_site.register(Group, GroupAdmin)
 admin_site.register(Enroll, EnrollAdmin)
 admin_site.register(Period)
 admin_site.register(Category)
+admin_site.register(MenuItem)

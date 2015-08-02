@@ -109,3 +109,38 @@ class Enroll(models.Model):
         verbose_name = _("Enrollment")
         verbose_name_plural = _("Enrollments")
 
+
+@python_2_unicode_compatible
+class MenuItem(models.Model):
+    TYPES = (
+             (0, _("Internal")),
+             (1, _("Page"))
+             )
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
+    type = models.SmallIntegerField(choices=TYPES, default=0, verbose_name=_("Type"))
+    description = models.CharField(max_length=50, verbose_name=_("Description"))
+    require_authentication = models.BooleanField(default=False, verbose_name=_("Authentication is required"))
+    order = models.SmallIntegerField(verbose_name=_("Menu order"))
+    parent = models.ForeignKey('self', null=True, blank=True, verbose_name=_("Page parent"))
+    publicated = models.BooleanField(default=True, verbose_name=_("Publicated"))
+    is_index = models.BooleanField(default=False, verbose_name=_("Index page"))
+
+    def __str__(self):
+        return self.description
+
+    class Meta:
+        verbose_name = _("Menu Item")
+        verbose_name_plural = _("Menu Items")
+
+
+@python_2_unicode_compatible
+class Page(models.Model):
+    slug = models.SlugField()
+    content = RichTextField(verbose_name=_("Content"))
+
+    def __str__(self):
+        return self.slug
+
+    class Meta:
+        verbose_name = _("Page")
+        verbose_name_plural = _("Pages")
