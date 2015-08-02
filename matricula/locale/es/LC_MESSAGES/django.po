@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: matricula\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-02 15:00-0600\n"
-"PO-Revision-Date: 2015-08-02 15:11-0600\n"
+"POT-Creation-Date: 2015-08-02 15:40-0600\n"
+"PO-Revision-Date: 2015-08-02 15:43-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: Es <es@li.org>\n"
 "Language: es\n"
@@ -19,43 +19,43 @@ msgstr ""
 "X-Generator: Poedit 1.6.10\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: admin.py:32
+#: admin.py:34
 msgid "Active user for enrollment"
 msgstr "Activar usuario para matricular"
 
-#: admin.py:36
+#: admin.py:38
 msgid "Active user for pre-enrollment"
 msgstr "Activar usuario para prematricula"
 
-#: admin.py:61
+#: admin.py:63
 msgid "Student list don't exist yet"
 msgstr "La lista de estudiantes no existe aún"
 
-#: admin.py:67
+#: admin.py:69
 msgid "List students"
 msgstr "Lista de estudiantes"
 
-#: admin.py:75
+#: admin.py:77
 msgid "# student pre-enroll"
 msgstr "# estudiante prematriculados"
 
-#: admin.py:84
+#: admin.py:86
 msgid "# student enroll"
 msgstr "# estudiantes matriculados"
 
-#: admin.py:88
+#: admin.py:90
 msgid "Total cash"
 msgstr "Dinero total "
 
-#: admin.py:122
+#: admin.py:124
 msgid "Personal info"
 msgstr "Información personal"
 
-#: admin.py:123
+#: admin.py:125
 msgid "Permissions"
 msgstr "Permisos"
 
-#: admin.py:124
+#: admin.py:126
 msgid "Important dates"
 msgstr "Fechas importantes"
 
@@ -142,15 +142,19 @@ msgstr "El nombre de usuario existe"
 msgid "Password not match "
 msgstr "Contraseñas no coinciden"
 
-#: menues.py:15 models.py:56
+#: forms.py:46 forms.py:51 models.py:117 models.py:145
+msgid "Page"
+msgstr "Página"
+
+#: menues.py:14 models.py:56
 msgid "Courses"
 msgstr "Cursos"
 
-#: menues.py:16 models.py:109 templates/matricula_base.html:6
+#: menues.py:15 models.py:109 templates/matricula_base.html:6
 msgid "Enrollment"
 msgstr "Matricula"
 
-#: models.py:21 models.py:35 models.py:48 models.py:69
+#: models.py:21 models.py:35 models.py:48 models.py:69 models.py:119
 #: templates/Pdf/student_list.html:50
 msgid "Name"
 msgstr "Nombre"
@@ -171,7 +175,7 @@ msgstr "Periodo"
 msgid "Periods"
 msgstr "Periodos"
 
-#: models.py:36
+#: models.py:36 models.py:121
 msgid "Description"
 msgstr "Descripción"
 
@@ -183,7 +187,7 @@ msgstr "Categoría"
 msgid "Categories"
 msgstr "Categorías"
 
-#: models.py:49
+#: models.py:49 models.py:139
 msgid "Content"
 msgstr "Contenido"
 
@@ -254,6 +258,46 @@ msgstr "Factura creada"
 #: models.py:110
 msgid "Enrollments"
 msgstr "Matriculas"
+
+#: models.py:116
+msgid "Internal"
+msgstr "Interior"
+
+#: models.py:120
+msgid "Type"
+msgstr "Tipo"
+
+#: models.py:122
+msgid "Authentication is required"
+msgstr "Se requiere autenticación"
+
+#: models.py:123
+msgid "Menu order"
+msgstr "Orden en el menú"
+
+#: models.py:124
+msgid "Page parent"
+msgstr "Página padre"
+
+#: models.py:125
+msgid "Publicated"
+msgstr "Publicado"
+
+#: models.py:126
+msgid "Index page"
+msgstr "Página de inicio"
+
+#: models.py:132
+msgid "Menu Item"
+msgstr "Item del menú"
+
+#: models.py:133
+msgid "Menu Items"
+msgstr "items del menú"
+
+#: models.py:146
+msgid "Pages"
+msgstr "Páginas"
 
 #: templates/Pdf/student_list.html:51
 msgid "Email"
