@@ -129,6 +129,9 @@ AUTH_USER_MODEL = 'matricula.Student'
 EMAIL_HOST = "localhost"
 EMAIL_PORT = 1025
 DEFAULT_FROM_EMAIL = 'sitio@localhost'
+
+
+
 CKEDITOR_UPLOAD_PATH = "uploads/"
 
 CKEDITOR_CONFIGS = {
@@ -178,3 +181,4 @@ SOCIALACCOUNT_PROVIDERS = \
         'LOCALE_FUNC': lambda request: 'es_CR',
         'VERIFIED_EMAIL': False,
         'VERSION': 'v2.3'}}
+

@@ -1,0 +1,19 @@
+{%load i18n %}
+<h1 > {% trans 'Academica Invoice' %} </h1>
+<table>
+	<tr>
+		<td><strong>{% trans 'Student' %}: </strong></td><td>{{student.get_full_name}}</td>
+	</tr>
+	
+	<tr>
+		<td><strong>{% trans 'Enrollment description' %}: </strong></td><td>{{enroll}}</td>
+	</tr>
+
+	<tr>
+		<td><strong>{% trans 'Amount' %}: </strong></td><td>{{group.cost}} {{group.currency}}</td>
+	</tr>
+	
+	<tr>
+		<td><strong>{% trans 'Date' %}: </strong></td><td> {{date}}</td>
+	</tr>
+</table>

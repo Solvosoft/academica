@@ -1,0 +1,14 @@
+{%load i18n %}
+
+{% trans 'Dear' %}: {{user.get_full_name}}, 
+
+<p>
+{% trans 'Please use' %}<a href="{{url}}?id={{user.pk}}&key={{user.confirmation_key}}" > 
+	{% trans 'this link' %}</a> {% trans 'to recovery the password.' %}
+</p>
+<p>
+{% blocktrans %}if your email service block links  then copy and paste this url in a new tab{% endblocktrans %}
+<br> {{url}}?id={{user.pk}}&key={{user.confirmation_key}}</p> 
+
+<br><br>
+{% trans 'Best regards' %}

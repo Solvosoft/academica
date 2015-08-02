@@ -1,0 +1,23 @@
+{%load i18n %}
+
+<style>
+	td{
+		padding-right: 20px;
+	}
+	
+</style>
+
+{% if message%} <div class="message"> {{message}} </div>{% endif %}
+
+{{bill.description|safe}}
+<br>
+<center>
+<div class="status" style="background-color: #66FF99;">
+	{% if bill.is_paid %} {% trans 'Invoice paid' %}{%else%} {% trans 'Invoice unpaid' %} {%endif%}<br>
+	{% trans 'Unique Transaction ID'%} {{bill.transaction_id}}
+</div>
+</center>
+<br>
+{% if bill.paid_date %}
+<div class="paid_date"> {%trans "Paid Date"%} : {{ bill.paid_date|date:"D d M Y" }} {{ bill.paid_date|time:"H:i" }} </div>
+{%endif%}
