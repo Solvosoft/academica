@@ -12,8 +12,11 @@
 			<div class="col-md-8">
 				{{bill.obj.description |linebreaks}}
 			</div>
-			<div class="col-md-4">
+			<div class="col-md-2">
 				{{bill.form.render}}
+			</div>
+			<div class="col-md-2">
+			<a href="{% url 'stripe_charge' bill.obj.pk %}" class="btn btn-primary"> {% trans "Credict Card Payment" %}</a>
 			</div>
 		</div>
 

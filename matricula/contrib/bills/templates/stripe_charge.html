@@ -1,0 +1,27 @@
+{% extends 'matricula_base.html'%}
+
+{%block content%}
+{%load i18n %}
+
+<h1 class="text-center"> {% trans "Credit card payment" %} </h1>
+<div class="row">
+	<div class="col-md-8">
+		{% if message %}
+		<div class="alert alert-info" role="alert">{{message}}</div>
+		{% endif %}
+		{{bill.description |linebreaks}}
+	</div>
+	<div class="col-md-4">
+		  
+  <form action="" method="post">{% csrf_token %}
+  	<div class="table-responsive">
+		 <table class="table">
+		 {{form.as_table}}
+		</table>
+		    <input type="submit" class="btn btn-warning" value={% trans "Charge Me!"%} />
+		 </form>
+		</div>
+	</div>
+</div>
+
+{%endblock%}

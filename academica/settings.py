@@ -178,3 +178,8 @@ SOCIALACCOUNT_PROVIDERS = \
         'LOCALE_FUNC': lambda request: 'es_CR',
         'VERIFIED_EMAIL': False,
         'VERSION': 'v2.3'}}
+
+
+# your strip api key
+# see https://dashboard.stripe.com/account/apikeys
+STRIPE_API_KEY = "sk_test_BQokikJOvBiI2HlWgH4olfQ2"
