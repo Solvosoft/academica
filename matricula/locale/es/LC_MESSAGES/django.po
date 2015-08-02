@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: matricula\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-22 15:37-0600\n"
-"PO-Revision-Date: 2015-07-22 15:46-0600\n"
+"POT-Creation-Date: 2015-08-02 15:00-0600\n"
+"PO-Revision-Date: 2015-08-02 15:11-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: Es <es@li.org>\n"
 "Language: es\n"
@@ -27,35 +27,35 @@ msgstr "Activar usuario para matricular"
 msgid "Active user for pre-enrollment"
 msgstr "Activar usuario para prematricula"
 
-#: admin.py:59
+#: admin.py:61
 msgid "Student list don't exist yet"
 msgstr "La lista de estudiantes no existe aún"
 
-#: admin.py:65
+#: admin.py:67
 msgid "List students"
 msgstr "Lista de estudiantes"
 
-#: admin.py:73
+#: admin.py:75
 msgid "# student pre-enroll"
 msgstr "# estudiante prematriculados"
 
-#: admin.py:82
+#: admin.py:84
 msgid "# student enroll"
 msgstr "# estudiantes matriculados"
 
-#: admin.py:86
+#: admin.py:88
 msgid "Total cash"
 msgstr "Dinero total "
 
-#: admin.py:120
+#: admin.py:122
 msgid "Personal info"
 msgstr "Información personal"
 
-#: admin.py:121
+#: admin.py:123
 msgid "Permissions"
 msgstr "Permisos"
 
-#: admin.py:122
+#: admin.py:124
 msgid "Important dates"
 msgstr "Fechas importantes"
 
@@ -102,23 +102,43 @@ msgstr "Atención %(group)s fue cerrado"
 msgid "This Group was closed"
 msgstr "Este grupo fue cerrado"
 
-#: forms.py:15
-msgid "Your name"
+#: forms.py:16
+msgid "Your username"
+msgstr "Su nombre de usuario"
+
+#: forms.py:17
+msgid "Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only."
+msgstr "Requerido. 30 caracteres o menos. Solo letras, dígitos y @/./+/-/_ ."
+
+#: forms.py:21
+msgid ""
+"Enter a valid username. This value may contain only letters, numbers and @/./"
+"+/-/_ characters."
+msgstr ""
+"Ingrese un nombre de usuario válido. Este valor debe contener solo letras, "
+"números y @/./+/-/_ ."
+
+#: forms.py:26
+msgid "first name"
 msgstr "Su nombre"
 
-#: forms.py:18
+#: forms.py:27
+msgid "last name"
+msgstr "apellido"
+
+#: forms.py:31
 msgid "Password"
 msgstr "Contraseña"
 
-#: forms.py:19
+#: forms.py:32
 msgid "Repeat password"
 msgstr "Repita su contraseña"
 
-#: forms.py:25
+#: forms.py:39
 msgid "User name exist "
 msgstr "El nombre de usuario existe"
 
-#: forms.py:28
+#: forms.py:42
 msgid "Password not match "
 msgstr "Contraseñas no coinciden"
 
@@ -126,11 +146,11 @@ msgstr "Contraseñas no coinciden"
 msgid "Courses"
 msgstr "Cursos"
 
-#: menues.py:16 models.py:101 templates/matricula_base.html:6
+#: menues.py:16 models.py:109 templates/matricula_base.html:6
 msgid "Enrollment"
 msgstr "Matricula"
 
-#: models.py:21 models.py:35 models.py:48 models.py:62
+#: models.py:21 models.py:35 models.py:48 models.py:69
 #: templates/Pdf/student_list.html:50
 msgid "Name"
 msgstr "Nombre"
@@ -143,7 +163,7 @@ msgstr "Fecha de inicio de periodo"
 msgid "Period finish date"
 msgstr "Fecha de inicio de periodo"
 
-#: models.py:29 models.py:60
+#: models.py:29 models.py:67
 msgid "Period"
 msgstr "Periodo"
 
@@ -167,89 +187,77 @@ msgstr "Categorías"
 msgid "Content"
 msgstr "Contenido"
 
-#: models.py:55 models.py:61
+#: models.py:55 models.py:68
 msgid "Course"
 msgstr "Curso"
 
-#: models.py:63
+#: models.py:70
 msgid "Schedule"
 msgstr "Horario"
 
-#: models.py:65
+#: models.py:72
 msgid "Pre enroll start hour"
 msgstr "Hora de inicio de Pre-matricula"
 
-#: models.py:66
+#: models.py:73
 msgid "Pre enroll finish hour"
 msgstr "Hora de finalización de Pre-matricula"
 
-#: models.py:68
+#: models.py:75
 msgid "Enroll start hour"
 msgstr "Hora de inicio de matricula"
 
-#: models.py:69
+#: models.py:76
 msgid "Enroll finish hour"
 msgstr "Hora de finalización de matricula"
 
-#: models.py:70
+#: models.py:77
+msgid "Currency"
+msgstr "Moneda"
+
+#: models.py:78
 msgid "Course cost"
 msgstr "costo del curso"
 
-#: models.py:71
+#: models.py:79
 msgid "Maximum number of students"
 msgstr "Máximo número de estudiantes"
 
-#: models.py:84 models.py:92
+#: models.py:92 models.py:100
 msgid "Group"
 msgstr "Grupo"
 
-#: models.py:85 templates/groups.html:3
+#: models.py:93 templates/groups.html:3
 msgid "Groups"
 msgstr "Grupos"
 
-#: models.py:90
+#: models.py:98
 msgid "Is enroll finished?"
 msgstr "¿Está finalizada la matricula?"
 
-#: models.py:91
+#: models.py:99
 msgid "Is active for enroll?"
 msgstr "¿Está activo para la matricula?"
 
-#: models.py:93
+#: models.py:101
 msgid "Student"
 msgstr "Estudiante"
 
-#: models.py:94
+#: models.py:102
 msgid "Enroll date"
 msgstr "Fecha de matricula"
 
-#: models.py:95
+#: models.py:103
 msgid "Bill created"
 msgstr "Factura creada"
 
-#: models.py:102
+#: models.py:110
 msgid "Enrollments"
 msgstr "Matriculas"
 
 #: templates/Pdf/student_list.html:51
 msgid "Email"
 msgstr "Correo electrónico"
-
-#: templates/bills.html:6
-msgid "Bills for pay"
-msgstr "Facturas por pagar"
-
-#: templates/bills.html:24
-msgid "You don't have bills to pay"
-msgstr "No tiene facturas por pagar"
-
-#: templates/bills.html:29
-msgid "Bills paid"
-msgstr "Facturas pagadas"
-
-#: templates/bills.html:38
-msgid "You don't have paid bills "
-msgstr "No tiene facturas pagadas"
 
 #: templates/categories.html:5
 msgid "List of categories with available courses"
@@ -262,6 +270,60 @@ msgstr "Lista de cursos disponible"
 #: templates/courses.html:17
 msgid "Read more"
 msgstr "Leer más"
+
+#: templates/email_confirmation.html:3
+msgid "Welcome to Academica"
+msgstr "Bienvenido a Académica"
+
+#: templates/email_confirmation.html:5 templates/email_recovery.html:3
+#: templates/recover_password.html:9
+msgid "Dear"
+msgstr "Estimado"
+
+#: templates/email_confirmation.html:9
+msgid ""
+"\n"
+"Thank you for suscribe in academica website, we are happy to have you with "
+"us, \n"
+"we have several courses that are waiting for you, but one more step is "
+"required.\n"
+msgstr ""
+"\n"
+"Gracias por suscribirse en el sitio Académica, estamos muy contentos de "
+"tenerlo con nosotros, \n"
+"Nosotros tenemos muchos cursos que lo están esperando, pero falta un paso "
+"más.\n"
+
+#: templates/email_confirmation.html:16
+msgid "Your email confirmation is need it, please use "
+msgstr "Se necesita la confirmación de correo electrónico, por favor use"
+
+#: templates/email_confirmation.html:17 templates/email_recovery.html:7
+msgid "this link"
+msgstr "este enlace"
+
+#: templates/email_confirmation.html:17
+msgid "to confirm your email"
+msgstr "para confirmar su correo"
+
+#: templates/email_confirmation.html:20 templates/email_recovery.html:10
+msgid ""
+"if your email service block links  then copy and paste this url in a new tab"
+msgstr ""
+"Si su servicio de correo bloquea enlaces entonces copie y pegue esta url en "
+"una nueva pestaña"
+
+#: templates/email_confirmation.html:24 templates/email_recovery.html:14
+msgid "Best regards"
+msgstr "Saludos cordiales"
+
+#: templates/email_recovery.html:6
+msgid "Please use"
+msgstr "Por favor use"
+
+#: templates/email_recovery.html:7
+msgid "to recovery the password."
+msgstr "para recuperar contraseña"
 
 #: templates/enroll.html:7
 msgid "List of courses to enroll"
@@ -334,13 +396,9 @@ msgstr ""
 "Le enviaremos un correo con la información necesaria para cambiar su "
 "contraseña"
 
-#: templates/recover_password.html:7 views/Auth.py:163
+#: templates/recover_password.html:7 views/Auth.py:171
 msgid "Password recovery"
 msgstr "Recuperar contraseña"
-
-#: templates/recover_password.html:9
-msgid "Dear"
-msgstr "Estimado"
 
 #: templates/recover_password.html:18
 msgid "Change password"
@@ -406,43 +464,43 @@ msgstr "Todas las matriculas"
 msgid "Pre-enroll but not enroll"
 msgstr "Prematriculado pero no matriculado"
 
-#: views/Auth.py:32
+#: views/Auth.py:40
 msgid "Email confirmation"
 msgstr "Confirmación por correo"
 
-#: views/Auth.py:43
+#: views/Auth.py:48
 msgid "Thank you, We will send you an email soon"
 msgstr "Gracias, Pronto le llegará un correo de confirmación"
 
-#: views/Auth.py:60 views/Auth.py:76
+#: views/Auth.py:65 views/Auth.py:81
 msgid "Key not found"
 msgstr "Llave no existe"
 
-#: views/Auth.py:69
+#: views/Auth.py:74
 msgid "Congratulations, now you can login"
 msgstr "Felicitaciones, ahora puede iniciar sesión"
 
-#: views/Auth.py:101
+#: views/Auth.py:106
 msgid "Login failed"
 msgstr "Falló la autenticación"
 
-#: views/Auth.py:139
+#: views/Auth.py:144
 msgid "Password changed"
 msgstr "Contraseña cambiada"
 
-#: views/Auth.py:142
+#: views/Auth.py:147
 msgid "Wrong password"
 msgstr "Contraseña inválida"
 
-#: views/Auth.py:150
+#: views/Auth.py:155
 msgid "Wrong confirmation key"
 msgstr "Mala clave de confirmación"
 
-#: views/Auth.py:174
+#: views/Auth.py:179
 msgid "You will recive a message soon, check your email"
 msgstr "Usted recibirá pronto un correo, revise su bandeja de entrada"
 
-#: views/Auth.py:177
+#: views/Auth.py:182
 msgid "User not found"
 msgstr "No existe usuario"
 
@@ -457,3 +515,15 @@ msgstr "Pre-matriculado satisfactoriamente"
 #: views/Enrollments.py:39
 msgid "You are already enrolled"
 msgstr "Usted ya está matriculado"
+
+#~ msgid "Bills for pay"
+#~ msgstr "Facturas por pagar"
+
+#~ msgid "You don't have bills to pay"
+#~ msgstr "No tiene facturas por pagar"
+
+#~ msgid "Bills paid"
+#~ msgstr "Facturas pagadas"
+
+#~ msgid "You don't have paid bills "
+#~ msgstr "No tiene facturas pagadas"

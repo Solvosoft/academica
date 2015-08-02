@@ -32,16 +32,18 @@ def create_user(request):
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name']
             user.save()
+            mail_body = render_to_string("email_confirmation.html",
+                     {
+                      "url": request.build_absolute_uri(reverse('confirm_email')),
+                      "user": user,
+                      })
             send_mail(_('Email confirmation'),
                       'Url confirmation %s?id=%d&key=%s' % (request.build_absolute_uri(reverse('confirm_email')),
                                                user.pk,
                                                user.confirmation_key
                                                ),
                       settings.DEFAULT_FROM_EMAIL, [form.cleaned_data['email']],
-                      html_message='Use <a href="%s?id=%d&key=%s" > this link </a> to confirm your email' % (
-                                                                      request.build_absolute_uri(reverse('confirm_email')),
-                                                                      user.pk,
-                                                                      user.confirmation_key))
+                      html_message=mail_body)
             return render(request, 'messages.html',
                           {'message': _('Thank you, We will send you an email soon'),
                            'mtype': 'success'}
@@ -158,21 +160,21 @@ def recover_password(request):
 @ajax
 def mail_recover_pass(request):
     email = request.POST.get('email', 'no-email')
-    
-    print(email)
     user = Student.objects.filter(email=email)
     if user.exists():
         user = user[0]
+        mail_body = render_to_string("email_recovery.html",
+                {
+                 'url': request.build_absolute_uri(reverse('recover_password')),
+                 'user': user,
+                })
         send_mail(_('Password recovery'),
                       'Url for recover %s?id=%d&key=%s' % (request.build_absolute_uri(reverse('recover_password')),
                                                user.pk,
                                                user.confirmation_key
                                                ),
                       settings.DEFAULT_FROM_EMAIL, [user.email],
-                      html_message='Use <a href="%s?id=%d&key=%s" > this link </a> to confirm your email' % (
-                                                                      request.build_absolute_uri(reverse('recover_password')),
-                                                                      user.pk,
-                                                                      user.confirmation_key))
+                      html_message=mail_body)
         recover_message_type = 'success'
         recover_message = _('You will recive a message soon, check your email')
     else:

@@ -10,7 +10,8 @@
 {% if message%} <div class="message"> {{message}} </div>{% endif %}
 
 {{bill.description|safe}}
-<br><center>
+<br>
+<center>
 <div class="status" style="background-color: #66FF99;">
 	{% if bill.is_paid %} {% trans 'Invoice paid' %}{%else%} {% trans 'Invoice unpaid' %} {%endif%}<br>
 	{% trans 'Unique Transaction ID'%} {{bill.transaction_id}}

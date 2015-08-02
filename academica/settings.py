@@ -131,6 +131,7 @@ EMAIL_PORT = 1025
 DEFAULT_FROM_EMAIL = 'sitio@localhost'
 
 
+
 CKEDITOR_UPLOAD_PATH = "uploads/"
 
 CKEDITOR_CONFIGS = {

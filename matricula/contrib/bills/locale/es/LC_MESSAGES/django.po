@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Matricula Bills\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-22 15:38-0600\n"
+"POT-Creation-Date: 2015-08-02 15:00-0600\n"
 "PO-Revision-Date: 2015-07-22 15:48-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: ES <es@solvosoft.com>\n"
@@ -19,62 +19,103 @@ msgstr ""
 "X-Generator: Poedit 1.6.10\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: admin.py:12 models.py:25
+#: contrib/bills/admin.py:12 contrib/bills/models.py:32
 msgid "Bills"
 msgstr "Facturas"
 
-#: models.py:12
-msgid "Short description"
-msgstr "Descripción Corta"
-
-#: models.py:13
-msgid "Description"
-msgstr "Descripción"
-
-#: models.py:14
+#: contrib/bills/models.py:11 contrib/bills/models.py:20
+#: contrib/bills/templates/invoice.html:13
 msgid "Amount"
 msgstr "Monto"
 
-#: models.py:15
+#: contrib/bills/models.py:18
+msgid "Short description"
+msgstr "Descripción Corta"
+
+#: contrib/bills/models.py:19
+msgid "Description"
+msgstr "Descripción"
+
+#: contrib/bills/models.py:21 contrib/bills/templates/invoice.html:5
 msgid "Student"
 msgstr "Estudiante"
 
-#: models.py:24
+#: contrib/bills/models.py:22
+msgid "Currency"
+msgstr ""
+
+#: contrib/bills/models.py:31
 msgid "Bill"
 msgstr "Factura"
 
-#: signals.py:19
+#: contrib/bills/signals.py:22
 #, python-format
 msgid "Enroll in %s"
 msgstr "Matriculado en %s"
 
-#: signals.py:20
-#, python-format
-msgid ""
-"\n"
-"                             User %(username)s \n"
-"                             Enroll in %(enroll)s\n"
-"                             At %(date)s\n"
-"                            "
+#: contrib/bills/signals.py:57
+msgid "Academica Invoice paid"
 msgstr ""
-"\n"
-"                             Usuario %(username)s \n"
-"                             Matriculado en %(enroll)s\n"
-"                             Fecha %(date)s\n"
-"                            "
 
-#: templates/bills.html:6
+#: contrib/bills/signals.py:58
+msgid "Go to Academica"
+msgstr ""
+
+#: contrib/bills/templates/bills.html:12
 msgid "Unpaid bills"
 msgstr "Facturas sin pagar"
 
-#: templates/bills.html:25
+#: contrib/bills/templates/bills.html:33
 msgid "You don't have Unpaid bills"
 msgstr "No tiene facturas sin pagar"
 
-#: templates/bills.html:30
+#: contrib/bills/templates/bills.html:38
 msgid "Paid bills"
 msgstr "Facturas pagas"
 
-#: templates/bills.html:39
+#: contrib/bills/templates/bills.html:47
 msgid "You don't have paid bills"
 msgstr "No tiene facturas pagas"
+
+#: contrib/bills/templates/email_invoice.html:16
+msgid "Invoice paid"
+msgstr ""
+
+#: contrib/bills/templates/email_invoice.html:16
+msgid "Invoice unpaid"
+msgstr ""
+
+#: contrib/bills/templates/email_invoice.html:17
+msgid "Unique Transaction ID"
+msgstr ""
+
+#: contrib/bills/templates/email_invoice.html:22
+msgid "Paid Date"
+msgstr ""
+
+#: contrib/bills/templates/invoice.html:2
+msgid "Academica Invoice"
+msgstr ""
+
+#: contrib/bills/templates/invoice.html:9
+#, fuzzy
+#| msgid "Short description"
+msgid "Enrollment description"
+msgstr "Descripción Corta"
+
+#: contrib/bills/templates/invoice.html:17
+msgid "Date"
+msgstr ""
+
+#~ msgid ""
+#~ "\n"
+#~ "                             User %(username)s \n"
+#~ "                             Enroll in %(enroll)s\n"
+#~ "                             At %(date)s\n"
+#~ "                            "
+#~ msgstr ""
+#~ "\n"
+#~ "                             Usuario %(username)s \n"
+#~ "                             Matriculado en %(enroll)s\n"
+#~ "                             Fecha %(date)s\n"
+#~ "                            "

@@ -1,0 +1,24 @@
+{%load i18n %}
+
+<h1>{% trans 'Welcome to Academica' %}  </h1>
+
+{% trans 'Dear' %}: {{user.get_full_name}},
+
+
+<p>
+{% blocktrans %}
+Thank you for suscribe in academica website, we are happy to have you with us, 
+we have several courses that are waiting for you, but one more step is required.
+{% endblocktrans %}
+</p>
+<p style="color: #FF0000;">
+
+{% blocktrans %}Your email confirmation is need it, please use {% endblocktrans %}
+<a href="{{url}}?id={{user.pk}}&key={{user.confirmation_key}}" > {% trans 'this link' %} </a> {% trans 'to confirm your email' %}</p>
+
+<p>
+{% blocktrans %}if your email service block links  then copy and paste this url in a new tab{% endblocktrans %}
+<br> {{url}}?id={{user.pk}}&key={{user.confirmation_key}}</p> 
+
+<br><br>
+{% trans 'Best regards' %}
