@@ -10,7 +10,13 @@
 
 		<span class="badge">
 		{% if request.user.is_authenticated and group.in_enrollment%}
-			<a data-href="{% url 'enrollme' group.pk%}"  data-ajax="true" class="btn-sm btn-default">{% trans 'Pre-enroll me' %}</a>
+			<a data-href="{% url 'enrollme' group.pk%}"  data-ajax="true" class="btn-sm btn-default">
+				{% if group.flow == group.AUTO_ENROLL%}
+					{% trans 'Enroll me' %}
+				{% else %}
+					{% trans 'Pre-enroll me' %}
+				{% endif%}
+				</a>
 		{%endif%}
 		<span id="count_{{group.pk}}">{{group.enroll_set.count}} </span>
 		</span>

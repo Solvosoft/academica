@@ -44,6 +44,7 @@ class GroupAdmin(admin.ModelAdmin, BaseGroup):
                         'fields': (('period', 'course', 'student_list_ref'),
                                    'name', 'maximum',
                                    ('cost', 'currency'), 'schedule',
+                                    'flow',
                                     ('pre_enroll_start', 'pre_enroll_finish'),
                                     ('enroll_start' , 'enroll_finish'))
                         }),
@@ -144,14 +145,14 @@ admin.site.register(Group, GroupAdmin)
 admin.site.register(Enroll, EnrollAdmin)
 admin.site.register(Period)
 admin.site.register(Category)
-admin.site.register(MenuItem, MenuItemAdmin)
+admin.site.register(MenuItem)
 admin.site.register(Page)
 
-admin.site.site_header = "Academica administrator"
+admin.site.site_header = _("Academica administrator site")
 
 
 admin_site = AdminSite(name='matricula_admin')
-admin_site.site_header = "Academica administrator"
+admin_site.site_header = _("Academica administrator site")
 
 
 
@@ -161,4 +162,5 @@ admin_site.register(Group, GroupAdmin)
 admin_site.register(Enroll, EnrollAdmin)
 admin_site.register(Period)
 admin_site.register(Category)
-admin_site.register(MenuItem)
+admin_site.register(MenuItem, MenuItemAdmin)
+admin_site.register(Page)

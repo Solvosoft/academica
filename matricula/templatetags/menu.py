@@ -99,14 +99,14 @@ def show_menu(user_auth):
     menues = get_menu_items(user_auth)
     css = """
 <style>
-    ul {padding: 0; margin: 0; padding-top: 5px;}
-    li { display: inline; position: relative;}
-    ul ul {position: absolute; display: none;margin: 0;}
-    ul ul ul { left: 100%; top: 0; width: 300px;}
-    li:hover > ul { display: block;}
+    #menu ul {padding: 0; margin: 0; padding-top: 5px;}
+    #menu li { display: inline; position: relative;}
+    #menu ul ul {position: absolute; display: none;margin: 0;}
+    #menu ul ul ul { left: 100%; top: 0; width: 300px;}
+    #menu li:hover > ul { display: block;}
 </style>
     """
-    dev = '<ul class="nav nav-pills" >' + print_menu_item(menues) + "</ul>"
+    dev = '<div id="menu"><ul class="nav nav-pills" >' + print_menu_item(menues) + "</ul></div>"
     return mark_safe(css + dev)
 
 """

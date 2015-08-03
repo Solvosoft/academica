@@ -58,12 +58,21 @@ class Course(models.Model):
 @python_2_unicode_compatible
 class Group(models.Model):
 
+    NORMAL = 0
+    AUTO_PREENROLL = 1
+    AUTO_ENROLL = 2
+
     COURRENCY_CHOICES = (
             ("USD", "US Dollar"),
             ("EUR", "Euro"),
             ("CRC", "Costa Rican Colon"),
                          )
 
+    FLOWS = (
+             (NORMAL, _('Normal flow (manual enroll activate)')),
+             (AUTO_PREENROLL, _("Auto pre-enroll (automatic enroll activate)")),
+             (AUTO_ENROLL, _("Auto enroll (automatic enroll finished)")),
+             )
     period = models.ForeignKey(Period, verbose_name=_("Period"))
     course = models.ForeignKey(Course, verbose_name=_("Course"))
     name = models.CharField(max_length=50, verbose_name=_("Name"))
@@ -78,6 +87,7 @@ class Group(models.Model):
     cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("Course cost"))
     maximum = models.SmallIntegerField(verbose_name=_("Maximum number of students"))
     is_open = models.BooleanField(default=True)
+    flow = models.SmallIntegerField(choices=FLOWS, default=NORMAL, verbose_name=_("Enrollment behavior"))
 
     @property
     def in_enrollment(self):

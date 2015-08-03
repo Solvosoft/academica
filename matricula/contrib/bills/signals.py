@@ -17,7 +17,8 @@ from django.conf import settings
 @receiver(post_save, sender=Enroll)
 def create_bill(sender, **kwargs):
     instance = kwargs['instance']
-    if not instance.bill_created and instance.enroll_finished:
+    if not instance.bill_created and instance.enroll_finished\
+    and instance.group.cost > 0:
         instance.bill_created = True
         Bill.objects.create(short_description=_("Enroll in %s") % (str(instance.group)),
                             description=render_to_string('invoice.html',
@@ -37,9 +38,6 @@ def create_bill(sender, **kwargs):
 def paypal_bill_paid(sender, **kwargs):
     ipn_obj = sender
     if ipn_obj.payment_status == ST_PP_COMPLETED:
-        import pickle
-        with open('data.pickle', 'wb') as f:
-            pickle.dump(ipn_obj, f, pickle.HIGHEST_PROTOCOL)
         try:
             bill = Bill.objects.get(pk=ipn_obj.invoice)
             bill.is_paid = True
@@ -48,10 +46,8 @@ def paypal_bill_paid(sender, **kwargs):
             bill.save()
             ok = True
         except Exception as e:
-            print(e)
             ok = False
-            pass
-
+            # FIXME do something here
         if ok:
             invoice = render_to_string('email_invoice.html', {'bill': bill})
             send_mail(_("Academica Invoice paid"),

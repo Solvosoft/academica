@@ -13,11 +13,13 @@ easy to use.
 * Clasic authentication by email with password recovery
 * Course management
 * Groups management
-* Pre-enrollment
+* Pre-enrollment 
 * Enrollment 
 * Student list (Pre-enrolled, enrolled) 
 * Paypal payment System (optional, see matricula.contrib.bills)
-* Multilingual (spanish and english, translators are welcome)  
+* Multilingual (spanish and english, translators are welcome)
+* Page content 
+* Multilevel Menu and admin menu editor  
 
 # Install 
 
@@ -28,7 +30,7 @@ To install this program you need python 3  (tested with python 3.4)
 	$ cd academica/
 	$ pip install -r matricula/requirements/matricula.txt
 
-To install billing system
+To install billing system (Installing this is high recomended)
 	
 	$ pip install -r matricula/requirements/bills.txt
 		

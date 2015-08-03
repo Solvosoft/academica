@@ -23,7 +23,14 @@ def enrollme(request, pk):
     if not list_enroll.exists():
         try:
             with transaction.atomic():
-                Enroll.objects.create(group=group, student=request.user)
+                enroll = Enroll.objects.create(group=group, student=request.user)
+            if group.flow == group.AUTO_PREENROLL:
+                enroll.enroll_activate = True
+                enroll.save()
+            elif group.flow == group.AUTO_ENROLL:
+                enroll.enroll_activate = True
+                enroll.enroll_finished = True
+                enroll.save()
         except IntegrityError:
             return { "inner-fragments": {"#count_" + str(group.pk): group.enroll_set.count(),
                                         "#group_message": '<div class="alert alert-info" role="alert">' + str(_('We have some problems with your enroll, try again')) + ' </div>'
@@ -45,8 +52,8 @@ def enrollme(request, pk):
 def list_enroll(request):
     list_enroll = Enroll.objects.filter(student=request.user, enroll_activate=True, enroll_finished=False,
       group__enroll_start__lte=timezone.now(),
-      group__enroll_finish__gte=timezone.now())
-    finished_enroll = Enroll.objects.filter(student=request.user, enroll_finished=True) 
+      group__enroll_finish__gte=timezone.now()).order_by("-enroll_date")
+    finished_enroll = Enroll.objects.filter(student=request.user, enroll_finished=True).order_by("-enroll_date")
     return render(request, 'enroll.html', {'list_enroll': list_enroll,
                                            'finished_enroll': finished_enroll}
                   )
@@ -56,7 +63,7 @@ def list_enroll(request):
 def finish_enroll(request, pk):
     enroll = get_object_or_404(Enroll, pk=pk)
     enroll.enroll_finished = True
-    
+
     try:
         with transaction.atomic():
             enroll.save()
