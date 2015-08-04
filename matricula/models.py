@@ -10,7 +10,7 @@ from ckeditor.fields import RichTextField
 from django.utils.encoding import python_2_unicode_compatible, smart_text
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-
+from django.conf import settings
 
 
 class Student(SimpleEmailConfirmationUserMixin, AbstractUser):
@@ -119,7 +119,6 @@ class Enroll(models.Model):
         verbose_name = _("Enrollment")
         verbose_name_plural = _("Enrollments")
 
-
 @python_2_unicode_compatible
 class MenuItem(models.Model):
     TYPES = (
@@ -135,6 +134,18 @@ class MenuItem(models.Model):
     publicated = models.BooleanField(default=True, verbose_name=_("Publicated"))
     is_index = models.BooleanField(default=False, verbose_name=_("Index page"))
 
+    def get_title_menu(self, request):
+        name = MenuTranslations.objects.filter(language=request.LANGUAGE_CODE)
+        if not name:
+            name = MenuTranslations.objects.filter(language=settings.LANGUAGE_CODE)
+
+        if not name:
+            name = self.description
+        else:
+            name = name[0].name
+
+        return name
+
     def __str__(self):
         return self.description
 
@@ -142,11 +153,21 @@ class MenuItem(models.Model):
         verbose_name = _("Menu Item")
         verbose_name_plural = _("Menu Items")
 
+@python_2_unicode_compatible
+class MenuTranslations(models.Model):
+    language = models.CharField(max_length=3,
+                                choices=settings.LANGUAGES,
+                                default=settings.LANGUAGE_CODE,
+                                verbose_name=_("Language"))
+    name = models.CharField(max_length=50, verbose_name=_("Description"))
+    menu = models.ForeignKey(MenuItem, null=True)
+
+    def __str__(self):
+        return self.name
 
 @python_2_unicode_compatible
 class Page(models.Model):
     slug = models.SlugField()
-    content = RichTextField(verbose_name=_("Content"))
 
     def __str__(self):
         return self.slug
@@ -154,3 +175,17 @@ class Page(models.Model):
     class Meta:
         verbose_name = _("Page")
         verbose_name_plural = _("Pages")
+
+
+@python_2_unicode_compatible
+class MultilingualContent(models.Model):
+    language = models.CharField(max_length=3,
+                                choices=settings.LANGUAGES,
+                                default=settings.LANGUAGE_CODE,
+                                verbose_name=_("Language"))
+    title = models.CharField(max_length=300, null=True, blank=True)
+    content = RichTextField(verbose_name=_("Content"))
+    page = models.ForeignKey(Page)
+
+    def __str__(self):
+        return self.language

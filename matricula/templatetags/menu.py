@@ -67,7 +67,7 @@ def get_menu_items(user_auth):
 
     return dic_menu
 
-def get_ref_and_ref_display(menu):
+def get_ref_and_ref_display(request, menu):
     ref = "/"
     ref_display = "I am wrong"
     if menu.type == 0:
@@ -75,11 +75,11 @@ def get_ref_and_ref_display(menu):
         ref_display = _(menu.description)
     elif menu.type == 1:
         ref = reverse("academica_pages", args=(menu.name,))
-        ref_display = menu.description
+        ref_display = menu.get_title_menu(request)
 
     return ref, ref_display
 
-def print_menu_item(menues, is_list=False):
+def print_menu_item(request, menues, is_list=False):
     dev = ""
     if is_list:
         items_menu = zip(range(len(menues)), menues)
@@ -87,15 +87,16 @@ def print_menu_item(menues, is_list=False):
         items_menu = menues.items()
 
     for key, menu in items_menu:
-        ref, ref_display = get_ref_and_ref_display(menu['obj'])
+        ref, ref_display = get_ref_and_ref_display(request, menu['obj'])
         dev += '<li role="presentation" ><a class="btn btn-success" href="%s"> %s</a>' % (ref, ref_display)
         if menu['children']:
-            dev += '<ul class="nav nav-pills" >' + print_menu_item(menu['children'], True) + "</ul>"
+            dev += '<ul class="nav nav-pills" >' + print_menu_item(request, menu['children'], True) + "</ul>"
         dev += '</li>'
 
     return dev
-@register.simple_tag
-def show_menu(user_auth):
+
+@register.simple_tag(takes_context=True)
+def show_menu(context, user_auth):
     menues = get_menu_items(user_auth)
     css = """
 <style>
@@ -106,22 +107,5 @@ def show_menu(user_auth):
     #menu li:hover > ul { display: block;}
 </style>
     """
-    dev = '<div id="menu"><ul class="nav nav-pills" >' + print_menu_item(menues) + "</ul></div>"
+    dev = '<div id="menu"><ul class="nav nav-pills" >' + print_menu_item(context['request'], menues) + "</ul></div>"
     return mark_safe(css + dev)
-
-"""
-def show_menu(user_auth):
-    if not menues.menu_sort:
-        menues.main_menu.sort(key=lambda menu: menu[3], reverse=False)
-        menues.menu_sort = True
-
-    dev = '<ul class="nav navbar-nav">'
-    for menu in menues.main_menu:
-        if not menu[2] or user_auth:
-            link = reverse(menu[1]) if menu[4] else menu[1]
-            dev += '<li role="presentation" ><a href="%s"> %s</a></li>' % (
-                        link, menu[0])
-    dev += "</ul>"
-    return mark_safe(dev)    
-"""
-

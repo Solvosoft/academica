@@ -2,5 +2,6 @@
 {%load i18n %}
 
 {%block content%}
-{{object.content |safe}}
+{% if page.title %} <h1>{{page.title}}</h1> {%endif%}
+{{page.content |safe}}
 {%endblock%}
