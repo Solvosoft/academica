@@ -9,6 +9,23 @@ import ckeditor.fields
 from django.conf import settings
 import django.utils.timezone
 
+from matricula.menues import main_menu
+
+
+def add_menu(apps, schema_editor):
+    MenuItem = apps.get_model("matricula", "MenuItem")
+    db_alias = schema_editor.connection.alias
+    menues = []
+    for menu in main_menu:
+        menues.append(MenuItem(
+                    name=menu[1],
+                    type=0,
+                    description=menu[0],
+                    require_authentication=menu[2],
+                    order=menu[3])
+                    )
+    MenuItem.objects.using(db_alias).bulk_create(menues)
+
 
 class Migration(migrations.Migration):
 
@@ -193,4 +210,5 @@ class Migration(migrations.Migration):
             name='user_permissions',
             field=models.ManyToManyField(help_text='Specific permissions for this user.', blank=True, related_name='user_set', related_query_name='user', to='auth.Permission', verbose_name='user permissions'),
         ),
+        migrations.RunPython(add_menu,),
     ]
