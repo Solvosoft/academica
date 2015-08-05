@@ -2,31 +2,36 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-from django.conf import settings
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
             name='Bill',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('short_description', models.CharField(verbose_name='Short description', max_length=300)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('short_description', models.CharField(max_length=300, verbose_name='Short description')),
                 ('description', models.TextField(verbose_name='Description')),
-                ('amount', models.DecimalField(verbose_name='Amount', max_digits=4, decimal_places=2)),
+                ('amount', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Amount')),
+                ('currency', models.CharField(max_length=3, default='CRC', verbose_name='Currency')),
                 ('is_paid', models.BooleanField(default=False)),
                 ('paid_date', models.DateTimeField(auto_now_add=True)),
-                ('transaction_id', models.TextField(null=True, max_length=300, blank=True)),
-                ('student', models.ForeignKey(verbose_name='Student', to=settings.AUTH_USER_MODEL)),
+                ('transaction_id', models.TextField(blank=True, null=True, max_length=300)),
             ],
             options={
-                'verbose_name': 'Bill',
                 'verbose_name_plural': 'Bills',
+                'verbose_name': 'Bill',
             },
+        ),
+        migrations.CreateModel(
+            name='Colon_Exchange',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('is_dolar', models.DecimalField(decimal_places=4, max_digits=10, verbose_name='Amount')),
+            ],
         ),
     ]
