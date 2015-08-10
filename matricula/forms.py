@@ -7,7 +7,7 @@ Created on 7/4/2015
 '''
 
 from django import forms
-from matricula.models import Student, Page, MenuItem
+from matricula.models import Student, Page, MenuItem, ProfesorSchedule
 from django.utils.translation import ugettext_lazy as _
 from django.core import validators
 
@@ -60,3 +60,4 @@ class MenuItemFormPage(forms.ModelForm):
         exclude = ("name",)
         fields = ["name", 'type', 'description', 'require_authentication',
                   'order', 'parent', 'publicated', 'is_index']
+

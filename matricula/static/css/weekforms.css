@@ -1,0 +1,22 @@
+.hour{
+	background-color: #fff;
+	width: 50px;
+	height: 20px;
+	border-left: 1px solid;
+}
+
+.hour_selected{
+	background-color: green;
+}
+
+.hour_table th{
+	text-align: center;
+	
+}
+.hour_table{
+	border-right: 1px solid;
+}
+
+.hour_table .six{
+	border-bottom: 1px solid;
+}

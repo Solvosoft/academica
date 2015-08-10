@@ -2,7 +2,9 @@
 
 from django.contrib import admin
 from matricula.models import Student, Course, Group, Enroll, Period, Category, \
-    MenuItem, Page, MultilingualContent, MenuTranslations
+    MenuItem, Page, MultilingualContent, MenuTranslations, ClassroomType, \
+    Classroom, ClassroomSchedule, Profesor, ProfesorSchedule, \
+    ClassroomGroupProfesor, Hour, Week
 from django.utils.translation import ugettext_lazy as _
 from django.conf.urls import url
 from django.core.urlresolvers import reverse
@@ -13,6 +15,7 @@ from django_ajax.decorators import ajax
 from django.contrib.admin import AdminSite
 from django.contrib.auth.admin import UserAdmin
 from matricula.forms import MenuItemFormPage
+from matricula.admins.Schedule import ScheduleAdmin
 
 # Register your models here.
 
@@ -155,8 +158,43 @@ class PageInline(admin.TabularInline):
 class PageAdmin(admin.ModelAdmin):
     inlines = [PageInline]
 
+class ClassroomAdmin(admin.ModelAdmin, ScheduleAdmin):
+    fields = ('name', 'capacity', 'classroom_type', 'selection_score', 'week')
+    readonly_fields = ("week",)
+
+    scheduleModel = ClassroomSchedule
+
+    def save_model(self, request, obj, form, change):
+        super(ClassroomAdmin, self).save_model(request, obj, form, change)
+        ScheduleAdmin.save_model(self, request, obj, form, change)
+
+
+
 class MenuAdmin(admin.ModelAdmin):
     inlines = [MenuInline]
+
+
+
+class ProfesorAdmin(admin.ModelAdmin, ScheduleAdmin):
+    fields = ('user', 'number_hours', 'week')
+    readonly_fields = ("week",)
+
+    scheduleModel = ProfesorSchedule
+
+    def save_model(self, request, obj, form, change):
+        super(ProfesorAdmin, self).save_model(request, obj, form, change)
+        ScheduleAdmin.save_model(self, request, obj, form, change)
+
+
+class ClassroomGroupProfesorAdmin(admin.ModelAdmin, ScheduleAdmin):
+    fields = ('period', 'classroom', "profesor", 'group', 'week')
+    readonly_fields = ("week",)
+    scheduleModel = ClassroomGroupProfesor
+    same_model = True
+
+    def save_model(self, request, obj, form, change):
+        super(ClassroomGroupProfesorAdmin, self).save_model(request, obj, form, change)
+        ScheduleAdmin.save_model(self, request, obj, form, change)
 
 admin.site.register(Student, MyUserAdmin)
 admin.site.register(Course)
@@ -166,6 +204,15 @@ admin.site.register(Period)
 admin.site.register(Category)
 admin.site.register(MenuItem, MenuAdmin)
 admin.site.register(Page, PageAdmin)
+
+admin.site.register(ClassroomType)
+admin.site.register(Classroom, ClassroomAdmin)
+admin.site.register(Profesor, ProfesorAdmin)
+admin.site.register(ClassroomGroupProfesor, ClassroomGroupProfesorAdmin)
+
+
+# admin.site.register(Week)
+# admin.site.register(Hour)
 
 admin.site.site_header = _("Academica administrator site")
 
