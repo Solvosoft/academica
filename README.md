@@ -21,7 +21,7 @@ easy to use.
 * Student list (Pre-enrolled, enrolled) 
 * Paypal payment System (optional, see matricula.contrib.bills)
 * Multilingual (spanish and english, translators are welcome)
-[] Automatic asignation management
+* [] Automatic asignation management
 * Page content 
 * Multilevel Menu and admin menu editor  
 
