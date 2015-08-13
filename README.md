@@ -9,21 +9,21 @@ easy to use.
 
 # Features
 
-* Social authentication for students 
-* Clasic authentication by email with password recovery
-* Course management
-* Groups management
-* Profesor management
-* Classroom management (different type of classroom)
-* Group, Profesor, Classroom asignation management
-* Pre-enrollment 
-* Enrollment 
-* Student list (Pre-enrolled, enrolled) 
-* Paypal payment System (optional, see matricula.contrib.bills)
-* Multilingual (spanish and english, translators are welcome)
-* [] Automatic asignation management
-* Page content 
-* Multilevel Menu and admin menu editor  
+- [X] Social authentication for students 
+- [X] Clasic authentication by email with password recovery
+- [X] Course management
+- [X] Groups management
+- [X] Profesor management
+- [X] Classroom management (different type of classroom)
+- [X] Group, Profesor, Classroom asignation management
+- [X] Pre-enrollment 
+- [X] Enrollment 
+- [X] Student list (Pre-enrolled, enrolled) 
+- [X] Paypal payment System (optional, see matricula.contrib.bills)
+- [X] Multilingual (spanish and english, translators are welcome)
+- [] Automatic asignation management
+- [X] Page content 
+- [X] Multilevel Menu and admin menu editor  
 
 # Install 
 
