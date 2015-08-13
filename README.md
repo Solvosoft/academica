@@ -21,7 +21,6 @@ easy to use.
 - [X] Student list (Pre-enrolled, enrolled) 
 - [X] Paypal payment System (optional, see matricula.contrib.bills)
 - [X] Multilingual (spanish and english, translators are welcome)
-- [ ] Automatic asignation management
 - [X] Page content 
 - [X] Multilevel Menu and admin menu editor  
 
@@ -94,3 +93,14 @@ MY_PAYPAL_HOST = "http://miserver.com"
 
 Donation is always welcome by paypal [donate here](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=DYR7VVLUED6V6&lc=AL&item_name=Academia%20desarrollo&item_number=22&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
 or contac us in info[at ] solvosoft.com o by github.
+
+# TODO
+
+- [ ] Automatic asignation management
+- [ ] Pypi installer
+- [ ] Modularize matricula 
+- [ ] Paypal Credit card payment
+- [ ] Pdf reports
+- [ ] Multi-periods
+- [ ] Documentation
+- [ ] Unitest and coverage Tests 
