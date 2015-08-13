@@ -10,6 +10,8 @@ from matricula.views.Auth import StudentEdit
 
 from .admin import admin_site
 from matricula.views.Pages import PageDetail
+import matricula
+from ajax_select import urls as ajax_select_urls
 
 urlpatterns = patterns('matricula.views.Auth',
                        url('^create_user$', 'create_user', name="create_user"),
@@ -33,6 +35,7 @@ urlpatterns += patterns('matricula.views.Enrollments',
                         )
 
 urlpatterns += patterns('',
+                        url(r'^admin/lookups/', include(ajax_select_urls)),
                         url(r'^admin/', include(admin_site.urls)),
                         url(r'^pages/(?P<pk>\d+)$', PageDetail.as_view(), name="academica_pages"),
                         )

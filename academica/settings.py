@@ -54,6 +54,7 @@ INSTALLED_APPS = (
     'ckeditor',
     'paypal.standard.ipn',
     'django_ajax',
+    'ajax_select'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -184,3 +185,11 @@ SOCIALACCOUNT_PROVIDERS = \
         'VERIFIED_EMAIL': False,
         'VERSION': 'v2.3'}}
 
+AJAX_LOOKUP_CHANNELS = {
+    #  simple: search Person.objects.filter(name__icontains=q)
+    'classroom'  : {'model': 'matricula.classroom', 'search_field': 'name'},
+    'profesor'  : {'model': 'matricula.profesor', 'search_field': 'user__first_name'},
+    'group'  : {'model': 'matricula.group', 'search_field': 'name'},
+    # define a custom lookup channel
+    # 'song'   : ('example.lookups', 'SongLookup')
+}

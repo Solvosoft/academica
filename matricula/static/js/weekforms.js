@@ -16,7 +16,6 @@
 			if( index > -1){
 				//del weeks[name][index]
 				weeks[name].splice(index, 1);
-				console.log(name);
 				$("input[name='"+name +"']").val(weeks[name].join(";"));
 			}
 		}
@@ -30,16 +29,17 @@
 				if(!value[0] == ""){
 					weeks[name] = value;
 					$(value).each(function(y,t){
-						$("#"+name + " #"+t).parent().addClass("hour_selected")
+						$("#"+name + " #"+t).parent().addClass("hour_selected");
 					});
 				}
 			//}
 		});
 		
 		
-		$(".hour").click(
-			function(){
-				me = $(this)
+		$(".hour").on( "mouseenter",
+			function(evt){
+				if (evt.ctrlKey){
+				me = $(this);
 				if (me.hasClass("hour_selected")){
 					me.removeClass("hour_selected");
 					delHour(me.closest("table").attr("name"), $(this).find("span").attr("id"));
@@ -48,6 +48,7 @@
 					addHour(me.closest("table").attr("name"), $(this).find("span").attr("id"));
 					//alert($(this).find("span").attr("id"));
 				}
+			 }
 			}
 			
 		);

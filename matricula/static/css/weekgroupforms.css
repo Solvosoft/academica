@@ -1,0 +1,62 @@
+#id_schedule{
+    display: block;
+    height: 800px;
+    margin-top: 16px;
+    position: relative;
+}
+#table_classroom{
+	position: absolute;
+	z-index: 1;
+	left: 10%;
+	top: 0px;
+}
+#table_profesor {
+	position: absolute;
+	z-index: 2;
+	left: 10%;
+	top: 0px;
+}
+#table_group{
+	position: absolute;
+	z-index: 3;
+	left: 10%;
+	top: 0px;
+}
+
+.hour{
+	background-color: rgba(255,255,255,0.1);
+	width: 50px;
+	height: 20px;
+	border-left: 1px solid;
+}
+
+.hour_selected{
+	background-color: rgba(0,255,0,1);
+}
+
+.hour_table th{
+	text-align: center;
+	
+}
+.hour_table{
+	border-right: 1px solid;
+}
+
+.hour_table .six{
+	border-bottom: 1px solid;
+}
+
+.classroom_active{
+	background-color: #FFFF99;
+}
+.classroom_selected{
+	background-color: #FF99FF;	
+}
+
+.profesor_active{
+	background-color: rgba(0,0,255,0.3);
+}
+
+.profesor_selected{
+	background-color: rgba(255,0,255,0.3);
+}

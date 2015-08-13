@@ -4,3 +4,4 @@ django-ckeditor
 djangoajax
 -e git+https://github.com/ebar0n/xhtml2pdf.git#egg=xhtml2pdf
 django-allauth
+django-ajax-selects

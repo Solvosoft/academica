@@ -15,7 +15,7 @@ from django_ajax.decorators import ajax
 from django.contrib.admin import AdminSite
 from django.contrib.auth.admin import UserAdmin
 from matricula.forms import MenuItemFormPage
-from matricula.admins.Schedule import ScheduleAdmin
+from matricula.admins.Schedule import ScheduleAdmin, GroupSchedule
 
 # Register your models here.
 
@@ -41,26 +41,32 @@ class EnrollAdmin(admin.ModelAdmin):
     set_enroll_finished_true.short_description = _("Active user for pre-enrollment")
 
 
-class GroupAdmin(admin.ModelAdmin, BaseGroup):
+class GroupAdmin(admin.ModelAdmin, BaseGroup, ScheduleAdmin):
     fieldsets = (
                 (None, {'classes': ('wide', 'extrapretty'),
-                        'fields': (('period', 'course', 'student_list_ref'),
-                                   'name', 'maximum',
-                                   ('cost', 'currency'), 'schedule',
-                                    'flow',
-                                    ('pre_enroll_start', 'pre_enroll_finish'),
-                                    ('enroll_start' , 'enroll_finish'))
+                        'fields': (('period', 'course', 'flow',),
+                                   ('name', 'maximum', 'student_list_ref'),
+                                   ('cost', 'currency'))
                         }),
+                 (_("Schedule and enrollment time"),
+                  {'classes':('wide', 'extrapretty'),
+                   'fields': (('pre_enroll_start', 'pre_enroll_finish'),
+                              ('enroll_start' , 'enroll_finish'), 'week',)
+                  }),
                 )
     list_display = ('name', 'course', 'period', 'maximum',
                     'pre_enroll_start', 'pre_enroll_finish', 'count_student_preenroll',
                     'count_student_enroll', 'payments')
 
+
     list_filter = ('period',)
     ordering = ('pre_enroll_start',)
     actions = ['action_copy_last_period', 'action_open_group']
     search_fields = ('course__name',)
-    readonly_fields = ('student_list_ref',)
+    readonly_fields = ('student_list_ref', "week")
+
+    scheduleModel = Group
+    same_model = True
 
     def student_list_ref(self, obj=None):
         if obj.pk is None:
@@ -110,7 +116,6 @@ class GroupAdmin(admin.ModelAdmin, BaseGroup):
         return my_urls + urls
 
 
-
 class MyUserAdmin(UserAdmin):
     def get_fieldsets(self, request, obj=None):
         if not obj:
@@ -158,6 +163,7 @@ class PageInline(admin.TabularInline):
 class PageAdmin(admin.ModelAdmin):
     inlines = [PageInline]
 
+
 class ClassroomAdmin(admin.ModelAdmin, ScheduleAdmin):
     fields = ('name', 'capacity', 'classroom_type', 'selection_score', 'week')
     readonly_fields = ("week",)
@@ -186,12 +192,22 @@ class ProfesorAdmin(admin.ModelAdmin, ScheduleAdmin):
         ScheduleAdmin.save_model(self, request, obj, form, change)
 
 
-class ClassroomGroupProfesorAdmin(admin.ModelAdmin, ScheduleAdmin):
+from ajax_select.admin import AjaxSelectAdmin
+from ajax_select import make_ajax_form
+class ClassroomGroupProfesorAdmin(AjaxSelectAdmin, GroupSchedule):
     fields = ('period', 'classroom', "profesor", 'group', 'week')
     readonly_fields = ("week",)
     scheduleModel = ClassroomGroupProfesor
     same_model = True
+    form = make_ajax_form(ClassroomGroupProfesor, {'profesor': 'profesor',
+                                                   'classroom': 'classroom',
+                                                   'group': 'group'})
 
+    def get_urls(self):
+        urls = AjaxSelectAdmin.get_urls(self)
+        schurls = GroupSchedule.get_urls(self)
+        return urls + schurls
+    
     def save_model(self, request, obj, form, change):
         super(ClassroomGroupProfesorAdmin, self).save_model(request, obj, form, change)
         ScheduleAdmin.save_model(self, request, obj, form, change)

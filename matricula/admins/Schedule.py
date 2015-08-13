@@ -1,8 +1,12 @@
-from matricula.models import Week, Hour
+from matricula.models import Week, Hour, ClassroomSchedule, \
+    ClassroomGroupProfesor, ProfesorSchedule
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 from matricula.views.utils import get_active_period
-
+from django.template.loader import render_to_string
+from django.conf.urls import url
+from django.core.urlresolvers import reverse
+from django.http import JsonResponse
 
 class ScheduleAdmin(object):
     scheduleModel = None
@@ -26,6 +30,9 @@ class ScheduleAdmin(object):
         if obj and obj.pk:
             if self.same_model:
                 schedule = [ obj ]
+                if obj.schedule is None:
+                    obj.schedule = Week.objects.create()
+                    obj.save()
             else:
                 args = self.get_filters_params(obj)
                 schedule = self.scheduleModel.objects.filter(**args)
@@ -98,48 +105,78 @@ class ScheduleAdmin(object):
 
 
     def render_week(self, name, value, attrs=None):
-        s = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
-        hours_name = ["Day"]
-
-        hours_name += [ "%.2d:00 AM" % (x) for x in range(12)] + ["12:00 MD"]
-        hours_name += [ "%.2d:00 PM" % (x) for x in range(1, 12)]        
-
-        pos = 0
-        day = 0
-        week = [hours_name]
-        for x in range(7):
-            l = [y for y in range(x * 24, x * 24 + 24)]
-            l.insert(0, s[x])
-            week.append(l)
-
-
         dev = '<input type="hidden" name="%s"  value="%s" class="week_input">' % (name, value)
-        dev += '<table id="%s" name="%s" class="hour_table">' % (name, name)
-
-        for pos, base in list(enumerate(week[0])):
-            dev += "<tr><th>" + base + '</th>'
-            td_class = ""
-            if pos % 6 == 0:
-                td_class = "six"
-            for x in range(7):
-                dev += '<th class="%s">' % (td_class) if not pos else '<td class="hour %s">' % (td_class)
-                d = week[x + 1][pos]  if not pos else ""
-                dev += '<span id="%s" class="%s"> %s</span>' % (str(week[x + 1][pos]), "", d)
-                dev += "</th>" if not pos else "</td>"
-            dev += "</tr>"
-        dev += "</table>"
-
+        dev += render_to_string("matricula/week.html", {'name': name})
+        dev = dev.replace("\n", "")
         return mark_safe(dev)
 
-
-
-
-    week.short_description = _("Week")
+    week.short_description = _("Week schedule")
 
     class Media:
         css = {
                'all': ('css/weekforms.css',),
                }
-        js = ('django_ajax/js/jquery.ajax.min.js',
-              'django_ajax/js/jquery.ajax-plugin.min.js',
-              'js/weekforms.js')
+        js = ('js/weekforms.js',)
+
+
+class GroupSchedule(ScheduleAdmin):
+
+    def get_urls(self):
+        my_urls = [
+            url(r'^classroom_hours$', self.get_classroom_schedule,
+                name="classroom_hours"),
+            url(r'^profesor_hours$', self.get_profesor_schedule,
+                name="profesor_hours"),
+        ]
+        return my_urls
+
+    def get_schedules(self, request, base_class, _type,):
+        dev = {'selected': [],
+               'type': _type,
+               'hours': [] } 
+        pk = request.GET.get('pk', 0)
+        if pk:
+            pk = int(pk)
+        else:
+            return JsonResponse(dev)
+        period = get_active_period()
+        args = {'period': period,
+                _type + "__pk": pk,
+               }
+
+
+        cschedule = base_class.objects.filter(**args)
+        if cschedule:
+            cschedule = cschedule[0]
+            dev['hours'] = [str(x["day_position"]) for x in cschedule.schedule.hours.filter(active=True).values("day_position")]
+        args = {'period': period,
+                _type: pk,
+               }
+        selected = ClassroomGroupProfesor.objects.filter(**args)
+        if selected:
+            for sel in selected:
+                dev['selected'] = [str(x["day_position"]) for x in sel.schedule.hours.filter(active=True).values("day_position")]
+
+        return JsonResponse(dev)
+    
+    def get_classroom_schedule(self, request):
+        return self.get_schedules(request, ClassroomSchedule, "classroom")
+
+    def get_profesor_schedule(self, request):
+        return self.get_schedules(request, ProfesorSchedule, "profesor")
+    
+    def render_week(self, name, value, attrs=None):
+        dev = '<input type="hidden" name="%s"  value="%s" class="week_input">' % (name, value)
+        dev += render_to_string("matricula/groupweek.html", {'name': name})
+        dev = dev.replace("\n", "")
+
+        dev += "<script> classroom_schedule_url='" + reverse("admin:classroom_hours") + "';"
+        dev += "profesor_schedule_url='" + reverse("admin:profesor_hours") + "';"
+        dev += "</script>"
+        return mark_safe(dev)
+
+    class Media:
+        css = {
+               'all': ('css/weekgroupforms.css',),
+               }
+        js = ('js/weekforms.js', 'js/weekgroup.js')
