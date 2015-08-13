@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: matricula\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-02 21:03-0600\n"
-"PO-Revision-Date: 2015-08-02 21:04-0600\n"
+"POT-Creation-Date: 2015-08-12 21:15-0600\n"
+"PO-Revision-Date: 2015-08-12 21:18-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: Es <es@li.org>\n"
 "Language: es\n"
@@ -19,47 +19,51 @@ msgstr ""
 "X-Generator: Poedit 1.6.10\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: admin.py:34
+#: admin.py:37
 msgid "Active user for enrollment"
 msgstr "Activar usuario para matricular"
 
-#: admin.py:38
+#: admin.py:41
 msgid "Active user for pre-enrollment"
 msgstr "Activar usuario para prematricula"
 
-#: admin.py:64
+#: admin.py:51
+msgid "Schedule and enrollment time"
+msgstr "Horario y horas de matricula"
+
+#: admin.py:73
 msgid "Student list don't exist yet"
 msgstr "La lista de estudiantes no existe aún"
 
-#: admin.py:70
+#: admin.py:79
 msgid "List students"
 msgstr "Lista de estudiantes"
 
-#: admin.py:78
+#: admin.py:87
 msgid "# student pre-enroll"
 msgstr "# estudiante prematriculados"
 
-#: admin.py:87
+#: admin.py:96
 msgid "# student enroll"
 msgstr "# estudiantes matriculados"
 
-#: admin.py:91
+#: admin.py:100
 msgid "Total cash"
 msgstr "Dinero total "
 
-#: admin.py:125
+#: admin.py:133
 msgid "Personal info"
 msgstr "Información personal"
 
-#: admin.py:126
+#: admin.py:134
 msgid "Permissions"
 msgstr "Permisos"
 
-#: admin.py:127
+#: admin.py:135
 msgid "Important dates"
 msgstr "Fechas importantes"
 
-#: admin.py:151 admin.py:155
+#: admin.py:233 admin.py:237
 msgid "Academica administrator site"
 msgstr "Sitio administrativo de Académica"
 
@@ -106,6 +110,10 @@ msgstr "Atención %(group)s fue cerrado"
 msgid "This Group was closed"
 msgstr "Este grupo fue cerrado"
 
+#: admins/Schedule.py:113
+msgid "Week schedule"
+msgstr "Horario de la semana"
+
 #: forms.py:16
 msgid "Your username"
 msgstr "Su nombre de usuario"
@@ -146,176 +154,216 @@ msgstr "El nombre de usuario existe"
 msgid "Password not match "
 msgstr "Contraseñas no coinciden"
 
-#: forms.py:46 forms.py:51 models.py:127 models.py:155
+#: forms.py:46 forms.py:51 models.py:226 models.py:278
 msgid "Page"
 msgstr "Página"
 
-#: menues.py:14 models.py:56
+#: menues.py:14 models.py:129
 msgid "Courses"
 msgstr "Cursos"
 
-#: menues.py:15 models.py:119 templates/matricula_base.html:6
+#: menues.py:15 models.py:218 templates/matricula_base.html:6
 msgid "Enrollment"
 msgstr "Matricula"
 
-#: models.py:21 models.py:35 models.py:48 models.py:78 models.py:129
-#: templates/Pdf/student_list.html:50
+#: models.py:38 models.py:53 models.py:86 models.py:121 models.py:152
+#: models.py:228 templates/Pdf/student_list.html:50
 msgid "Name"
 msgstr "Nombre"
 
-#: models.py:22
+#: models.py:39
 msgid "Period start date"
 msgstr "Fecha de inicio de periodo"
 
-#: models.py:23
+#: models.py:40
 msgid "Period finish date"
 msgstr "Fecha de inicio de periodo"
 
-#: models.py:29 models.py:76
+#: models.py:47 models.py:150
 msgid "Period"
 msgstr "Periodo"
 
-#: models.py:30
+#: models.py:48
 msgid "Periods"
 msgstr "Periodos"
 
-#: models.py:36 models.py:131
+#: models.py:54 models.py:87 models.py:230 models.py:263
 msgid "Description"
 msgstr "Descripción"
 
-#: models.py:42 models.py:47
+#: models.py:64
+msgid "High priority"
+msgstr "Alta prioridad"
+
+#: models.py:65
+msgid "Priority"
+msgstr "Con prioridad"
+
+#: models.py:66
+msgid "Normal"
+msgstr "Normal"
+
+#: models.py:67
+msgid "Low priority"
+msgstr "Baja prioridad"
+
+#: models.py:68
+msgid "Last assigned"
+msgstr "Asignar de último"
+
+#: models.py:93 models.py:119
 msgid "Category"
 msgstr "Categoría"
 
-#: models.py:43
+#: models.py:94
 msgid "Categories"
 msgstr "Categorías"
 
-#: models.py:49 models.py:149
+#: models.py:101
+msgid "Number of work hours "
+msgstr "Número de horas a trabajar"
+
+#: models.py:120
+msgid "Required courses"
+msgstr "Cursos requeridos"
+
+#: models.py:122 models.py:289
 msgid "Content"
 msgstr "Contenido"
 
-#: models.py:55 models.py:77
+#: models.py:128 models.py:151
 msgid "Course"
 msgstr "Curso"
 
-#: models.py:72
+#: models.py:146
 msgid "Normal flow (manual enroll activate)"
 msgstr "Flujo normal (activación manual para matricula)"
 
-#: models.py:73
+#: models.py:147
 msgid "Auto pre-enroll (automatic enroll activate)"
 msgstr "Auto prematricula (Activa para matricula automáticamente)"
 
-#: models.py:74
+#: models.py:148
 msgid "Auto enroll (automatic enroll finished)"
 msgstr "Matricula automática (pone matricula finalizada al prematricular)"
 
-#: models.py:79
-msgid "Schedule"
-msgstr "Horario"
+#: models.py:155
+msgid "Classroom type"
+msgstr "Tipo de Aula"
 
-#: models.py:81
+#: models.py:161
+msgid "Number of lesson hours"
+msgstr "Número de horas de lección"
+
+#: models.py:167
+msgid "Number of imparting days"
+msgstr "Número de días a impartir"
+
+#: models.py:170
 msgid "Pre enroll start hour"
 msgstr "Hora de inicio de Pre-matricula"
 
-#: models.py:82
+#: models.py:171
 msgid "Pre enroll finish hour"
 msgstr "Hora de finalización de Pre-matricula"
 
-#: models.py:84
+#: models.py:173
 msgid "Enroll start hour"
 msgstr "Hora de inicio de matricula"
 
-#: models.py:85
+#: models.py:174
 msgid "Enroll finish hour"
 msgstr "Hora de finalización de matricula"
 
-#: models.py:86
+#: models.py:175
 msgid "Currency"
 msgstr "Moneda"
 
-#: models.py:87
+#: models.py:176
 msgid "Course cost"
 msgstr "costo del curso"
 
-#: models.py:88
+#: models.py:177
 msgid "Maximum number of students"
 msgstr "Máximo número de estudiantes"
 
-#: models.py:90
+#: models.py:179
 msgid "Enrollment behavior"
 msgstr "Comportamiento de matricula"
 
-#: models.py:102 models.py:110
+#: models.py:191 models.py:209
 msgid "Group"
 msgstr "Grupo"
 
-#: models.py:103 templates/groups.html:3
+#: models.py:192 templates/groups.html:3
 msgid "Groups"
 msgstr "Grupos"
 
-#: models.py:108
+#: models.py:207
 msgid "Is enroll finished?"
 msgstr "¿Está finalizada la matricula?"
 
-#: models.py:109
+#: models.py:208
 msgid "Is active for enroll?"
 msgstr "¿Está activo para la matricula?"
 
-#: models.py:111
+#: models.py:210
 msgid "Student"
 msgstr "Estudiante"
 
-#: models.py:112
+#: models.py:211
 msgid "Enroll date"
 msgstr "Fecha de matricula"
 
-#: models.py:113
+#: models.py:212
 msgid "Bill created"
 msgstr "Factura creada"
 
-#: models.py:120
+#: models.py:219
 msgid "Enrollments"
 msgstr "Matriculas"
 
-#: models.py:126
+#: models.py:225
 msgid "Internal"
 msgstr "Interior"
 
-#: models.py:130
+#: models.py:229
 msgid "Type"
 msgstr "Tipo"
 
-#: models.py:132
+#: models.py:231
 msgid "Authentication is required"
 msgstr "Se requiere autenticación"
 
-#: models.py:133
+#: models.py:232
 msgid "Menu order"
 msgstr "Orden en el menú"
 
-#: models.py:134
+#: models.py:233
 msgid "Page parent"
 msgstr "Página padre"
 
-#: models.py:135
+#: models.py:234
 msgid "Publicated"
 msgstr "Publicado"
 
-#: models.py:136
+#: models.py:235
 msgid "Index page"
 msgstr "Página de inicio"
 
-#: models.py:142
+#: models.py:253
 msgid "Menu Item"
 msgstr "Elemento del menú"
 
-#: models.py:143
+#: models.py:254
 msgid "Menu Items"
 msgstr "Elementos del menú"
 
-#: models.py:156
+#: models.py:262 models.py:287
+msgid "Language"
+msgstr "Lenguaje"
+
+#: models.py:279
 msgid "Pages"
 msgstr "Páginas"
 
@@ -440,6 +488,13 @@ msgstr "Grupos matriculados"
 #: templates/matricula/student_form.html:35
 msgid "You don't have enrolled groups yet"
 msgstr "No tiene grupos matriculados"
+
+#: templates/matricula/week.html:2
+msgid ""
+"Use Ctrl when mouse enter inside an hour to select or unselect this hour "
+msgstr ""
+"Use Ctrl cuando entra con el mouse sobre una hora para seleccionar o des-"
+"seleccionar la hora"
 
 #: templates/matricula_base.html:27
 msgid "Exit"
@@ -583,6 +638,10 @@ msgstr "Pre-matriculado satisfactoriamente"
 #: views/Enrollments.py:46
 msgid "You are already enrolled"
 msgstr "Usted ya está matriculado"
+
+#: views/Pages.py:27
+msgid "Sorry page not found"
+msgstr "Lo sentimos la página no existe"
 
 #~ msgid "Bills for pay"
 #~ msgstr "Facturas por pagar"
