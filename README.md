@@ -13,11 +13,15 @@ easy to use.
 * Clasic authentication by email with password recovery
 * Course management
 * Groups management
+* Profesor management
+* Classroom management (different type of classroom)
+* Group, Profesor, Classroom asignation management
 * Pre-enrollment 
 * Enrollment 
 * Student list (Pre-enrolled, enrolled) 
 * Paypal payment System (optional, see matricula.contrib.bills)
 * Multilingual (spanish and english, translators are welcome)
+[] Automatic asignation management
 * Page content 
 * Multilevel Menu and admin menu editor  
 
