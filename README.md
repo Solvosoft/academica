@@ -104,3 +104,4 @@ or contac us in info[at ] solvosoft.com o by github.
 - [ ] Multi-periods
 - [ ] Documentation
 - [ ] Unitest and coverage Tests 
+- [ ] Help text for model fields

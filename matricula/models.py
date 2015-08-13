@@ -26,12 +26,15 @@ class Hour(models.Model):
 
     def __str__(self):
         return str(self.day_position)
+
+
 class Week(models.Model):
     hours = models.ManyToManyField(Hour)
 
 
 class Student(SimpleEmailConfirmationUserMixin, AbstractUser):
     pass
+
 
 @python_2_unicode_compatible
 class Period(models.Model):
@@ -51,10 +54,15 @@ class Period(models.Model):
 @python_2_unicode_compatible
 class ClassroomType(models.Model):
     name = models.CharField(max_length=30, verbose_name=_("Name"))
-    description = models.CharField(max_length=150, verbose_name=_("Description"))
+    description = models.CharField(max_length=150,
+                                   verbose_name=_("Description"))
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = _("Classroom Type")
+        verbose_name_plural = _("Classroom Types")
 
 
 @python_2_unicode_compatible
@@ -68,18 +76,26 @@ class Classroom(models.Model):
               (1, _('Last assigned')),
              )
 
-    name = models.CharField(max_length=30)
-    capacity = models.IntegerField()
-    classroom_type = models.ForeignKey(ClassroomType)
-    selection_score = models.IntegerField(choices=SELECTION_TYPES)
+    name = models.CharField(max_length=30, verbose_name=_("Name"))
+    capacity = models.IntegerField(verbose_name=_("Capacity"))
+    classroom_type = models.ForeignKey(ClassroomType,
+                                       verbose_name=_("Classroom type"))
+    selection_score = models.IntegerField(choices=SELECTION_TYPES,
+                                          verbose_name=_("Selection priority"))
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = _("Classroom")
+        verbose_name_plural = _("Classrooms")
+
 
 class ClassroomSchedule(models.Model):
     period = models.ForeignKey(Period)
     classroom = models.ForeignKey(Classroom)
     schedule = models.ForeignKey(Week, null=True)
+
 
 @python_2_unicode_compatible
 class Category(models.Model):
@@ -97,11 +113,16 @@ class Category(models.Model):
 @python_2_unicode_compatible
 class Profesor(models.Model):
     # tiene identificacion, nombre, email
-    user = models.OneToOneField(settings.AUTH_USER_MODEL)
-    number_hours = models.SmallIntegerField(verbose_name=_("Number of work hours "))
+    user = models.OneToOneField(settings.AUTH_USER_MODEL,
+                                verbose_name=_("User"))
+    number_hours = models.SmallIntegerField(verbose_name=_("Number of work hours"))
 
     def __str__(self):
         return self.user.get_full_name()
+
+    class Meta:
+        verbose_name = _("Profesor")
+        verbose_name_plural = _("Profesors")
 
 
 @python_2_unicode_compatible
@@ -117,7 +138,8 @@ class ProfesorSchedule(models.Model):
 @python_2_unicode_compatible
 class Course(models.Model):
     category = models.ForeignKey(Category, verbose_name=_("Category"))
-    required_courses = models.ManyToManyField("self", blank=True, verbose_name=_("Required courses"))
+    required_courses = models.ManyToManyField("self", blank=True,
+                                              verbose_name=_("Required courses"))
     name = models.CharField(max_length=300, verbose_name=_("Name"))
     content = RichTextField(verbose_name=_("Content"))
 
@@ -172,11 +194,14 @@ class Group(models.Model):
 
     enroll_start = models.DateTimeField(verbose_name=_("Enroll start hour"))
     enroll_finish = models.DateTimeField(verbose_name=_("Enroll finish hour"))
-    currency = models.CharField(max_length=3, verbose_name=_("Currency"), choices=COURRENCY_CHOICES, default="CRC")
-    cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("Course cost"))
+    currency = models.CharField(max_length=3, verbose_name=_("Currency"),
+                                choices=COURRENCY_CHOICES, default="CRC")
+    cost = models.DecimalField(max_digits=10, decimal_places=2,
+                               verbose_name=_("Course cost"))
     maximum = models.SmallIntegerField(verbose_name=_("Maximum number of students"))
     is_open = models.BooleanField(default=True)
-    flow = models.SmallIntegerField(choices=FLOWS, default=NORMAL, verbose_name=_("Enrollment behavior"))
+    flow = models.SmallIntegerField(choices=FLOWS, default=NORMAL,
+                                    verbose_name=_("Enrollment behavior"))
 
     @property
     def in_enrollment(self):
@@ -191,25 +216,35 @@ class Group(models.Model):
         verbose_name = _("Group")
         verbose_name_plural = _("Groups")
 
+
 @python_2_unicode_compatible
 class ClassroomGroupProfesor(models.Model):
-    period = models.ForeignKey(Period)
-    classroom = models.ForeignKey(Classroom)
-    profesor = models.ForeignKey(Profesor)
-    group = models.ForeignKey(Group)
-    schedule = models.ForeignKey(Week, null=True)
+    period = models.ForeignKey(Period, verbose_name=_("Period"))
+    classroom = models.ForeignKey(Classroom, verbose_name=_("Classroom"))
+    profesor = models.ForeignKey(Profesor, verbose_name=_("Profesor"))
+    group = models.ForeignKey(Group, verbose_name=_("Group"))
+    schedule = models.ForeignKey(Week, null=True, verbose_name=_("Schedule"))
 
     def __str__(self):
         return str(self.group) + str(self.profesor)
 
+    class Meta:
+        verbose_name = _("Asignation")
+        verbose_name_plural = _("Asignations")
+
+
 @python_2_unicode_compatible
 class Enroll(models.Model):
-    enroll_finished = models.BooleanField(default=False, verbose_name=_("Is enroll finished?"))
-    enroll_activate = models.BooleanField(default=False, verbose_name=_("Is active for enroll?"))
+    enroll_finished = models.BooleanField(default=False,
+                                          verbose_name=_("Is enroll finished?"))
+    enroll_activate = models.BooleanField(default=False,
+                                          verbose_name=_("Is active for enroll?"))
     group = models.ForeignKey(Group, verbose_name=_("Group"))
     student = models.ForeignKey(Student, verbose_name=_("Student"))
-    enroll_date = models.DateTimeField(auto_now_add=True, verbose_name=_("Enroll date"))
-    bill_created = models.BooleanField(default=False, verbose_name=_("Bill created"))  # is needed by bill sistem 
+    enroll_date = models.DateTimeField(auto_now_add=True,
+                                       verbose_name=_("Enroll date"))
+    bill_created = models.BooleanField(default=False,
+                                       verbose_name=_("Bill created"))  # is needed by bill sistem 
 
     def __str__(self):
         return self.student.username + " -- " + smart_text(self.group)
@@ -226,13 +261,19 @@ class MenuItem(models.Model):
              (1, _("Page"))
              )
     name = models.CharField(max_length=50, verbose_name=_("Name"))
-    type = models.SmallIntegerField(choices=TYPES, default=0, verbose_name=_("Type"))
-    description = models.CharField(max_length=50, verbose_name=_("Description"))
-    require_authentication = models.BooleanField(default=False, verbose_name=_("Authentication is required"))
+    type = models.SmallIntegerField(choices=TYPES, default=0,
+                                    verbose_name=_("Type"))
+    description = models.CharField(max_length=50,
+                                   verbose_name=_("Description"))
+    require_authentication = models.BooleanField(default=False,
+                                                 verbose_name=_("Authentication is required"))
     order = models.SmallIntegerField(verbose_name=_("Menu order"))
-    parent = models.ForeignKey('self', null=True, blank=True, verbose_name=_("Page parent"))
-    publicated = models.BooleanField(default=True, verbose_name=_("Publicated"))
-    is_index = models.BooleanField(default=False, verbose_name=_("Index page"))
+    parent = models.ForeignKey('self', null=True, blank=True,
+                               verbose_name=_("Page parent"))
+    publicated = models.BooleanField(default=True,
+                                     verbose_name=_("Publicated"))
+    is_index = models.BooleanField(default=False,
+                                   verbose_name=_("Index page"))
 
     def get_title_menu(self, request):
         name = MenuTranslations.objects.filter(language=request.LANGUAGE_CODE)
