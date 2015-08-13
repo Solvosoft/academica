@@ -1,5 +1,5 @@
 from matricula.models import Week, Hour, ClassroomSchedule, \
-    ClassroomGroupProfesor, ProfesorSchedule
+    ClassroomGroupProfesor, ProfesorSchedule, Group, Period
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 from matricula.views.utils import get_active_period
@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from django.conf.urls import url
 from django.core.urlresolvers import reverse
 from django.http import JsonResponse
+
 
 class ScheduleAdmin(object):
     scheduleModel = None
@@ -127,6 +128,8 @@ class GroupSchedule(ScheduleAdmin):
                 name="classroom_hours"),
             url(r'^profesor_hours$', self.get_profesor_schedule,
                 name="profesor_hours"),
+            url(r'^group_hours$', self.get_group_schedule,
+                name="group_hours"),
         ]
         return my_urls
 
@@ -158,22 +161,49 @@ class GroupSchedule(ScheduleAdmin):
                 dev['selected'] = [str(x["day_position"]) for x in sel.schedule.hours.filter(active=True).values("day_position")]
 
         return JsonResponse(dev)
-    
+
     def get_classroom_schedule(self, request):
         return self.get_schedules(request, ClassroomSchedule, "classroom")
 
     def get_profesor_schedule(self, request):
         return self.get_schedules(request, ProfesorSchedule, "profesor")
-    
+
+    def get_group_schedule(self, request):
+        dev = {'selected': [],
+               'type': "schedule",
+               'hours': []}
+        pk = request.GET.get('pk', 0)
+        if pk:
+            pk = int(pk)
+        else:
+            return JsonResponse(dev)
+
+        group = Group.objects.filter(pk=pk)
+        if group:
+            group = group[0]
+            dev['selected'] = [str(x["day_position"]) for x in group.schedule.hours.filter(active=True).values("day_position")]
+        return JsonResponse(dev)
+
     def render_week(self, name, value, attrs=None):
         dev = '<input type="hidden" name="%s"  value="%s" class="week_input">' % (name, value)
         dev += render_to_string("matricula/groupweek.html", {'name': name})
         dev = dev.replace("\n", "")
 
-        dev += "<script> classroom_schedule_url='" + reverse("admin:classroom_hours") + "';"
-        dev += "profesor_schedule_url='" + reverse("admin:profesor_hours") + "';"
+        dev += "<script> classroom_schedule_url='" + reverse(self.namespace + ":classroom_hours") + "';"
+        dev += "profesor_schedule_url='" + reverse(self.namespace + ":profesor_hours") + "';"
+        dev += "group_schedule_url='" + reverse(self.namespace + ":group_hours") + "';"
         dev += "</script>"
         return mark_safe(dev)
+
+    def change_group(self, obj):
+        print(obj.schedule, obj.group.schedule)
+        
+        if obj.schedule != obj.group.schedule:
+            for_del = obj.group.schedule
+            obj.group.schedule = obj.schedule
+            obj.group.save()
+            for_del.hours.all().delete()
+            for_del.delete()
 
     class Media:
         css = {

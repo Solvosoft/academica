@@ -16,7 +16,8 @@ from django.contrib.admin import AdminSite
 from django.contrib.auth.admin import UserAdmin
 from matricula.forms import MenuItemFormPage
 from matricula.admins.Schedule import ScheduleAdmin, GroupSchedule
-
+from ajax_select.admin import AjaxSelectAdmin
+from ajax_select import make_ajax_form
 # Register your models here.
 
 
@@ -115,6 +116,11 @@ class GroupAdmin(admin.ModelAdmin, BaseGroup, ScheduleAdmin):
 
         return my_urls + urls
 
+    def save_model(self, request, obj, form, change):
+        super(GroupAdmin, self).save_model(request, obj, form, change)
+        ScheduleAdmin.save_model(self, request, obj, form, change)
+
+
 
 class MyUserAdmin(UserAdmin):
     def get_fieldsets(self, request, obj=None):
@@ -192,8 +198,6 @@ class ProfesorAdmin(admin.ModelAdmin, ScheduleAdmin):
         ScheduleAdmin.save_model(self, request, obj, form, change)
 
 
-from ajax_select.admin import AjaxSelectAdmin
-from ajax_select import make_ajax_form
 class ClassroomGroupProfesorAdmin(AjaxSelectAdmin, GroupSchedule):
     fields = ('period', 'classroom', "profesor", 'group', 'week')
     readonly_fields = ("week",)
@@ -202,15 +206,23 @@ class ClassroomGroupProfesorAdmin(AjaxSelectAdmin, GroupSchedule):
     form = make_ajax_form(ClassroomGroupProfesor, {'profesor': 'profesor',
                                                    'classroom': 'classroom',
                                                    'group': 'group'})
+    namespace = "admin"
+
+    def get_queryset(self, request):
+            qs = super(ClassroomGroupProfesorAdmin, self).get_queryset(request)
+            self.request = request
+            self.namespace = self.request.resolver_match.namespace
+            return qs
 
     def get_urls(self):
         urls = AjaxSelectAdmin.get_urls(self)
         schurls = GroupSchedule.get_urls(self)
         return urls + schurls
-    
+
     def save_model(self, request, obj, form, change):
         super(ClassroomGroupProfesorAdmin, self).save_model(request, obj, form, change)
-        ScheduleAdmin.save_model(self, request, obj, form, change)
+        GroupSchedule.save_model(self, request, obj, form, change)
+        GroupSchedule.change_group(self, obj)
 
 admin.site.register(Student, MyUserAdmin)
 admin.site.register(Course)
@@ -245,3 +257,8 @@ admin_site.register(Period)
 admin_site.register(Category)
 admin_site.register(MenuItem, MenuItemAdmin)
 admin_site.register(Page, PageAdmin)
+
+admin_site.register(ClassroomType)
+admin_site.register(Classroom, ClassroomAdmin)
+admin_site.register(Profesor, ProfesorAdmin)
+admin_site.register(ClassroomGroupProfesor, ClassroomGroupProfesorAdmin)
