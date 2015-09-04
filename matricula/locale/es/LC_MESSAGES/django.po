@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: matricula\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-02 21:03-0600\n"
-"PO-Revision-Date: 2015-08-02 21:04-0600\n"
+"POT-Creation-Date: 2015-09-04 11:01-0600\n"
+"PO-Revision-Date: 2015-09-04 11:02-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: Es <es@li.org>\n"
 "Language: es\n"
@@ -59,7 +59,7 @@ msgstr "Permisos"
 msgid "Important dates"
 msgstr "Fechas importantes"
 
-#: admin.py:151 admin.py:155
+#: admin.py:170 admin.py:174
 msgid "Academica administrator site"
 msgstr "Sitio administrativo de Académica"
 
@@ -146,7 +146,7 @@ msgstr "El nombre de usuario existe"
 msgid "Password not match "
 msgstr "Contraseñas no coinciden"
 
-#: forms.py:46 forms.py:51 models.py:127 models.py:155
+#: forms.py:46 forms.py:51 models.py:126 models.py:177
 msgid "Page"
 msgstr "Página"
 
@@ -179,7 +179,7 @@ msgstr "Periodo"
 msgid "Periods"
 msgstr "Periodos"
 
-#: models.py:36 models.py:131
+#: models.py:36 models.py:131 models.py:163
 msgid "Description"
 msgstr "Descripción"
 
@@ -191,7 +191,7 @@ msgstr "Categoría"
 msgid "Categories"
 msgstr "Categorías"
 
-#: models.py:49 models.py:149
+#: models.py:49 models.py:188
 msgid "Content"
 msgstr "Contenido"
 
@@ -279,9 +279,13 @@ msgstr "Factura creada"
 msgid "Enrollments"
 msgstr "Matriculas"
 
-#: models.py:126
+#: models.py:125
 msgid "Internal"
 msgstr "Interior"
+
+#: models.py:127
+msgid "Do not used "
+msgstr "No usar"
 
 #: models.py:130
 msgid "Type"
@@ -307,15 +311,19 @@ msgstr "Publicado"
 msgid "Index page"
 msgstr "Página de inicio"
 
-#: models.py:142
+#: models.py:154
 msgid "Menu Item"
 msgstr "Elemento del menú"
 
-#: models.py:143
+#: models.py:155
 msgid "Menu Items"
 msgstr "Elementos del menú"
 
-#: models.py:156
+#: models.py:162 models.py:186
+msgid "Language"
+msgstr "Idioma"
+
+#: models.py:178
 msgid "Pages"
 msgstr "Páginas"
 
@@ -448,6 +456,10 @@ msgstr "Salir"
 #: templates/matricula_base.html:29
 msgid "Sign in/Sing up"
 msgstr "Ingresar/Registrarse"
+
+#: templates/matricula_base.html:44
+msgid "Académica is developed by: "
+msgstr "Académica es desarrollo por:"
 
 #: templates/recover.html:2
 msgid "Forget your password?"
@@ -583,6 +595,10 @@ msgstr "Pre-matriculado satisfactoriamente"
 #: views/Enrollments.py:46
 msgid "You are already enrolled"
 msgstr "Usted ya está matriculado"
+
+#: views/Pages.py:27
+msgid "Sorry page not found"
+msgstr "Lo siento, la página no existe"
 
 #~ msgid "Bills for pay"
 #~ msgstr "Facturas por pagar"
