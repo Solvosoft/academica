@@ -10,7 +10,7 @@ def index(request):
         if index.type == 1:
             return redirect(reverse("academica_pages", args=(index.name,)))
         elif index.type == 2:
-            return reverse(index.name, args=(index.description,))
+            return redirect(reverse(index.name, args=(index.description,)))
         else:
-            return reverse(index.name)
+            return redirect(reverse(index.name))
     return redirect(reverse('courses'))
