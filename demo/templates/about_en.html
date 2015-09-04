@@ -1,0 +1,86 @@
+{% extends 'matricula_base.html' %}
+{% load static %}
+{%block content%}
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-4">
+			<h4 class="text-center text-warning"> 
+				The enrollments could be eficiently and fast </h4>
+			<p class="text-justify">
+				Collaborate with this project and streamline the enrollment process in your institution.
+			 </p>	
+	
+		</div>
+		<div id="escalable" class="col-md-4 ">
+
+			<a tabindex="0" data-trigger="hover" role="button" title="Highly scalable" data-container="body" 
+			data-toggle="popover" data-placement="bottom" 
+			data-content="His Django design allow manage enrollments flows easily in small and big educational centers, his elasticity permits grow up when the demand is high for solve high traffic in the enrollment days.">
+			<center><img src="{% static 'demo/escalable.png' %}" width="260" height="165"/>
+			</center> <h3 class="text-center" >Highly scalable</h3> </a>
+		</div>
+		<div class="col-md-4">
+			<div style="width: 50%; margin-left: 20%;">
+			<h4 class="text-center"> Help! </h4>
+			<p class="text-info text-justify">
+				Pass mouse over every images for view more information
+		    </p>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div id="facil" class="col-md-4">
+
+			<a tabindex="0" data-trigger="hover" role="button" title="User friendly" data-container="body" 
+			data-toggle="popover" data-placement="right" 
+			data-content="Allows administrator to manage easily the admission workflow, in like manner, students can complete enrollment process in few steps">
+			<center><img src="{% static 'demo/facil-usar.gif' %}" width="260" height="165"/>
+			</center> <h3 class="text-center">User friendly</h3> </a>
+		</div>
+
+		<div class="col-md-4">
+<a tabindex="0" data-trigger="hover" role="button" title="Why I should support Académica?" data-container="body" data-toggle="popover" data-placement="top" 
+data-content="With Académica all can be benefited: the educational centers, the educational startup entrepreneurs, the independent learning centers, the cultural centers, the universities, the students and we of course. ">
+			<center><img src="https://academica.solvosoft.com/media/uploads/2015/08/03/academica.png" width="150" height="150"/>
+			</center>
+</a>
+		</div>
+		<div id="dinamico" class="col-md-4">
+			<a tabindex="0" data-trigger="hover" role="button" title="Dynamic" data-container="body" 
+			data-toggle="popover" data-placement="left" 
+			data-content="Académica works in various enrollment flows, for example supervised pre-enrollment, automatic pre-enrollment and direct enrollment.
+The first two options allows to close or not groups at convenience. It allows to create payed courses and free courses. ">
+			<center><img src="{% static 'demo/dinamico.png' %}" width="190" height="165"/>
+			</center> <h3 class="text-center">Dynamic</h3> </a>
+
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-4"></div>
+		<div id="multilenguaje" class="col-md-4">
+			<a tabindex="0" data-trigger="hover" role="button" title="Multilingual" data-container="body" 
+			data-toggle="popover" data-placement="top" 
+			data-content="Académica can be used in English, Spanish and any wanted language, because it is designed with multilingual support.">
+			<h3 class="text-center">Multilingual</h3>
+			<center><img src="{% static 'demo/multilenguaje.jpg' %}" width="180" height="165"/>
+			</center> </a>
+		</div>
+		<div class="col-md-4"></div>
+	</div>
+
+</div>
+
+{%endblock%}
+
+{%block footer%}
+{{block.super}}
+
+<script>
+	$(function () {
+$('[data-toggle="popover"]').popover()
+})
+</script>
+{%endblock%}

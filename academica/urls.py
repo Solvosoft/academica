@@ -6,6 +6,7 @@ urlpatterns = [
     # Examples:
     # url(r'^$', 'academica.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
+    url(r'^demo/', include('demo.urls')),
     url('^$', 'matricula.views.index', name='index'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^matricula/', include('matricula.urls')),
@@ -13,4 +14,5 @@ urlpatterns = [
     url(r'^ckeditor/', include('ckeditor.urls')),
     url(r'^accounts/', include('allauth.urls')),
     url('^accounts/profile/?$', 'matricula.views.Auth.get_profile'),
+
 ]

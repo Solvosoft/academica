@@ -1,0 +1,119 @@
+{% extends 'matricula_base.html' %}
+
+{%block content %}
+
+<div class="row">
+	<div class="col-md-3">
+		<ul id="myTabs" class="nav nav-tabs nav-stacked">
+			<li role="presentation" class="active">
+				<a href="#factive" aria-controls="factive" role="tab" data-toggle="tab"> Current features</a>
+			</li>
+			<li role="presentation">
+				<a href="#ffuture" aria-controls="ffuture" role="tab" data-toggle="tab"> Upcoming features</a>
+			</li>
+		</ul>
+	</div>
+	<div class="col-md-9">
+
+		<div class="tab-content">
+			<div role="tabpanel" class="tab-pane active" id="factive">
+				<div class="row">
+					<div class="col-md-6">
+						<h3 class="text-center"> Stable features</h3>
+						<ul class="list-group">
+							<li class="list-group-item">Social authentication for students</li>
+							<li class="list-group-item">Clasic authentication by email with password recovery</li>
+							<li class="list-group-item">Course management</li>
+							<li class="list-group-item">Groups management</li>
+							<li class="list-group-item">Pre-enrollment</li>
+							<li class="list-group-item">Enrollment</li>
+							<li class="list-group-item">Student list (Pre-enrolled, enrolled)</li>
+							<li class="list-group-item">Paypal payment System (optional, see matricula.contrib.bills)</li>
+							<li class="list-group-item">Multilingual (spanish and english, translators are welcome)</li>
+							<li class="list-group-item">Page content</li>
+							<li class="list-group-item">Multilevel Menu and admin menu editor</li>
+						</ul>
+						<center>
+						<a class="btn btn-primary text-center" href="https://github.com/luisza/academica"> Source code in master branch </a>
+						</center>
+					</div>
+					<div class="col-md-6">
+						<h3 class="text-center"> Institutions features</h3>
+						<p class="text-center text-danger">
+							Warning: There are unstable and untested.
+						</p>
+						<p class="text-center text-info">
+							All stable features are here too.
+						</p>
+
+						<ul class="list-group">
+							<li class="list-group-item">Profesor management</li>
+							<li class="list-group-item">Classroom management (different type of classroom)</li>
+							<li class="list-group-item">Group, Profesor, Classroom asignation management</li>
+						</ul>
+						<center>
+						<a class="btn btn-primary text-center" href="https://github.com/luisza/academica/tree/gache"> 
+							Source code in gache branch </a>
+						</center>
+					</div>
+				</div>
+
+			</div>
+			<!-- factive -->
+			<div role="tabpanel" class="tab-pane" id="ffuture">
+				<h3 class="text-center"> Upcomming features </h3>
+				<ul class="list-group">
+				  <li class="list-group-item"> Cedit card payment with multi-country API </li>
+				  <li class="list-group-item"> Manage of Curriculums Vitae</li>
+				  <li class="list-group-item"> Manage of employment exchange</li>
+				  <li class="list-group-item"> Socila network promotion for courses</li>
+				  <li class="list-group-item"> System reminders</li>
+				  <li class="list-group-item"> System of course suggestions</li>
+				  <li class="list-group-item"> Manage of parcial payment and discounts</li>
+  				  <li class="list-group-item"> Statistics system</li>
+  				  <li class="list-group-item list-group-item-success">More with your help</li>
+				</ul>
+				
+				
+			</div>
+
+		</div>
+		<!-- aqui termina el body-->
+	</div>
+</div>
+<hr>
+<div class="row">
+	<div class="col-md-6 col-md-offset-3">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				Do you like other features? Please tell us
+			</div>
+			<div class="panel-body table-responsive">
+
+				<form action="" method="post">
+					{% csrf_token %}
+					<table class="table table-condensed">
+						{{ form.as_table }}
+						<td></td><td>
+						<input class="btn btn-info" type="submit" value="Enviar" />
+						</td>
+					</table>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+{%endblock%}
+
+
+{%block footer%}
+{{block.super}}
+
+<script>
+$('#myTabs a').click(function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+})
+</script>
+{%endblock%}

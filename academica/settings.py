@@ -52,6 +52,8 @@ INSTALLED_APPS = (
     'ckeditor',
     'paypal.standard.ipn',
     'django_ajax',
+    'demo',
+    'simplemathcaptcha',
 )
 
 MIDDLEWARE_CLASSES = (

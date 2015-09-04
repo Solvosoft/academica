@@ -1,0 +1,140 @@
+{% extends 'matricula_base.html' %}
+
+{%block content %}
+
+<div class="row">
+	<div class="col-md-3">
+		<ul id="myTabs" class="nav nav-tabs nav-stacked">
+			<li role="presentation" class="active">
+				<a href="#factive" aria-controls="factive" role="tab" data-toggle="tab">Funcionalidades actuales</a>
+			</li>
+			<li role="presentation">
+				<a href="#ffuture" aria-controls="ffuture" role="tab" data-toggle="tab">Funcionalidades futuras</a>
+			</li>
+		</ul>
+	</div>
+	<div class="col-md-9">
+
+		<div class="tab-content">
+			<div role="tabpanel" class="tab-pane active" id="factive">
+				<div class="row">
+					<div class="col-md-6">
+						<h3 class="text-center"> Funcionalidades en estables </h3>
+						<ul class="list-group">
+							<li class="list-group-item">
+								Autenticación con redes sociales para estudiantes
+							</li>
+							<li class="list-group-item">
+								Autenticación clásica por correo electrónico con recuperación de contraseña
+							</li>
+							<li class="list-group-item">
+								Manejo de Cursos, Grupos y Estudiantes
+							</li>
+							<li class="list-group-item">
+								Manejo de pre-matricula y matricula
+							</li>
+							<li class="list-group-item">
+								Listado de estudiantes y exportación a PDF
+							</li>
+							<li class="list-group-item">
+								Pago mediante Paypal (optional)
+							</li>
+							<li class="list-group-item">
+								Multilenguaje (Español e inglés hasta el momento)
+							</li>
+							<li class="list-group-item">
+								Manejo básico de páginas
+							</li>
+							<li class="list-group-item">
+								Menú multi-nivel y editor en vista administrativa
+							</li>
+						</ul>
+						<center>
+						<a class="btn btn-primary text-center" href="https://github.com/luisza/academica"> Código en master </a>
+						</center>
+					</div>
+					<div class="col-md-6">
+						<h3 class="text-center"> Funcionalidades para instituciones </h3>
+						<p class="text-center text-danger">
+							Todavía inestable y poco probadas
+						</p>
+						<p class="text-center text-info">
+							Todas las funcionalidades estables también están disponibles
+						</p>
+
+						<ul class="list-group">
+							<li class="list-group-item">
+								Manejo de Profesores y sus horarios
+							</li>
+							<li class="list-group-item">
+								Manejo de Aulas y sus horarios ( Diferentes tipos de Aulas)
+							</li>
+							<li class="list-group-item">
+								Manejo de asignaciones del tipo Grupo, Profesor, Aula
+							</li>
+						</ul>
+						<center>
+						<a class="btn btn-primary text-center" href="https://github.com/luisza/academica/tree/gache"> Código en la rama gache </a>
+						</center>
+					</div>
+				</div>
+
+			</div>
+			<!-- factive -->
+			<div role="tabpanel" class="tab-pane" id="ffuture">
+				<h3 class="text-center"> Funcionalidades futuras </h3>
+				<ul class="list-group">
+				  <li class="list-group-item">Pago con tarjeta de crédito *API para multi-país</li>
+				  <li class="list-group-item">Manejo de hojas de vida de estudiantes</li>
+				  <li class="list-group-item">Manejo de bolsas de empleo</li>
+				  <li class="list-group-item">Promoción en redes sociales</li>
+				  <li class="list-group-item">Sistema de recordatorios</li>
+				  <li class="list-group-item">Sistema de sugerencia de cursos</li>
+				  <li class="list-group-item">Manejo de Pagos parciales y descuentos</li>
+  				  <li class="list-group-item">Sistema de estadísticas</li>
+  				  <li class="list-group-item list-group-item-success">Muchas más con su apoyo</li>
+				</ul>
+				
+				
+			</div>
+
+		</div>
+		<!-- aqui termina el body-->
+	</div>
+</div>
+<hr>
+<div class="row">
+	<div class="col-md-6 col-md-offset-3">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				¿Le gustaría otra funcionalidad en Académica? Cuéntenos
+			</div>
+			<div class="panel-body table-responsive">
+
+				<form action="" method="post">
+					{% csrf_token %}
+					<table class="table table-condensed">
+						{{ form.as_table }}
+						<td></td><td>
+						<input class="btn btn-info" type="submit" value="Enviar" />
+						</td>
+					</table>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+{%endblock%}
+
+
+{%block footer%}
+{{block.super}}
+
+<script>
+$('#myTabs a').click(function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+})
+</script>
+{%endblock%}

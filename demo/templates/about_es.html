@@ -1,0 +1,74 @@
+{% extends 'matricula_base.html' %}
+{% load static %}
+{%block content%}
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-4">
+			<h4 class="text-center text-warning"> Las matrículas pueden ser rápidas y eficientes </h4>
+			<p class="text-justify">Hagamos de Académica la solución por excelencia de los procesos de matrícula. </p>	
+	
+		</div>
+		<div id="escalable" class="col-md-4 ">
+
+			<a tabindex="0" data-trigger="hover" role="button" title="Escalable" data-container="body" data-toggle="popover" data-placement="bottom" 
+			data-content="Su diseño en Django permite gestionar los flujos de matrícula fácilmente en centros educativos ya sean pequeños o grandes. Su elasticidad permite crecer cuando la demanda es alta en los días de matrícula.">
+			<center><img src="{% static 'demo/escalable.png' %}" width="260" height="165"/>
+			</center> <h3 class="text-center" >Escalable</h3> </a>
+		</div>
+		<div class="col-md-4">
+			<div style="width: 50%; margin-left: 20%;">
+			<h4 class="text-center"> Ayuda </h4>
+			<p class="text-info text-justify">Posicionese sobre cada una de las imágenes para ver más información. </p>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div id="facil" class="col-md-4">
+
+			<a tabindex="0" data-trigger="hover" role="button" title="Fácil de Usar" data-container="body" data-toggle="popover" data-placement="right" data-content="Su interfaz está diseñada para que en pocos pasos, el administrador o administradora de un centro educativo, pueda crear un curso, sus respectivos grupos y  horarios, así como para que el estudiante pueda matricular fácilmente los cursos que le corresponden y pagar la matrícula dentro de la misma plataforma.">
+			<center><img src="{% static 'demo/facil-usar.gif' %}" width="260" height="165"/>
+			</center> <h3 class="text-center">Fácil de Usar </h3> </a>
+		</div>
+
+		<div class="col-md-4">
+<a tabindex="0" data-trigger="hover" role="button" title="¿Por qué aportar a Académica?" data-container="body" data-toggle="popover" data-placement="top" data-content="Con académica nos beneficiamos todos: los centros educativos, los emprendedores de la enseñanza, las casas de enseñanza independientes, los centros culturales, las universidades, los estudiantes y por supuesto nosotros.">
+			<center><img src="https://academica.solvosoft.com/media/uploads/2015/08/03/academica.png" width="150" height="150"/>
+			</center>
+</a>
+		</div>
+		<div id="dinamico" class="col-md-4">
+			<a tabindex="0" data-trigger="hover" role="button" title="Dinámico" data-container="body" 
+			data-toggle="popover" data-placement="left" 
+			data-content="Maneja diferentes flujos de matricula por ejemplo pre-matricula supervisada, pre-matricula automática y matricula directa. Permite crear cursos pagos y sin pagos. Las primeras dos modalidades le permiten al centro educativo estimar la posibilidad de abrir o cerrar grupos según su conveniencia.">
+			<center><img src="{% static 'demo/dinamico.png' %}" width="190" height="165"/>
+			</center> <h3 class="text-center">Dinámico</h3> </a>
+
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-4"></div>
+		<div id="multilenguaje" class="col-md-4">
+			<a tabindex="0" data-trigger="hover" role="button" title="Multilenguaje" data-container="body" data-toggle="popover" data-placement="top" 
+			data-content="Académica puede usarse en inglés, español y cualquier otro idioma que se desee ya que está diseñado para soportar multilenguaje."> <h3 class="text-center">Multilenguaje</h3>
+			<center><img src="{% static 'demo/multilenguaje.jpg' %}" width="180" height="165"/>
+			</center> </a>
+		</div>
+		<div class="col-md-4"></div>
+	</div>
+
+</div>
+
+{%endblock%}
+
+{%block footer%}
+{{block.super}}
+
+<script>
+	$(function () {
+$('[data-toggle="popover"]').popover()
+})
+</script>
+{%endblock%}
