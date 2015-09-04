@@ -1,7 +1,16 @@
 {% extends 'matricula_base.html' %}
 
 {%block content %}
+{% if form_success%}
+<div class="alert alert-success" role="alert"> Thanks you, we will bear in mind your suggestions </div>
+{% endif %}
 
+{%if form_error%}
+<div class="alert alert-warning alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <strong>Warning!</strong> Something was wrong with the suggestion form
+</div>
+{%endif%}
 <div class="row">
 	<div class="col-md-3">
 		<ul id="myTabs" class="nav nav-tabs nav-stacked">

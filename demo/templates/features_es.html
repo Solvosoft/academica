@@ -1,6 +1,16 @@
 {% extends 'matricula_base.html' %}
 
 {%block content %}
+{% if form_success%}
+<div class="alert alert-success" role="alert"> Muchas gracias, tendremos en cuenta sus sugerencias :) </div>
+{% endif %}
+
+{%if form_error%}
+<div class="alert alert-warning alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <strong>Atención!</strong> Hay errores en el formulario de sugerencias
+</div>
+{%endif%}
 
 <div class="row">
 	<div class="col-md-3">

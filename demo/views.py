@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 from django.utils.translation import ugettext_lazy as _
 
 class featureForm(forms.Form):
-    text = forms.CharField(widget=forms.Textarea, label=_('Your text'))
+    text = forms.CharField(widget=forms.Textarea, label=_('Your suggestions'))
     captcha = MathCaptchaField()
 
 
@@ -36,10 +36,12 @@ def feature(request, slug):
             subject = 'Feature in Academica'
             message = form.cleaned_data['text']
             sender = 'info@solvosoft.com'
-            recipients = ['info@solvosoft.com']
+            recipients = ['sitio@solvosoft.com']
             send_mail(subject, message, sender, recipients)
-            values['success'] = True
+            values['form_success'] = True
             form_fail = False
+        else:
+            values["form_error"] = True
     if not form_fail:
         form = featureForm()
 
