@@ -76,6 +76,9 @@ def get_ref_and_ref_display(request, menu):
     elif menu.type == 1:
         ref = reverse("academica_pages", args=(menu.name,))
         ref_display = menu.get_title_menu(request)
+    elif menu.type == 2:
+        ref = reverse(menu.name, args=(menu.description,))
+        ref_display = menu.get_title_menu(request)
 
     return ref, ref_display
 

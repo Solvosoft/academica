@@ -122,8 +122,9 @@ class Enroll(models.Model):
 @python_2_unicode_compatible
 class MenuItem(models.Model):
     TYPES = (
-             (0, _("Internal")),
-             (1, _("Page"))
+             (0, _("Internal")),  # name is reversed and description is display
+             (1, _("Page")),  # used in admin interface
+             (2, _("Reverse url with parameter "))  # name is reversed and description is used as param
              )
     name = models.CharField(max_length=50, verbose_name=_("Name"))
     type = models.SmallIntegerField(choices=TYPES, default=0, verbose_name=_("Type"))
@@ -135,9 +136,9 @@ class MenuItem(models.Model):
     is_index = models.BooleanField(default=False, verbose_name=_("Index page"))
 
     def get_title_menu(self, request):
-        name = MenuTranslations.objects.filter(language=request.LANGUAGE_CODE)
+        name = MenuTranslations.objects.filter(menu=self, language=request.LANGUAGE_CODE)
         if not name:
-            name = MenuTranslations.objects.filter(language=settings.LANGUAGE_CODE)
+            name = MenuTranslations.objects.filter(menu=self, language=settings.LANGUAGE_CODE)
 
         if not name:
             name = self.description
