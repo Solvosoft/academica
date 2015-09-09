@@ -49,7 +49,7 @@ master_doc = 'index'
 # General information about the project.
 project = 'Academica'
 copyright = '2015, Luis Zarate, Solvo'
-author = 'Luis Zárate, Solvo'
+author = 'Luis Zarate, Solvo'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
