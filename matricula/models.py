@@ -122,9 +122,9 @@ class Enroll(models.Model):
 @python_2_unicode_compatible
 class MenuItem(models.Model):
     TYPES = (
-             (0, _("Internal")),  # name is reversed and description is display
-             (1, _("Page")),  # used in admin interface
-             (2, _("Reverse url with parameter "))  # name is reversed and description is used as param
+             (0, _("Internal")),
+             (1, _("Page")),
+             (2, _("Do not used "))
              )
     name = models.CharField(max_length=50, verbose_name=_("Name"))
     type = models.SmallIntegerField(choices=TYPES, default=0, verbose_name=_("Type"))
