@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Académica documentation build configuration file, created by
+# Academica documentation build configuration file, created by
 # sphinx-quickstart on Wed Sep  9 13:50:01 2015.
 #
 # This file is execfile()d with the current directory set to its
@@ -41,14 +41,14 @@ templates_path = ['_templates']
 source_suffix = '.rst'
 
 # The encoding of source files.
-source_encoding = 'utf-8-sig'
+source_encoding = 'utf-8'
 
 # The master toctree document.
 master_doc = 'index'
 
 # General information about the project.
-project = 'Académica'
-copyright = '2015, Luis Zárate, Solvo'
+project = 'Academica'
+copyright = '2015, Luis Zarate, Solvo'
 author = 'Luis Zárate, Solvo'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -223,8 +223,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  (master_doc, 'Acadmica.tex', 'Académica Documentation',
-   'Luis Zárate, Solvo', 'manual'),
+  (master_doc, 'Acadmica.tex', 'Academica Documentation',
+   'Luis Zarate, Solvo', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -253,7 +253,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'acadmica', 'Académica Documentation',
+    (master_doc, 'acadmica', 'Academica Documentation',
      [author], 1)
 ]
 
@@ -267,8 +267,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  (master_doc, 'Acadmica', 'Académica Documentation',
-   author, 'Acadmica', 'One line description of project.',
+  (master_doc, 'Academica', 'Academica Documentation',
+   author, 'Academica', 'One line description of project.',
    'Miscellaneous'),
 ]
 
