@@ -1,9 +1,5 @@
 # encoding: utf-8
 from django.db import models
-
-# Create your models here.
-
-
 from django.contrib.auth.models import AbstractUser
 from simple_email_confirmation.models import SimpleEmailConfirmationUserMixin
 from ckeditor.fields import RichTextField
@@ -98,6 +94,13 @@ class Group(models.Model):
             return True
         return False
 
+    @property
+    def limite(self):
+        if self.maximum <= self.enroll_set.count():
+            return True
+        else:
+            return False
+
     def __str__(self):
         return smart_text(self.course) + " -- " + self.name
 
@@ -158,6 +161,7 @@ class MenuItem(models.Model):
         verbose_name = _("Menu Item")
         verbose_name_plural = _("Menu Items")
 
+
 @python_2_unicode_compatible
 class MenuTranslations(models.Model):
     language = models.CharField(max_length=3,
@@ -195,3 +199,5 @@ class MultilingualContent(models.Model):
 
     def __str__(self):
         return self.language
+
+

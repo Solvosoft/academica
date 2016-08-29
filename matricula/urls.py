@@ -14,6 +14,7 @@ from matricula.views.Enrollments import *
 
 urlpatterns = [
     url('^create_user$', create_user, name="create_user"),
+    url('^login_user$', login_user, name="login_user"),
     url('^confirm_email$', confirm_email, name="confirm_email"),
     url('^authenticate$', authenticate, name="authenticate"),
     url('^logout$', logout, name="logout"),

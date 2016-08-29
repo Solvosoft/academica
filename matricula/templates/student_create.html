@@ -1,41 +1,10 @@
 {% extends 'matricula_base.html'%}
 
-
 {%block content%}
 {% load socialaccount static i18n %}
 
 
 <link rel="stylesheet" href="{% static 'css/auth-buttons.css'%}">
-
-<div class="panel panel-default">
-  <div class="panel-heading">{% trans 'Sign up' %}</div>
-  <div class="panel-body">
-
-<div class="row">
-<div class="col-md-6">
-<a class="btn-auth btn-facebook large"  href="{% provider_login_url 'facebook' method='oauth2' %}"> Facebook</a>
-<a class="btn-auth btn-google large" href="{% provider_login_url 'google' method='oauth2' %}">Google</a>
-<a class="btn-auth btn-github large" href="{% provider_login_url 'github' method='oauth2' %}">Github</a>    
-
-</div>
- 
-<div class="col-md-6" style="border-left-style: solid">
-<form class="form-inline" method="post" action="{% url 'authenticate'%}" 
-data-ajax-submit="" onsubmit="return false;"
->
-        <div class="form-group">
-        	{% csrf_token %}
-          <input type="text" class="form-control" name='username' placeholder="Username">
-          <input type="password" class="form-control" name='password' placeholder="Password">
-        
-        <button type="submit" class="btn btn-default">{% trans 'Sign in' %}</button></div>
-    </form>
-</div>
-</div>
-</div>
-<div id="message" style="width: 80%; margin-left: 10%"></div>
-
-</div>
 
 
 <div class="panel panel-default">
@@ -59,13 +28,14 @@ data-ajax-submit="" onsubmit="return false;"
 		
 	</form>
 </div>
+
 <div class="col-md-1"></div>
 <div class="col-md-5" id="recover_pass">
  {% include 'recover.html' %}
-</div>
-</div>
-</div>
-</div>
 
+</div>
+</div>
+</div>
+</div>
 {%endblock%}
 

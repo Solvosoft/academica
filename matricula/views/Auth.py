@@ -11,7 +11,7 @@ from matricula.models import Student, Enroll
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.conf import settings
-# Create your views here.
+from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import auth
 from django.http.response import HttpResponse
@@ -19,8 +19,8 @@ from django.contrib.auth.decorators import login_required
 from django_ajax.decorators import ajax
 from django.template.loader import render_to_string
 from django.template.context import RequestContext
-
 from django.views.generic.edit import UpdateView
+
 
 def create_user(request):
     if request.method == 'POST':
@@ -50,6 +50,9 @@ def create_user(request):
                           )
     else:
         form = StudentCreateForm()
+    if request.user.is_authenticated and not request.user.is_staff:
+        messages.info(request, 'Usted ya ha sido logeado, con un usuario que no tiene permiso para acceder a esta página')
+        return redirect(reverse('index'))
 
     return render(request, 'student_create.html', {'form': form})
 
@@ -65,7 +68,6 @@ def confirm_email(request):
                           {'message': _('Key not found'),
                            'mtype': 'warning'}
                           )
-
     try:
         user.confirm_email(key)
 
@@ -156,7 +158,6 @@ def recover_password(request):
                                                          })
 
 
-
 @ajax
 def mail_recover_pass(request):
     email = request.POST.get('email', 'no-email')
@@ -204,3 +205,12 @@ class StudentEdit(UpdateView):
         context['enroll'] = enroll.filter(enroll_activate=True, enroll_finished=True)
         context['pre_enroll'] = enroll.filter(enroll_activate=True, enroll_finished=False)
         return context
+
+
+def login_user(request):
+
+    if request.user.is_authenticated and not request.user.is_staff:
+        messages.info(request, 'Usted ya ha sido logeado, con un usuario que no tiene permiso para acceder a esta página')
+        return redirect(reverse('index'))
+
+    return render(request, 'student_login.html')
