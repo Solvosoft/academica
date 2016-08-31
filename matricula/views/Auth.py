@@ -209,8 +209,9 @@ class StudentEdit(UpdateView):
 
 def login_user(request):
 
-    if request.user.is_authenticated and not request.user.is_staff:
+    if not request.user.is_anonymous and not request.user.is_staff:
         messages.info(request, 'Usted ya ha sido logeado, con un usuario que no tiene permiso para acceder a esta página')
         return redirect(reverse('index'))
 
-    return render(request, 'student_login.html')
+    else:
+        return render(request, 'student_login.html')

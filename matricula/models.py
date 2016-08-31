@@ -94,13 +94,6 @@ class Group(models.Model):
             return True
         return False
 
-    @property
-    def limite(self):
-        if self.maximum <= self.enroll_set.count():
-            return True
-        else:
-            return False
-
     def __str__(self):
         return smart_text(self.course) + " -- " + self.name
 
