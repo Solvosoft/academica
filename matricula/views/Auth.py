@@ -4,7 +4,7 @@ Created on 17/5/2015
 
 @author: luisza
 '''
-
+from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render, redirect, get_object_or_404
 from matricula.forms import StudentCreateForm
 from matricula.models import Student, Enroll
@@ -51,7 +51,7 @@ def create_user(request):
     else:
         form = StudentCreateForm()
     if request.user.is_authenticated and not request.user.is_staff:
-        messages.info(request, 'Usted ya ha sido logeado, con un usuario que no tiene permiso para acceder a esta página')
+        messages.info(request, _('Your user have not permission for see this page'))
         return redirect(reverse('index'))
 
     return render(request, 'student_create.html', {'form': form})
@@ -210,7 +210,7 @@ class StudentEdit(UpdateView):
 def login_user(request):
 
     if not request.user.is_anonymous and not request.user.is_staff:
-        messages.info(request, 'Usted ya ha sido logeado, con un usuario que no tiene permiso para acceder a esta página')
+        messages.info(request, _('Your user have not permission for see this page'))
         return redirect(reverse('index'))
 
     else:
