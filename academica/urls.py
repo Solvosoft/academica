@@ -13,5 +13,5 @@ urlpatterns = [
     url(r'^matricula_bills/', include('matricula.contrib.bills.urls')),
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^accounts/', include('allauth.urls')),
-    url('^accounts/profile/?$', get_profile),
+    url('^accounts/profile/?$', get_profile, name='profile'),
 ]

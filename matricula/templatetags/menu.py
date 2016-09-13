@@ -14,12 +14,12 @@ from matricula.models import MenuItem
 
 register = template.Library()
 
+
 def insert_in_item(item, menu):
     dev = False
     if item['obj'].pk == menu.parent.pk:
         item['children'].append({'obj': menu,
-                                             'children': []
-                                             })
+                                 'children': []})
         dev = True
     else:
         for child in item['children']:
@@ -27,6 +27,7 @@ def insert_in_item(item, menu):
             if dev:
                 break
     return dev
+
 
 def get_menu_items(user_auth):
     # FIXME do cache for this 
@@ -67,6 +68,7 @@ def get_menu_items(user_auth):
 
     return dic_menu
 
+
 def get_ref_and_ref_display(request, menu):
     ref = "/"
     ref_display = "I am wrong"
@@ -81,6 +83,7 @@ def get_ref_and_ref_display(request, menu):
         ref_display = menu.get_title_menu(request)
 
     return ref, ref_display
+
 
 def print_menu_item(request, menues, is_list=False):
     dev = ""
@@ -97,6 +100,7 @@ def print_menu_item(request, menues, is_list=False):
         dev += '</li>'
 
     return dev
+
 
 @register.simple_tag(takes_context=True)
 def show_menu(context, user_auth):
