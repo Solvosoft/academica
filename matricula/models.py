@@ -1,11 +1,7 @@
 # encoding: utf-8
 from django.db import models
-
-# Create your models here.
-
-
 from django.contrib.auth.models import AbstractUser
-from simple_email_confirmation import SimpleEmailConfirmationUserMixin
+from simple_email_confirmation.models import SimpleEmailConfirmationUserMixin
 from ckeditor.fields import RichTextField
 from django.utils.encoding import python_2_unicode_compatible, smart_text
 from django.utils import timezone
@@ -15,6 +11,7 @@ from django.conf import settings
 
 class Student(SimpleEmailConfirmationUserMixin, AbstractUser):
     pass
+
 
 @python_2_unicode_compatible
 class Period(models.Model):
@@ -42,6 +39,7 @@ class Category(models.Model):
         verbose_name = _("Category")
         verbose_name_plural = _("Categories")
 
+
 @python_2_unicode_compatible
 class Course(models.Model):
     category = models.ForeignKey(Category, verbose_name=_("Category"))
@@ -54,6 +52,7 @@ class Course(models.Model):
     class Meta:
         verbose_name = _("Course")
         verbose_name_plural = _("Courses")
+
 
 @python_2_unicode_compatible
 class Group(models.Model):
@@ -119,6 +118,7 @@ class Enroll(models.Model):
         verbose_name = _("Enrollment")
         verbose_name_plural = _("Enrollments")
 
+
 @python_2_unicode_compatible
 class MenuItem(models.Model):
     TYPES = (
@@ -154,6 +154,7 @@ class MenuItem(models.Model):
         verbose_name = _("Menu Item")
         verbose_name_plural = _("Menu Items")
 
+
 @python_2_unicode_compatible
 class MenuTranslations(models.Model):
     language = models.CharField(max_length=3,
@@ -165,6 +166,7 @@ class MenuTranslations(models.Model):
 
     def __str__(self):
         return self.name
+
 
 @python_2_unicode_compatible
 class Page(models.Model):
@@ -190,3 +192,5 @@ class MultilingualContent(models.Model):
 
     def __str__(self):
         return self.language
+
+

@@ -1,25 +1,50 @@
 {%load i18n %}
+<h4 class="text-left"> {% trans 'Groups' %} </h4>
 
-<h4 class="text-center"> {% trans 'Groups' %} </h4>
-<ul class="list-group">
+
+<table class="table">
+            <thead>
+            <tr>
+                <th>Groups</th>
+                <th>Maximum Students</th>
+                <th>Enrollment</th>
+
+            </tr>
+
+
+            </thead>
+
+            <tbody>
+
 	{% for group in course.groups%}
 
-		<li class="list-group-item">{{group.name}} 
-		{%if add_schedule%} <span style="margin-left: 40px">{{group.schedule}} </span>{%endif%}
-		
+		<tr>
+            <td>{{group.name}}</td>
+            <td><span class="badge">{{ group.maximum }}</span></td>
+            <td>
+                <span id="count_{{group.pk}}" class="badge">{{group.enroll_set.count}}</span>
+            </td>
 
-		<span class="badge">
+
+
+		{%if add_schedule%}<td> <span>{{group.schedule}} </span></td>{%endif%}
+
+
 		{% if request.user.is_authenticated and group.in_enrollment%}
-			<a data-href="{% url 'enrollme' group.pk%}"  data-ajax="true" class="btn-sm btn-default">
+			<td> <a data-href="{% url 'enrollme' group.pk%}"  data-ajax="true">
 				{% if group.flow == group.AUTO_ENROLL%}
 					{% trans 'Enroll me' %}
+
 				{% else %}
+
 					{% trans 'Pre-enroll me' %}
+
 				{% endif%}
-				</a>
+				 </a>
+            </td>
 		{%endif%}
-		<span id="count_{{group.pk}}">{{group.enroll_set.count}} </span>
-		</span>
-		</li>
+
+        </tr>
 	{%endfor%}
-</ul>
+</tbody>
+</table>
