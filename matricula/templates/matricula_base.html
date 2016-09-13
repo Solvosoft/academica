@@ -24,9 +24,13 @@
 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">  	
 
 {% if request.user.is_authenticated %}
-<a href="{% url 'logout'%}" class="nav navbar-nav navbar-right btn">{{ request.user.get_full_name }} {% trans 'Exit' %} </a>
+
+    <a href="{% url 'logout'%}" class="nav navbar-nav navbar-right btn"> {% trans 'Exit' %} </a>
+    <a href="{% url 'profile'%}" class="nav navbar-nav navbar-right btn">{{ request.user.get_full_name }}</a>
+
 {%else%}
-<a href="{% url 'create_user' %}" class="nav navbar-nav navbar-right btn">{% trans 'Sign in/Sing up' %} </a>
+<a href="{% url 'login_user' %}" class="nav navbar-nav navbar-right btn">{% trans 'Sign in' %} </a>
+<a href="{% url 'create_user' %}" class="nav navbar-nav navbar-right btn">{% trans 'Sing up' %} </a>
 {%endif%} 
 {% show_menu request.user.is_authenticated %}   
 </div>

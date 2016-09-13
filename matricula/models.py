@@ -1,11 +1,7 @@
 # encoding: utf-8
 from django.db import models
-
-# Create your models here.
-
-
 from django.contrib.auth.models import AbstractUser
-from simple_email_confirmation import SimpleEmailConfirmationUserMixin
+from simple_email_confirmation.models import SimpleEmailConfirmationUserMixin
 from ckeditor.fields import RichTextField
 from django.utils.encoding import python_2_unicode_compatible, smart_text
 from django.utils import timezone
@@ -16,11 +12,11 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 class Hour(models.Model):
     day_position = models.SmallIntegerField(
-                                            validators=[
-                                                        MaxValueValidator(168),
-                                                        MinValueValidator(0),
-                                                        ]
-                                            )
+        validators=[
+            MaxValueValidator(168),
+            MinValueValidator(0),
+        ]
+    )
     description = models.TextField()
     active = models.BooleanField(default=True)
 
@@ -69,12 +65,12 @@ class ClassroomType(models.Model):
 class Classroom(models.Model):
 
     SELECTION_TYPES = (
-              (5, _('High priority')),
-              (4, _('Priority')),
-              (3, _('Normal')),
-              (2, _('Low priority')),
-              (1, _('Last assigned')),
-             )
+        (5, _('High priority')),
+        (4, _('Priority')),
+        (3, _('Normal')),
+        (2, _('Low priority')),
+        (1, _('Last assigned')),
+    )
 
     name = models.CharField(max_length=30, verbose_name=_("Name"))
     capacity = models.IntegerField(verbose_name=_("Capacity"))
@@ -115,7 +111,8 @@ class Profesor(models.Model):
     # tiene identificacion, nombre, email
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
                                 verbose_name=_("User"))
-    number_hours = models.SmallIntegerField(verbose_name=_("Number of work hours"))
+    number_hours = models.SmallIntegerField(
+        verbose_name=_("Number of work hours"))
 
     def __str__(self):
         return self.user.get_full_name()
@@ -159,38 +156,43 @@ class Group(models.Model):
     AUTO_ENROLL = 2
 
     COURRENCY_CHOICES = (
-            ("USD", "US Dollar"),
-            ("EUR", "Euro"),
-            ("CRC", "Costa Rican Colon"),
-                         )
+        ("USD", "US Dollar"),
+        ("EUR", "Euro"),
+        ("CRC", "Costa Rican Colon"),
+    )
 
     FLOWS = (
-             (NORMAL, _('Normal flow (manual enroll activate)')),
-             (AUTO_PREENROLL, _("Auto pre-enroll (automatic enroll activate)")),
-             (AUTO_ENROLL, _("Auto enroll (automatic enroll finished)")),
-             )
+        (NORMAL, _('Normal flow (manual enroll activate)')),
+        (AUTO_PREENROLL,
+         _("Auto pre-enroll (automatic enroll activate)")),
+        (AUTO_ENROLL, _("Auto enroll (automatic enroll finished)")),
+    )
     period = models.ForeignKey(Period, verbose_name=_("Period"))
     course = models.ForeignKey(Course, verbose_name=_("Course"))
     name = models.CharField(max_length=50, verbose_name=_("Name"))
     schedule = models.ForeignKey(Week, null=True, blank=True)
     # FIXME cambiar null=False
-    classroom_type = models.ForeignKey(ClassroomType, null=True, verbose_name=_("Classroom type"))
+    classroom_type = models.ForeignKey(
+        ClassroomType, null=True, verbose_name=_("Classroom type"))
     number_hours = models.IntegerField(default=1,
-        validators=[
-            MaxValueValidator(168),
-            MinValueValidator(1)
-        ],
-        verbose_name=_("Number of lesson hours"))
+                                       validators=[
+                                           MaxValueValidator(168),
+                                           MinValueValidator(1)
+                                       ],
+                                       verbose_name=_("Number of lesson hours"))
     number_days = models.SmallIntegerField(default=1,
-                    validators=[
-                        MaxValueValidator(7),
-                        MinValueValidator(1)
-                    ],
-                    verbose_name=_("Number of imparting days")
-                                             )
+                                           validators=[
+                                               MaxValueValidator(7),
+                                               MinValueValidator(1)
+                                           ],
+                                           verbose_name=_(
+                                               "Number of imparting days")
+                                           )
 
-    pre_enroll_start = models.DateTimeField(verbose_name=_("Pre enroll start hour"))
-    pre_enroll_finish = models.DateTimeField(verbose_name=_("Pre enroll finish hour"))
+    pre_enroll_start = models.DateTimeField(
+        verbose_name=_("Pre enroll start hour"))
+    pre_enroll_finish = models.DateTimeField(
+        verbose_name=_("Pre enroll finish hour"))
 
     enroll_start = models.DateTimeField(verbose_name=_("Enroll start hour"))
     enroll_finish = models.DateTimeField(verbose_name=_("Enroll finish hour"))
@@ -198,7 +200,8 @@ class Group(models.Model):
                                 choices=COURRENCY_CHOICES, default="CRC")
     cost = models.DecimalField(max_digits=10, decimal_places=2,
                                verbose_name=_("Course cost"))
-    maximum = models.SmallIntegerField(verbose_name=_("Maximum number of students"))
+    maximum = models.SmallIntegerField(
+        verbose_name=_("Maximum number of students"))
     is_open = models.BooleanField(default=True)
     flow = models.SmallIntegerField(choices=FLOWS, default=NORMAL,
                                     verbose_name=_("Enrollment behavior"))
@@ -244,7 +247,7 @@ class Enroll(models.Model):
     enroll_date = models.DateTimeField(auto_now_add=True,
                                        verbose_name=_("Enroll date"))
     bill_created = models.BooleanField(default=False,
-                                       verbose_name=_("Bill created"))  # is needed by bill sistem 
+                                       verbose_name=_("Bill created"))  # is needed by bill sistem
 
     def __str__(self):
         return self.student.username + " -- " + smart_text(self.group)
@@ -257,9 +260,10 @@ class Enroll(models.Model):
 @python_2_unicode_compatible
 class MenuItem(models.Model):
     TYPES = (
-             (0, _("Internal")),
-             (1, _("Page"))
-             )
+        (0, _("Internal")),
+        (1, _("Page")),
+        (2, _("Do not used "))
+    )
     name = models.CharField(max_length=50, verbose_name=_("Name"))
     type = models.SmallIntegerField(choices=TYPES, default=0,
                                     verbose_name=_("Type"))
@@ -276,9 +280,11 @@ class MenuItem(models.Model):
                                    verbose_name=_("Index page"))
 
     def get_title_menu(self, request):
-        name = MenuTranslations.objects.filter(language=request.LANGUAGE_CODE)
+        name = MenuTranslations.objects.filter(
+            menu=self, language=request.LANGUAGE_CODE)
         if not name:
-            name = MenuTranslations.objects.filter(language=settings.LANGUAGE_CODE)
+            name = MenuTranslations.objects.filter(
+                menu=self, language=settings.LANGUAGE_CODE)
 
         if not name:
             name = self.description

@@ -196,8 +196,7 @@ class GroupSchedule(ScheduleAdmin):
         return mark_safe(dev)
 
     def change_group(self, obj):
-        print(obj.schedule, obj.group.schedule)
-        
+
         if obj.schedule != obj.group.schedule:
             for_del = obj.group.schedule
             obj.group.schedule = obj.schedule

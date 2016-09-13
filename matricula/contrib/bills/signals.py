@@ -1,6 +1,5 @@
-# encoding: utf-8
-
-from django.db.models.signals import post_save, pre_save
+# -*- coding: UTF-8 -*-
+from django.db.models.signals import post_save
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.dispatch import receiver
@@ -8,11 +7,11 @@ from matricula.models import Enroll
 from .models import Bill
 from django.utils.translation import ugettext_lazy as _
 from paypal.standard.ipn.signals import valid_ipn_received
-
 from paypal.standard.models import ST_PP_COMPLETED
 from datetime import datetime
 from django.utils.encoding import smart_text
 from django.conf import settings
+
 
 @receiver(post_save, sender=Enroll)
 def create_bill(sender, **kwargs):
@@ -20,7 +19,7 @@ def create_bill(sender, **kwargs):
     if not instance.bill_created and instance.enroll_finished\
     and instance.group.cost > 0:
         instance.bill_created = True
-        Bill.objects.create(short_description=_("Enroll in %s") % (str(instance.group)),
+        Bill.objects.create(short_description=_("Enroll in %s") % (instance.group),
                             description=render_to_string('invoice.html',
                                     { 'student': instance.student,
                                       'enroll': smart_text(instance.group),
