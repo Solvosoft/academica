@@ -6,8 +6,10 @@
 
 <h1>{% trans 'List of courses to enroll' %} </h1>
 <ul class="list-group">
+
+
 	{% for enroll in list_enroll%}
-		<li class="list-group-item">
+        <li class="list-group-item">
 			<span class="badge">
 				<a class="btn-sm btn-default" href="{% url 'finish_enroll' enroll.pk %}">
 				{% trans 'Enrollme' %}
@@ -16,11 +18,17 @@
 		</li>
 
 	{%empty%}
+
 	<div class="alert alert-info" role="alert">
 		{% trans "You don't have any courses to enroll"%} </div>
+
 	{%endfor%}
+
+
 </ul>
-	
+
+
+
 <h1>{% trans "Enrolled courses"%} </h1>
 <ul class="list-group">
 	{% for enroll in finished_enroll%}

@@ -53,7 +53,9 @@ def list_enroll(request):
     list_enroll = Enroll.objects.filter(student=request.user, enroll_activate=True, enroll_finished=False,
       group__enroll_start__lte=timezone.now(),
       group__enroll_finish__gte=timezone.now()).order_by("-enroll_date")
+
     finished_enroll = Enroll.objects.filter(student=request.user, enroll_finished=True).order_by("-enroll_date")
+
     return render(request, 'enroll.html', {'list_enroll': list_enroll,
                                            'finished_enroll': finished_enroll}
                   )

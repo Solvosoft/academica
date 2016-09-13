@@ -53,6 +53,7 @@ INSTALLED_APPS = (
     'matricula.contrib.bills',
     'ckeditor',
     'paypal.standard.ipn',
+
     'django_ajax',
     'ajax_select'
 )
@@ -82,9 +83,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                # `allauth` specific context processors
-                'allauth.account.context_processors.account',
-                'allauth.socialaccount.context_processors.socialaccount',
             ],
         },
     },
@@ -144,17 +142,6 @@ CKEDITOR_CONFIGS = {
         'width': 800,
     },
 }
-
-TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
-                                "django.template.context_processors.debug",
-                                "django.template.context_processors.i18n",
-                                "django.template.context_processors.media",
-                                "django.template.context_processors.static",
-                                "django.template.context_processors.tz",
-                                "django.contrib.messages.context_processors.messages",
-                                'django.core.context_processors.request'
-                                )
-
 
 AUTHENTICATION_BACKENDS = (
 

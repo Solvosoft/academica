@@ -21,6 +21,7 @@ def get_amount(bill):
         return (colon.is_dolar * bill.amount, "USD")
     return (bill.amount, bill.currency)
 
+
 @csrf_exempt
 @login_required
 def get_my_bills(request):
