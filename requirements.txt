@@ -1,0 +1,4 @@
+django-grappelli
+django-countries
+pyuca
+django-money
