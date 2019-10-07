@@ -28,7 +28,7 @@ class ContactAdmin(admin.ModelAdmin):
         "first_name",
         "last_name",
         "email",
-        "cellphone",
+    "cellphone",
         "phone",
         "address",
         "country",

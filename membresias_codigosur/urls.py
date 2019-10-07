@@ -15,10 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import RedirectView
 from membership_manager.urls import urlpatterns as url_manager
+from membership_manager.views import UpdateBot
+
 urlpatterns = [
     path('', RedirectView.as_view(url="/admin/")),
     path('grappelli/', include('grappelli.urls')), # grappelli URLS
     path('admin/', admin.site.urls),
-] +url_manager
+    path('telbot/', csrf_exempt(UpdateBot.as_view()))
+] + url_manager
