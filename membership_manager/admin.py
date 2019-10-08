@@ -108,6 +108,7 @@ class MemberShipAdmin(admin.ModelAdmin):
                     'state': obj.state,
                     'services': [svc.id for svc in obj.services.all()]}
 
+
 class OrganizationAdmin(admin.ModelAdmin):
     list_filter = ('active', 'country')
     search_fields = ('name', 'initials')
