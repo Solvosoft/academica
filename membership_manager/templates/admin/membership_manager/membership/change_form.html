@@ -202,7 +202,7 @@
                             </div>
                             <div class="c-2">
                                 <select name="membership_template" required id="id_membership_template">
-                                    <option value="">---------</option>
+                                    <option value>---------</option>
                                     {% for obj in data %}
                                         <option value="{{ obj.pk }}">{{ obj.name }}</option>
                                     {% endfor %}
@@ -215,8 +215,11 @@
                 <script type="text/javascript">
                     (function($) {
                         $(document).ready(function() {
+                            $("#id_membership_template").val("{{ request.GET.temp }}").change();
+
                             $( "#id_membership_template" ).change(function() {
-                              alert( "What i have to do now, master?" );
+                                var id = $(this).val();
+                                window.location.href = "{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'admin:membership_manager_membership_add' %}?temp=" + id
                             });
                         });
                     })(grp.jQuery);

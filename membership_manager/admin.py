@@ -1,7 +1,6 @@
 from django.contrib import admin
 
 # Register your models here.
-from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.html import format_html
 
@@ -15,7 +14,6 @@ admin.site.register([models.Invoice])
 class ContactAdmin(admin.ModelAdmin):
     list_filter = ('active', 'country')
     search_fields = ('first_name', 'last_name')
-    # list_editable = ('active',)
     list_display = ("first_name",
                     "last_name",
                     "email",
@@ -23,7 +21,6 @@ class ContactAdmin(admin.ModelAdmin):
                     "country",
                     "organizations",
                     "memberships",
-                    "create_membership_template",
                     "active")
 
     fields = [
@@ -80,17 +77,6 @@ class ContactAdmin(admin.ModelAdmin):
 
     memberships.short_description = "Membership"
 
-    def create_membership_template(self, obj):
-        return render_to_string(
-            'partial/create_membership_template.html',
-            context={
-                'contact': obj,
-                'templates': MembershipTemplate.objects.all()
-            }
-        )
-
-    create_membership_template.short_description = "Create Membership from template"
-
 
 class MembershipRenewAdmin(admin.StackedInline):
     model = models.MembershipRenew
@@ -110,6 +96,17 @@ class MemberShipAdmin(admin.ModelAdmin):
         extra_context = {'data': query}
         return super(MemberShipAdmin, self).changeform_view(request, obj_id, form_url, extra_context=extra_context)
 
+    def get_changeform_initial_data(self, request):
+        if request.GET.get('temp'):
+            obj = MembershipTemplate.objects.get(id=request.GET.get('temp'))
+            return {'membership_template': obj.id,
+                    'name': obj.name,
+                    'annual_cost': obj.annual_cost,
+                    'currency': obj.currency_id,
+                    'description': obj.description,
+                    'renewal_period': obj.renewal_period_id,
+                    'state': obj.state,
+                    'services': [svc.id for svc in obj.services.all()]}
 
 class OrganizationAdmin(admin.ModelAdmin):
     list_filter = ('active', 'country')
