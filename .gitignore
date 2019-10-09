@@ -7,3 +7,6 @@ db.sqlite3
 Wiki/
 doc/api/build
 media/
+src/celerybeat-schedule.bak
+src/celerybeat-schedule.dat
+src/celerybeat-schedule.dir
