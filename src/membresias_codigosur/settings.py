@@ -22,8 +22,9 @@ BASE_NOCODE_DIR = os.path.dirname(BASE_DIR)
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'i$@e@=z3nxrz6u8jv&5u^6&5mlj_o$^7a@&(c%rz#=%5)ht_%b'
 
+DEBUG=True
 # SECURITY WARNING: don't run with debug turned on in production!
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [c for c in os.getenv('ALLOWED_HOSTS', '').split(',') if DEBUG and c]
 ADMINS = [('support', 'support@solvosoft.com') ]
 
 
@@ -41,6 +42,8 @@ INSTALLED_APPS = [
     'membership_manager',
     'django_countries',
     'djmoney',
+    'ajax_select',
+    'async_notifications'
 ]
 
 MIDDLEWARE = [
@@ -143,3 +146,9 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL' ,'webmaster@localhost')
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS','False').lower() == "true"
 EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL','False').lower() == "true"
 
+
+# docker run --name membresias-redis -p 6379:6379 -d redis 
+CELERY_MODULE = "membresias_codigosur.celery"
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_ACCEPT_CONTENT = ['pickle', 'json']
+CELERY_BROKER_URL = os.getenv('BROKER_URL', 'redis://localhost:6379/0')
