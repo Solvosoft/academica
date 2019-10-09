@@ -19,7 +19,9 @@ from django.urls import path, include, re_path
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import RedirectView
 from django.views.static import serve
+from ajax_select import urls as ajax_select_urls
 
+from ajax_select import urls as ajax_select_urls
 from membership_manager.urls import urlpatterns as url_manager
 from membership_manager.views import UpdateBot
 
@@ -28,6 +30,7 @@ urlpatterns = [
     path('grappelli/', include('grappelli.urls')), # grappelli URLS
     path('admin/', admin.site.urls),
     path('telbot/', csrf_exempt(UpdateBot.as_view())),
+    re_path(r'^ajax_select/', include(ajax_select_urls)),
     re_path(r'^media/(?P<path>.*)$',
             serve,
             {'document_root': settings.MEDIA_ROOT,}

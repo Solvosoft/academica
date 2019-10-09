@@ -3,4 +3,7 @@ django-countries
 pyuca
 django-money
 pyTelegramBotAPI
+async_notifications==0.1.10
+django-ajax-selects==1.7.1
+celery[redis]>4.2
 xhtml2pdf

@@ -1,0 +1,33 @@
+#!/bin/bash
+
+NAME="membresias"
+ENVIRONMENT_PATH=/usr/local/bin/
+DJANGODIR=/MEMBRESIAS/src/                                # Django project directory
+SOCKFILE=unix:/MEMBRESIAS/run/gunicorn.sock #0.0.0.0:8000  # we will communicte using this unix socket
+USER=membresias                                          # the user to run as
+GROUP=membresias                                         # the group to run as
+NUM_WORKERS=2                                       # how many worker processes should Gunicorn spawn
+DJANGO_SETTINGS_MODULE=membresias_codigosur.settings   # which settings file should Django use
+DJANGO_WSGI_MODULE=membresias_codigosur.wsgi           # WSGI module name
+
+echo "Starting $NAME as `whoami`"
+
+# Activate the virtual environment
+cd $DJANGODIR
+export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
+export PYTHONPATH=$DJANGODIR:$PYTHONPATH
+
+# Create the run directory if it doesn't exist
+RUNDIR=$(dirname $SOCKFILE)
+test -d $RUNDIR || mkdir -p $RUNDIR
+
+# Start your Django Unicorn
+# Programs meant to be run under supervisor should not daemonize themselves (do not use --daemon)
+exec $ENVIRONMENT_PATH/gunicorn ${DJANGO_WSGI_MODULE}:application \
+  --name $NAME \
+  --workers $NUM_WORKERS \
+  --user=$USER --group=$GROUP \
+  --bind=$SOCKFILE \
+  --log-level=info  
+ 
+
