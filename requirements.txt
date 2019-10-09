@@ -3,3 +3,4 @@ django-countries
 pyuca
 django-money
 pyTelegramBotAPI
+xhtml2pdf

@@ -12,32 +12,33 @@ class GeneralContactInfo(models.Model):
         ("Bitcoins", "Bitcoins")
     )
 
-    email = models.EmailField() # Correo electrónico
-    cellphone = models.CharField(max_length=200) # celular
-    phone = models.CharField(max_length=200) # Teléfono
-    address = models.TextField() #Dirección
-    country = CountryField() # País
-    city = models.CharField(max_length=200) # Ciudad
-    province = models.CharField(max_length=200) # Estado / Provincia
-    postal_code = models.CharField(max_length=10) # Código Postal
-    active = models.BooleanField(default=True) # Estado(Activo, Inactivo)
+    email = models.EmailField()  # Correo electrónico
+    cellphone = models.CharField(max_length=200)  # celular
+    phone = models.CharField(max_length=200)  # Teléfono
+    address = models.TextField()  # Dirección
+    country = CountryField()  # País
+    city = models.CharField(max_length=200)  # Ciudad
+    province = models.CharField(max_length=200)  # Estado / Provincia
+    postal_code = models.CharField(max_length=10)  # Código Postal
+    active = models.BooleanField(default=True)  # Estado(Activo, Inactivo)
     currency = models.ForeignKey(SystemCurrency, on_delete=models.CASCADE)
     payment_method = models.CharField(max_length=250, choices=PAYMENT)
 
     class Meta:
         abstract = True
 
-class Contact(GeneralContactInfo):
-    first_name = models.CharField(max_length=250) #Nombres
-    last_name = models.CharField(max_length=250) #Apellidos
 
+class Contact(GeneralContactInfo):
+    first_name = models.CharField(max_length=250)  # Nombres
+    last_name = models.CharField(max_length=250)  # Apellidos
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+
 class Organization(GeneralContactInfo):
-    name = models.CharField(max_length=300)  #Nombre de la Organización
-    initials = models.CharField(max_length=50) #SIGLA
+    name = models.CharField(max_length=300)  # Nombre de la Organización
+    initials = models.CharField(max_length=50)  # SIGLA
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -51,10 +52,10 @@ class Membership(models.Model):
         ("graceperiod", "Periodo de gracia"),
     )
     TYPES = (("Personal", "Personal"),
-            ("Radial", "Radial"),
-            ("Organizacional", "Organizacional"),
-            ("Global", "Global"),
-            ("Honoraria", "Honoraria") )
+             ("Radial", "Radial"),
+             ("Organizacional", "Organizacional"),
+             ("Global", "Global"),
+             ("Honoraria", "Honoraria"))
     creation_date = models.DateTimeField(auto_now_add=True)
     membership_type = models.CharField(max_length=50, choices=TYPES)
     contact = models.ForeignKey(Contact, null=True, blank=True, on_delete=models.CASCADE)
@@ -70,6 +71,7 @@ class Membership(models.Model):
     def __str__(self):
         return self.name
 
+
 class MembershipRenew(models.Model):
     creation_date = models.DateTimeField(auto_created=True)
     membership = models.ForeignKey(Membership, on_delete=models.CASCADE)
@@ -80,8 +82,9 @@ class MembershipRenew(models.Model):
     active = models.BooleanField(default=True)
 
     def __str__(self):
-        return "From %s to %s"%(self.start_date.strftime("%d/%m/%Y"),
-                                self.end_date.strftime("%d/%m/%Y"))
+        return "From %s to %s" % (self.start_date.strftime("%d/%m/%Y"),
+                                  self.end_date.strftime("%d/%m/%Y"))
+
 
 class Invoice(models.Model):
     STATUS = (
@@ -101,7 +104,7 @@ class Invoice(models.Model):
     pdf_invoice = models.FileField(upload_to="invoices/", null=True, blank=True)
 
     def __str__(self):
-        return "%s %s %s"%(
+        return "%s %s %s" % (
             self.membership, self.renewal_period,
             self.get_status_display()
         )

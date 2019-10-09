@@ -3,12 +3,10 @@ from django.contrib import admin
 # Register your models here.
 from django.urls import reverse
 from django.utils.html import format_html
-
 from membership_core.models import MembershipTemplate
 from membership_manager import models
-from membership_manager.models import Membership
-
-admin.site.register([models.Invoice])
+from membership_manager.admin_pdf import InvoiceAdmin
+from membership_manager.models import Membership, MembershipRenew
 
 
 class ContactAdmin(admin.ModelAdmin):
@@ -27,7 +25,7 @@ class ContactAdmin(admin.ModelAdmin):
         "first_name",
         "last_name",
         "email",
-    "cellphone",
+        "cellphone",
         "phone",
         "address",
         "country",
@@ -139,6 +137,7 @@ class OrganizationAdmin(admin.ModelAdmin):
     memberships.short_description = "Membership"
 
 
+admin.site.register(models.Invoice, InvoiceAdmin)
 admin.site.register(models.Organization, OrganizationAdmin)
 admin.site.register(models.Contact, ContactAdmin)
 admin.site.register(models.Membership, MemberShipAdmin)
