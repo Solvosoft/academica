@@ -22,9 +22,12 @@ BASE_NOCODE_DIR = os.path.dirname(BASE_DIR)
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'i$@e@=z3nxrz6u8jv&5u^6&5mlj_o$^7a@&(c%rz#=%5)ht_%b'
 
-DEBUG=True
+DEBUG = True
 # SECURITY WARNING: don't run with debug turned on in production!
 ALLOWED_HOSTS = [c for c in os.getenv('ALLOWED_HOSTS', '').split(',') if DEBUG and c]
+if not DEBUG and not ALLOWED_HOSTS:
+    ALLOWED_HOSTS=['*']
+
 ADMINS = [('support', 'support@solvosoft.com') ]
 
 

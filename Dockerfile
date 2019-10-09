@@ -4,7 +4,7 @@ ENV PYTHONUNBUFFERED 1
 MAINTAINER SolvoSoft
 
 RUN mkdir -p /opt/membresias
-RUN mkdir -p /MEMBRESIAS/deploy -p /MEMBRESIAS/locale /MEMBRESIAS/run
+RUN mkdir -p /MEMBRESIAS/deploy -p /MEMBRESIAS/locale -p /MEMBRESIAS/run -p /MEMBRESIAS/celery
 
 WORKDIR /MEMBRESIAS
 
