@@ -14,7 +14,7 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+BASE_NOCODE_DIR = os.path.dirname(BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -23,9 +23,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'i$@e@=z3nxrz6u8jv&5u^6&5mlj_o$^7a@&(c%rz#=%5)ht_%b'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+ADMINS = [('support', 'support@solvosoft.com') ]
 
 
 # Application definition
@@ -78,6 +77,7 @@ WSGI_APPLICATION = 'membresias_codigosur.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+# databaseconf
 
 DATABASES = {
     'default': {
@@ -86,6 +86,7 @@ DATABASES = {
     }
 }
 
+# enddatabaseconf
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -109,9 +110,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Costa_Rica'
 
 USE_I18N = True
 
@@ -124,3 +125,21 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_NOCODE_DIR, 'static/')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_NOCODE_DIR, 'media/')
+#LOGIN_URL = '/login'
+#LOGIN_REDIRECT_URL = '/'
+LOCALE_PATHS = (
+    os.path.join(BASE_NOCODE_DIR, 'locale/'),
+)
+# python -m smtpd -c DebuggingServer -n localhost:1025
+# o también ver https://github.com/mailhog/MailHog
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'localhost')
+EMAIL_PORT = os.getenv('EMAIL_PORT', '1025')
+EMAIL_HOST_PASSWORD =  os.getenv('EMAIL_HOST_PASSWORD', '')
+EMAIL_HOST_USER =  os.getenv('EMAIL_HOST_USER', '')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL' ,'webmaster@localhost')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS','False').lower() == "true"
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL','False').lower() == "true"
+
