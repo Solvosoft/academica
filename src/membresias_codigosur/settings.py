@@ -34,10 +34,11 @@ ADMINS = [('support', 'support@solvosoft.com') ]
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.contenttypes',
+    'grappelli.dashboard',
     'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
-    'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -155,3 +156,5 @@ CELERY_MODULE = "membresias_codigosur.celery"
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_ACCEPT_CONTENT = ['pickle', 'json']
 CELERY_BROKER_URL = os.getenv('BROKER_URL', 'redis://localhost:6379/0')
+
+GRAPPELLI_INDEX_DASHBOARD = 'dashboard.CustomIndexDashboard'
