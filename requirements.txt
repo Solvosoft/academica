@@ -1,7 +1,7 @@
 django-grappelli
 django-countries
 pyuca
-django-money
+django-money[exchange]
 pyTelegramBotAPI
 async_notifications==0.1.10
 django-ajax-selects==1.7.1

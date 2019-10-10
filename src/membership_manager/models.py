@@ -69,7 +69,7 @@ class Membership(models.Model):
     contact = models.ForeignKey(Contact, null=True, blank=True, on_delete=models.CASCADE, verbose_name="Contato")
     organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=300, verbose_name="Nombre")
-    annual_cost = models.FloatField(verbose_name="Costo Anual")
+    annual_cost = models.FloatField(verbose_name="Costo")
     currency = models.ForeignKey(SystemCurrency, on_delete=models.CASCADE, verbose_name="Moneda")
     description = models.TextField(null=True, blank=True, verbose_name="Descripción")
     services = models.ManyToManyField(Service, verbose_name="Servicios")

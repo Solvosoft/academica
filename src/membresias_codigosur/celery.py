@@ -30,5 +30,10 @@ app.conf.CELERYBEAT_SCHEDULE = {
         #'schedule': crontab(minute=30, hour=0),
         'schedule': crontab(minute='*/3'),
     },
+    'update_rates': {
+        'task': 'path.to.your.task',
+        'schedule': crontab(minute=3, hour=2),
+        'kwargs': {}  # For custom arguments
+    }
 }
 app.conf.CELERY_TIMEZONE = settings.TIME_ZONE

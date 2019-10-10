@@ -18,12 +18,12 @@ class RenewalPeriod(models.Model):
     months = models.FloatField(verbose_name="meses")
 
     def __str__(self):
-        month_name = "months"
+        month_name = "meses"
         month = self.months
         if month < 1:
             month = self.months*100
-            month_name= "days"
-        return "Every %0.f %s"%(month, month_name)
+            month_name= "días"
+        return "Cada %0.f %s"%(month, month_name)
 
     class Meta:
         verbose_name = "Periodo de renovación"
@@ -46,7 +46,7 @@ class MembershipTemplate(models.Model):
         ("graceperiod", "Periodo de gracia"),
     )
     name = models.CharField(max_length=300, verbose_name="Nombre")
-    annual_cost = models.FloatField(verbose_name="Costo anual")
+    annual_cost = models.FloatField(verbose_name="Costo")
     currency = models.ForeignKey(SystemCurrency, on_delete=models.CASCADE,
                                  verbose_name="Moneda")
     description = models.TextField(null=True, blank=True, verbose_name="Descripción")

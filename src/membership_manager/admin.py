@@ -3,11 +3,15 @@ from django.contrib import admin
 # Register your models here.
 from django.urls import reverse
 from django.utils.html import format_html
-from membership_core.models import MembershipTemplate
+from django.utils.safestring import mark_safe
+
+from membership_core.models import MembershipTemplate, SystemCurrency
 from membership_manager import models
 from membership_manager.admin_pdf import InvoiceAdmin
+from membership_manager.forms import MembershipAddForm
 from membership_manager.models import Membership, MembershipRenew
-
+from djmoney.money import Money
+from djmoney.contrib.exchange.models import convert_money
 
 class ContactAdmin(admin.ModelAdmin):
     list_filter = ('active', 'country')
@@ -85,19 +89,43 @@ class MemberShipAdmin(admin.ModelAdmin):
     list_filter = ('state', 'contact__country', 'services')
     search_fields = ('contact__first_name', 'contact__last_name')
     list_display = ('name', 'contact', 'annual_cost',
-                    'currency', 'renewal_period', 'state')
+                    'currency', 'renewal_period', 'state','invoices',
+                    'exchange_rates')
+    readonly_fields = ['exchange_rates', 'invoices']
     filter_horizontal = ['services']
     inlines = [MembershipRenewAdmin]
+    form_class=MembershipAddForm
+    fields = ['membership_template',
+              'membership_type', 'contact', 'organization',
+              'name','description', 'annual_cost', 'currency','exchange_rates',
+              'services', 'renewal_period', 'state']
 
-    def changeform_view(self, request, obj_id, form_url, extra_context=None):
-        query = Membership.objects.all()
-        extra_context = {'data': query}
-        return super(MemberShipAdmin, self).changeform_view(request, obj_id, form_url, extra_context=extra_context)
+
+    def exchange_rates(self, obj):
+        if obj:
+            dev = ""
+            for currency in SystemCurrency.objects.all():
+                if obj.currency != currency:
+                    dev += str(convert_money(Money(obj.annual_cost, obj.currency.currency),
+                                    currency.currency))+" | "
+
+
+
+            return dev
+
+        return "Debes guardar primero para ver los tipos de cambio"
+
+    exchange_rates.short_description = "Tipos de cambio"
+    def get_form(self, request, obj=None, **kwargs):
+        kwargs['form'] = self.form_class
+        return super().get_form(request, obj, **kwargs)
 
     def get_changeform_initial_data(self, request):
-        if request.GET.get('temp'):
-            obj = MembershipTemplate.objects.get(id=request.GET.get('temp'))
-            return {'membership_template': obj.id,
+        tid = request.GET.get('tid')
+        if tid:
+            obj = MembershipTemplate.objects.filter(id=tid).first()
+            if obj:
+                return {'membership_template': obj.id,
                     'name': obj.name,
                     'annual_cost': obj.annual_cost,
                     'currency': obj.currency_id,
@@ -106,6 +134,18 @@ class MemberShipAdmin(admin.ModelAdmin):
                     'state': obj.state,
                     'services': [svc.id for svc in obj.services.all()]}
 
+
+    def invoices(self, obj):
+        if obj:
+            dev = ""
+            dev += '<a href="%s" class="grp-button grp-button-state-inactive" >%d</a>'%(
+                reverse("admin:membership_manager_invoice_changelist") +"?membership="+str(
+                    obj.pk
+                ),
+                obj.invoice_set.all().count())
+            return mark_safe(dev)
+        return ""
+    invoices.short_description = "Facturas"
 
 class OrganizationAdmin(admin.ModelAdmin):
     list_filter = ('active', 'country')
@@ -141,4 +181,4 @@ admin.site.register(models.Invoice, InvoiceAdmin)
 admin.site.register(models.Organization, OrganizationAdmin)
 admin.site.register(models.Contact, ContactAdmin)
 admin.site.register(models.Membership, MemberShipAdmin)
-admin.sites.DefaultAdminSite.title = "Membresias locas"
+
