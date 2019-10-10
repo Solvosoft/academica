@@ -1,3 +1,4 @@
+from django.contrib.admin import SimpleListFilter
 from django.db import models
 from django_countries.fields import CountryField
 
@@ -71,6 +72,23 @@ class Membership(models.Model):
     def __str__(self):
         return self.name
 
+class MembershipNotificationFilter(SimpleListFilter):
+    title = 'Membership Renewals'  # a label for our filter
+    parameter_name = 'renewal_period'  # you can put anything here
+
+    def lookups(self, request, model_admin):
+        # This is where you create filter options; we have two:
+        return [
+            ('paid', 'Paid out'),
+            ('not_paid', 'Not paid'),
+        ]
+    def queryset(self, request, queryset):
+        # This is where you process parameters selected by use via filter options:
+        if self.value() == 'paid':
+            return queryset.distinct().filter(renewal_period__months__lte = 1)
+        if self.value() == 'not_paid':
+            # Get websites that don't have any pages.
+            return queryset.distinct().filter(renewal_period__months__gte = 1)
 
 class MembershipRenew(models.Model):
     creation_date = models.DateTimeField(auto_created=True)

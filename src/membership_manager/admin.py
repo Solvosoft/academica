@@ -1,12 +1,13 @@
 from django.contrib import admin
 
 # Register your models here.
+from django.contrib.admin import SimpleListFilter
 from django.urls import reverse
 from django.utils.html import format_html
 from membership_core.models import MembershipTemplate
 from membership_manager import models
 from membership_manager.admin_pdf import InvoiceAdmin
-from membership_manager.models import Membership, MembershipRenew
+from membership_manager.models import Membership, MembershipRenew, MembershipNotificationFilter
 
 
 class ContactAdmin(admin.ModelAdmin):
@@ -82,7 +83,7 @@ class MembershipRenewAdmin(admin.StackedInline):
 
 
 class MemberShipAdmin(admin.ModelAdmin):
-    list_filter = ('state', 'contact__country', 'services')
+    list_filter = ('state', 'contact__country', 'services', MembershipNotificationFilter)
     search_fields = ('contact__first_name', 'contact__last_name')
     list_display = ('name', 'contact', 'annual_cost',
                     'currency', 'renewal_period', 'state')
@@ -135,6 +136,9 @@ class OrganizationAdmin(admin.ModelAdmin):
                            )
 
     memberships.short_description = "Membership"
+
+
+
 
 
 admin.site.register(models.Invoice, InvoiceAdmin)
