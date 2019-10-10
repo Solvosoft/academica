@@ -90,7 +90,7 @@ class MembershipRenew(models.Model):
                                          verbose_name="Fecha de creación")
     membership = models.ForeignKey(Membership, on_delete=models.CASCADE,
                                    verbose_name="Membresía")
-    start_date = models.DateTimeField()
+    start_date = models.DateTimeField(verbose_name="Fecha de inicio")
     end_date = models.DateTimeField(verbose_name="Fecha de finalización")
     graceperiod = models.BooleanField(default=False, verbose_name="Periodo de gracia")
     active = models.BooleanField(default=True, verbose_name="Activo")
