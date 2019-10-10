@@ -22,19 +22,23 @@ BASE_NOCODE_DIR = os.path.dirname(BASE_DIR)
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'i$@e@=z3nxrz6u8jv&5u^6&5mlj_o$^7a@&(c%rz#=%5)ht_%b'
 
-DEBUG=True
+DEBUG = True
 # SECURITY WARNING: don't run with debug turned on in production!
 ALLOWED_HOSTS = [c for c in os.getenv('ALLOWED_HOSTS', '').split(',') if DEBUG and c]
+if not DEBUG and not ALLOWED_HOSTS:
+    ALLOWED_HOSTS=['*']
+
 ADMINS = [('support', 'support@solvosoft.com') ]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.contenttypes',
+    'grappelli.dashboard',
     'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
-    'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -152,3 +156,5 @@ CELERY_MODULE = "membresias_codigosur.celery"
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_ACCEPT_CONTENT = ['pickle', 'json']
 CELERY_BROKER_URL = os.getenv('BROKER_URL', 'redis://localhost:6379/0')
+
+GRAPPELLI_INDEX_DASHBOARD = 'dashboard.CustomIndexDashboard'

@@ -1,0 +1,179 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-10-09 18:37-0600\n"
+"PO-Revision-Date: 2019-10-09 18:44-0600\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.2.1\n"
+
+#: src/dashboard.py:27
+msgid "Administration"
+msgstr "Administración"
+
+#: src/dashboard.py:36
+msgid "Administración del gestor de membresias"
+msgstr "Administración del gestor de membresias"
+
+#: src/dashboard.py:44
+msgid "Gestion de membresias"
+msgstr "Gestion de membresias"
+
+#: src/dashboard.py:50
+msgid "Gestion de correo"
+msgstr "Gestion de correo"
+
+#: src/membership_manager/templates/admin/membership_manager/membership/change_form.html:143
+msgid "Open All Items"
+msgstr "Abrir todo"
+
+#: src/membership_manager/templates/admin/membership_manager/membership/change_form.html:144
+msgid "Close All Items"
+msgstr "Cerrar todo"
+
+#: src/membership_manager/templates/admin/membership_manager/membership/change_form.html:153
+msgid "Home"
+msgstr "Inicio"
+
+#: src/membership_manager/templates/admin/membership_manager/membership/change_form.html:159
+msgid "Add"
+msgstr "Añadir"
+
+#: src/membership_manager/templates/admin/membership_manager/membership/change_form.html:171
+msgid "History"
+msgstr "Historial"
+
+#: src/membership_manager/templates/admin/membership_manager/membership/change_form.html:172
+msgid "View on site"
+msgstr "Ver en sitio"
+
+#: src/membership_manager/templates/admin/membership_manager/membership/change_form.html:190
+msgid "Please correct the error below."
+msgstr "Por favor corrija los errores siguientes."
+
+#: src/membership_manager/templates/admin/membership_manager/membership/change_form.html:190
+msgid "Please correct the errors below."
+msgstr "Por favor corrija los errores siguientes."
+
+#: src/membership_manager/templates/admin/membership_manager/membership/change_form.html:201
+msgid "Membership template"
+msgstr "Plantilla de membresías"
+
+#: admin.py:16 models.py:18
+msgid "User"
+msgstr "Usuario"
+
+#: admin.py:21
+msgid "All mails"
+msgstr "Todos los correos"
+
+#: admin.py:22
+msgid "My mails"
+msgstr "Mis correos"
+
+#: admin.py:77
+msgid "Send email now"
+msgstr "Enviar correo ahora"
+
+#: admin.py:82
+msgid " and more"
+msgstr "y más"
+
+#: admin.py:84
+msgid "Recipients"
+msgstr "Lista de recibo"
+
+#: admin.py:110
+msgid "Template context"
+msgstr "Contexto de plantilla"
+
+#: apps.py:7
+msgid "Email Notification"
+msgstr "Notificación por correo"
+
+#: forms.py:18 models.py:14
+msgid "Recipient list"
+msgstr "Lista de recibo"
+
+#: lookups.py:109
+msgid "Add external email"
+msgstr "Agregar correo externo"
+
+#: lookups.py:124
+msgid "External user"
+msgstr "Usuario externo"
+
+#: models.py:11 models.py:38
+msgid "Subject"
+msgstr "Asunto"
+
+#: models.py:12 models.py:39
+msgid "Message"
+msgstr "Mensaje"
+
+#: models.py:16
+msgid "Enqueued"
+msgstr "Encolado"
+
+#: models.py:19
+msgid "Sended"
+msgstr "Enviado"
+
+#: models.py:21
+msgid "File"
+msgstr "Archivo"
+
+#: models.py:22
+msgid "Problems"
+msgstr "Problemas"
+
+#: models.py:24
+msgid "Create datetime"
+msgstr "Fecha de creación"
+
+#: models.py:27
+msgid "sended"
+msgstr "enviado"
+
+#: models.py:27
+msgid "Not sended"
+msgstr "No enviado"
+
+#: models.py:31
+msgid "Email notification"
+msgstr "Notificación por correo"
+
+#: models.py:32
+msgid "Email notifications"
+msgstr "Notificaciones por correo"
+
+#: models.py:37 models.py:51
+msgid "Code"
+msgstr "Código"
+
+#: models.py:45
+msgid "Email template"
+msgstr "Plantilla de correo"
+
+#: models.py:46
+msgid "Email templates"
+msgstr "Plantillas de correo"
+
+#: models.py:52
+msgid "Context dictionary"
+msgstr "Diccionario de contexto"
+
+#: models.py:55 models.py:56
+msgid "Context of template"
+msgstr "Contexto de la plantilla"

@@ -1,6 +1,13 @@
 version: "3"
 
 services:
+  redis:
+    container_name: "redis"
+    image: "redis"
+    restart: always
+    networks:
+      - membapp
+
   membresias:
     build: .
     container_name: "membresias"
@@ -10,6 +17,7 @@ services:
     links:
       - "db:database"
       - "mail"
+      - "redis"
     networks:
       - membapp
     environment:
@@ -21,6 +29,7 @@ services:
       - DB_NAME=membresias-db
       - DB_USER=membresias-user
       - DB_PASSWORD=membresias12345
+      - BROKER_URL=redis://redis:6379/0
 
 #  pgadmin:
 #    image: dpage/pgadmin4

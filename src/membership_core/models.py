@@ -3,14 +3,19 @@ from djmoney.settings import CURRENCY_CHOICES
 
 
 class SystemCurrency(models.Model):
-    currency = models.CharField(max_length=4, choices=CURRENCY_CHOICES)
+    currency = models.CharField(max_length=4,
+                                choices=CURRENCY_CHOICES,
+                                verbose_name="moneda")
 
     def __str__(self):
         return self.currency
 
+    class Meta:
+        verbose_name = "Moneda"
+        verbose_name_plural = "Monedas"
 
 class RenewalPeriod(models.Model):
-    months = models.FloatField()
+    months = models.FloatField(verbose_name="meses")
 
     def __str__(self):
         month_name = "months"
@@ -20,13 +25,19 @@ class RenewalPeriod(models.Model):
             month_name= "days"
         return "Every %0.f %s"%(month, month_name)
 
+    class Meta:
+        verbose_name = "Periodo de renovación"
+        verbose_name_plural = "Periodos de renovación"
 
 class Service(models.Model):
-    name = models.CharField(max_length=300)
+    name = models.CharField(max_length=300, verbose_name="nombre")
 
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = "Servicio"
+        verbose_name_plural = "Servicios"
 
 class MembershipTemplate(models.Model):
     STATES = (
@@ -34,13 +45,20 @@ class MembershipTemplate(models.Model):
         ("inactive", "Inactiva"),
         ("graceperiod", "Periodo de gracia"),
     )
-    name = models.CharField(max_length=300)
-    annual_cost = models.FloatField()
-    currency = models.ForeignKey(SystemCurrency, on_delete=models.CASCADE)
-    description = models.TextField(null=True, blank=True)
-    services = models.ManyToManyField(Service)
-    renewal_period = models.ForeignKey(RenewalPeriod, on_delete=models.CASCADE)
-    state = models.CharField(max_length=10, choices=STATES, default="active")
+    name = models.CharField(max_length=300, verbose_name="Nombre")
+    annual_cost = models.FloatField(verbose_name="Costo anual")
+    currency = models.ForeignKey(SystemCurrency, on_delete=models.CASCADE,
+                                 verbose_name="Moneda")
+    description = models.TextField(null=True, blank=True, verbose_name="Descripción")
+    services = models.ManyToManyField(Service, verbose_name="Servicios")
+    renewal_period = models.ForeignKey(RenewalPeriod, on_delete=models.CASCADE,
+                                       verbose_name="Periodo de renovación")
+    state = models.CharField(max_length=10, choices=STATES, default="active",
+                             verbose_name="Estado")
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = "Plantilla de membresias"
+        verbose_name_plural = "Plantillas de membresias"
