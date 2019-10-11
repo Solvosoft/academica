@@ -1,4 +1,4 @@
-# MEMBRESIAS
+# Gestor de membresías de Código Sur
 
 Este proyecto ayuda a gestionar membresías de diferentes organizaciones para códigosur
 
@@ -52,3 +52,5 @@ Install django code
     python -m smtpd -c DebuggingServer -n localhost:1025
 
 o también ver https://github.com/mailhog/MailHog
+ 
+ 
