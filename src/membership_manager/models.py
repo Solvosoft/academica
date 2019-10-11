@@ -87,31 +87,11 @@ class Membership(models.Model):
         verbose_name_plural = "Membresias"
 
 
-class MembershipNotificationFilter(SimpleListFilter):
-    title = 'Membership Renewals'  # a label for our filter
-    parameter_name = 'rperiod'  # you can put anything here
-
-    def lookups(self, request, model_admin):
-        # This is where you create filter options; we have two:
-        return [
-            ('paid', 'Paid out'),
-            ('not_paid', 'Not paid'),
-        ]
-
-    def queryset(self, request, queryset):
-        # This is where you process parameters selected by use via filter options:
-        if self.value() == 'paid':
-            return queryset.distinct().filter(annual_cost__lte = 500)
-        if self.value() == 'not_paid':
-            # Get websites that don't have any pages.
-            return queryset.distinct().filter(annual_cost__gte = 1200)
-
-
 class MembershipRenew(models.Model):
     creation_date = models.DateTimeField(auto_created=True,
                                          verbose_name="Fecha de creación")
     membership = models.ForeignKey(Membership, on_delete=models.CASCADE,
-                                   verbose_name="Membresía")
+                                   verbose_name="Membresía",related_name='renews')
     start_date = models.DateTimeField()
     end_date = models.DateTimeField(verbose_name="Fecha de finalización")
     graceperiod = models.BooleanField(default=False, verbose_name="Periodo de gracia")

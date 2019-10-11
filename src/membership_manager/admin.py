@@ -1,13 +1,20 @@
+import copy
+import operator
+from datetime import datetime, timedelta
+from functools import reduce
+
+from django.utils import timezone
 from django.contrib import admin
 
 # Register your models here.
 from django.contrib.admin import SimpleListFilter
+from django.db.models import Q
 from django.urls import reverse
 from django.utils.html import format_html
 from membership_core.models import MembershipTemplate
 from membership_manager import models
 from membership_manager.admin_pdf import InvoiceAdmin
-from membership_manager.models import Membership, MembershipRenew, MembershipNotificationFilter
+from membership_manager.models import Membership, MembershipRenew
 
 
 class ContactAdmin(admin.ModelAdmin):
@@ -80,6 +87,51 @@ class ContactAdmin(admin.ModelAdmin):
 class MembershipRenewAdmin(admin.StackedInline):
     model = models.MembershipRenew
     extra = 0
+
+def q_generator():
+    q = Membership.objects.all()
+    qset = filter_queryset(q)
+    return qset
+
+
+def filter_queryset(queryset, filt = None):
+    # This is where you process parameters selected by use via filter options:
+    options = [Q(renews__end_date__range=(timezone.now()+timedelta(days=60)-timedelta(days=1), timezone.now()+timedelta(days=60))),
+               Q(renews__end_date__range=(timezone.now()+timedelta(days=30)-timedelta(days=1), timezone.now()+timedelta(days=30))),
+               Q(renews__end_date__range=(timezone.now()+timedelta(days=15)-timedelta(days=1), timezone.now()+timedelta(days=15))),
+               Q(renews__end_date__range=(timezone.now()+timedelta(days=7)-timedelta(days=1), timezone.now()+timedelta(days=7))),
+               Q(renews__end_date__range=(timezone.now()+timedelta(days=0)-timedelta(days=1), timezone.now()+timedelta(days=0)))
+               ]
+    if filt in ['60','30','15','7','0']:
+        max_date = timezone.now()+timedelta(days=int(filt))
+        min_date = max_date-timedelta(days=1)
+        return queryset.distinct().filter(Q(renews__end_date__range=(min_date, max_date)) & Q(renews__active= True) & Q(state=True))
+    else:
+        return queryset.distinct().filter(reduce(operator.or_, options) & Q(renews__active= True) & Q(state=True))
+
+class MembershipNotificationFilter(SimpleListFilter):
+    title = 'Membership Renewals'  # a label for our filter
+    parameter_name = 'renews'  # you can put anything here
+
+    def lookups(self, request, model_admin):
+        # This is where you create filter options; we have two:
+        return [
+            ('60', '60 days to pay'),
+            ('30', '30 days to pay'),
+            ('15', '15 days to pay'),
+            ('7', '7 days to pay'),
+            ('0', 'day to pay'),
+            ]
+
+    def queryset(self, request, queryset):
+        # This is where you process parameters selected by use via filter options:
+
+
+        q = q_generator()
+
+        print(q)
+        return filter_queryset(queryset,self.value())
+
 
 
 class MemberShipAdmin(admin.ModelAdmin):
