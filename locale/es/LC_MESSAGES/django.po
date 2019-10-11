@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-10-09 18:37-0600\n"
-"PO-Revision-Date: 2019-10-09 18:44-0600\n"
+"PO-Revision-Date: 2019-10-11 10:47-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -23,12 +23,12 @@ msgid "Administration"
 msgstr "Administración"
 
 #: src/dashboard.py:36
-msgid "Administración del gestor de membresias"
-msgstr "Administración del gestor de membresias"
+msgid "Administración del gestor de membresías"
+msgstr "Administración del gestor de membresías"
 
 #: src/dashboard.py:44
-msgid "Gestion de membresias"
-msgstr "Gestion de membresias"
+msgid "Gestion de membresías"
+msgstr "Gestion de membresías"
 
 #: src/dashboard.py:50
 msgid "Gestion de correo"
@@ -88,7 +88,7 @@ msgstr "Enviar correo ahora"
 
 #: admin.py:82
 msgid " and more"
-msgstr "y más"
+msgstr " y más"
 
 #: admin.py:84
 msgid "Recipients"

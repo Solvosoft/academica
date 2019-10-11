@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='membershiptemplate',
-            options={'verbose_name': 'Plantilla de membresias', 'verbose_name_plural': 'Plantillas de membresias'},
+            options={'verbose_name': 'Plantilla de membresías', 'verbose_name_plural': 'Plantillas de membresías'},
         ),
         migrations.AlterModelOptions(
             name='renewalperiod',

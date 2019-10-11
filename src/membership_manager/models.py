@@ -66,11 +66,11 @@ class Membership(models.Model):
              ("Global", "Global"),
              ("Honoraria", "Honoraria"))
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
-    membership_type = models.CharField(max_length=50, choices=TYPES, verbose_name="Tipo de membresia")
+    membership_type = models.CharField(max_length=50, choices=TYPES, verbose_name="Tipo de membresía")
     contact = models.ForeignKey(Contact, null=True, blank=True, on_delete=models.CASCADE, verbose_name="Contato")
     organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=300, verbose_name="Nombre")
-    annual_cost = models.FloatField(verbose_name="Costo Anual")
+    annual_cost = models.FloatField(verbose_name="Costo")
     currency = models.ForeignKey(SystemCurrency, on_delete=models.CASCADE, verbose_name="Moneda")
     description = models.TextField(null=True, blank=True, verbose_name="Descripción")
     services = models.ManyToManyField(Service, verbose_name="Servicios")
@@ -83,16 +83,17 @@ class Membership(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = "Membresia"
-        verbose_name_plural = "Membresias"
+        verbose_name = "Membresía"
+        verbose_name_plural = "Membresías"
 
 
 class MembershipRenew(models.Model):
     creation_date = models.DateTimeField(auto_created=True,
                                          verbose_name="Fecha de creación")
     membership = models.ForeignKey(Membership, on_delete=models.CASCADE,
-                                   verbose_name="Membresía",related_name='renews')
-    start_date = models.DateTimeField()
+                                   verbose_name="Membresía")
+    start_date = models.DateTimeField(verbose_name="Fecha de inicio")
+
     end_date = models.DateTimeField(verbose_name="Fecha de finalización")
     graceperiod = models.BooleanField(default=False, verbose_name="Periodo de gracia")
     active = models.BooleanField(default=True, verbose_name="Activo")
@@ -103,7 +104,7 @@ class MembershipRenew(models.Model):
 
     class Meta:
         verbose_name = "Renovación de membresía"
-        verbose_name_plural = "Renovaciones de membresia"
+        verbose_name_plural = "Renovaciones de membresía"
 
 class Invoice(models.Model):
     STATUS = (

@@ -25,7 +25,7 @@ SECRET_KEY = 'i$@e@=z3nxrz6u8jv&5u^6&5mlj_o$^7a@&(c%rz#=%5)ht_%b'
 DEBUG = True
 # SECURITY WARNING: don't run with debug turned on in production!
 ALLOWED_HOSTS = [c for c in os.getenv('ALLOWED_HOSTS', '').split(',') if DEBUG and c]
-if not DEBUG and not ALLOWED_HOSTS:
+if not ALLOWED_HOSTS:
     ALLOWED_HOSTS=['*']
 
 ADMINS = [('support', 'support@solvosoft.com') ]
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'membership_manager',
     'django_countries',
     'djmoney',
+    'djmoney.contrib.exchange',
     'ajax_select',
     'async_notifications'
 ]
@@ -158,3 +159,5 @@ CELERY_ACCEPT_CONTENT = ['pickle', 'json']
 CELERY_BROKER_URL = os.getenv('BROKER_URL', 'redis://localhost:6379/0')
 
 GRAPPELLI_INDEX_DASHBOARD = 'dashboard.CustomIndexDashboard'
+#EXCHANGE_BACKEND = 'djmoney.contrib.exchange.backends.FixerBackend'
+OPEN_EXCHANGE_RATES_APP_ID="6226bd52ee074914a7edc6e55a97c8d3"

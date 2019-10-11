@@ -33,7 +33,7 @@ class CustomIndexDashboard(Dashboard):
 
         # append an app list module for "Applications"
         self.children.append(modules.ModelList(
-            _('Administración del gestor de membresias'),
+            _('Administración del gestor de membresías'),
             collapsible=False,
             column=1,
             models=('membership_core.*', )
@@ -41,13 +41,13 @@ class CustomIndexDashboard(Dashboard):
 
         # append an app list module for "Administration"
         self.children.append(modules.ModelList(
-            _('Gestion de membresias'),
+            _('Gestion de membresías'),
             column=2,
             collapsible=False,
             models=('membership_manager.*',),
         ))
         self.children.append(modules.AppList(
-            _('Gestion de correo'),
+            _('Gestión de correo'),
             collapsible=False,
             column=3,
             models=('async_notifications.*', )

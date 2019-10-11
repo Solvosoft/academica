@@ -23,11 +23,11 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='membership',
-            options={'verbose_name': 'Membresia', 'verbose_name_plural': 'Membresias'},
+            options={'verbose_name': 'Membresía', 'verbose_name_plural': 'Membresías'},
         ),
         migrations.AlterModelOptions(
             name='membershiprenew',
-            options={'verbose_name': 'Renovación de membresía', 'verbose_name_plural': 'Renovaciones de membresia'},
+            options={'verbose_name': 'Renovación de membresía', 'verbose_name_plural': 'Renovaciones de membresía'},
         ),
         migrations.AlterModelOptions(
             name='organization',
@@ -182,7 +182,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='membership',
             name='membership_type',
-            field=models.CharField(choices=[('Personal', 'Personal'), ('Radial', 'Radial'), ('Organizacional', 'Organizacional'), ('Global', 'Global'), ('Honoraria', 'Honoraria')], max_length=50, verbose_name='Tipo de membresia'),
+            field=models.CharField(choices=[('Personal', 'Personal'), ('Radial', 'Radial'), ('Organizacional', 'Organizacional'), ('Global', 'Global'), ('Honoraria', 'Honoraria')], max_length=50, verbose_name='Tipo de membresía'),
         ),
         migrations.AlterField(
             model_name='membership',
