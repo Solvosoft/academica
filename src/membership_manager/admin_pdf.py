@@ -26,11 +26,12 @@ class InvoiceAdmin(admin.ModelAdmin):
 
     def download(self, obj):
         dev = ""
-        if obj and obj.pdf_invoice is not None:
 
+        if obj and obj.pdf_invoice:
             dev+= '<a href="%s" class="grp-button grp-button-state-inactive" target="_blank" >%s</a>'%(
-                obj.pdf_invoice.url,
-                "Descargar"
+            obj.pdf_invoice.url,
+            "Descargar"
             )
-            return mark_safe(dev)
+            dev = mark_safe(dev)
+
         return dev

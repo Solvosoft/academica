@@ -1,12 +1,40 @@
 from django.db import models
 from djmoney.settings import CURRENCY_CHOICES
+from djmoney.money import Money
+from djmoney.settings import DECIMAL_PLACES
+from decimal import Decimal
+
+from membership_core.currencyutils import get_currency
 
 
 class SystemCurrency(models.Model):
     currency = models.CharField(max_length=4,
                                 choices=CURRENCY_CHOICES,
-                                verbose_name="moneda")
+                                verbose_name="Moneda")
+    rates = models.DecimalField(
+        max_digits=10,
+        decimal_places=DECIMAL_PLACES,
+        default=1, verbose_name="Tipo de cambio",
+                              help_text="1 USD equivale a X en moneda local")
 
+
+    def convert_usd_money(self, value):
+        value = Decimal(value)
+        return Money(value/self.rates, 'USD')
+
+    def convert_local_money(self, value):
+        value=Decimal(value)
+        return Money(value*self.rates, self.currency)
+
+    def convert_money(self, value, othercorrency):
+
+        if othercorrency == 'USD':
+            return self.convert_usd_money(value)
+        if othercorrency == self.currency:
+            return Money(value, self.currency)
+        usd = self.convert_usd_money(value)
+        newcurrency = get_currency(othercorrency, self.__class__)
+        return newcurrency.convert_local_money(usd.amount)
     def __str__(self):
         return self.currency
 

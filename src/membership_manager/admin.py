@@ -103,15 +103,18 @@ class MemberShipAdmin(admin.ModelAdmin):
 
     def exchange_rates(self, obj):
         if obj:
-            dev = ""
+            dev = '<p style="letter-spacing:2px;" >'
+
             for currency in SystemCurrency.objects.all():
                 if obj.currency != currency:
-                    dev += str(convert_money(Money(obj.annual_cost, obj.currency.currency),
-                                    currency.currency))+" | "
+                    #dev2 += str(convert_money(Money(obj.annual_cost, obj.currency.currency),
+                    #                currency.currency))+" | "
+                    dev +=  obj.currency.convert_money(
+                        obj.annual_cost, currency.currency).__html__() +"  |  "
 
 
-
-            return dev
+            dev += "</p>"
+            return mark_safe(dev)
 
         return "Debes guardar primero para ver los tipos de cambio"
 
