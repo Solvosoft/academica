@@ -9,7 +9,7 @@ RUN mkdir -p /MEMBRESIAS/deploy -p /MEMBRESIAS/locale -p /MEMBRESIAS/run -p /MEM
 WORKDIR /MEMBRESIAS
 
 RUN apt-get update && apt-get -y install supervisor nginx rsync locales-all
-RUN pip install --trusted-host pypi.python.org --no-cache-dir --upgrade pip gunicorn python-memcached psycopg2-binary
+RUN pip install --trusted-host pypi.python.org --no-cache-dir --upgrade pip gunicorn python-memcached psycopg2-binary flower
 
 COPY README.md /MEMBRESIAS
 COPY requirements.txt /MEMBRESIAS
@@ -43,5 +43,6 @@ RUN chown -R membresias:membresias /MEMBRESIAS/ && \
     chown -R membresias:membresias /opt/membresias
 
 EXPOSE 80
+EXPOSE 5555
 
 ENTRYPOINT ["/MEMBRESIAS/entrypoint.sh"]
