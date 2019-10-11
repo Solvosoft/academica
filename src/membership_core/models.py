@@ -88,5 +88,5 @@ class MembershipTemplate(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = "Plantilla de membresias"
-        verbose_name_plural = "Plantillas de membresias"
+        verbose_name = "Plantilla de membresías"
+        verbose_name_plural = "Plantillas de membresías"

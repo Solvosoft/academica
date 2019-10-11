@@ -65,7 +65,7 @@ class Membership(models.Model):
              ("Global", "Global"),
              ("Honoraria", "Honoraria"))
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
-    membership_type = models.CharField(max_length=50, choices=TYPES, verbose_name="Tipo de membresia")
+    membership_type = models.CharField(max_length=50, choices=TYPES, verbose_name="Tipo de membresía")
     contact = models.ForeignKey(Contact, null=True, blank=True, on_delete=models.CASCADE, verbose_name="Contato")
     organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=300, verbose_name="Nombre")
@@ -82,8 +82,8 @@ class Membership(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = "Membresia"
-        verbose_name_plural = "Membresias"
+        verbose_name = "Membresía"
+        verbose_name_plural = "Membresías"
 
 class MembershipRenew(models.Model):
     creation_date = models.DateTimeField(auto_created=True,
@@ -101,7 +101,7 @@ class MembershipRenew(models.Model):
 
     class Meta:
         verbose_name = "Renovación de membresía"
-        verbose_name_plural = "Renovaciones de membresia"
+        verbose_name_plural = "Renovaciones de membresía"
 
 class Invoice(models.Model):
     STATUS = (

@@ -9,9 +9,7 @@ from membership_core.models import MembershipTemplate, SystemCurrency
 from membership_manager import models
 from membership_manager.admin_pdf import InvoiceAdmin
 from membership_manager.forms import MembershipAddForm
-from membership_manager.models import Membership, MembershipRenew
-from djmoney.money import Money
-from djmoney.contrib.exchange.models import convert_money
+
 
 class ContactAdmin(admin.ModelAdmin):
     list_filter = ('active', 'country')
@@ -62,7 +60,7 @@ class ContactAdmin(admin.ModelAdmin):
                                                                "payment_method",)])
         )
 
-    organizations.short_description = "Organizations"
+    organizations.short_description = "Organizaciones"
 
     def memberships(self, obj):
         return format_html(
@@ -77,7 +75,7 @@ class ContactAdmin(admin.ModelAdmin):
             str(obj.currency.pk)
         )
 
-    memberships.short_description = "Membership"
+    memberships.short_description = "Membresías"
 
 
 class MembershipRenewAdmin(admin.StackedInline):
@@ -86,7 +84,7 @@ class MembershipRenewAdmin(admin.StackedInline):
 
 
 class MemberShipAdmin(admin.ModelAdmin):
-    list_filter = ('state', 'contact__country', 'services')
+    list_filter = ('state', 'contact__country', 'services', 'contact', 'organization')
     search_fields = ('contact__first_name', 'contact__last_name')
     list_display = ('name', 'contact', 'annual_cost',
                     'currency', 'renewal_period', 'state','invoices',
@@ -124,19 +122,25 @@ class MemberShipAdmin(admin.ModelAdmin):
         return super().get_form(request, obj, **kwargs)
 
     def get_changeform_initial_data(self, request):
+        args = {}
+        for field in self.fields:
+            getfield = request.GET.get(field, '')
+            if getfield:
+                args[field] = getfield
+
         tid = request.GET.get('tid')
         if tid:
             obj = MembershipTemplate.objects.filter(id=tid).first()
             if obj:
-                return {'membership_template': obj.id,
+                args.update( {'membership_template': obj.id,
                     'name': obj.name,
                     'annual_cost': obj.annual_cost,
                     'currency': obj.currency_id,
                     'description': obj.description,
                     'renewal_period': obj.renewal_period_id,
                     'state': obj.state,
-                    'services': [svc.id for svc in obj.services.all()]}
-
+                    'services': [svc.id for svc in obj.services.all()]})
+        return args
 
     def invoices(self, obj):
         if obj:
@@ -173,11 +177,19 @@ class OrganizationAdmin(admin.ModelAdmin):
     ]
 
     def memberships(self, obj):
-        return format_html('<a href="{}" target="_blank">{}</a>',
-                           "#", obj.membership_set.filter(state="active").count()
-                           )
+        return format_html(
+            """<a href="{}" class="grp-button grp-button-state-inactive"  >{}</a> - 
+               <a href="{}" class="grp-button grp-button-state-inactive" target="_blank">Add</a>
+            """,
+            reverse("admin:membership_manager_membership_changelist") +
+            "?organization=" + str(obj.pk),
+            obj.membership_set.filter(state="active").count(),
+            reverse("admin:membership_manager_membership_add") +
+            "?organization=" + str(obj.pk) + "&membership_type=Organizacional&currency=" +
+            str(obj.currency_id)+"&contact="+str(obj.contact_id)
+        )
 
-    memberships.short_description = "Membership"
+    memberships.short_description = "Membresías"
 
 
 admin.site.register(models.Invoice, InvoiceAdmin)
