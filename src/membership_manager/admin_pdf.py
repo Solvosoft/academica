@@ -17,10 +17,11 @@ pay_invoice.short_description = "Pagar factura"
 class InvoiceAdmin(admin.ModelAdmin):
     actions = [pay_invoice]
     list_filter = ('membership', 'status')
+    list_editable = ('status', )
     search_fields = ('membership__contact__first_name',
                      'membership__contact__last_name',
                      'membership__name')
-    list_display = ( 'membership', 'expiration_date', 'amount', 'currency', 'status', 'download')
+    list_display = ('membership', 'expiration_date', 'amount', 'currency', 'status', 'download')
     readonly_fields = ('download', )
 
 
