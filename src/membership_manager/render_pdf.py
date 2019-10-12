@@ -1,3 +1,5 @@
+from async_notifications.register import update_template_context
+from async_notifications.utils import send_email_from_template
 from django.template.loader import render_to_string
 from xhtml2pdf import pisa
 import io
@@ -13,14 +15,32 @@ def generate_invoice(membership, invoice):
     })
     resultFile = io.BytesIO()
     pisaStatus = pisa.CreatePDF(
-        sourceHtml,         # the HTML to convert
-        dest=resultFile,    # file handle to recieve result
+        sourceHtml,  # the HTML to convert
+        dest=resultFile,  # file handle to recieve result
         link_callback=link_callback)
     resultFile.seek(0)
 
     invoice.pdf_invoice = File(resultFile, name="invoice.pdf")
     invoice.status = 'paid'
     invoice.save()
+
+    context = [
+        ('subject', 'Pago de membresía - Código Sur'),
+        ('message', 'Estimado cliente:/nPor este medio se le informa que el pago de su factura ha sido efectuado. '
+                    'Los detalles son aclarados en su factura digital la cual se adjunta acontinuación.'
+                    '/nGracias por seguir con nosotros./nCódigo Sur'),
+    ]
+
+    code = str(invoice.pdf_invoice.name[invoice.pdf_invoice.name.rfind('/') + 1: invoice.pdf_invoice.name.rfind('.')])
+
+    update_template_context(code, 'Pago de membresía - Código Sur', context)
+
+    send_email_from_template(code, [membership.contact.email],
+                             context={},
+                             enqueued=False,  # ask about this! Docu says: enqueued if False send the email
+                                              # immediately else enqueued to be sended when send email task run.
+                             user=None,
+                             upfile=invoice.pdf_invoice.url)
 
 
 def link_callback(uri, rel):
@@ -42,6 +62,7 @@ def link_callback(uri, rel):
 
     # make sure that file exists
     if not os.path.isfile(path):
+        print(path)
         raise Exception(
             'media URI must start with %s or %s' % (sUrl, mUrl)
         )
