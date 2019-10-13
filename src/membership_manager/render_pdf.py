@@ -26,14 +26,14 @@ def generate_invoice(membership, invoice):
 
     context = [
         ('subject', 'Pago de membresía - Código Sur'),
-        ('message', 'Estimado cliente:/nPor este medio se le informa que el pago de su factura ha sido efectuado. '
+        ('message', 'Estimado cliente:\nPor este medio se le informa que el pago de su factura ha sido efectuado. '
                     'Los detalles son aclarados en su factura digital la cual se adjunta acontinuación.'
-                    '/nGracias por seguir con nosotros./nCódigo Sur'),
+                    '\n\nGracias por seguir con nosotros.\nCódigo Sur'),
     ]
 
     code = str(invoice.pdf_invoice.name[invoice.pdf_invoice.name.rfind('/') + 1: invoice.pdf_invoice.name.rfind('.')])
 
-    update_template_context(code, 'Pago de membresía - Código Sur', context)
+    update_template_context(code, 'pay_email.html', 'Pago de membresía - Código Sur', context)
 
     send_email_from_template(code, [membership.contact.email],
                              context={},

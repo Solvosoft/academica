@@ -98,7 +98,6 @@ class MemberShipAdmin(admin.ModelAdmin):
               'name','description', 'annual_cost', 'currency','exchange_rates',
               'services', 'renewal_period', 'state']
 
-
     def exchange_rates(self, obj):
         if obj:
             dev = '<p style="letter-spacing:2px;" >'
@@ -115,8 +114,8 @@ class MemberShipAdmin(admin.ModelAdmin):
             return mark_safe(dev)
 
         return "Debes guardar primero para ver los tipos de cambio"
-
     exchange_rates.short_description = "Tipos de cambio"
+
     def get_form(self, request, obj=None, **kwargs):
         kwargs['form'] = self.form_class
         return super().get_form(request, obj, **kwargs)
@@ -153,6 +152,7 @@ class MemberShipAdmin(admin.ModelAdmin):
             return mark_safe(dev)
         return ""
     invoices.short_description = "Facturas"
+
 
 class OrganizationAdmin(admin.ModelAdmin):
     list_filter = ('active', 'country')
