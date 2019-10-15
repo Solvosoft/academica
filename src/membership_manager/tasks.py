@@ -5,17 +5,19 @@ from celery.task import task, periodic_task
 from celery.utils.log import get_task_logger
 from requests import request
 
-from membership_manager.admin import filter_queryset, q_generator
-from membership_manager.models import Membership
+from membership_manager.admin import fiter_memb_queryset, q_generator
+from membership_manager.admin_pdf import invoice_expiration_filter_queryset
+from membership_manager.models import Membership, Invoice
 
 logger = get_task_logger(__name__)
 
 @periodic_task(run_every=(crontab(minute='*/1')), name="task_notify", ignore_result=True)
 def task_notify():
     """
-    Saves latest image from Flickr
+    Gets the membership invoices pending at optios especified in the filter method.
     """
-    options = ['60','30','15','7','0']
-    q = q_generator()
-    logger.info(q)
-    logger.info("Saved ")
+
+    qset = Invoice.objects.all()
+    notify_qset = invoice_expiration_filter_queryset(qset)
+    print()
+

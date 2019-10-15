@@ -9,6 +9,14 @@ class TemplateWidget(forms.Select):
         js = ('js/membershipform.js',)
 
 
+
+class MembInvPaymentsForm(forms.Form):
+    option = forms.ChoiceField(choices=(
+        ('pending', 'Pendiente'),
+        ('paid','Pagado'),
+        ('inactive','Inactivo')
+    ),required=False)
+
 class MembershipAddForm(forms.ModelForm):
     membership_template = forms.ModelChoiceField(
         queryset=MembershipTemplate.objects.filter(state="active"),

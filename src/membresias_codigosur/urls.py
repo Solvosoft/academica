@@ -22,6 +22,8 @@ from django.views.static import serve
 from ajax_select import urls as ajax_select_urls
 
 from ajax_select import urls as ajax_select_urls
+
+from membership_manager.admin_memberships import MembInvoices
 from membership_manager.urls import urlpatterns as url_manager
 from membership_manager.views import UpdateBot
 
@@ -30,6 +32,7 @@ urlpatterns = [
     path('grappelli/', include('grappelli.urls')), # grappelli URLS
     path('admin/', admin.site.urls),
     path('telbot/', csrf_exempt(UpdateBot.as_view())),
+    path('payments/', csrf_exempt(MembInvoices.as_view())),
     re_path(r'^ajax_select/', include(ajax_select_urls)),
     re_path(r'^media/(?P<path>.*)$',
             serve,
