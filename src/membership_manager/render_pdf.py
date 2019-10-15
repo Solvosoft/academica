@@ -25,10 +25,7 @@ def generate_invoice(membership, invoice):
     invoice.save()
 
     context = [
-        ('subject', 'Pago de membresía - Código Sur'),
-        ('message', 'Estimado cliente:\nPor este medio se le informa que el pago de su factura ha sido efectuado. '
-                    'Los detalles son aclarados en su factura digital la cual se adjunta acontinuación.'
-                    '\n\nGracias por seguir con nosotros.\nCódigo Sur'),
+        ('membership', membership),
     ]
 
     code = str(invoice.pdf_invoice.name[invoice.pdf_invoice.name.rfind('/') + 1: invoice.pdf_invoice.name.rfind('.')])

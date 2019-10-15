@@ -8,14 +8,10 @@ from membership_manager.models import Membership
 
 
 @receiver(post_save, sender=Membership)
-def email(sender, instance, created, **kwargs):
+def welcome_email(sender, instance, created, **kwargs):
     if created:
         context = [
-            ('subject', '¡Te damos la bienvenida Cliente!'),
-            ('message', 'Hola cliente!\nNos alegra que decidieras unirte a la familia de Código Sur. Ya puedes '
-                        'disfrutar de nuestros servicios.\nSientete libre de contactarnos si nos necesitas o surge '
-                        'algún inconveniente.\nTel:8888-888\t\tCorreo:example@mail.com'
-                        '\n\nEstamos para servirte.\nCódigo Sur'),
+            ('membership', instance),
         ]
 
         code = 'mbs_' + str(instance.id)
@@ -28,4 +24,3 @@ def email(sender, instance, created, **kwargs):
                                                   # immediately else enqueued to be sended when send email task run.
                                  user=None,
                                  upfile=None)
-    return HttpResponse("Done!")
