@@ -9,12 +9,16 @@ from membership_manager.models import Membership
 @receiver(post_save, sender=Membership)
 def welcome_email(sender, instance, created, **kwargs):
     if created:
-        context = [
-            ('membership', instance),
-        ]
+        email = ''
+        if instance.contact:
+            email = instance.contact.email
+        else:
+            email = instance.organization.contact.email
+        send_email_from_template('welcome_mail', [email],
+                                 context={
+                                     'membership': instance
 
-        send_email_from_template('welcome_mail', [instance.contact.email],
-                                 context={},
+                                 },
                                  enqueued=False,  # ask about this! Docu says: enqueued if False send the email
                                                   # immediately else enqueued to be sended when send email task run.
                                  user=None,
