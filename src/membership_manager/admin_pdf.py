@@ -56,20 +56,21 @@ class InvoiceRenewalNotificationFilter(SimpleListFilter):
 
 class InvoiceAdmin(admin.ModelAdmin):
     actions = [pay_invoice]
-    list_filter = ('membership',InvoiceRenewalNotificationFilter)
+    list_filter = ('membership', 'status',InvoiceRenewalNotificationFilter)
     search_fields = ('membership__contact__first_name',
                      'membership__contact__last_name',
                      'membership__name')
     list_display = ( 'membership', 'expiration_date', 'amount', 'currency', 'status','payment_date', 'download')
-    readonly_fields = ('download', )
+    list_editable = ('status',)
+    readonly_fields = ('download',)
 
     def download(self, obj):
         dev = ""
-        if obj and obj.pdf_invoice:
-            dev+= '<a href="%s" class="grp-button grp-button-state-inactive" target="_blank" >%s</a>'%(
-            obj.pdf_invoice.url,
-            "Descargar"
+
+        if bool(obj.pdf_invoice):
+            dev += '<a href="%s" class="grp-button grp-button-state-inactive" target="_blank" >%s</a>' % (
+                obj.pdf_invoice.url,
+                "Descargar"
             )
             dev = mark_safe(dev)
         return dev
-
