@@ -64,32 +64,33 @@ class MembInvoices(ListView):
     template_name = 'admin/membership_admin/invoice/change_list.html'
     form_class = MembInvPaymentsForm
 
-    def get_paid_value(self,queryset_list):
+    def get_paid_value(self, object_dict):
         cont = 0
         pending_amount = 0
-        for item in queryset_list:
+        for item in object_dict['results']:
             if item.status == 'paid':
                 cont += item.amount
             elif item.status == 'pending':
                 pending_amount += item.amount
-        queryset_list.append(pending_amount)
-        queryset_list.append(cont)
-        return queryset_list
+        object_dict['paid'] = cont
+        object_dict['pending'] = pending_amount
+        return object_dict
 
     def filter_queryset(self,ids,queryset):
         new_tmp_list = []
         for id in ids:
             tmp_dict = []
-            inv_mem_name = ''
+            object_dict = {'name':'','paid':0,'pending':0}
             for inv in queryset:
                 if inv.membership.pk == int(id):
-                    if inv_mem_name == '':
-                        inv_mem_name = inv.membership.name
+                    if object_dict['name'] == '':
+                        object_dict['name'] = inv.membership.name
                     tmp_dict.append(inv)
-            tmp_dict = self.get_paid_value(tmp_dict)
-            tmp_dict.append(inv_mem_name)
-            if len(tmp_dict) >= 4:
-                new_tmp_list.append(tmp_dict)
+            if len(tmp_dict) >= 1:
+                object_dict['results'] = tmp_dict
+                object_dict = self.get_paid_value(object_dict)
+                new_tmp_list.append(object_dict)
+            print(new_tmp_list)
         return new_tmp_list
 
     def get_queryset(self):

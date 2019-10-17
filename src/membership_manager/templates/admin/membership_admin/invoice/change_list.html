@@ -46,13 +46,13 @@
                 <div class="grp-row">
                     <div class="l-2cr-fluid l-d-12">
                         <div class="c-2">
-                            <header><h1>{{temp.pop}}</h1></header>
+                            <header><h1>{{temp.name}}</h1></header>
                                 <ul>
                                     <li class="grp-results">
-                                        <span>Pending: {{temp.pop}}</span>
+                                        <span>Pending: {{temp.pending}}</span>
                                     </li>
                                     <li class="grp-results">
-                                        <span>Paid: {{temp.pop}}</span>
+                                        <span>Paid: {{temp.paid}}</span>
                                     </li>
                                 </ul>
                         </div>
@@ -88,7 +88,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for obj in temp %}
+                            {% for obj in temp.results %}
                             <tr class="grp-row grp-row-even">
                                 <td class="action-checkbox">
                                     <input type="checkbox" name="_selected_action" value="4" class="action-select">
