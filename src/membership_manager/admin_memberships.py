@@ -63,7 +63,7 @@ class MembershipNotificationFilter(SimpleListFilter):
 class MembInvoices(ListView):
     template_name = 'admin/membership_admin/invoice/change_list.html'
     form_class = MembInvPaymentsForm
-
+    filter_options = {'pending': 'pendientes', 'paid': 'pagadas', 'inactive': 'inactivas'}
     def get_paid_value(self, object_dict):
         cont = 0
         pending_amount = 0
@@ -136,6 +136,6 @@ class MembInvoices(ListView):
         ids = q.strip('][').split(', ')
         if form.is_valid():
             tmp_qset =  self.object_list.filter(status=form.cleaned_data['option'])
-            new_qset = self.filter_queryset(ids,tmp_qset,form.cleaned_data['option'])
+            new_qset = self.filter_queryset(ids,tmp_qset,self.filter_options[form.cleaned_data['option']])
             return self.render_to_response(self.get_context_data(object_list=new_qset, form=form))
         return self.render_to_response(self.get_context_data(object_list=self.object_list, form=form))
