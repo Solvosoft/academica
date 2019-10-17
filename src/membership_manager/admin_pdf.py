@@ -17,8 +17,6 @@ from membership_manager.utils import get_dates
 def pay_invoice(modeladmin, request, queryset):
     for invoice in queryset:
         generate_invoice(invoice.membership, invoice)
-
-
 pay_invoice.short_description = "Pagar factura"
 
 def invoice_expiration_filter_queryset(queryset, filt = None):
@@ -32,26 +30,10 @@ def invoice_expiration_filter_queryset(queryset, filt = None):
                ]
     if filt in ['60','45','30','15','7','0']:
         min_date, max_date = get_dates(filt)
-        return queryset.distinct().filter(Q(expiration_date__range=(min_date, max_date)) & Q(status='pending'))
+        return queryset.distinct().filter(Q(expiration_date__range=(min_date, max_date)) &
+                                          Q(status='pending'))
     elif filt != None:
         return queryset.distinct().filter(reduce(operator.or_, options) & Q(status='pending'))
-    elif filt == None:
-        return queryset
-
-def payment_filter_queryset(queryset, filt = None):
-    # This is where you process parameters invoice expiration filters via filter options:
-    if filt in ['pending','paid','inactive']:
-        #Obtain first and lasr MembRenew, to know the active period od this memebership
-        q_tmp = queryset.first()
-        q_tmp_2 = queryset.last()
-        if q_tmp and filt != 'inactive':
-            #Takes first renew and last renew to known the Avtice period and filter by status
-            memb_start_date = q_tmp.renewal_period.start_date
-            memb_end_date = q_tmp_2.renewal_period.end_date+timedelta(days=1)
-            return (filt == 'paid') and \
-                   queryset.distinct().filter(Q(expiration_date__range=(memb_start_date,memb_end_date))& Q(payment_date__isnull=False) & Q(status=filt))\
-                   or queryset.distinct().filter(Q(expiration_date__range=(memb_start_date,memb_end_date)) & Q(payment_date__isnull=True) & Q(status=filt))
-        return queryset.distinct().filter( Q(status=filt))
     elif filt == None:
         return queryset
 
@@ -70,7 +52,6 @@ class InvoiceRenewalNotificationFilter(SimpleListFilter):
 
     def queryset(self, request, queryset):
         # This is where you process parameters selected by use via filter options:
-
         return invoice_expiration_filter_queryset(queryset,self.value())
 
 class InvoiceAdmin(admin.ModelAdmin):
@@ -90,6 +71,5 @@ class InvoiceAdmin(admin.ModelAdmin):
             "Descargar"
             )
             dev = mark_safe(dev)
-
         return dev
 

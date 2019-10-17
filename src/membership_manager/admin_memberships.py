@@ -17,10 +17,10 @@ from membership_manager.utils import get_dates
 
 def q_generator():
     q = Membership.objects.all()
-    qset = fiter_memb_queryset(q)
+    qset = filter_memb_queryset(q)
     return qset
 
-def fiter_memb_queryset(queryset, filt = None):
+def filter_memb_queryset(queryset, filt = None):
     # This is where you process parameters selected by use via filter options:
     options = [Q(renews__end_date__range=(timezone.now()+timedelta(days=29), timezone.now()+timedelta(days=30))),
                Q(renews__end_date__range=(timezone.now()+timedelta(days=14), timezone.now()+timedelta(days=15))),
@@ -58,7 +58,7 @@ class MembershipNotificationFilter(SimpleListFilter):
     def queryset(self, request, queryset):
         # This is where you process parameters selected by use via filter options:
         q = q_generator()
-        return fiter_memb_queryset(queryset,self.value())
+        return filter_memb_queryset(queryset,self.value())
 
 class MembInvoices(ListView):
     template_name = 'admin/membership_admin/invoice/change_list.html'
@@ -121,7 +121,6 @@ class MembInvoices(ListView):
         ids = q.strip('][').split(', ')
         if form.is_valid():
             tmp_qset =  self.object_list.filter(status=form.cleaned_data['option'])
-            print(tmp_qset,form.cleaned_data['option'])
             new_qset = self.filter_queryset(ids,tmp_qset)
             return self.render_to_response(self.get_context_data(object_list=new_qset, form=form))
         return self.render_to_response(self.get_context_data(object_list=self.object_list, form=form))

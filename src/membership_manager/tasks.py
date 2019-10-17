@@ -5,6 +5,7 @@ from celery.task import task, periodic_task
 from celery.utils.log import get_task_logger
 from requests import request
 
+from membership_manager.admin_memberships import filter_memb_queryset
 from membership_manager.admin_pdf import invoice_expiration_filter_queryset
 from membership_manager.models import Membership, Invoice
 
@@ -13,23 +14,24 @@ logger = get_task_logger(__name__)
 @periodic_task(run_every=(crontab(minute='*/5')), name="task_notify", ignore_result=True)
 def task_notify_invoice_expiration():
     """
-    Gets the membership invoices pending at options especified in the filter method.
+    Gets the membership invoices and notify if there is any in the expiration range.
     """
     qset = Invoice.objects.all()
     notify_qset = invoice_expiration_filter_queryset(qset)
+
 
 @periodic_task(run_every=(crontab(minute='*/5')), name="task_notify", ignore_result=True)
 def task_notify_membership_expiration():
     """
-    Gets the membership invoices pending at options especified in the filter method.
+    Gets the membership , and notify is there is in the expiration range.
     """
     qset = Invoice.objects.all()
-    notify_qset = invoice_expiration_filter_queryset(qset)
+    notify_qset = filter_memb_queryset(qset)
 
 @periodic_task(run_every=(crontab(minute='*/5')), name="task_notify", ignore_result=True)
 def task__invoice_creation():
     """
-    Gets the membership invoices pending at options especified in the filter method.
+    Create a invoice, at 60 days left - renewal expiration.
     """
     qset = Invoice.objects.all()
     notify_qset = invoice_expiration_filter_queryset(qset)
