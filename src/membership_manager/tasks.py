@@ -11,7 +11,7 @@ from membership_manager.models import Membership, Invoice
 
 logger = get_task_logger(__name__)
 #every 5 mins this taks gets executed
-@periodic_task(run_every=(crontab(minute='*/5')), name="task_notify", ignore_result=True)
+@periodic_task(run_every=(crontab(minute='*/5')), name="task_notify_invoice_expiration", ignore_result=True)
 def task_notify_invoice_expiration():
     """
     Gets the membership invoices and notify if there is any in the expiration range.
@@ -19,7 +19,7 @@ def task_notify_invoice_expiration():
     qset = Invoice.objects.all()
     notify_qset = invoice_expiration_filter_queryset(qset)
 
-@periodic_task(run_every=(crontab(minute='*/5')), name="task_notify", ignore_result=True)
+@periodic_task(run_every=(crontab(minute='*/5')), name="task_notify_membership_expiration", ignore_result=True)
 def task_notify_membership_expiration():
     """
     Gets the membership , and notify is there is in the expiration range.
@@ -27,7 +27,7 @@ def task_notify_membership_expiration():
     qset = Invoice.objects.all()
     notify_qset = filter_memb_queryset(qset)
 
-@periodic_task(run_every=(crontab(minute='*/5')), name="task_notify", ignore_result=True)
+@periodic_task(run_every=(crontab(minute='*/5')), name="task__invoice_creation", ignore_result=True)
 def task__invoice_creation():
     """
     Create a invoice, at 60 days left - renewal expiration.

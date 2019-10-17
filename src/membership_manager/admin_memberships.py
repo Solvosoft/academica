@@ -90,7 +90,9 @@ class MembInvoices(ListView):
                 object_dict['results'] = tmp_dict
                 object_dict = self.get_paid_value(object_dict)
                 new_tmp_list.append(object_dict)
-            print(new_tmp_list)
+            else:
+                object_dict['no_results'] = 'No hay invoices'
+                new_tmp_list.append(object_dict)
         return new_tmp_list
 
     def get_queryset(self):
@@ -109,9 +111,18 @@ class MembInvoices(ListView):
             qset = context['object_list']
             context['form'] = self.form_class()
             context['object_list'] = self.filter_queryset(q,qset)
-            print(context['object_list'])
         else:
             context['object_list'] = object_list
+        context['cl'] = {
+            'opts': {
+                'app_label': 'membership_manager',
+                'verbose_name_plural': 'Historiales de membresías',
+                'app_config': {
+                    'verbose_name': 'Membresias',
+
+                }
+            }
+        }
         return context
 
     def post(self, request, *args, **kwargs):

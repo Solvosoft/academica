@@ -13,7 +13,8 @@ class MembInvPaymentsForm(forms.Form):
         ('pending', 'Pendiente'),
         ('paid','Pagado'),
         ('inactive','Inactivo')
-    ),required=False,widget=forms.RadioSelect,)
+    ),required=False,widget=forms.RadioSelect(attrs={'class': 'grp-horizontal-list','padding':'0x 10px'}),)
+
 
 
 class MembershipAddForm(forms.ModelForm):
