@@ -1,4 +1,4 @@
-from async_notifications.register import update_template_context
+from async_notifications.register import update_template_context, DummyContextObject
 from async_notifications.utils import send_email_from_template
 from django.template.loader import render_to_string
 from xhtml2pdf import pisa
@@ -28,16 +28,12 @@ def generate_invoice(membership, invoice):
         ('membership', membership),
     ]
 
-    code = str(invoice.pdf_invoice.name[invoice.pdf_invoice.name.rfind('/') + 1: invoice.pdf_invoice.name.rfind('.')])
-
-    update_template_context(code, 'pay_email.html', 'Pago de membresía - Código Sur', context)
-
-    send_email_from_template(code, [membership.contact.email],
+    send_email_from_template('pay_mail', [membership.contact.email],
                              context={},
                              enqueued=False,  # ask about this! Docu says: enqueued if False send the email
                                               # immediately else enqueued to be sended when send email task run.
                              user=None,
-                             upfile=invoice.pdf_invoice.url)
+                             upfile=invoice.pdf_invoice)
 
 
 def link_callback(uri, rel):
