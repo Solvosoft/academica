@@ -1,14 +1,26 @@
+import copy
+import operator
+from datetime import datetime, timedelta
+from functools import reduce
+
+from django.conf.urls import url
+from django.shortcuts import render
+from django.utils import timezone
 from django.contrib import admin
 
 # Register your models here.
-from django.urls import reverse
+from django.contrib.admin import SimpleListFilter
+from django.db.models import Q
+from django.urls import reverse, path, URLPattern
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from membership_core.models import MembershipTemplate, SystemCurrency
 from membership_manager import models
+from membership_manager.admin_memberships import MembershipNotificationFilter, payments_history
 from membership_manager.admin_pdf import InvoiceAdmin
 from membership_manager.forms import MembershipAddForm
+from membership_manager.models import Membership
 
 
 class ContactAdmin(admin.ModelAdmin):
@@ -77,14 +89,13 @@ class ContactAdmin(admin.ModelAdmin):
 
     memberships.short_description = "Membresías"
 
-
 class MembershipRenewAdmin(admin.StackedInline):
     model = models.MembershipRenew
     extra = 0
 
-
 class MemberShipAdmin(admin.ModelAdmin):
-    list_filter = ('state', 'contact__country', 'services', 'contact', 'organization')
+    actions = [payments_history]
+    list_filter = (MembershipNotificationFilter,'state', 'contact__country', 'services', 'contact', 'organization')
     search_fields = ('contact__first_name', 'contact__last_name')
     list_display = ('name', 'contact', 'annual_cost',
                     'currency', 'renewal_period', 'state','invoices',
@@ -148,7 +159,7 @@ class MemberShipAdmin(admin.ModelAdmin):
                 reverse("admin:membership_manager_invoice_changelist") +"?membership="+str(
                     obj.pk
                 ),
-                obj.invoice_set.all().count())
+                0)
             return mark_safe(dev)
         return ""
     invoices.short_description = "Facturas"
@@ -190,6 +201,9 @@ class OrganizationAdmin(admin.ModelAdmin):
         )
 
     memberships.short_description = "Membresías"
+
+
+
 
 
 admin.site.register(models.Invoice, InvoiceAdmin)

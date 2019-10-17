@@ -1,0 +1,126 @@
+{% extends "admin/base_site.html" %}
+
+<!-- LOADING -->
+{% load i18n grp_tags admin_urls static admin_list %}
+
+<!-- CONTENT -->
+{% block content %}
+    {{ block.super }}
+    {{ content }}
+
+   <div class="grp-module">
+        <div class="grp-row">
+            <div class="l-2cr-fluid l-d-12">
+
+                        <aside class="c-1">
+                            <header style="display:none"><h1>Search &amp; Filters</h1></header>
+
+                            <!-- FILTERS -->
+                            <div id="grp-filters" class="g-d-6 g-d-l">
+
+
+                                                    <form action="" method="post">
+                                                        {% csrf_token %}
+                                                        {{ form.option }}
+                                                        <input type="submit" value="Submit">
+                                                    </form>
+
+                            </div>
+                        </aside>
+
+                    <div class="c-2">
+                        <!-- PAGINATION TOP -->
+                            <nav class="grp-pagination"><header style="display:none"><h1>Pagination</h1></header><ul><li class="grp-results"><span>2 total</span></li></ul></nav>
+                    </div>
+            </div>
+        </div>
+        <!-- DATE HIERARCHY -->
+    </div>
+
+    {% block result_list %}
+        {% if action_form and actions_on_top and cl.full_result_count %}{% admin_actions %}{% endif %}
+        <section id="grp-changelist" class="">
+            {% if object_list %}
+            {% for temp in object_list %}
+                   <div class="grp-module">
+                <div class="grp-row">
+                    <div class="l-2cr-fluid l-d-12">
+                        <div class="c-2">
+                            <header><h1>{{temp.name}}</h1></header>
+                                <ul>
+                                    <li class="grp-results">
+                                        <span>Pending: {{temp.pending}}</span>
+                                    </li>
+                                    <li class="grp-results">
+                                        <span>Paid: {{temp.paid}}</span>
+                                    </li>
+                                </ul>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="grp-module grp-changelist-results" style="margin-bottom: 40px">
+                    <table id="result_list" class="grp-table grp-sortable" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="action-checkbox-column">
+                                    <div class="grp-text"><span><input type="checkbox" id="action-toggle"></span></div>
+                                </th>
+                                <th scope="col" class="sortable column-membership">
+                                    <div class="grp-text"><a href="?o=1">Membresía</a></div>
+                                </th>
+                                <th scope="col" class="sortable column-expiration_date">
+                                    <div class="grp-text"><a href="?o=2">Fecha de expiración</a></div>
+                                </th>
+                                <th scope="col" class="sortable column-amount">
+                                    <div class="grp-text"><a href="?o=3">Monto</a></div>
+                                </th>
+                                <th scope="col" class="sortable column-currency">
+                                    <div class="grp-text"><a href="?o=4">Moneda</a></div>
+                                </th>
+                                <th scope="col" class="sortable column-status">
+                                    <div class="grp-text"><a href="?o=5">Estado</a></div>
+                                </th>
+                                <th scope="col" class="sortable column-payment_date">
+                                    <div class="grp-text"><a href="?o=6">Fecha de pago</a></div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for obj in temp.results %}
+                            <tr class="grp-row grp-row-even">
+                                <td class="action-checkbox">
+                                    <input type="checkbox" name="_selected_action" value="4" class="action-select">
+                                </td>
+                                <th class="field-membership nowrap">
+                                    <a href="/admin/membership_manager/invoice/4/change/">{{ obj.membership.name }}</a>
+                                </th>
+                                <td class="field-expiration_date nowrap">{{ obj.expiration_date }}</td>
+                                <td class="field-amount">{{ obj.amount }}</td>
+                                <td class="field-currency nowrap">{{ obj.currency }}</td>
+                                <td class="field-status">{{obj.status}}</td>
+                                <td class="field-payment_date nowrap">
+                                    {% if obj.expiration_date %}
+                                        {{ obj.expiration_date }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            {% endfor %}
+
+            {% else %}
+                <h1>You must select an option</h1>
+            {% endif %}
+
+            </section>
+
+
+    {% endblock %}
+{% endblock %}
