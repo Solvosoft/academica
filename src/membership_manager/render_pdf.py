@@ -1,4 +1,3 @@
-from async_notifications.register import update_template_context, DummyContextObject
 from async_notifications.utils import send_email_from_template
 from django.template.loader import render_to_string
 from xhtml2pdf import pisa
@@ -23,13 +22,16 @@ def generate_invoice(membership, invoice):
     invoice.pdf_invoice = File(resultFile, name="invoice.pdf")
     invoice.status = 'paid'
     invoice.save()
-
-    context = [
-        ('membership', membership),
-    ]
-
-    send_email_from_template('pay_mail', [membership.contact.email],
-                             context={},
+    email = ''
+    if membership.contact:
+        email = membership.contact.email
+    else:
+        email = membership.organization.contact.email
+    send_email_from_template('pay_mail', [email],
+                             context={
+                                 'invoice': invoice,
+                                 'membership': membership
+                             },
                              enqueued=False,  # ask about this! Docu says: enqueued if False send the email
                                               # immediately else enqueued to be sended when send email task run.
                              user=None,
