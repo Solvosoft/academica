@@ -3,10 +3,9 @@ from django.core.management import BaseCommand
 
 
 class Command(BaseCommand):
-    help = "Notification load command"
+    help = "Load templates command"
 
-    def createTemplates(self):
-
+    def handle(self, *args, **options):
         update_template_context('pay_mail',
                                 'Pago de membresía - Código Sur',
                                 [('desc', 'Correo automático para el pago de membresias'), ],

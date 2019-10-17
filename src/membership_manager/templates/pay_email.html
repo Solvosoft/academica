@@ -1,22 +1,18 @@
-<!DOCTYPE html>
 {% load static i18n %}
 
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Pago</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-</head>
-<body>
-    <h3>Pago de factura.</h3>
-    <p>Estimado {{ membership.contact.first_name }}:</p>
-    <br/>
-    <p>Por este medio se le informa que el pago de su membresía ha sido efectuado.
-        Los detalles son aclarados en su factura, la cual se adjunta acontinuación.</p>
-    <br/>
-    <br/>
-    <p>Gracias por seguir con nosotros.</p>
-    <p>Codigo Sur</p>
-</body>
+<html>
+    <head>
+        <title>Pago</title>
+    </head>
+    <body>
+        <h3>Pago de factura.</h3>
+        <p>Estimado {{ membership.contact.first_name }}:</p>
+        <br/>
+        <p>Por este medio se le informa que el pago de su membresía ha sido efectuado.
+            Los detalles son aclarados en su factura, la cual se adjunta acontinuación.</p>
+        <br/>
+        <br/>
+        <p>Gracias por seguir con nosotros.</p>
+        <p>Codigo Sur</p>
+    </body>
 </html>
