@@ -61,9 +61,20 @@ class MembershipNotificationFilter(SimpleListFilter):
         return fiter_memb_queryset(queryset,self.value())
 
 class MembInvoices(ListView):
-    template_name = 'test.html'
-    paginate_by = 10
+    template_name = 'admin/membership_admin/invoice/change_list.html'
     form_class = MembInvPaymentsForm
+
+    def get_paid_value(self,queryset_list):
+        cont = 0
+        pending_amount = 0
+        for item in queryset_list:
+            if item.status == 'paid':
+                cont += item.amount
+            elif item.status == 'pending':
+                pending_amount += item.amount
+        queryset_list.append(pending_amount)
+        queryset_list.append(cont)
+        return queryset_list
 
     def filter_queryset(self,ids,queryset):
         new_tmp_list = []
@@ -75,9 +86,10 @@ class MembInvoices(ListView):
                     if inv_mem_name == '':
                         inv_mem_name = inv.membership.name
                     tmp_dict.append(inv)
+            tmp_dict = self.get_paid_value(tmp_dict)
             tmp_dict.append(inv_mem_name)
-            new_tmp_list.append(tmp_dict)
-
+            if len(tmp_dict) >= 4:
+                new_tmp_list.append(tmp_dict)
         return new_tmp_list
 
     def get_queryset(self):
@@ -94,13 +106,12 @@ class MembInvoices(ListView):
             ids = self.request.GET.get('ids')
             q = ids.strip('][').split(', ')
             qset = context['object_list']
-
+            context['form'] = self.form_class()
             context['object_list'] = self.filter_queryset(q,qset)
             print(context['object_list'])
         else:
             context['object_list'] = object_list
         return context
-
 
     def post(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()
@@ -108,8 +119,8 @@ class MembInvoices(ListView):
         q = self.request.GET.get('ids')
         ids = q.strip('][').split(', ')
         if form.is_valid():
-            print(form.cleaned_data['option'])
-            tmp_qset = self.object_list.filter(status=form.cleaned_data['option'])
+            tmp_qset =  self.object_list.filter(status=form.cleaned_data['option'])
+            print(tmp_qset,form.cleaned_data['option'])
             new_qset = self.filter_queryset(ids,tmp_qset)
             return self.render_to_response(self.get_context_data(object_list=new_qset, form=form))
         return self.render_to_response(self.get_context_data(object_list=self.object_list, form=form))

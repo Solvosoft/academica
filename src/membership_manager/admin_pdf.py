@@ -22,7 +22,6 @@ def pay_invoice(modeladmin, request, queryset):
 pay_invoice.short_description = "Pagar factura"
 
 def invoice_expiration_filter_queryset(queryset, filt = None):
-    # This is where you process parameters invoice expiration filters via filter options:
     #Search the possibles expiration memberships on 60, 45, 30, 15 7 or 1 day left to send a notification.
     options = [Q(expiration_date__range=(timezone.now()+timedelta(days=59), timezone.now()+timedelta(days=60))),
                Q(expiration_date__range=(timezone.now()+timedelta(days=44), timezone.now()+timedelta(days=45))),

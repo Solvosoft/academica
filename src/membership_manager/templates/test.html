@@ -6,47 +6,7 @@
 </head>
 <body>
 
-{% if object_list %}
-    {% for temp in object_list %}
-<!---paint the form to create consultants--->
-    <div class="mb-4">
-    <h1>{{ temp.pop }}</h1>
-        {% for obj in temp %}
-            <div id="check" >
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" id="inlineCheckbox1" align="right" name="id" value="{{ obj.pk}}">
-                  <label class="form-check-label" for="inlineCheckbox1">{{ obj.status }} --- {{ obj.expiration_date }}</label>
-                </div>
-            </div>
-        {% endfor %}
-       </div>
-    {% endfor %}
-<form action="" method="post">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Submit">
-</form>
 
-<div class="pagination">
-    <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; First</a>
-            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-        {% endif %}
-
-        <span class="current">
-          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-        </span>
-
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">  Next </a>
-            <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
-        {% endif %}
-    </span>
-</div>
-{% else %}
-     <h4>No records found!</h4>
-{% endif %}
 
 </body>
 </html>
