@@ -21,18 +21,17 @@
         <div class="grp-row">
             <div class="l-2cr-fluid l-d-12">
                 <aside class="c-1">
-                    <header style="display:none"><h1>Search &amp; Filters</h1></header>
                     <!-- FILTERS -->
                     <div id="grp-filters" class="g-d-l">
                         <form action="" method="post">
                             {% csrf_token %}
                              <div style="float: left">
-                               <h3 style="font-weight: bold;padding: 5px 10px; background-image: none;border:none">Search &amp; Filters</h3>
+                               <h3 style="font-weight: bold;padding: 5px 10px; background-image: none;border:none">Busqueda por estado:</h3>
                             </div>
                             <div style="float: left">
                                 {{ form.option }}
                             </div>
-                            <div style="float: left;">
+                            <div style="float: left; margin-left: 15px">
                                 <button type="submit" class="grp-button" title="Ejecutar la acción seleccionada" >Ir</button>
                             </div>
                         </form>
@@ -41,9 +40,6 @@
                 <div class="c-2">
                     <!-- PAGINATION TOP -->
                     <nav class="grp-pagination">
-                        <header style="display:none">
-                            <h1>Pagination</h1>
-                        </header>
                         <ul>
                             <li class="grp-results">
                                 <span>2 total</span>
@@ -55,32 +51,34 @@
         </div>
         <!-- DATE HIERARCHY -->
     </div>
-
     {% block result_list %}
-        {% if action_form and actions_on_top and cl.full_result_count %}{% admin_actions %}{% endif %}
+    {% if action_form and actions_on_top and cl.full_result_count %}{% admin_actions %}{% endif %}
         <section id="grp-changelist" class="">
             {% if object_list %}
-            {% for temp in object_list %}
-                   <div class="grp-module">
-                <div class="grp-row">
-                    <div class="l-2cr-fluid l-d-12">
-                        <div class="c-2">
-                            <header><h1>{{temp.name}}</h1></header>
-                                <ul>
-                                    <li class="grp-results">
-                                        <span>Pending: {{temp.pending}}</span>
-                                    </li>
-                                    <li class="grp-results">
-                                        <span>Paid: {{temp.paid}}</span>
-                                    </li>
-                                </ul>
+                {% for temp in object_list %}
+                    <div class="grp-module">
+                        <div class="grp-row">
+                            <div class="l-2cr-fluid l-d-12">
+                                <div class="c-2">
+                                    <header style="float: left"><h1>{{temp.name}}</h1></header>
+                                        <ul class="grp-horizontal-list" style="padding: 25px 10px 10px; font-weight: bold">
+                                            <li class="grp-results">
+                                                <span>Pendiente: {{temp.pending}}</span>
+                                            </li>
+                                            <li class="grp-results">
+                                                <span>Total Pagado: {{temp.paid}}</span>
+                                            </li>
+                                        </ul>
+                                </div>
+                            </div>
                         </div>
-
                     </div>
-                </div>
 
                 <div class="grp-module grp-changelist-results" style="margin-bottom: 40px">
-                    <table id="result_list" class="grp-table grp-sortable" cellspacing="0">
+                {% if temp.no_results %}
+                    <header><h1  style="padding: 20px 15px ;font-weight: normal">{{temp.no_results}} {{ temp.filter_option }}</h1></header>
+                    {% else %}
+                     <table id="result_list" class="grp-table grp-sortable" cellspacing="0" style="width: 100%;">
                         <thead>
                             <tr>
                                 <th scope="col" class="action-checkbox-column">
@@ -108,38 +106,32 @@
                         </thead>
                         <tbody>
                             {% for obj in temp.results %}
-                            <tr class="grp-row grp-row-even">
-                                <td class="action-checkbox">
-                                    <input type="checkbox" name="_selected_action" value="4" class="action-select">
-                                </td>
-                                <th class="field-membership nowrap">
-                                    <a href="/admin/membership_manager/invoice/4/change/">{{ obj.membership.name }}</a>
-                                </th>
-                                <td class="field-expiration_date nowrap">{{ obj.expiration_date }}</td>
-                                <td class="field-amount">{{ obj.amount }}</td>
-                                <td class="field-currency nowrap">{{ obj.currency }}</td>
-                                <td class="field-status">{{obj.status}}</td>
-                                <td class="field-payment_date nowrap">
-                                    {% if obj.expiration_date %}
-                                        {{ obj.expiration_date }}
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </td>
-                            </tr>
+                                <tr class="grp-row grp-row-even">
+                                    <td class="action-checkbox">
+                                        <input type="checkbox" name="_selected_action" value="4" class="action-select">
+                                    </td>
+                                    <th class="field-membership nowrap">
+                                        <a href="/admin/membership_manager/invoice/4/change/">{{ obj.membership.name }}</a>
+                                    </th>
+                                    <td class="field-expiration_date nowrap">{{ obj.expiration_date }}</td>
+                                    <td class="field-amount">{{ obj.amount }}</td>
+                                    <td class="field-currency nowrap">{{ obj.currency }}</td>
+                                    <td class="field-status">{{obj.status}}</td>
+                                    <td class="field-payment_date nowrap">
+                                        {% if obj.expiration_date %}
+                                            {{ obj.expiration_date }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                </tr>
                             {% endfor %}
                         </tbody>
                     </table>
+                 {% endif %}
                 </div>
-                </div>
-            {% endfor %}
-
-            {% else %}
-                <h1>You must select an option</h1>
+                {% endfor %}
             {% endif %}
-
             </section>
-
-
     {% endblock %}
 {% endblock %}

@@ -76,7 +76,7 @@ class MembInvoices(ListView):
         object_dict['pending'] = pending_amount
         return object_dict
 
-    def filter_queryset(self,ids,queryset):
+    def filter_queryset(self,ids,queryset,filter_option = None):
         new_tmp_list = []
         for id in ids:
             tmp_dict = []
@@ -91,8 +91,12 @@ class MembInvoices(ListView):
                 object_dict = self.get_paid_value(object_dict)
                 new_tmp_list.append(object_dict)
             else:
-                object_dict['no_results'] = 'No hay invoices'
+                object_dict['no_results'] = 'No hay facturas'
                 new_tmp_list.append(object_dict)
+                tmp_membship = Membership.objects.get(pk=id)
+                object_dict['name'] = tmp_membship.name
+            if filter_option != None:
+                object_dict['filter_option'] = filter_option
         return new_tmp_list
 
     def get_queryset(self):
@@ -132,6 +136,6 @@ class MembInvoices(ListView):
         ids = q.strip('][').split(', ')
         if form.is_valid():
             tmp_qset =  self.object_list.filter(status=form.cleaned_data['option'])
-            new_qset = self.filter_queryset(ids,tmp_qset)
+            new_qset = self.filter_queryset(ids,tmp_qset,form.cleaned_data['option'])
             return self.render_to_response(self.get_context_data(object_list=new_qset, form=form))
         return self.render_to_response(self.get_context_data(object_list=self.object_list, form=form))
