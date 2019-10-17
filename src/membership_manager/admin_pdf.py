@@ -19,6 +19,20 @@ def pay_invoice(modeladmin, request, queryset):
         generate_invoice(invoice.membership, invoice)
 pay_invoice.short_description = "Pagar factura"
 
+
+def invoice_expiration_filter_queryset(queryset, filt = None):
+    #Search the possibles expiration memberships on 60, 45, 30, 15 7 or 1 day left to send a notification.
+    options = [Q(expiration_date__range=(timezone.now()+timedelta(days=59), timezone.now()+timedelta(days=60))),
+        ]
+    if filt in ['60','45','30','15','7','0']:
+        min_date, max_date = get_dates(filt)
+        return queryset.distinct().filter(Q(expiration_date__range=(min_date, max_date)) &
+                                          Q(status='pending'))
+    elif filt != None:
+        return queryset.distinct().filter(reduce(operator.or_, options) & Q(status='pending'))
+    elif filt == None:
+        return queryset
+
 def invoice_expiration_filter_queryset(queryset, filt = None):
     #Search the possibles expiration memberships on 60, 45, 30, 15 7 or 1 day left to send a notification.
     options = [Q(expiration_date__range=(timezone.now()+timedelta(days=59), timezone.now()+timedelta(days=60))),
@@ -36,6 +50,7 @@ def invoice_expiration_filter_queryset(queryset, filt = None):
         return queryset.distinct().filter(reduce(operator.or_, options) & Q(status='pending'))
     elif filt == None:
         return queryset
+
 
 class InvoiceRenewalNotificationFilter(SimpleListFilter):
     title = 'Facturas Pendientes'  # a label for our filter

@@ -19,7 +19,6 @@ def task_notify_invoice_expiration():
     qset = Invoice.objects.all()
     notify_qset = invoice_expiration_filter_queryset(qset)
 
-
 @periodic_task(run_every=(crontab(minute='*/5')), name="task_notify", ignore_result=True)
 def task_notify_membership_expiration():
     """
