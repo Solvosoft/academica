@@ -20,7 +20,7 @@ from membership_manager import models
 from membership_manager.admin_memberships import MembershipNotificationFilter, payments_history
 from membership_manager.admin_pdf import InvoiceAdmin
 from membership_manager.forms import MembershipAddForm
-from membership_manager.models import Membership
+from membership_manager.models import Membership, MembershipRenew
 
 
 class ContactAdmin(admin.ModelAdmin):
@@ -151,6 +151,20 @@ class MemberShipAdmin(admin.ModelAdmin):
                     'state': obj.state,
                     'services': [svc.id for svc in obj.services.all()]})
         return args
+
+    def save_formset(self, request, form, formset, change):
+        instances = formset.save(commit=False)
+        model_instance = form.save(commit=False)
+        if len(instances) == 0:
+            MembershipRenew.objects.create(membership=model_instance, creation_date=timezone.now(), start_date=timezone.now(),
+                                           end_date=timezone.now() + timezone.timedelta(
+                                               days=30 * model_instance.renewal_period.months))
+        else:
+            for instance in instances:
+                # Do something with `instance`
+                print(instance.start_date)
+                instance.save()
+            formset.save_m2m()
 
     def invoices(self, obj):
         if obj:

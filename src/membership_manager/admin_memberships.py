@@ -5,8 +5,6 @@ from functools import reduce
 from django.contrib.admin import SimpleListFilter
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import redirect
-from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import ListView
 
