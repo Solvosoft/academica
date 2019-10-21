@@ -33,6 +33,15 @@ def invoice_expiration_filter_queryset(queryset, filt = None):
     elif filt == None:
         return queryset
 
+def renewal_expiration_filter_manager(queryset, filt = None):
+    #We use Filt to search for 30 or 60 days renewals to get expired!
+    if filt in ['60','30']:
+        min_date, max_date = get_dates(filt)
+        return queryset.distinct().filter(Q(end_date__range=(min_date, max_date)) &
+                                          Q(active = True))
+    else:
+        return queryset
+
 def invoice_expiration_filter_queryset(queryset, filt = None):
     #Search the possibles expiration memberships on 60, 45, 30, 15 7 or 1 day left to send a notification.
     options = [Q(expiration_date__range=(timezone.now()+timedelta(days=59), timezone.now()+timedelta(days=60))),
@@ -81,11 +90,9 @@ class InvoiceAdmin(admin.ModelAdmin):
 
     def download(self, obj):
         dev = ""
-
         if bool(obj.pdf_invoice):
             dev += '<a href="%s" class="grp-button grp-button-state-inactive" target="_blank" >%s</a>' % (
                 obj.pdf_invoice.url,
-                "Descargar"
-            )
+                "Descargar")
             dev = mark_safe(dev)
         return dev

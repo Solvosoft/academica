@@ -43,7 +43,6 @@ payments_history.short_description = "Mostrar Historial de Pagos"
 class MembershipNotificationFilter(SimpleListFilter):
     title = 'Invoices Renewals'  # a label for our filter
     parameter_name = 'renews'  # you can put anything here
-
     def lookups(self, request, model_admin):
         # This is where you create filter options; we have two:
         return [
@@ -52,7 +51,6 @@ class MembershipNotificationFilter(SimpleListFilter):
             ('7', '7 days to pay'),
             ('0', 'day to pay'),
             ]
-
     def queryset(self, request, queryset):
         # This is where you process parameters selected by use via filter options:
         q = q_generator()
