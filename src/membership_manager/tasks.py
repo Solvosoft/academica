@@ -104,7 +104,7 @@ def task_membership_deactivating_or_graceperiod():
                 email = tmp_membship.contact.email
             else:
                 email = tmp_membship.organization.contact.email
-            send_email_from_template('notification_mail', [email],
+            send_email_from_template('expiration_mail', [email],
                                      context={
                                          'membership': tmp_membship
                                      },
