@@ -10,3 +10,4 @@ media/
 src/celerybeat-schedule.bak
 src/celerybeat-schedule.dat
 src/celerybeat-schedule.dir
+src/celerybeat-schedule
