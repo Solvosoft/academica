@@ -1,3 +1,4 @@
+from django.contrib.admin import SimpleListFilter
 from django.db import models
 from django_countries.fields import CountryField
 
@@ -25,7 +26,6 @@ class GeneralContactInfo(models.Model):
                                  verbose_name="Moneda")
     payment_method = models.CharField(max_length=250, choices=PAYMENT,
                                       verbose_name="Método de pago")
-
     class Meta:
         abstract = True
 
@@ -75,7 +75,7 @@ class Membership(models.Model):
     services = models.ManyToManyField(Service, verbose_name="Servicios")
     renewal_period = models.ForeignKey(RenewalPeriod, on_delete=models.CASCADE,
                                        verbose_name="Periodo de renovación")
-    state = models.CharField(max_length=10, choices=STATES, default="active",
+    state = models.CharField(max_length=11, choices=STATES, default="active",
                              verbose_name="Estado")
 
     def __str__(self):
@@ -85,12 +85,15 @@ class Membership(models.Model):
         verbose_name = "Membresía"
         verbose_name_plural = "Membresías"
 
+
 class MembershipRenew(models.Model):
     creation_date = models.DateTimeField(auto_created=True,
                                          verbose_name="Fecha de creación")
     membership = models.ForeignKey(Membership, on_delete=models.CASCADE,
-                                   verbose_name="Membresía")
+                                   verbose_name="Membresía"
+                                   ,related_name='renews')
     start_date = models.DateTimeField(verbose_name="Fecha de inicio")
+
     end_date = models.DateTimeField(verbose_name="Fecha de finalización")
     graceperiod = models.BooleanField(default=False, verbose_name="Periodo de gracia")
     active = models.BooleanField(default=True, verbose_name="Activo")
@@ -113,9 +116,9 @@ class Invoice(models.Model):
                                          verbose_name="Fecha de creación")
     expiration_date = models.DateTimeField(verbose_name="Fecha de expiración")
     payment_date = models.DateField(null=True, blank=True, verbose_name="Fecha de pago")
-    membership = models.ForeignKey(Membership, on_delete=models.CASCADE, verbose_name="Membresía")
+    membership = models.ForeignKey(Membership, on_delete=models.CASCADE, verbose_name="Membresía",related_name='mem_inv')
     renewal_period = models.ForeignKey(MembershipRenew, on_delete=models.CASCADE,
-                                       verbose_name="Periodo de renovación")
+                                       verbose_name="Periodo de renovación",related_name='inv_m_renews')
     description = models.TextField(verbose_name="Descripción")
     amount = models.FloatField(verbose_name="Cantidad")
     currency = models.ForeignKey(SystemCurrency, on_delete=models.CASCADE, verbose_name="Moneda")
