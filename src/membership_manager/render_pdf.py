@@ -22,7 +22,6 @@ def generate_invoice(membership, invoice):
     invoice.pdf_invoice = File(resultFile, name="invoice.pdf")
     invoice.status = 'paid'
     invoice.save()
-    email = ''
     if membership.contact:
         email = membership.contact.email
     else:
@@ -32,8 +31,7 @@ def generate_invoice(membership, invoice):
                                  'invoice': invoice,
                                  'membership': membership
                              },
-                             enqueued=False,  # ask about this! Docu says: enqueued if False send the email
-                                              # immediately else enqueued to be sended when send email task run.
+                             enqueued=False,
                              user=None,
                              upfile=invoice.pdf_invoice)
 

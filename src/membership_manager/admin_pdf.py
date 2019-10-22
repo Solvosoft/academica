@@ -17,14 +17,16 @@ from membership_manager.utils import get_dates
 def pay_invoice(modeladmin, request, queryset):
     for invoice in queryset:
         generate_invoice(invoice.membership, invoice)
+
+
 pay_invoice.short_description = "Pagar factura"
 
 
-def invoice_expiration_filter_queryset(queryset, filt = None):
-    #Search the possibles expiration memberships on 60, 45, 30, 15 7 or 1 day left to send a notification.
-    options = [Q(expiration_date__range=(timezone.now()+timedelta(days=59), timezone.now()+timedelta(days=60))),
-        ]
-    if filt in ['60','45','30','15','7','0']:
+def invoice_expiration_filter_queryset(queryset, filt=None):
+    # Search the possibles expiration memberships on 60, 45, 30, 15 7 or 1 day left to send a notification.
+    options = [Q(expiration_date__range=(timezone.now() + timedelta(days=59), timezone.now() + timedelta(days=60))),
+               ]
+    if filt in ['60', '45', '30', '15', '7', '0']:
         min_date, max_date = get_dates(filt)
         return queryset.distinct().filter(Q(expiration_date__range=(min_date, max_date)) &
                                           Q(status='pending'))
@@ -33,25 +35,27 @@ def invoice_expiration_filter_queryset(queryset, filt = None):
     elif filt == None:
         return queryset
 
-def renewal_expiration_filter_manager(queryset, filt = None):
-    #We use Filt to search for 30 or 60 days renewals to get expired!
-    if filt in ['60','30']:
+
+def renewal_expiration_filter_manager(queryset, filt=None):
+    # We use Filt to search for 30 or 60 days renewals to get expired!
+    if filt in ['60', '30']:
         min_date, max_date = get_dates(filt)
         return queryset.distinct().filter(Q(end_date__range=(min_date, max_date)) &
-                                          Q(active = True))
+                                          Q(active=True))
     else:
         return queryset
 
-def invoice_expiration_filter_queryset(queryset, filt = None):
-    #Search the possibles expiration memberships on 60, 45, 30, 15 7 or 1 day left to send a notification.
-    options = [Q(expiration_date__range=(timezone.now()+timedelta(days=59), timezone.now()+timedelta(days=60))),
-               Q(expiration_date__range=(timezone.now()+timedelta(days=44), timezone.now()+timedelta(days=45))),
-               Q(expiration_date__range=(timezone.now()+timedelta(days=39), timezone.now()+timedelta(days=30))),
-               Q(expiration_date__range=(timezone.now()+timedelta(days=15), timezone.now()+timedelta(days=15))),
-               Q(expiration_date__range=(timezone.now()+timedelta(days=6), timezone.now()+timedelta(days=7))),
-               Q(expiration_date__range=(timezone.now()-timedelta(days=1), timezone.now()+timedelta(days=1)))
+
+def invoice_expiration_filter_queryset(queryset, filt=None):
+    # Search the possibles expiration memberships on 60, 45, 30, 15 7 or 1 day left to send a notification.
+    options = [Q(expiration_date__range=(timezone.now() + timedelta(days=59), timezone.now() + timedelta(days=60))),
+               Q(expiration_date__range=(timezone.now() + timedelta(days=44), timezone.now() + timedelta(days=45))),
+               Q(expiration_date__range=(timezone.now() + timedelta(days=39), timezone.now() + timedelta(days=30))),
+               Q(expiration_date__range=(timezone.now() + timedelta(days=15), timezone.now() + timedelta(days=15))),
+               Q(expiration_date__range=(timezone.now() + timedelta(days=6), timezone.now() + timedelta(days=7))),
+               Q(expiration_date__range=(timezone.now() - timedelta(days=1), timezone.now() + timedelta(days=1)))
                ]
-    if filt in ['60','45','30','15','7','0']:
+    if filt in ['60', '45', '30', '15', '7', '0']:
         min_date, max_date = get_dates(filt)
         return queryset.distinct().filter(Q(expiration_date__range=(min_date, max_date)) &
                                           Q(status='pending'))
@@ -64,6 +68,7 @@ def invoice_expiration_filter_queryset(queryset, filt = None):
 class InvoiceRenewalNotificationFilter(SimpleListFilter):
     title = 'Facturas Pendientes'  # a label for our filter
     parameter_name = 'renews'
+
     def lookups(self, request, model_admin):
         # This is where you create filter options; we have two:
         return [
@@ -72,19 +77,20 @@ class InvoiceRenewalNotificationFilter(SimpleListFilter):
             ('15', 'a 15 días'),
             ('7', 'a 7 días'),
             ('0', 'Hoy'),
-            ]
+        ]
 
     def queryset(self, request, queryset):
         # This is where you process parameters selected by use via filter options:
-        return invoice_expiration_filter_queryset(queryset,self.value())
+        return invoice_expiration_filter_queryset(queryset, self.value())
+
 
 class InvoiceAdmin(admin.ModelAdmin):
     actions = [pay_invoice]
-    list_filter = ('membership', 'status',InvoiceRenewalNotificationFilter)
+    list_filter = ('membership', 'status', InvoiceRenewalNotificationFilter)
     search_fields = ('membership__contact__first_name',
                      'membership__contact__last_name',
                      'membership__name')
-    list_display = ( 'membership', 'expiration_date', 'amount', 'currency', 'status','payment_date', 'download')
+    list_display = ('membership', 'expiration_date', 'amount', 'currency', 'status', 'payment_date', 'download')
     list_editable = ('status',)
     readonly_fields = ('download',)
 
