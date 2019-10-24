@@ -23,3 +23,9 @@ class Command(BaseCommand):
                                 [('desc', 'Recordatorios automaticos de los pagos pendientes'), ],
                                 'pay_email.html',
                                 as_template=True)
+
+        update_template_context("expiration_mail",
+                                'Membresía desactivada - Código Sur',
+                                [('desc', 'Correo automatico de expiración de membresías'), ],
+                                'expiration_email.html',
+                                as_template=True)

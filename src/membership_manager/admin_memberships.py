@@ -20,31 +20,37 @@ def q_generator():
     qset = filter_memb_queryset(q)
     return qset
 
-def filter_memb_queryset(queryset, filt = None):
+
+def filter_memb_queryset(queryset, filt=None):
     # This is where you process parameters selected by use via filter options:
-    options = [Q(renews__end_date__range=(timezone.now()+timedelta(days=29), timezone.now()+timedelta(days=30))),
-               Q(renews__end_date__range=(timezone.now()+timedelta(days=14), timezone.now()+timedelta(days=15))),
-               Q(renews__end_date__range=(timezone.now()+timedelta(days=6), timezone.now()+timedelta(days=7))),
-               Q(renews__end_date__range=(timezone.now()-timedelta(days=1), timezone.now()+timedelta(days=1)))]
-    if filt in ['30','15','7','0']:
+    options = [Q(renews__end_date__range=(timezone.now() + timedelta(days=29), timezone.now() + timedelta(days=30))),
+               Q(renews__end_date__range=(timezone.now() + timedelta(days=14), timezone.now() + timedelta(days=15))),
+               Q(renews__end_date__range=(timezone.now() + timedelta(days=6), timezone.now() + timedelta(days=7))),
+               Q(renews__end_date__range=(timezone.now() - timedelta(days=1), timezone.now() + timedelta(days=1)))]
+    if filt in ['30', '15', '7', '0']:
         min_date, max_date = get_dates(filt)
-        return queryset.distinct().filter(Q(renews__end_date__range=(min_date, max_date)) & Q(renews__active= True) & Q(state='active'))
-    elif filt != None:
+        return queryset.distinct().filter(
+            Q(renews__end_date__range=(min_date, max_date)) & Q(renews__active=True) & Q(state='active'))
+    elif filt is not None:
         return queryset.distinct().filter(reduce(operator.or_, options) & Q(renews__active=True) & Q(state=True))
     else:
         return queryset
 
+
 def payments_history(modeladmin, request, queryset):
     id_list = []
     for membership in queryset:
-            id_list.append(membership.pk)
+        id_list.append(membership.pk)
     return HttpResponseRedirect("/payments/" + f"?ids={id_list}")
 
+
 payments_history.short_description = "Mostrar Historial de Pagos"
+
 
 class MembershipNotificationFilter(SimpleListFilter):
     title = 'Invoices Renewals'  # a label for our filter
     parameter_name = 'renews'  # you can put anything here
+
     def lookups(self, request, model_admin):
         # This is where you create filter options; we have two:
         return [
@@ -52,16 +58,19 @@ class MembershipNotificationFilter(SimpleListFilter):
             ('15', '15 days to pay'),
             ('7', '7 days to pay'),
             ('0', 'day to pay'),
-            ]
+        ]
+
     def queryset(self, request, queryset):
         # This is where you process parameters selected by use via filter options:
         q = q_generator()
-        return filter_memb_queryset(queryset,self.value())
+        return filter_memb_queryset(queryset, self.value())
+
 
 class MembInvoices(ListView):
     template_name = 'admin/membership_admin/invoice/change_list.html'
     form_class = MembInvPaymentsForm
     filter_options = {'pending': 'pendientes', 'paid': 'pagadas', 'inactive': 'inactivas'}
+
     def get_paid_value(self, object_dict):
         cont = 0
         pending_amount = 0
@@ -74,11 +83,11 @@ class MembInvoices(ListView):
         object_dict['pending'] = pending_amount
         return object_dict
 
-    def filter_queryset(self,ids,queryset,filter_option = None):
+    def filter_queryset(self, ids, queryset, filter_option=None):
         new_tmp_list = []
         for id in ids:
             tmp_dict = []
-            object_dict = {'name':'','paid':0,'pending':0}
+            object_dict = {'name': '', 'paid': 0, 'pending': 0}
             for inv in queryset:
                 if inv.membership.pk == int(id):
                     if object_dict['name'] == '':
@@ -93,7 +102,7 @@ class MembInvoices(ListView):
                 new_tmp_list.append(object_dict)
                 tmp_membship = Membership.objects.get(pk=id)
                 object_dict['name'] = tmp_membship.name
-            if filter_option != None:
+            if filter_option is not None:
                 object_dict['filter_option'] = filter_option
         return new_tmp_list
 
@@ -112,7 +121,7 @@ class MembInvoices(ListView):
             q = ids.strip('][').split(', ')
             qset = context['object_list']
             context['form'] = self.form_class()
-            context['object_list'] = self.filter_queryset(q,qset)
+            context['object_list'] = self.filter_queryset(q, qset)
         else:
             context['object_list'] = object_list
         context['cl'] = {
@@ -134,7 +143,7 @@ class MembInvoices(ListView):
         q = self.request.GET.get('ids')
         ids = q.strip('][').split(', ')
         if form.is_valid():
-            tmp_qset =  self.object_list.filter(status=form.cleaned_data['option'])
-            new_qset = self.filter_queryset(ids,tmp_qset,self.filter_options[form.cleaned_data['option']])
+            tmp_qset = self.object_list.filter(status=form.cleaned_data['option'])
+            new_qset = self.filter_queryset(ids, tmp_qset, self.filter_options[form.cleaned_data['option']])
             return self.render_to_response(self.get_context_data(object_list=new_qset, form=form))
         return self.render_to_response(self.get_context_data(object_list=self.object_list, form=form))

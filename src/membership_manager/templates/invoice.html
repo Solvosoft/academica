@@ -7,173 +7,203 @@
         /* Page layout */
         @page {
             @frame header_frame {
-                -pdf-frame-content: header_content;
+                -pdf-frame-content: header_content1;
                 left: 3cm;
-                width: 6cm;
+                width: 10cm;
                 top: 2.5cm;
-                height: 1.5cm;
+                height: .80cm;
             }
+
+            @frame {
+                -pdf-frame-content: header_content2;
+                left: 13cm;
+                width: 5cm;
+                top: 2.5cm;
+                height: .80cm;
+            }
+
+            @frame {
+                -pdf-frame-content: logo;
+                left: 3cm;
+                width: 7cm;
+                top: 4.5cm;
+                height: 5cm;
+            }
+
             @frame {
                 -pdf-frame-content: invoice_info;
                 right: 3cm;
                 width: 5cm;
-                top: 5.5cm;
-                height: 1.4cm;
+                top: 4.5cm;
+                height: 6cm;
             }
-            @frame {
-                -pdf-frame-content: data1;
-                right: 5.1cm;
-                width: 2cm;
-                top: 6.7cm;
-                height: 3cm;
+
+            @frame header_frame {
+                -pdf-frame-content: line_col11;
+                left: 3cm;
+                width: 4.5cm;
+                top: 8cm;
+                height: 1.03cm;
             }
+
             @frame {
-                -pdf-frame-content: data2;
+                -pdf-frame-content: line_col12;
                 right: 3cm;
-                width: 2cm;
-                top: 6.7cm;
-                height: 3cm;
+                width: 10.5cm;
+                top: 8cm;
+                height: 1.03cm;
             }
-            @frame {
-                -pdf-frame-content: contact;
+
+            @frame header_frame {
+                -pdf-frame-content: line_col21;
                 left: 3cm;
-                width: 2.3cm;
-                top: 6.1cm;
-                height: 3cm;
+                width: 4.5cm;
+                top: 9.03cm;
+                height: 1.03cm;
             }
+
             @frame {
-                -pdf-frame-content: contact_data;
-                left: 5.5cm;
-                width: 6cm;
-                top: 6.1cm;
-                height: 3cm;
+                -pdf-frame-content: line_col22;
+                right: 3cm;
+                width: 10.5cm;
+                top: 9.03cm;
+                height: 1.1cm;
             }
-             @frame {
-                -pdf-frame-content: membership_info;
+
+            @frame header_frame {
+                -pdf-frame-content: line_col31;
                 left: 3cm;
-                width: 10cm;
-                top: 10cm;
-                height: 1cm;
+                width: 4.5cm;
+                top: 10.06cm;
+                height: 1.03cm;
             }
 
             @frame {
-                -pdf-frame-content: table;
-                -pdf-frame-border: 1;
+                -pdf-frame-content: line_col32;
+                right: 3cm;
+                width: 10.5cm;
+                top: 10.06cm;
+                height: 1.03cm;
+            }
+
+            @frame header_frame {
+                -pdf-frame-content: line_col41;
                 left: 3cm;
-                width: 15cm;
-                top: 11cm;
-                height: 2.2cm;
+                width: 4.5cm;
+                top: 11.09cm;
+                height: 1.03cm;
             }
 
             @frame {
-                -pdf-frame-content: membership_name;
+                -pdf-frame-content: line_col42;
+                right: 3cm;
+                width: 10.5cm;
+                top: 11.09cm;
+                height: 1.03cm;
+            }
+
+            @frame header_frame {
+                -pdf-frame-content: tablelvl11;
                 left: 3cm;
-                width: 3.25cm;
-                top: 11.55cm;
-                height: 0.75cm;
+                width: 11cm;
+                top: 15cm;
+                height: 1.06cm;
             }
 
             @frame {
-                -pdf-frame-content: membership_type;
-                left: 6.75cm;
-                width: 3.25cm;
-                top: 11.55cm;
-                height: 0.75cm;
-            }
-
-            @frame {
-                -pdf-frame-content: membership_period;
-                left: 10.5cm;
-                width: 3.25cm;
-                top: 11.55cm;
-                height: 0.75cm;
-            }
-
-            @frame {
-                -pdf-frame-content: membership_total;
-                left: 14.25cm;
-                width: 3.25cm;
-                top: 11.55cm;
-                height: 0.75cm;
-            }
-            @frame {
-                -pdf-frame-content: description_name;
-                left: 3cm;
-                width: 3.25cm;
-                top: 12.35cm;
-                height: 0.75cm;
-            }
-
-            @frame {
-                -pdf-frame-content: description_type;
-                left: 6.75cm;
-                width: 3.25cm;
-                top: 12.35cm;
-                height: 0.75cm;
-            }
-
-            @frame {
-                -pdf-frame-content: description_period;
-                left: 10.5cm;
-                width: 3.25cm;
-                top: 12.35cm;
-                height: 0.75cm;
-            }
-
-            @frame {
-                -pdf-frame-content: description_total;
-                left: 14.25cm;
-                width: 3.25cm;
-                top: 12.35cm;
-                height: 0.75cm;
-            }
-
-            @frame {
-                -pdf-frame-content: description_membership;
-                left: 3cm;
-                width: 2.5cm;
-                top: 14cm;
-                height: 1cm;
-            }
-
-            @frame {
-                -pdf-frame-content: description_content;
-                left: 5.5cm;
+                -pdf-frame-content: tablelvl12;
+                right: 3cm;
                 width: 4cm;
-                top: 14cm;
-                height: 7cm;
+                top: 15cm;
+                height: 1.03cm;
+            }
+
+            @frame header_frame {
+                -pdf-frame-content: tablelvl21;
+                left: 3cm;
+                width: 11cm;
+                top: 16.03cm;
+                height: 1.03cm;
             }
 
             @frame {
-                -pdf-frame-content: membership_sevices;
-                left: 10.5cm;
-                width: 3cm;
-                top: 14cm;
-                height: 1cm;
-            }
-
-            @frame {
-                -pdf-frame-content: services_content;
-                left: 14cm;
+                -pdf-frame-content: tablelvl22;
+                right: 3cm;
                 width: 4cm;
-                top: 14cm;
-                height: 7cm;
+                top: 16.03cm;
+                height: 1.03cm;
+            }
+
+            @frame header_frame {
+                -pdf-frame-content: tablelvl31;
+                left: 3cm;
+                width: 11cm;
+                top: 17.06cm;
+                height: 1.06cm;
             }
 
             @frame {
-                -pdf-frame-content: terms_conditions;
+                -pdf-frame-content: tablelvl32;
+                right: 3cm;
+                width: 4cm;
+                top: 17.06cm;
+                height: 1.06cm;
+            }
+
+            @frame header_frame {
+                -pdf-frame-content: tablelvl41;
                 left: 3cm;
-                width: 10cm;
-                top: 23cm;
-                height: .5cm;
+                width: 11cm;
+                top: 18.12cm;
+                height: 1.06cm;
             }
 
             @frame {
-                -pdf-frame-content: terms_content;
+                -pdf-frame-content: tablelvl42;
+                right: 3cm;
+                width: 4cm;
+                top: 18.12cm;
+                height: 1.06cm;
+            }
+
+            @frame header_frame {
+                -pdf-frame-content: tablelvl51;
                 left: 3cm;
+                width: 11cm;
+                top: 19.18cm;
+                height: 1.06cm;
+            }
+
+            @frame {
+                -pdf-frame-content: tablelvl52;
+                right: 3cm;
+                width: 4cm;
+                top: 19.18cm;
+                height: 1.06cm;
+            }
+
+            @frame header_frame {
+                -pdf-frame-content: tablelvl61;
+                left: 3cm;
+                width: 11cm;
+                top: 20.24cm;
+                height: 1.06cm;
+            }
+
+            @frame {
+                -pdf-frame-content: tablelvl62;
+                right: 3cm;
+                width: 4cm;
+                top: 20.24cm;
+                height: 1.06cm;
+            }
+
+            @frame {
+                -pdf-frame-content: footer;
+                right: 3cm;
                 width: 15cm;
-                top: 23.5cm;
-                height: 3cm;
+                top: 25.5cm;
+                height: 2cm;
             }
         }
 
@@ -181,121 +211,213 @@
             font-family: Helvetica, "sansserif";
         }
 
+        #header_content1, #header_content2 {
+            font-size: 11pt;
+            padding-top: 4pt;
+            font-weight: bold;
+            border-bottom-color: black;
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+        }
+
+        #header_content2 {
+            background-color: green;
+            text-align: center;
+            vertical-align: middle;
+            color: white;
+        }
+
         #invoice_info {
             text-align: right;
-            font-size: 24pt;
+            font-size: 10pt;
         }
 
-        #data1, #contact, #contact_data, #description_membership, #membership_sevices,
-        #description_content, #services_content {
-            text-align: left;
-            font-size: 9pt;
+        #line_col11, #line_col12 {
+            font-size: 12pt;
+            padding-top: 9pt;
+            border-bottom-color: black;
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+            border-top-color: black;
+            border-top-style: solid;
+            border-top-width: 1px;
         }
 
-        #data2 {
-            text-align: right;
-            font-size: 9pt;
+        #line_col21, #line_col22, #line_col31, #line_col32, #line_col41, #line_col42 {
+            font-size: 12pt;
+            padding-top: 9pt;
+            border-bottom-color: black;
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
         }
 
-        #membership_info {
-            font-size: 15pt;
-        }
-
-        #membership_name, #membership_type, #membership_period, #membership_total,
-        #description_name, #description_type, #description_period, #description_total {
+        #tablelvl11, #tablelvl12 {
             text-align: center;
-            font-size: 9pt;
+            font-size: 12pt;
+            font-weight: bold;
+            padding-top: 9pt;
+            border-bottom-color: black;
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+            border-top-color: black;
+            border-top-style: solid;
+            border-top-width: 1px;
+            border-left-color: black;
+            border-left-style: solid;
+            border-left-width: 1px;
+            border-right-color: black;
+            border-right-style: solid;
+            border-right-width: 1px;
         }
 
-        #terms_conditions, #terms_content {
-            font-size: 7pt;
+        #tablelvl21 {
+            font-size: 12pt;
+            font-weight: bold;
+            padding-top: 9pt;
+            border-left-color: black;
+            border-left-style: solid;
+            border-left-width: 1px;
+        }
+
+        #tablelvl22 {
+            font-size: 12pt;
+            font-weight: bold;
+            padding-top: 9pt;
+            border-right-color: black;
+            border-right-style: solid;
+            border-right-width: 1px
+        }
+
+        #tablelvl31, #tablelvl41, #tablelvl51, #tablelvl61 {
+            font-size: 13pt;
+            padding-top: 9pt;
+            padding-left: 9pt;
+            border-bottom-color: black;
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+            border-top-color: black;
+            border-top-style: solid;
+            border-top-width: 1px;
+            border-left-color: black;
+            border-left-style: solid;
+            border-left-width: 1px;
+            border-right-color: black;
+            border-right-style: solid;
+            border-right-width: 1px;
+        }
+
+        #tablelvl32, #tablelvl42, #tablelvl52, #tablelvl62 {
+            font-size: 13pt;
+            text-align: right;
+            padding-top: 9pt;
+            padding-right: 9pt;
+            border-bottom-color: black;
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+            border-top-color: black;
+            border-top-style: solid;
+            border-top-width: 1px;
+            border-left-color: black;
+            border-left-style: solid;
+            border-left-width: 1px;
+            border-right-color: black;
+            border-right-style: solid;
+            border-right-width: 1px;
+        }
+
+        #tablelvl61, #tablelvl62 {
+            background-color: darkgrey;
+            color: green;
+        }
+
+        #footer {
+            font-size: 12pt;
+            text-align: center;
+            vertical-align: middle;
+            color: gray;
         }
 
     </style>
     <body>
 
-        <div id="header_content">
+        <div id="header_content1">
+            FACTURA: &nbsp &nbsp &nbsp {{ invoice.id }}
+        </div>
+        <div id="header_content2">
+            {{ invoice.status }}
+        </div>
+        <div id="logo">
             <img src="{% static 'logoCS.png' %}"/>
         </div>
         <div id="invoice_info">
-            <strong>FACTURA</strong>
+            Código Sur Sociedad Civil<br />
+            Cédula Juridica: 3-106-639831<br />
+            Telefono +506 8569 1676<br />
+            Correo: ayuda@codigosur.org
         </div>
-        <div id="data1">
-            <strong>Factura #</strong><br />
-            <strong>Fecha</strong>
+        <div id="line_col11">
+            Fecha
         </div>
-        <div id="data2">
-            {{ invoice.id }} <br />
+        <div id="line_col12">
             {{ invoice.payment_date }}
         </div>
-        <div id="contact">
-            <strong>Factura para:</strong>
+        <div id="line_col21">
+            Organización
         </div>
-        <div id="contact_data">
-            {{ invoice.membership.contact.first_name }} {{ invoice.membership.contact.last_name }}<br />
-            {{ invoice.membership.contact.city }}, {{ invoice.membership.contact.province }}, {{ invoice.membership.contact.country }}<br />
-
-            {% if invoice.membership.contact.cellphone and invoice.membership.contact.phone %}
-                {{ invoice.membership.contact.cellphone }} / {{ invoice.membership.contact.phone }}<br />
-            {% elif invoice.membership.contact.cellphone %}
-                {{ invoice.membership.contact.cellphone }}<br />
-            {% elif invoice.membership.contact.phone %}
-                {{ invoice.membership.contact.phone }} <br />
-            {% endif %}
+        <div id="line_col22">
+            {{ invoice.membership.organization }}
         </div>
-
-        <div id="membership_info">
-            <strong>SU MEMBRESÍA</strong>
+        <div id="line_col31">
+            Ciudad
         </div>
-        <div id="membership_name">
-            <strong>Membresía</strong>
+        <div id="line_col32">
+            {{ invoice.membership.contact.city }}, {{ invoice.membership.contact.province }}
         </div>
-        <div id="membership_type">
-            <strong>Tipo</strong>
+        <div id="line_col41">
+            País
         </div>
-        <div id="membership_period">
-            <strong>Periodo</strong>
+        <div id="line_col42">
+            {{ invoice.membership.contact.country }}
         </div>
-        <div id="membership_total">
-            <strong>Total</strong>
+        <div id="tablelvl11">
+            Descripción
         </div>
-
-        <div id="table">
-            <div id="description_name">
-                {{ invoice.membership.name }}
-            </div>
-            <div id="description_type">
-                {{ invoice.membership.membership_type }}
-            </div>
-            <div id="description_period">
-                {{ invoice.membership.description  }}
-            </div>
-            <div id="description_total">
-                <strong>{{ invoice.membership.annual_cost }} {{ invoice.membership.currency.currency}}</strong>
-            </div>
+        <div id="tablelvl12">
+            Precio
         </div>
-
-        <div id="description_membership">
-            <strong>Descripción</strong>
+        <div id="tablelvl21">
+            &nbsp &nbsp &nbsp
         </div>
-        <div id="description_content">
-            {{ invoice.membership.description}}
+        <div id="tablelvl22">
+            &nbsp &nbsp &nbsp
         </div>
-        <div id="membership_sevices">
-            <strong>Servicios Incluidos</strong>
+        <div id="tablelvl31">
+            Membresía
         </div>
-        <div id="services_content">
-            {% for service in invoice.membership.services.all %}
-                {{ service.name }}{% if not forloop.last %}, {% else %}.{% endif %}
-            {% endfor %}
+        <div id="tablelvl32">
+            {{ invoice.membership.annual_cost }} {{ invoice.membership.currency.currency}}
         </div>
-        <div id="terms_conditions">
-            <strong>Términos & Condiciones</strong>
+        <div id="tablelvl41">
+            Subtotal
         </div>
-        <div id="terms_content">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-            nisi ut aliquip ex ea commodo consequat.
+        <div id="tablelvl42">
+            {{ invoice.membership.annual_cost }} {{ invoice.membership.currency.currency}}
+        </div>
+        <div id="tablelvl51">
+            I.V.I
+        </div>
+        <div id="tablelvl52">
+            *
+        </div>
+        <div id="tablelvl61">
+            Total
+        </div>
+        <div id="tablelvl62">
+            {{ invoice.membership.annual_cost }} {{ invoice.membership.currency.currency}}
+        </div>
+        <div id="footer">
+            Código Sur, San José. Costa Rica. CP 11501. Teléfono +506 8569 1676.<br />
+            Email: ayuda@codigosur.org – Web: https://codigosur.org
         </div>
 
     </body>
