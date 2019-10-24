@@ -4,20 +4,35 @@ from functools import reduce
 
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 
+from membership_manager.models import MembershipRenew
 from membership_manager.render_pdf import generate_invoice
 from membership_manager.utils import get_dates
-
+from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 
 def pay_invoice(modeladmin, request, queryset):
     for invoice in queryset:
-        generate_invoice(invoice.membership, invoice)
+        membership = invoice.membership
+        generate_invoice(membership, invoice)
+        MembershipRenew.objects.filter(membership=membership,
+                                       graceperiod=True,
+                                       ).update(active=False)
+        LogEntry.objects.log_action(
+            user_id=request.user.pk,
+            content_type_id=ContentType.objects.get_for_model(membership).pk,
+            object_id=membership.pk,
+            object_repr="Pago de membresía realizado, poniendo todos los periódos de gracia inactivos",
+            action_flag=CHANGE
+        )
 
+        invoice.renewal_period.active=False
+        invoice.renewal_period.save()
 
 pay_invoice.short_description = "Pagar factura"
 
@@ -107,4 +122,13 @@ class InvoiceAdmin(admin.ModelAdmin):
         super(InvoiceAdmin, self).save_model(request, obj, form, change)
         if obj.status == "paid" and not obj.pdf_invoice:
             generate_invoice(obj.membership, obj)
-    #
+            MembershipRenew.objects.filter(membership=obj.membership,
+                                           graceperiod=True,
+                                           ).update(active=False)
+            LogEntry.objects.log_action(
+                user=request.user,
+                content_type_id=ContentType.objects.get_for_model(obj.membership).pk,
+                object_id=obj.membership.pk,
+                object_repr="Pago de membresía realizado, poniendo todos los periódos de gracia inactivos",
+                action_flag=CHANGE
+            )
