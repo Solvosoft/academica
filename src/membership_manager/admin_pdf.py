@@ -102,3 +102,9 @@ class InvoiceAdmin(admin.ModelAdmin):
                 "Descargar")
             dev = mark_safe(dev)
         return dev
+
+    def save_model(self, request, obj, form, change):
+        super(InvoiceAdmin, self).save_model(request, obj, form, change)
+        if obj.status == "paid" and not obj.pdf_invoice:
+            generate_invoice(obj.membership, obj)
+    #
