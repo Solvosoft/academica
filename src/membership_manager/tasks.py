@@ -28,9 +28,7 @@ def task_notify_membership_expiration():
     # notify_qset = filter_memb_queryset(qset)
 
 def task_invoice_creation():
-    """
-    Create a invoice, at 60 days left - renewal expiration.
-    """
+    #Create a invoice, at 60 days left - renewal expiration
     filtered_qset = renewal_expiration_filter_manager()
     if filtered_qset:
         for renew in filtered_qset:
@@ -42,8 +40,7 @@ def task_invoice_creation():
                                        amount=renew.membership.annual_cost,
                                        currency=renew.membership.currency, status='pending')
 
-
-def task_membership_graceperiod():
+def task_membership_add_graceperiod():
     #this method will check if there is any invoices expired , then change them to graceperiod
     grace_period_date = timezone.now() + timezone.timedelta(days=14)
     qset = memb_invoice_expiration_filter_add_graceperiod()
