@@ -10,6 +10,8 @@ from django.views.generic import ListView
 
 from membership_manager.forms import MembInvPaymentsForm
 from membership_manager.models import Membership, Invoice
+from membership_manager.tasks import task_invoice_creation, task_membership_graceperiod, \
+    task_membership_deactivate_graceperiod
 from membership_manager.utils import get_dates
 
 
@@ -127,6 +129,7 @@ class MembInvoices(ListView):
 
     def post(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()
+        task_membership_deactivate_graceperiod()
         form = self.form_class(self.request.POST or None)
         q = self.request.GET.get('ids')
         ids = q.strip('][').split(', ')
