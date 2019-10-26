@@ -12,6 +12,8 @@ def pay_invoice(modeladmin, request, queryset):
     for invoice in queryset:
         membership = invoice.membership
         generate_invoice(membership, invoice)
+        invoice.status = "paid"
+        invoice.save()
         MembershipRenew.objects.filter(membership=membership,
                                        graceperiod=True,
                                        ).update(active=False)
@@ -72,13 +74,13 @@ class InvoiceAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         super(InvoiceAdmin, self).save_model(request, obj, form, change)
-        if obj.status == "paid" and not obj.pdf_invoice:
+        if not obj.pdf_invoice:
             generate_invoice(obj.membership, obj)
             MembershipRenew.objects.filter(membership=obj.membership,
                                            graceperiod=True,
                                            ).update(active=False)
             LogEntry.objects.log_action(
-                user=request.user,
+                user_id=request.user.pk,
                 content_type_id=ContentType.objects.get_for_model(obj.membership).pk,
                 object_id=obj.membership.pk,
                 object_repr="Pago de membresía realizado, poniendo todos los periódos de gracia inactivos",

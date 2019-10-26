@@ -1,3 +1,4 @@
+from dateutil.relativedelta import relativedelta
 from django.contrib import admin
 # Register your models here.
 from django.urls import reverse
@@ -106,7 +107,7 @@ class MemberShipAdmin(admin.ModelAdmin):
             dev = '<p style="letter-spacing:2px;" >'
 
             for currency in SystemCurrency.objects.all():
-                if obj.currency != currency:
+                if obj.annual_cost and obj.currency != currency:
                     # dev2 += str(convert_money(Money(obj.annual_cost, obj.currency.currency),
                     #                currency.currency))+" | "
                     dev += obj.currency.convert_money(
@@ -148,22 +149,27 @@ class MemberShipAdmin(admin.ModelAdmin):
         super(MemberShipAdmin, self).save_formset(request, form, formset, change)
         instance = form.instance
         if not instance.renews.exists():
-            MembershipRenew.objects.create(membership=instance, creation_date=timezone.now(), start_date=timezone.now(),
-                                           end_date=timezone.now() + timezone.timedelta(
-                                               days=30 * instance.renewal_period.months))
+            now = timezone.now()
+            MembershipRenew.objects.create(membership=instance, creation_date=now,
+                                           start_date=now,
+                                           end_date=now + relativedelta(
+                                               months=+instance.renewal_period.months)
+                                           )
         else:
             lastRenew = False
             for form in formset:
-                if bool(form.has_changed) and not bool(form.instance.active):
+                if  form.has_changed and not  form.instance.active:
                     lastRenew = True    # if there is a renew in period of grace, when it has been inactivated,
                                         # there are going to be two renews in active = false.
                                         # We do not want two news renewals, just one.
 
-            if instance.state == 'active' and bool(lastRenew):  # without the loop. Create a new renewal.
-                MembershipRenew.objects.create(membership=instance, creation_date=timezone.now(),
-                                               start_date=timezone.now(),
-                                               end_date=timezone.now() + timezone.timedelta(
-                                                   days=30 * instance.renewal_period.months))
+            if instance.state == 'active' and lastRenew:  # without the loop. Create a new renewal.
+                MembershipRenew.objects.create(
+                    membership=instance, creation_date=timezone.now(),
+                    start_date=timezone.now(),
+                    end_date=timezone.now() + relativedelta(
+                        months=+instance.renewal_period.months)
+                                                         )
 
     def invoices(self, obj):
         dev = ""

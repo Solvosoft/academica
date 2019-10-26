@@ -7,7 +7,7 @@ from membership_manager.models import MembershipRenew, Membership
 
 
 def get_administrative_user():
-    return User.objects.filter(is_superuser=True).first()
+    return User.objects.filter(is_superuser=True).first().pk
 
 
 def get_dates(filt):
