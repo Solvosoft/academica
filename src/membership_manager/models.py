@@ -99,7 +99,8 @@ class MembershipRenew(models.Model):
     active = models.BooleanField(default=True, verbose_name="Activo")
 
     def __str__(self):
-        return "From %s to %s" % (self.start_date.strftime("%d/%m/%Y"),
+
+        return "De %s a %s" % (self.start_date.strftime("%d/%m/%Y"),
                                   self.end_date.strftime("%d/%m/%Y"))
 
     class Meta:

@@ -10,7 +10,7 @@ from membership_manager import models
 from membership_manager.admin_memberships import MembershipNotificationFilter, payments_history
 from membership_manager.admin_pdf import InvoiceAdmin
 from membership_manager.forms import MembershipAddForm
-from membership_manager.models import MembershipRenew
+from membership_manager.models import MembershipRenew, Invoice
 
 
 class ContactAdmin(admin.ModelAdmin):
@@ -90,9 +90,9 @@ class MemberShipAdmin(admin.ModelAdmin):
     list_filter = (MembershipNotificationFilter, 'state', 'contact__country', 'services', 'contact', 'organization')
     search_fields = ('contact__first_name', 'contact__last_name')
     list_display = ('name', 'contact', 'organization', 'annual_cost',
-                    'currency', 'renewal_period', 'state', 'invoices',
+                    'currency', 'renewal_period', 'state', 'invoices', 'next_pay',
                     'exchange_rates')
-    readonly_fields = ['exchange_rates', 'invoices']
+    readonly_fields = ['exchange_rates', 'invoices', 'next_pay']
     filter_horizontal = ['services']
     inlines = [MembershipRenewAdmin]
     form_class = MembershipAddForm
@@ -153,16 +153,30 @@ class MemberShipAdmin(admin.ModelAdmin):
                                                days=30 * instance.renewal_period.months))
 
     def invoices(self, obj):
+        dev = ""
         if obj:
-            dev = ""
             dev += '<a href="%s" class="grp-button grp-button-state-inactive" >%d</a>' % (
                 reverse("admin:membership_manager_invoice_changelist") + "?membership=" + str(
                     obj.pk
                 ),
-                0)
-            return mark_safe(dev)
-        return ""
+                obj.mem_inv.count()
+                )
+            dev= mark_safe(dev)
+        return dev
 
+    def next_pay(self, obj):
+        dev = ""
+        if obj:
+            renew = obj.renews.filter(active=True).first()
+            if renew is not None:
+                dev += '<span style="color: %s">%s</span>'%(
+                    "red" if renew.graceperiod else "gray",
+                    str(renew)
+                )
+                dev= mark_safe(dev)
+        return dev
+
+    next_pay.short_description = "Fecha de renovación"
     invoices.short_description = "Facturas"
 
 
