@@ -1,17 +1,15 @@
 from datetime import timedelta
 
 from async_notifications.utils import send_email_from_template
-from django.contrib.auth.models import User
+from django.conf import settings
+from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.contenttypes.models import ContentType
 
-from membership_manager.admin_pdf import invoice_expiration_filter_queryset
 from membership_manager.models import Invoice, MembershipRenew
 from membership_manager.render_pdf import generate_invoice
+from membership_manager.utils import invoice_expiration_filter_queryset, renewal_expiration_filter_manager, \
+    get_administrative_user
 
-from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
-
-def get_administrative_user():
-    return User.objects.filter(is_superuser=True).first()
 
 def notify_invoice_expiration(now):
     """
@@ -33,20 +31,16 @@ def notify_invoice_expiration(now):
                                  user=None,
                                  upfile=None)
         LogEntry.objects.log_action(
-            user_id         = get_administrative_user(),
-            content_type_id = ContentType.objects.get_for_model(invoice.membership).pk,
-            object_id       = invoice.membership.pk,
-            object_repr     = "Notificación de pago pendiente enviada",
-            action_flag     = CHANGE
+            user_id=get_administrative_user(),
+            content_type_id=ContentType.objects.get_for_model(invoice.membership).pk,
+            object_id=invoice.membership.pk,
+            object_repr="Notificación de pago pendiente enviada",
+            action_flag=CHANGE
         )
 
+
 def invoice_creation(now):
-    renews = MembershipRenew.objects.filter(end_date__lte=now + timedelta(days=60),
-                                            active=True,
-                                            graceperiod=False,
-                                            membership__state="active",
-                                            inv_m_renews=None
-                                            )
+    renews = renewal_expiration_filter_manager(now)
     for renew in renews:
         invoice = Invoice.objects.create(creation_date=now,
                                          expiration_date=renew.end_date,
@@ -59,12 +53,13 @@ def invoice_creation(now):
                                          status='pending')
         generate_invoice(invoice.membership, invoice, email_template="notification_mail", enqueued=True)
         LogEntry.objects.log_action(
-            user_id         = get_administrative_user(),
-            content_type_id = ContentType.objects.get_for_model(invoice.membership).pk,
-            object_id       = invoice.membership.pk,
-            object_repr     = "Factura creada pendiente de pago",
-            action_flag     = ADDITION
+            user_id=get_administrative_user(),
+            content_type_id=ContentType.objects.get_for_model(invoice.membership).pk,
+            object_id=invoice.membership.pk,
+            object_repr="Factura creada pendiente de pago",
+            action_flag=ADDITION
         )
+
 
 def renew_graceperiod(now):
     renews = MembershipRenew.objects.filter(end_date=now,
@@ -79,19 +74,20 @@ def renew_graceperiod(now):
             creation_date=now,
             membership=renew.membership,
             start_date=now,
-            end_date=now + timedelta(days=60),
+            end_date=now + timedelta(days=settings.GRACE_PERIOD_DAYS),
             graceperiod=True,
             active=True
         )
         membership.state = "graceperiod"
         membership.save()
         LogEntry.objects.log_action(
-            user_id         = get_administrative_user(),
-            content_type_id = ContentType.objects.get_for_model(membership).pk,
-            object_id       = membership.pk,
-            object_repr     = "Factura creada pendiente de pago",
-            action_flag     = ADDITION
+            user_id=get_administrative_user(),
+            content_type_id=ContentType.objects.get_for_model(membership).pk,
+            object_id=membership.pk,
+            object_repr="Factura creada pendiente de pago",
+            action_flag=ADDITION
         )
+
 
 def membership_deactivating(now):
     renews = MembershipRenew.objects.filter(end_date=now,
@@ -117,9 +113,9 @@ def membership_deactivating(now):
         membership.save()
         MembershipRenew.objects.filter(membership=membership).update(state="inactive")
         LogEntry.objects.log_action(
-            user_id         = get_administrative_user(),
-            content_type_id = ContentType.objects.get_for_model(membership).pk,
-            object_id       = membership.pk,
-            object_repr     = "Membresía inactiva por falta de pago",
-            action_flag     = CHANGE
+            user_id=get_administrative_user(),
+            content_type_id=ContentType.objects.get_for_model(membership).pk,
+            object_id=membership.pk,
+            object_repr="Membresía inactiva por falta de pago",
+            action_flag=CHANGE
         )

@@ -1,40 +1,10 @@
-import operator
-from datetime import timedelta
-from functools import reduce
-
 from django.contrib.admin import SimpleListFilter
-from django.db.models import Q
-from django.http import HttpResponse, HttpResponseRedirect
-from django.utils import timezone
+from django.http import HttpResponseRedirect
 from django.views.generic import ListView
 
 from membership_manager.forms import MembInvPaymentsForm
 from membership_manager.models import Membership, Invoice
-from membership_manager.tasks import task_invoice_creation, task_membership_graceperiod, \
-    task_membership_deactivate_graceperiod
-from membership_manager.utils import get_dates
-
-
-def q_generator():
-    q = Membership.objects.all()
-    qset = filter_memb_queryset(q)
-    return qset
-
-
-def filter_memb_queryset(queryset, filt=None):
-    # This is where you process parameters selected by use via filter options:
-    options = [Q(renews__end_date__range=(timezone.now() + timedelta(days=29), timezone.now() + timedelta(days=30))),
-               Q(renews__end_date__range=(timezone.now() + timedelta(days=14), timezone.now() + timedelta(days=15))),
-               Q(renews__end_date__range=(timezone.now() + timedelta(days=6), timezone.now() + timedelta(days=7))),
-               Q(renews__end_date__range=(timezone.now() - timedelta(days=1), timezone.now() + timedelta(days=1)))]
-    if filt in ['30', '15', '7', '0']:
-        min_date, max_date = get_dates(filt)
-        return queryset.distinct().filter(
-            Q(renews__end_date__range=(min_date, max_date)) & Q(renews__active=True) & Q(state='active'))
-    elif filt is not None:
-        return queryset.distinct().filter(reduce(operator.or_, options) & Q(renews__active=True) & Q(state=True))
-    else:
-        return queryset
+from membership_manager.utils import membership_filter
 
 
 def payments_history(modeladmin, request, queryset):
@@ -62,8 +32,10 @@ class MembershipNotificationFilter(SimpleListFilter):
 
     def queryset(self, request, queryset):
         # This is where you process parameters selected by use via filter options:
-        q = q_generator()
-        return filter_memb_queryset(queryset, self.value())
+        value=self.value()
+        if value is None:
+            value=False
+        return membership_filter(queryset, filt=value)
 
 
 class MembInvoices(ListView):
@@ -138,7 +110,6 @@ class MembInvoices(ListView):
 
     def post(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()
-        task_membership_deactivate_graceperiod()
         form = self.form_class(self.request.POST or None)
         q = self.request.GET.get('ids')
         ids = q.strip('][').split(', ')

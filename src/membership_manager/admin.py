@@ -1,17 +1,7 @@
-import copy
-import operator
-from datetime import datetime, timedelta
-from functools import reduce
-
-from django.conf.urls import url
-from django.shortcuts import render
-from django.utils import timezone
 from django.contrib import admin
-
 # Register your models here.
-from django.contrib.admin import SimpleListFilter
-from django.db.models import Q
-from django.urls import reverse, path, URLPattern
+from django.urls import reverse
+from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
@@ -20,7 +10,7 @@ from membership_manager import models
 from membership_manager.admin_memberships import MembershipNotificationFilter, payments_history
 from membership_manager.admin_pdf import InvoiceAdmin
 from membership_manager.forms import MembershipAddForm
-from membership_manager.models import Membership, MembershipRenew
+from membership_manager.models import MembershipRenew
 
 
 class ContactAdmin(admin.ModelAdmin):
@@ -89,24 +79,26 @@ class ContactAdmin(admin.ModelAdmin):
 
     memberships.short_description = "Membresías"
 
+
 class MembershipRenewAdmin(admin.StackedInline):
     model = models.MembershipRenew
     extra = 0
 
+
 class MemberShipAdmin(admin.ModelAdmin):
     actions = [payments_history]
-    list_filter = (MembershipNotificationFilter,'state', 'contact__country', 'services', 'contact', 'organization')
+    list_filter = (MembershipNotificationFilter, 'state', 'contact__country', 'services', 'contact', 'organization')
     search_fields = ('contact__first_name', 'contact__last_name')
-    list_display = ('name', 'contact', 'annual_cost',
-                    'currency', 'renewal_period', 'state','invoices',
+    list_display = ('name', 'contact', 'organization', 'annual_cost',
+                    'currency', 'renewal_period', 'state', 'invoices',
                     'exchange_rates')
     readonly_fields = ['exchange_rates', 'invoices']
     filter_horizontal = ['services']
     inlines = [MembershipRenewAdmin]
-    form_class=MembershipAddForm
+    form_class = MembershipAddForm
     fields = ['membership_template',
               'membership_type', 'contact', 'organization',
-              'name','description', 'annual_cost', 'currency','exchange_rates',
+              'name', 'description', 'annual_cost', 'currency', 'exchange_rates',
               'services', 'renewal_period', 'state']
 
     def exchange_rates(self, obj):
@@ -115,16 +107,16 @@ class MemberShipAdmin(admin.ModelAdmin):
 
             for currency in SystemCurrency.objects.all():
                 if obj.currency != currency:
-                    #dev2 += str(convert_money(Money(obj.annual_cost, obj.currency.currency),
+                    # dev2 += str(convert_money(Money(obj.annual_cost, obj.currency.currency),
                     #                currency.currency))+" | "
-                    dev +=  obj.currency.convert_money(
-                        obj.annual_cost, currency.currency).__html__() +"  |  "
-
+                    dev += obj.currency.convert_money(
+                        obj.annual_cost, currency.currency).__html__() + "  |  "
 
             dev += "</p>"
             return mark_safe(dev)
 
         return "Debes guardar primero para ver los tipos de cambio"
+
     exchange_rates.short_description = "Tipos de cambio"
 
     def get_form(self, request, obj=None, **kwargs):
@@ -142,32 +134,35 @@ class MemberShipAdmin(admin.ModelAdmin):
         if tid:
             obj = MembershipTemplate.objects.filter(id=tid).first()
             if obj:
-                args.update( {'membership_template': obj.id,
-                    'name': obj.name,
-                    'annual_cost': obj.annual_cost,
-                    'currency': obj.currency_id,
-                    'description': obj.description,
-                    'renewal_period': obj.renewal_period_id,
-                    'state': obj.state,
-                    'services': [svc.id for svc in obj.services.all()]})
+                args.update({'membership_template': obj.id,
+                             'name': obj.name,
+                             'annual_cost': obj.annual_cost,
+                             'currency': obj.currency_id,
+                             'description': obj.description,
+                             'renewal_period': obj.renewal_period_id,
+                             'state': obj.state,
+                             'services': [svc.id for svc in obj.services.all()]})
         return args
 
     def save_formset(self, request, form, formset, change):
-        super(MemberShipAdmin, self).save_formset(request,form,formset,change)
+        super(MemberShipAdmin, self).save_formset(request, form, formset, change)
         instance = form.instance
         if not instance.renews.exists():
-            MembershipRenew.objects.create(membership=instance, creation_date=timezone.now(),start_date=timezone.now(),
-                                           end_date= timezone.now() + timezone.timedelta(days=30 * instance.renewal_period.months))
+            MembershipRenew.objects.create(membership=instance, creation_date=timezone.now(), start_date=timezone.now(),
+                                           end_date=timezone.now() + timezone.timedelta(
+                                               days=30 * instance.renewal_period.months))
+
     def invoices(self, obj):
         if obj:
             dev = ""
-            dev += '<a href="%s" class="grp-button grp-button-state-inactive" >%d</a>'%(
-                reverse("admin:membership_manager_invoice_changelist") +"?membership="+str(
+            dev += '<a href="%s" class="grp-button grp-button-state-inactive" >%d</a>' % (
+                reverse("admin:membership_manager_invoice_changelist") + "?membership=" + str(
                     obj.pk
                 ),
                 0)
             return mark_safe(dev)
         return ""
+
     invoices.short_description = "Facturas"
 
 
@@ -203,13 +198,13 @@ class OrganizationAdmin(admin.ModelAdmin):
             obj.membership_set.filter(state="active").count(),
             reverse("admin:membership_manager_membership_add") +
             "?organization=" + str(obj.pk) + "&membership_type=Organizacional&currency=" +
-            str(obj.currency_id)+"&contact="+str(obj.contact_id)
+            str(obj.currency_id) + "&contact=" + str(obj.contact_id)
         )
 
     memberships.short_description = "Membresías"
+
 
 admin.site.register(models.Invoice, InvoiceAdmin)
 admin.site.register(models.Organization, OrganizationAdmin)
 admin.site.register(models.Contact, ContactAdmin)
 admin.site.register(models.Membership, MemberShipAdmin)
-

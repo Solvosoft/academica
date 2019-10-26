@@ -161,3 +161,5 @@ CELERY_BROKER_URL = os.getenv('BROKER_URL', 'redis://localhost:6379/0')
 GRAPPELLI_INDEX_DASHBOARD = 'dashboard.CustomIndexDashboard'
 #EXCHANGE_BACKEND = 'djmoney.contrib.exchange.backends.FixerBackend'
 OPEN_EXCHANGE_RATES_APP_ID="6226bd52ee074914a7edc6e55a97c8d3"
+
+GRACE_PERIOD_DAYS = 60
