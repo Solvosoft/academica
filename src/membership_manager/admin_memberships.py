@@ -72,7 +72,7 @@ class MembInvoices(ListView):
             else:
                 object_dict['no_results'] = 'No hay facturas'
                 new_tmp_list.append(object_dict)
-                tmp_membship = Membership.objects.get(pk=id)
+                tmp_membship = Membership.objects.filter(pk=id)
                 object_dict['name'] = tmp_membship.name
             if filter_option is not None:
                 object_dict['filter_option'] = filter_option

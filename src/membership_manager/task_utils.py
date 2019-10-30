@@ -38,7 +38,6 @@ def notify_invoice_expiration(now):
             action_flag=CHANGE
         )
 
-
 def invoice_creation(now):
     renews = renewal_expiration_filter_manager(now)
     for renew in renews:
@@ -60,7 +59,6 @@ def invoice_creation(now):
             action_flag=ADDITION
         )
 
-
 def renew_graceperiod(now):
     renews = MembershipRenew.objects.filter(end_date=now,
                                             active=True,
@@ -80,21 +78,22 @@ def renew_graceperiod(now):
         )
         membership.state = "graceperiod"
         membership.save()
-        LogEntry.objects.log_action(
+        log = LogEntry.objects.log_action(
             user_id=get_administrative_user(),
             content_type_id=ContentType.objects.get_for_model(membership).pk,
             object_id=membership.pk,
-            object_repr="Factura creada pendiente de pago",
+            object_repr="Membresia ha cambiado a periodo de prueba",
             action_flag=ADDITION
         )
-
+        return log.object_repr
 
 def membership_deactivating(now):
-    renews = MembershipRenew.objects.filter(end_date=now,
+    renews = MembershipRenew.objects.filter(end_date__lte=now,
                                             active=True,
                                             graceperiod=True,
                                             membership__state="graceperiod"
                                             )
+
     for renew in renews:
         membership = renew.membership
         if membership.contact:
@@ -112,10 +111,11 @@ def membership_deactivating(now):
         membership.state = "inactive"
         membership.save()
         MembershipRenew.objects.filter(membership=membership).update(state="inactive")
-        LogEntry.objects.log_action(
+        logEntry = LogEntry.objects.log_action(
             user_id=get_administrative_user(),
             content_type_id=ContentType.objects.get_for_model(membership).pk,
             object_id=membership.pk,
-            object_repr="Membresía inactiva por falta de pago",
+            object_repr="Membresia inactiva por falta de pago",
             action_flag=CHANGE
         )
+        return logEntry.object_repr

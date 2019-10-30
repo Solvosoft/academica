@@ -7,8 +7,6 @@ from membership_manager.task_utils import notify_invoice_expiration, invoice_cre
     membership_deactivating
 from membresias_codigosur.celery import app
 
-
-
 @app.task
 def task_notify_invoice_expiration():
     notify_invoice_expiration(timezone.now())
