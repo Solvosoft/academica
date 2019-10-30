@@ -1,8 +1,5 @@
 from random import randint
-
-from async_notifications.register import update_template_context
 from django.utils import timezone
-
 from membership_core.models import SystemCurrency, RenewalPeriod, Service
 from membership_manager.models import Contact, Organization, Membership, MembershipRenew, Invoice
 from faker import Faker
@@ -543,6 +540,27 @@ def generate_memberships_to_notify_expiration_create_invoice():
         end_date=now + timezone.timedelta(days=50),
         graceperiod=False,
         active=True)
+
+    # Membresìas en plazo de 60 dias por vencer (creacion de invoice) por vencer.
+    membership2 = Membership.objects.create(
+        creation_date=now - timezone.timedelta(days=5),  # created 5 days ago
+        membership_type='Organizacional',
+        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
+        annual_cost=550,
+        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
+        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
+        renewal_period=RenewalPeriod.objects.all().first(),
+        state='active'
+    )
+    membership2.services.set(list(Service.objects.all())[:3])
+    MembershipRenew.objects.create(
+        creation_date=now - timezone.timedelta(days=5),
+        membership=membership2,
+        start_date=now - timezone.timedelta(days=5),
+        end_date=now + timezone.timedelta(days=10),
+        graceperiod=False,
+        active=True)
+
 # CASE - NOTIFY FOR EXPIRATION TIMES "
 def generate_memberships_to_notify_expiration():
     contact = Contact.objects.all().order_by('?').first()
@@ -755,28 +773,3 @@ def generate_memberships_to_notify_graceperiod():
         status='pending'
     )
 
-
-def loadtemplates():
-    update_template_context('pay_mail',
-                                'Pago de membresía - Código Sur',
-                                [('desc', 'Correo automático para el pago de membresias'), ],
-                                'pay_email.html',
-                                as_template=True)
-
-    update_template_context('welcome_mail',
-                                'Bienvenido(a) - Código Sur',
-                                [('desc', 'Correo automatico de bienvenida a Código Sur'), ],
-                                'subscribe_email.html',
-                                as_template=True)
-
-    update_template_context("notification_mail",
-                                'Nuevo Aviso - Código Sur',
-                                [('desc', 'Recordatorios automaticos de los pagos pendientes'), ],
-                                'pay_email.html',
-                                as_template=True)
-
-    update_template_context("expiration_mail",
-                                'Membresía desactivada - Código Sur',
-                                [('desc', 'Correo automatico de expiración de membresías'), ],
-                                'expiration_email.html',
-                                as_template=True)
