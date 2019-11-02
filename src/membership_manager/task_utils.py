@@ -16,8 +16,8 @@ def notify_invoice_expiration(now):
     Gets the membership invoices and notify if there is any in the expiration range.
     """
     qset = Invoice.objects.all()
-    notify_qset = invoice_expiration_filter_queryset(qset)  # Specific remaining days
 
+    notify_qset = invoice_expiration_filter_queryset(qset)  # Specific remaining days
     for invoice in notify_qset:
         if invoice.membership.contact:
             email = invoice.membership.contact.email

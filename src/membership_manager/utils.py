@@ -9,7 +9,7 @@ from membership_manager.models import MembershipRenew, Membership
 
 
 def get_administrative_user():
-    return User.objects.filter(is_superuser=True).first()
+    return User.objects.filter(is_superuser=True).first().pk
 
 
 def get_dates(filt):
@@ -66,10 +66,9 @@ def invoice_expiration_filter_queryset(queryset, filt=None):
                                    status='pending').distinct()
     else:
         now = timezone.now()
-        queryset = queryset.filter(
-            expiration_date__date__in=[
-                (now + timedelta(days=x)).date() for x in [60, 45, 30, 15, 7, 0]],
-            status='pending').distinct()
+        dates_list = [
+                (now + timedelta(days=x)).date() for x in [60, 45, 30, 15, 7, 0]]
+        queryset = queryset.filter(expiration_date=dates_list,status='pending')
     return queryset
 
 def  membership_filter(queryset, filt=None, now=None):

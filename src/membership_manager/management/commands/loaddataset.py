@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 
-from membership_manager.tests.tests_utils import generate_memberships_to_notify_graceperiod
+from membership_manager.tests.utils import generate_memberships_to_notify_graceperiod
 
 
 class Command(BaseCommand):
