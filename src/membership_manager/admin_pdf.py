@@ -12,6 +12,7 @@ def pay_invoice(modeladmin, request, queryset):
     for invoice in queryset:
         membership = invoice.membership
         generate_invoice(membership, invoice)
+
         MembershipRenew.objects.filter(membership=membership,
                                        graceperiod=True,
                                        ).update(active=False)

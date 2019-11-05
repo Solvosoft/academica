@@ -13,6 +13,7 @@ def generate_invoice(membership, invoice, email_template='pay_mail', enqueued=Fa
         'invoice': invoice,
         'membership': membership
     })
+    #FIXME the variable 'enqueued' == False, it must be false o we should change it to True?!
     resultFile = io.BytesIO()
     pisaStatus = pisa.CreatePDF(
         sourceHtml,  # the HTML to convert
