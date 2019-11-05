@@ -80,14 +80,14 @@ def renew_graceperiod(now):
         )
         membership.state = "graceperiod"
         membership.save()
-        log = LogEntry.objects.log_action(
+        LogEntry.objects.log_action(
             user_id=get_administrative_user(),
             content_type_id=ContentType.objects.get_for_model(membership).pk,
             object_id=membership.pk,
             object_repr="Membresia ha cambiado a periodo de prueba",
             action_flag=ADDITION
         )
-        return log.object_repr
+
 
 def membership_deactivating(now):
     renews = MembershipRenew.objects.filter(end_date__date__lte=now.date(),
@@ -112,11 +112,10 @@ def membership_deactivating(now):
         membership.state = "inactive"
         membership.save()
         MembershipRenew.objects.filter(membership=membership).update(active=False)
-        logEntry = LogEntry.objects.log_action(
+        LogEntry.objects.log_action(
             user_id=get_administrative_user(),
             content_type_id=ContentType.objects.get_for_model(membership).pk,
             object_id=membership.pk,
             object_repr="Membresia inactiva por falta de pago",
             action_flag=CHANGE
         )
-        return logEntry.object_repr

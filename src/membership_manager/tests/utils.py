@@ -217,7 +217,7 @@ def generate_active_memberships_to_graceperiod():
     renew2= MembershipRenew.objects.create(
         creation_date=now - timezone.timedelta(days=30),
         membership=membership2,
-        start_date=now - timezone.timedelta(days=30),
+        start_date=now- timezone.timedelta(days=30),
         end_date=now,
         graceperiod=False,
         active=True)
