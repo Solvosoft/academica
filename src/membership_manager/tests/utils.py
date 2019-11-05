@@ -557,7 +557,7 @@ def generate_memberships_to_notify_expiration_create_invoice():
         creation_date=now - timezone.timedelta(days=5),
         membership=membership2,
         start_date=now - timezone.timedelta(days=5),
-        end_date=now + timezone.timedelta(days=10),
+        end_date=now + timezone.timedelta(days=25),
         graceperiod=False,
         active=True)
     # Membresìas en plazo de 110 dias por vencer (creacion de invoice) por vencer.
@@ -572,18 +572,13 @@ def generate_memberships_to_notify_expiration_create_invoice():
         state='active'
     )
     membership3.services.set(list(Service.objects.all())[:3])
-    MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=5),
-        membership=membership3,
-        start_date=now - timezone.timedelta(days=5),
-        end_date=now + timezone.timedelta(days=110),
-        graceperiod=False,
-        active=True)
 
 # CASE - NOTIFY FOR EXPIRATION TIMES "
 def generate_memberships_to_notify_expiration():
     contact = Contact.objects.all().order_by('?').first()
+
     organization = Organization.objects.filter(contact_id=contact.id).order_by('?').first()
+
     currencies_list = list(SystemCurrency.objects.all())
     now = timezone.now()
 
@@ -599,6 +594,7 @@ def generate_memberships_to_notify_expiration():
         state='active'
     )
     membership.services.set(list(Service.objects.all())[:3])
+
     renew = MembershipRenew.objects.create(
         creation_date=now - timezone.timedelta(days=30),
         membership=membership,
@@ -607,7 +603,7 @@ def generate_memberships_to_notify_expiration():
         graceperiod=False,
         active=True)
 
-    Invoice.objects.create(
+    inn = Invoice.objects.create(
         creation_date=now - timezone.timedelta(days=30),
         expiration_date=now + timezone.timedelta(days=30),
         membership=membership,
@@ -617,7 +613,6 @@ def generate_memberships_to_notify_expiration():
         currency=membership.currency,
         status='pending'
     )
-
     # Membresìas en plazo de 15 dias por vencer (creacion de invoice) por vencer.
     membership2 = Membership.objects.create(
         creation_date=now - timezone.timedelta(days=15),  # created 5 days ago
@@ -718,7 +713,7 @@ def generate_memberships_to_deactivate():
     now = timezone.now()
     # Membresìas vencida,
     membership = Membership.objects.create(
-        creation_date=now - timezone.timedelta(days=45),  # created 5 days ago
+        creation_date=now - timezone.timedelta(days=45),  # created 45 days ago
         membership_type='Organizacional',
         contact=contact, organization=organization, name=f'{organization.name} STANDARD',
         annual_cost=550,
@@ -744,7 +739,7 @@ def generate_memberships_to_deactivate():
         graceperiod=True,
         active=True)
 
-    Invoice.objects.create(
+    Invoice.objects.create( #expired 15 days ago
         creation_date=now - timezone.timedelta(days=45),
         expiration_date=now - timezone.timedelta(days=15),
         membership=membership,
@@ -761,7 +756,7 @@ def generate_memberships_to_notify_graceperiod():
     currencies_list = list(SystemCurrency.objects.all())
     now = timezone.now()
 
-    # Membresìas vencida,
+    #Membresìas vencida,
     membership = Membership.objects.create(
         creation_date=now - timezone.timedelta(days=30),  # created 5 days ago
         membership_type='Organizacional',
@@ -773,6 +768,7 @@ def generate_memberships_to_notify_graceperiod():
         state='graceperiod'
     )
     membership.services.set(list(Service.objects.all())[:3])
+
     renew = MembershipRenew.objects.create(
         creation_date=now - timezone.timedelta(days=30),
         membership=membership,
@@ -787,8 +783,6 @@ def generate_memberships_to_notify_graceperiod():
         membership=membership,
         renewal_period=renew,
         description='Invoice unit test',
-        amount=int(membership.annual_cost) / int(membership.renewal_period.months),
+        amount=int(membership.annual_cost) * int(membership.renewal_period.months),
         currency=membership.currency,
-        status='pending'
-    )
-
+        status='pending')

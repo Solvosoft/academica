@@ -18,6 +18,7 @@ def notify_invoice_expiration(now):
     qset = Invoice.objects.all()
 
     notify_qset = invoice_expiration_filter_queryset(qset)  # Specific remaining days
+
     for invoice in notify_qset:
         if invoice.membership.contact:
             email = invoice.membership.contact.email
@@ -50,6 +51,7 @@ def invoice_creation(now):
                                          amount=renew.membership.annual_cost,
                                          currency=renew.membership.currency,
                                          status='pending')
+
         generate_invoice(invoice.membership, invoice, email_template="notification_mail", enqueued=True)
         LogEntry.objects.log_action(
             user_id=get_administrative_user(),
@@ -88,12 +90,11 @@ def renew_graceperiod(now):
         return log.object_repr
 
 def membership_deactivating(now):
-    renews = MembershipRenew.objects.filter(end_date__lte=now,
+    renews = MembershipRenew.objects.filter(end_date__date__lte=now.date(),
                                             active=True,
                                             graceperiod=True,
                                             membership__state="graceperiod"
                                             )
-
     for renew in renews:
         membership = renew.membership
         if membership.contact:
@@ -110,7 +111,7 @@ def membership_deactivating(now):
 
         membership.state = "inactive"
         membership.save()
-        MembershipRenew.objects.filter(membership=membership).update(state="inactive")
+        MembershipRenew.objects.filter(membership=membership).update(active=False)
         logEntry = LogEntry.objects.log_action(
             user_id=get_administrative_user(),
             content_type_id=ContentType.objects.get_for_model(membership).pk,

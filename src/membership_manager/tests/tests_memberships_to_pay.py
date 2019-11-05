@@ -14,10 +14,6 @@ from membership_manager.utils import loademailtemplates
 
 class MembershipToPay(TestCase):
     now = timezone.now()
-    @classmethod
-    def setUpClass(cls):
-        super(MembershipToPay, cls).setUpClass()
-        loademailtemplates()
 
     def setUp(self):
         self.factory = RequestFactory()

@@ -2,10 +2,11 @@ from datetime import timedelta
 
 from async_notifications.register import update_template_context
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 from django.utils import timezone
 
-from membership_manager.models import MembershipRenew, Membership
+from membership_manager.models import MembershipRenew, Membership, Invoice
 
 
 def get_administrative_user():
@@ -68,7 +69,9 @@ def invoice_expiration_filter_queryset(queryset, filt=None):
         now = timezone.now()
         dates_list = [
                 (now + timedelta(days=x)).date() for x in [60, 45, 30, 15, 7, 0]]
-        queryset = queryset.filter(expiration_date=dates_list,status='pending')
+
+        queryset = queryset.filter(expiration_date__date__in=dates_list,status='pending')
+        # queryset = queryset.filter(Q(expiration_date__date__in=dates_list) & Q(status='pending'))
     return queryset
 
 def  membership_filter(queryset, filt=None, now=None):

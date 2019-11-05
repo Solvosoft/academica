@@ -7,7 +7,7 @@
 # from membership_manager.admin_pdf import pay_invoice
 # from membership_manager.models import Invoice
 # from membership_manager.task_utils import membership_deactivating, renew_graceperiod, invoice_creation
-# from membership_manager.tests.tests_utils import create_contacts, add_organization, generate_inactive_memberships
+# from membership_manager.tests.utils import create_contacts, add_organization, generate_inactive_memberships
 # from membership_manager.utils import loademailtemplates
 #
 #
@@ -15,7 +15,6 @@
 #     now = timezone.now()
 #     def setUp(self):
 #         self.factory = RequestFactory()
-#         loademailtemplates()
 #         create_contacts(2)
 #         add_organization()
 #         generate_inactive_memberships()
