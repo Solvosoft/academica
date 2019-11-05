@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.utils import timezone
 
-from membership_manager.models import Membership, Invoice
+from membership_manager.models import Membership, Invoice, MembershipRenew
 from membership_manager.task_utils import membership_deactivating, renew_graceperiod, invoice_creation
 from membership_manager.tests.utils import create_contacts, add_organization, generate_active_memberships_to_graceperiod
 from membership_manager.utils import loademailtemplates
@@ -29,7 +29,6 @@ class MembershipToPay(TestCase):
         self.assertEqual(check_memb,expected)
 
     def test_membership_invoice_creation(self):
-        print('test_membership')
         invoice_creation(self.now)
         check_inv = Invoice.objects.all().count()
         result = LogEntry.objects.filter(object_repr='Factura creada pendiente de pago').count()
@@ -39,7 +38,7 @@ class MembershipToPay(TestCase):
 
     def test_membership_renew_graceperiod(self):
         renew_graceperiod(self.now)
-        check_memb = Membership.objects.all().count()
+        check_memb = Membership.objects.filter(state='graceperiod').count()
         result = LogEntry.objects.all().count()
         expected = 1
         self.assertEqual(result,expected)

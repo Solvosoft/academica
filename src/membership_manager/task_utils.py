@@ -62,12 +62,11 @@ def invoice_creation(now):
         )
 
 def renew_graceperiod(now):
-    renews = MembershipRenew.objects.filter(end_date=now,
+    renews = MembershipRenew.objects.filter(end_date__date=now.date(),
                                             active=True,
                                             graceperiod=False,
                                             membership__state="active"
                                             )
-
     for renew in renews:
         membership = renew.membership
         MembershipRenew.objects.create(
@@ -87,7 +86,6 @@ def renew_graceperiod(now):
             object_repr="Membresia ha cambiado a periodo de prueba",
             action_flag=ADDITION
         )
-
 
 def membership_deactivating(now):
     renews = MembershipRenew.objects.filter(end_date__date__lte=now.date(),

@@ -21,3 +21,5 @@ def task_invoice_creation():
 def task_membership_deactivating_or_graceperiod():
     renew_graceperiod(timezone.now())
     membership_deactivating(timezone.now())
+
+

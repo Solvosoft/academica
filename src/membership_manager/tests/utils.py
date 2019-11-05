@@ -183,7 +183,7 @@ def generate_active_memberships_to_graceperiod():
 
     # membresías activas con periodo de renovación
     membership1 = Membership.objects.create(
-        creation_date = now, #created 15 days ago
+        creation_date = now, #created today
         membership_type='Organizacional',
         contact=contact, organization=organization, name=f'{organization.name} STANDARD',
         annual_cost=550,
