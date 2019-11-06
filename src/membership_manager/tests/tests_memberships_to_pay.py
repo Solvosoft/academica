@@ -59,3 +59,16 @@ class MembershipToPay(TestCase):
         self.assertEqual(result,expected)
         check_emails = EmailNotification.objects.filter(subject='Pago de membresía - Código Sur').count()
         self.assertEqual(check_emails,expected)
+    #TEST
+    # def test_membership_payment(self):
+    #     request = self.factory.post('/admin/membership_manager/invoice/',data={})
+    #     user = User.objects.create(username='myadmin',email='test@admin.com',password='123456',first_name='Administrator',last_name='GM')
+    #     request.user = user
+    #     expected = 4
+    #     pay_invoice(object,request,self.invoices)
+    #     result = LogEntry.objects.filter(object_repr='Pago de membresía realizado, poniendo todos los periódos de gracia inactivos').count()
+    #     response = Invoice.objects.filter(status='paid').count()
+    #     self.assertEqual(response,expected)
+    #     self.assertEqual(result,expected)
+    #     check_emails = EmailNotification.objects.filter(subject='Pago de membresía - Código Sur').count()
+    #     self.assertEqual(check_emails,expected)

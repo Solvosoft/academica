@@ -16,7 +16,6 @@ class MembershipToPay(TestCase):
         create_contacts(2)
         add_organization()
         generate_active_memberships_to_graceperiod()
-
         self.user = User.objects.create(username='admin', password='123456', email='admin@admin.com',
                                         is_superuser=True)
 
