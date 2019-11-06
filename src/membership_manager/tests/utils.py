@@ -130,7 +130,7 @@ def generate_graceperiod_memberships():
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
         renewal_period= RenewalPeriod.objects.all().first(),
-        state='graceperiod'
+        state='active'
     )
     memb.services.set(list(Service.objects.all())[:3])
     ren = MembershipRenew.objects.create(
@@ -176,6 +176,43 @@ def generate_graceperiod_memberships():
 
     Invoice.objects.create(
         creation_date = now - timezone.timedelta(days=20),
+        expiration_date = now,
+        membership = membership1,
+        renewal_period = renew1,
+        description = 'Invoice unit test',
+        amount = int(membership1.annual_cost) / int(membership1.renewal_period.months),
+        currency = membership1.currency,
+        status='pending'
+    )
+    #membresìas con periodo de gracia
+    membership1 = Membership.objects.create(
+        creation_date = now - timezone.timedelta(days=45), #created 45 days ago
+        membership_type='Organizacional',
+        contact=contact, organization=organization, name=f'{organization.name} STANDARD 3',
+        annual_cost=550,
+        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
+        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
+        renewal_period= RenewalPeriod.objects.all().first(),
+        state='graceperiod'
+    )
+    membership1.services.set(list(Service.objects.all())[:3])
+    renew1 = MembershipRenew.objects.create(
+        creation_date=now - timezone.timedelta(days=30),
+        membership=membership1,
+        start_date=now - timezone.timedelta(days=30),
+        end_date=now,
+        graceperiod=False,
+        active=True)
+    MembershipRenew.objects.create(
+        creation_date=now,
+        membership=membership1,
+        start_date=now,
+        end_date=now + timezone.timedelta(days=15),
+        graceperiod=True,
+        active=True)
+
+    Invoice.objects.create(
+        creation_date = now - timezone.timedelta(days=30),
         expiration_date = now,
         membership = membership1,
         renewal_period = renew1,
