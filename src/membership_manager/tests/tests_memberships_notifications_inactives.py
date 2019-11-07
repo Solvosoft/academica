@@ -11,7 +11,22 @@ from membership_manager.task_utils import membership_deactivating
 from membership_manager.tests.utils import create_contacts, add_organization, generate_memberships_to_deactivate
 
 
-class MembershipExpirationNotify(TestCase):
+class MembershipExpirationInactiveNotify(TestCase):
+    """Testing email notifications and logs onmembership deactivating.
+         Description:
+          This methid is in charge of check if the emails was enqueued and systems works property.
+          All of this tests was coded only for membership deactivating cases.
+
+         Attributes:
+             now (date): Holds the timezone.now() ("TODAYs,DATETIME").
+             user (:obj:`User`) for the log we need an superuser
+
+          Extra:
+              Also there is the use of 3 vital functions,
+                  - create_contacts() #contacts.
+                  - add_organization() #organizations related with contacts
+                  - generate_memberships_to_pay() # Create the scenario.
+      """
     now = timezone.now()
 
     def setUp(self):

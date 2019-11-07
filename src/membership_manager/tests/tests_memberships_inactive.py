@@ -13,6 +13,22 @@ from membership_manager.utils import loademailtemplates
 
 
 class MembershipsInactive(TestCase):
+    """Testing property fucntionality of tasks when We have inactive membership cases.
+             Description:
+              This methid is in charge of check if systems works property.
+              All of this tests was coded only for inactive membership case.
+
+              Attributes:
+               now (date): Holds the timezone.now() ("TODAYs,DATETIME").
+               factory (:obj:`RequestFactory`) Needed to make a request , on payment test..
+               invoices (:queryset:`Invoices`) used like param..
+
+              Extra:
+                  Also there is the use of 3 vital functions,
+                      - create_contacts() #contacts.
+                      - add_organization() #organizations related with contacts
+                      - generate_memberships_to_pay() # Create the scenario.
+          """
     now = timezone.now()
     def setUp(self):
         self.factory = RequestFactory()

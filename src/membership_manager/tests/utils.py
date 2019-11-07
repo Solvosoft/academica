@@ -450,7 +450,7 @@ def generate_memberships_to_pay():
     membership = Membership.objects.create(
         creation_date=now - timezone.timedelta(days=40),  # created 45 days ago
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
+        contact=contact, organization=organization, name=f'{organization.name} TO_PAY_1',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
@@ -483,11 +483,11 @@ def generate_memberships_to_pay():
         status='pending'
     )
 
-    # Membresìas inactivas, con periodo de gracia vencido
+    # Membresìa inactiva, con periodo de gracia vencido
     membership2 = Membership.objects.create(
         creation_date=now - timezone.timedelta(days=50),  # created 45 days ago
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
+        contact=contact, organization=organization, name=f'{organization.name} TO_PAY_2',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
@@ -524,7 +524,7 @@ def generate_memberships_to_pay():
     membership3 = Membership.objects.create(
         creation_date=now - timezone.timedelta(days=25),  # created 25 days ago
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
+        contact=contact, organization=organization, name=f'{organization.name} TO_PAY_3',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
@@ -551,16 +551,16 @@ def generate_memberships_to_pay():
         currency=membership3.currency,
         status='pending'
     )
-    #membresìas activas , no vencida factura inactiva
+    #membresìas inactiva , no vencida factura inactiva
     membership4 = Membership.objects.create(
         creation_date=now - timezone.timedelta(days=35),  # created 25 days ago
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
+        contact=contact, organization=organization, name=f'{organization.name} TO_PAY_4',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
         renewal_period=RenewalPeriod.objects.all().first(),
-        state='active'
+        state='inactive'
     )
     membership4.services.set(list(Service.objects.all())[:3])
     renew4 = MembershipRenew.objects.create(
@@ -581,6 +581,45 @@ def generate_memberships_to_pay():
         amount=int(membership4.annual_cost) / int(membership4.renewal_period.months),
         currency=membership4.currency,
         status='inactive'
+    )
+    #membresìas inactiva , factura pendiente
+    membership5 = Membership.objects.create(
+        creation_date=now - timezone.timedelta(days=35),  # created 25 days ago
+        membership_type='Organizacional',
+        contact=contact, organization=organization, name=f'{organization.name} TO_PAY_4',
+        annual_cost=550,
+        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
+        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
+        renewal_period=RenewalPeriod.objects.all().first(),
+        state='graceperiod'
+    )
+    membership5.services.set(list(Service.objects.all())[:3])
+    renew5 = MembershipRenew.objects.create(
+        creation_date=now - timezone.timedelta(days=35),
+        membership=membership5,
+        start_date=now - timezone.timedelta(days=35),
+        end_date=now - timezone.timedelta(days=5),
+        graceperiod=False,
+        active=False
+    )
+    MembershipRenew.objects.create(
+        creation_date=now - timezone.timedelta(days=5),
+        membership=membership5,
+        start_date=now - timezone.timedelta(days=5),
+        end_date=now + timezone.timedelta(days=10),
+        graceperiod=True,
+        active=False
+    )
+
+    Invoice.objects.create(
+        creation_date=now - timezone.timedelta(days=35),
+        expiration_date=now + timezone.timedelta(days=5),
+        membership=membership5,
+        renewal_period=renew5,
+        description='Invoice unit test',
+        amount=int(membership5.annual_cost) / int(membership5.renewal_period.months),
+        currency=membership5.currency,
+        status='pending'
     )
 
 
@@ -654,7 +693,7 @@ def generate_memberships_to_notify_expiration():
     currencies_list = list(SystemCurrency.objects.all())
     now = timezone.now()
 
-    # Membresìas en plazo de 30 dias por vencer (creacion de invoice) por vencer.
+    # Membresìas en plazo de 30 dias por vencer
     membership = Membership.objects.create(
         creation_date=now - timezone.timedelta(days=30),  # created 5 days ago
         membership_type='Organizacional',
@@ -675,7 +714,7 @@ def generate_memberships_to_notify_expiration():
         graceperiod=False,
         active=True)
 
-    inn = Invoice.objects.create(
+    Invoice.objects.create(
         creation_date=now - timezone.timedelta(days=30),
         expiration_date=now + timezone.timedelta(days=30),
         membership=membership,

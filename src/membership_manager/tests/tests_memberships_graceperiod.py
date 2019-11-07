@@ -14,6 +14,22 @@ from membership_manager.utils import loademailtemplates
 
 
 class MembershipsGracePeriod(TestCase):
+    """Testing property fucntionality of tasks when We have graceperiod membership cases.
+               Description:
+                This method is in charge of check if systems works property.
+                All of this tests was coded only for graceperiod membership cases.
+
+                Attributes:
+                 now (date): Holds the timezone.now() ("TODAYs,DATETIME").
+                 factory (:obj:`RequestFactory`) Needed to make a request , on payment test..
+                 invoices (:queryset:`Invoices`) used like param..
+
+                Extra:
+                    Also there is the use of 3 vital functions,
+                        - create_contacts() #contacts.
+                        - add_organization() #organizations related with contacts
+                        - generate_memberships_to_pay() # Create the scenario.
+            """
     now = timezone.now()
     def setUp(self):
         self.factory = RequestFactory()
@@ -47,11 +63,10 @@ class MembershipsGracePeriod(TestCase):
         self.assertEqual(mem_check, mem_expected)
         self.assertEqual(inv_check, inv_expected)
 
-
     def test_membership_renew_graceperiod(self):
         renew_graceperiod(self.now)
         mem_check = Membership.objects.filter(state='graceperiod').count()
-        mem_expected = 6  # already have 5 graceperiod and 1 active membership on testt db
+        mem_expected = 5  # already have 5 graceperiod and 1 active membership on testt db
         result = LogEntry.objects.filter(object_repr='Membresia ha cambiado a periodo de prueba').count()
         expected = 1
         self.assertEqual(result,expected)
