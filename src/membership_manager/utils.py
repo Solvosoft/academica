@@ -1,4 +1,6 @@
 from datetime import timedelta
+
+from dateutil.relativedelta import relativedelta
 from django.contrib.auth.models import User
 
 from django.utils import timezone
@@ -88,3 +90,49 @@ def  membership_filter(queryset, filt=None, now=None):
                 renews__active=True, state=True
                  )
     return queryset.distinct()
+
+def membership_payment_manager(membership,invoice):
+    """
+    This util, help the manage of the invoice payment.
+    Help with the management of MembershipRenews and Membership state (inactive, active, graceperiod).
+
+    :param membership: Membership to update.
+    :param invoice: Invoice to pay.
+    :return:
+    """
+    renew = invoice.renewal_period
+    if membership.state == 'active':
+        renew.active = False
+        renew.save()
+        MembershipRenew.objects.create(
+            membership=membership, creation_date=renew.end_date,
+            start_date=renew.end_date,
+            end_date=renew.end_date + relativedelta(
+                months=+membership.renewal_period.months)
+        )
+    if membership.state == 'graceperiod':
+        renew.active = False
+        renew.save()
+        invoice.membership.renews.filter(membership=membership, graceperiod=True, active=True).update(active=False)
+        MembershipRenew.objects.create(
+            membership=membership, creation_date=timezone.now(),
+            start_date=timezone.now(),
+            end_date=timezone.now() + relativedelta(
+                months=+membership.renewal_period.months)
+        )
+        membership.state = 'active'
+        membership.save()
+
+    if membership.state == 'inactive':
+        MembershipRenew.objects.create(
+            membership=membership, creation_date=timezone.now(),
+            start_date=timezone.now(),
+            end_date=timezone.now() + relativedelta(
+                months=+membership.renewal_period.months)
+        )
+        membership.state = 'active'
+        membership.save()
+
+
+
+

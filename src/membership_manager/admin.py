@@ -155,21 +155,6 @@ class MemberShipAdmin(admin.ModelAdmin):
                                            end_date=now + relativedelta(
                                                months=+instance.renewal_period.months)
                                            )
-        else:
-            lastRenew = False
-            for form in formset:
-                if  form.has_changed and not  form.instance.active:
-                    lastRenew = True    # if there is a renew in period of grace, when it has been inactivated,
-                                        # there are going to be two renews in active = false.
-                                        # We do not want two news renewals, just one.
-
-            if instance.state == 'active' and lastRenew:  # without the loop. Create a new renewal.
-                MembershipRenew.objects.create(
-                    membership=instance, creation_date=timezone.now(),
-                    start_date=timezone.now(),
-                    end_date=timezone.now() + relativedelta(
-                        months=+instance.renewal_period.months)
-                                                         )
 
     def invoices(self, obj):
         dev = ""
