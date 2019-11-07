@@ -7,6 +7,10 @@ from faker import Faker
 fake = Faker()
 
 def add_organization():
+    """
+        This method create a organizations for te created contacts
+        :return nothing:
+    """
     currencies_list = list(SystemCurrency.objects.all())
     contacts_list = list(Contact.objects.all())
     organizations_list = []
@@ -27,6 +31,13 @@ def add_organization():
     Organization.objects.bulk_create(organizations_list)
 
 def create_contacts(contacts_num):
+    """
+        This method create a contacts
+
+        arg:
+             contacts_num : contacts quantity.
+        :return nothing:
+    """
     currencies_list = list(SystemCurrency.objects.all())
     contacts_list = []
     for c in range(contacts_num):
@@ -43,6 +54,11 @@ def create_contacts(contacts_num):
 
 # CASE ONE #
 def generate_graceperiod_memberships():
+    """
+        This method create a specific scenario using memberships on graceperiod,
+         or memberships to change in future to graceperiod
+        :return nothing:
+    """
     contact = Contact.objects.all().order_by('?').first()
     organization = Organization.objects.filter(contact_id = contact.id).order_by('?').first()
     currencies_list = list(SystemCurrency.objects.all())
@@ -52,7 +68,7 @@ def generate_graceperiod_memberships():
     mem = Membership.objects.create(
         creation_date = now - timezone.timedelta(days=60), #created 45 days ago
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD 1',
+        contact=contact, organization=organization, name=f'{organization.name} GRACEP_1',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
@@ -88,7 +104,7 @@ def generate_graceperiod_memberships():
     membership = Membership.objects.create(
         creation_date = now - timezone.timedelta(days=45), #created 45 days ago
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD 1',
+        contact=contact, organization=organization, name=f'{organization.name} GRACEP_2',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
@@ -125,7 +141,7 @@ def generate_graceperiod_memberships():
     memb= Membership.objects.create(
         creation_date = now - timezone.timedelta(days=30), #created 30 days ago
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD 2',
+        contact=contact, organization=organization, name=f'{organization.name} GRACEP_3',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
@@ -158,7 +174,7 @@ def generate_graceperiod_memberships():
     membership1 = Membership.objects.create(
         creation_date = now - timezone.timedelta(days=45), #created 45 days ago
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD 3',
+        contact=contact, organization=organization, name=f'{organization.name} GRACEP_4',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
@@ -188,7 +204,7 @@ def generate_graceperiod_memberships():
     membership1 = Membership.objects.create(
         creation_date = now - timezone.timedelta(days=45), #created 45 days ago
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD 3',
+        contact=contact, organization=organization, name=f'{organization.name} GRACEP_5',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
@@ -225,7 +241,7 @@ def generate_graceperiod_memberships():
     tmp_membership = Membership.objects.create(
         creation_date=now - timezone.timedelta(days=30),  # created 30 days ago
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD 4',
+        contact=contact, organization=organization, name=f'{organization.name} GRACEP_6',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
@@ -237,6 +253,11 @@ def generate_graceperiod_memberships():
     #
 # CASE TWO #
 def generate_active_memberships_to_graceperiod():
+    """
+        This method create a specific scenario using active  memberships ,
+         change to graceperiod
+        :return nothing:
+    """
     contact = Contact.objects.all().order_by('?').first()
     organization = Organization.objects.filter(contact_id = contact.id).order_by('?').first()
     currencies_list = list(SystemCurrency.objects.all())
@@ -338,10 +359,13 @@ def generate_active_memberships_to_graceperiod():
         currency=membership3.currency,
         status='pending'
     )
-
-    #
 # CASE THREE #
 def generate_inactive_memberships():
+    """
+        This method create a specific scenario using inactive memberships examples,
+
+        :return nothing:
+    """
     contact = Contact.objects.all().order_by('?').first()
     organization = Organization.objects.filter(contact_id = contact.id).order_by('?').first()
     currencies_list = list(SystemCurrency.objects.all())
@@ -351,7 +375,7 @@ def generate_inactive_memberships():
     membership1 = Membership.objects.create(
         creation_date = now - timezone.timedelta(days=60),
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
+        contact=contact, organization=organization, name=f'{organization.name} INACT_1',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
@@ -391,7 +415,7 @@ def generate_inactive_memberships():
     membership2 =  Membership.objects.create(
         creation_date = now - timezone.timedelta(days=49),
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
+        contact=contact, organization=organization, name=f'{organization.name} INACT_2',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
@@ -430,7 +454,7 @@ def generate_inactive_memberships():
     tmp_memb = Membership.objects.create(
         creation_date = now - timezone.timedelta(days=49),
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
+        contact=contact, organization=organization, name=f'{organization.name} INACT_3',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
@@ -441,6 +465,11 @@ def generate_inactive_memberships():
     #
 # CASE FOUR #
 def generate_memberships_to_pay():
+    """
+        This method create a specific scenario for emberships to pay,
+
+        :return nothing:
+    """
     contact = Contact.objects.all().order_by('?').first()
     organization = Organization.objects.filter(contact_id = contact.id).order_by('?').first()
     currencies_list = list(SystemCurrency.objects.all())
@@ -622,11 +651,13 @@ def generate_memberships_to_pay():
         status='pending'
     )
 
-
 # NOTIFICATION SCENARIOS #
-
-# CASAE  - NOTIFY FOR INVOICE CREATION
+# CASE  - NOTIFY FOR INVOICE CREATION
 def generate_memberships_to_notify_expiration_create_invoice():
+    """
+    This method create a specific scenario using memberships to expire, to thest invoice createment notifications
+    :return nothing:
+    """
     contact = Contact.objects.all().order_by('?').first()
     organization = Organization.objects.filter(contact_id = contact.id).order_by('?').first()
     currencies_list = list(SystemCurrency.objects.all())
@@ -636,7 +667,7 @@ def generate_memberships_to_notify_expiration_create_invoice():
     membership = Membership.objects.create(
         creation_date=now - timezone.timedelta(days=5),  # created 5 days ago
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
+        contact=contact, organization=organization, name=f'{organization.name} NOT_INV_CR_1',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
@@ -656,7 +687,7 @@ def generate_memberships_to_notify_expiration_create_invoice():
     membership2 = Membership.objects.create(
         creation_date=now - timezone.timedelta(days=5),  # created 5 days ago
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
+        contact=contact, organization=organization, name=f'{organization.name} NOT_INV_CR_2',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
@@ -675,7 +706,7 @@ def generate_memberships_to_notify_expiration_create_invoice():
     membership3 = Membership.objects.create(
         creation_date=now - timezone.timedelta(days=5),  # created 5 days ago
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
+        contact=contact, organization=organization, name=f'{organization.name} NOT_INV_CR_3',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
@@ -683,9 +714,12 @@ def generate_memberships_to_notify_expiration_create_invoice():
         state='active'
     )
     membership3.services.set(list(Service.objects.all())[:3])
-
 # CASE - NOTIFY FOR EXPIRATION TIMES "
 def generate_memberships_to_notify_expiration():
+    """
+        This method create a specific scenario using memberships expiriration, to test invoice expiration notifications
+        :return nothing:
+    """
     contact = Contact.objects.all().order_by('?').first()
 
     organization = Organization.objects.filter(contact_id=contact.id).order_by('?').first()
@@ -697,7 +731,7 @@ def generate_memberships_to_notify_expiration():
     membership = Membership.objects.create(
         creation_date=now - timezone.timedelta(days=30),  # created 5 days ago
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
+        contact=contact, organization=organization, name=f'{organization.name} NOT_EXPIR_1',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
@@ -728,7 +762,7 @@ def generate_memberships_to_notify_expiration():
     membership2 = Membership.objects.create(
         creation_date=now - timezone.timedelta(days=15),  # created 5 days ago
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
+        contact=contact, organization=organization, name=f'{organization.name} NOT_EXPIR_2',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
@@ -759,7 +793,7 @@ def generate_memberships_to_notify_expiration():
     membership3 = Membership.objects.create(
         creation_date=now - timezone.timedelta(days=23),  # created 5 days ago
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
+        contact=contact, organization=organization, name=f'{organization.name} NOT_EXPIR_3',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
@@ -790,7 +824,7 @@ def generate_memberships_to_notify_expiration():
     membership4 = Membership.objects.create(
         creation_date=now - timezone.timedelta(days=30),  # created 5 days ago
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
+        contact=contact, organization=organization, name=f'{organization.name} NOT_EXPIR_4',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
@@ -818,6 +852,10 @@ def generate_memberships_to_notify_expiration():
     )
 # CASE - NOTIFY FOR INACTIVE MEMBERSHIP ·
 def generate_memberships_to_deactivate():
+    """
+        This method create a specific scenario using expired memberships, to test invoice deactivating notifications
+        :return nothing:
+    """
     contact = Contact.objects.all().order_by('?').first()
     organization = Organization.objects.filter(contact_id=contact.id).order_by('?').first()
     currencies_list = list(SystemCurrency.objects.all())
@@ -826,7 +864,7 @@ def generate_memberships_to_deactivate():
     membership = Membership.objects.create(
         creation_date=now - timezone.timedelta(days=45),  # created 45 days ago
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
+        contact=contact, organization=organization, name=f'{organization.name} DEACTIVATE_1',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
@@ -862,6 +900,10 @@ def generate_memberships_to_deactivate():
     )
 # CASE - NOTIFY FOR GRACEPERIOD ADDED TO MEMBERSHIP ·
 def generate_memberships_to_notify_graceperiod():
+    """
+        This method create a specific scenario using expired memberships, to test membership renew to graceperiod notifications
+        :return nothing:
+    """
     contact = Contact.objects.all().order_by('?').first()
     organization = Organization.objects.filter(contact_id=contact.id).order_by('?').first()
     currencies_list = list(SystemCurrency.objects.all())
@@ -871,7 +913,7 @@ def generate_memberships_to_notify_graceperiod():
     membership = Membership.objects.create(
         creation_date=now - timezone.timedelta(days=30),  # created 5 days ago
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
+        contact=contact, organization=organization, name=f'{organization.name} NOT_GRACEP_1',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
