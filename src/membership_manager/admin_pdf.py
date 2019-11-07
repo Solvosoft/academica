@@ -1,21 +1,34 @@
+from dateutil.relativedelta import relativedelta
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
 from django.utils.safestring import mark_safe
 
 from membership_manager.models import MembershipRenew
 from membership_manager.render_pdf import generate_invoice
 from membership_manager import utils
+from membership_manager.utils import membership_payment_manager
+
 
 def pay_invoice(modeladmin, request, queryset):
+    """This actions take a queryset of invoice, and manage the membership and renewals, to apply a payment,
+     send payment email, and Create LogEntry.
+
+    :param modeladmin:
+    :param request: helps to get the current user pk, for LogEntry porpoises.
+    :param queryset: have the invoices qset to get paid.
+    :return:
+    """
     for invoice in queryset:
         membership = invoice.membership
         generate_invoice(membership, invoice)
+        invoice.status = "paid"
+        invoice.payment_date = timezone.now()
+        invoice.save()
+        membership_payment_manager(membership,invoice)
 
-        MembershipRenew.objects.filter(membership=membership,
-                                       graceperiod=True,
-                                       ).update(active=False)
         LogEntry.objects.log_action(
             user_id=request.user.pk,
             content_type_id=ContentType.objects.get_for_model(membership).pk,
@@ -23,10 +36,6 @@ def pay_invoice(modeladmin, request, queryset):
             object_repr="Pago de membresía realizado, poniendo todos los periódos de gracia inactivos",
             action_flag=CHANGE
         )
-
-        invoice.renewal_period.active = False
-        invoice.renewal_period.save()
-
 
 pay_invoice.short_description = "Pagar factura"
 
@@ -59,7 +68,7 @@ class InvoiceAdmin(admin.ModelAdmin):
                      'membership__contact__last_name',
                      'membership__name')
     list_display = ('membership', 'expiration_date', 'amount', 'currency', 'status', 'payment_date', 'download')
-    list_editable = ('status',)
+    list_editable = ()
     readonly_fields = ('download',)
 
     def download(self, obj):
@@ -73,15 +82,4 @@ class InvoiceAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         super(InvoiceAdmin, self).save_model(request, obj, form, change)
-        if obj.status == "paid" and not obj.pdf_invoice:
-            generate_invoice(obj.membership, obj)
-            MembershipRenew.objects.filter(membership=obj.membership,
-                                           graceperiod=True,
-                                           ).update(active=False)
-            LogEntry.objects.log_action(
-                user=request.user,
-                content_type_id=ContentType.objects.get_for_model(obj.membership).pk,
-                object_id=obj.membership.pk,
-                object_repr="Pago de membresía realizado, poniendo todos los periódos de gracia inactivos",
-                action_flag=CHANGE
-            )
+

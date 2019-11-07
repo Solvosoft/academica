@@ -162,6 +162,17 @@ GRAPPELLI_INDEX_DASHBOARD = 'dashboard.CustomIndexDashboard'
 #EXCHANGE_BACKEND = 'djmoney.contrib.exchange.backends.FixerBackend'
 OPEN_EXCHANGE_RATES_APP_ID="6226bd52ee074914a7edc6e55a97c8d3"
 
+
 TEST_RUNNER = 'membership_manager.tests.MyTestRunner'
 
 GRACE_PERIOD_DAYS = 60
+
+
+ASYNC_NOTIFICATION_USER='membership_manager.Contact'
+ASYNC_NOTIFICATION_USER_LOOKUP_FIELDS= {'order_by': 'first_name',
+     'display': 'first_name',
+     'filter': ['email__icontains',
+                'first_name__icontains',
+                'last_name__icontains'],
+     'group_lookup': 'groups__name'}
+
