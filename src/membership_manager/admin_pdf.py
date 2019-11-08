@@ -21,14 +21,13 @@ def pay_invoice(modeladmin, request, queryset):
     :param queryset: have the invoices qset to get paid.
     :return:
     """
-    for invoice in queryset:
+    for invoice in queryset.filter(status__in = ['pending','inactive']):
         membership = invoice.membership
         generate_invoice(membership, invoice)
         invoice.status = "paid"
         invoice.payment_date = timezone.now()
         invoice.save()
         membership_payment_manager(membership,invoice)
-
         LogEntry.objects.log_action(
             user_id=request.user.pk,
             content_type_id=ContentType.objects.get_for_model(membership).pk,

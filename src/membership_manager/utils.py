@@ -11,28 +11,23 @@ from django.utils import timezone
 
 from membership_manager.models import MembershipRenew, Membership, Invoice
 
-
 def get_administrative_user():
     return User.objects.filter(is_superuser=True).first().pk
-
 
 def get_dates(filt):
     max_date = timezone.now() + timedelta(days=int(filt))
     min_date = max_date - timedelta(days=1)
     return min_date, max_date
 
-
 def renewal_expiration_filter_manager(now=None):
     if now is None:
         now = timezone.now()
-    queryset = MembershipRenew.objects.all()  # queryset
     today_date = (now + timezone.timedelta(days=60)).date()
-    return queryset.filter(end_date__date__lte=today_date,
+    return MembershipRenew.objects.filter(end_date__date__lte=today_date,
                            active=True,
                            graceperiod=False,
                            membership__state="active",
                            inv_m_renews=None)
-
 
 def memb_invoice_expiration_filter_add_graceperiod(now=None):
     if now is None:
@@ -45,7 +40,6 @@ def memb_invoice_expiration_filter_add_graceperiod(now=None):
         mem_inv__renewal_period__graceperiod=False,
         state='active').distinct()
 
-
 def memb_renewal_period_expiration_filter_deactivate_graceperiod(now=None):
     if now is None:
         now = timezone.now()
@@ -54,7 +48,6 @@ def memb_renewal_period_expiration_filter_deactivate_graceperiod(now=None):
     return queryset.filter(renews__end_date__date__lte=today_date,
                            state='graceperiod', renews__active=True,
                            renews__graceperiod=True, mem_inv__status='pending')
-
 
 def invoice_expiration_filter_queryset(queryset, filt=None):
     """
@@ -95,7 +88,6 @@ def  membership_filter(queryset, filt=None, now=None):
                 renews__active=True, state=True
                  )
     return queryset.distinct()
-
 
 def loademailtemplates():
     update_template_context('pay_mail',
@@ -164,4 +156,4 @@ def membership_payment_manager(membership,invoice):
         membership.state = 'active'
         membership.save()
 
-t
+
