@@ -47,5 +47,27 @@ class MembershipNotifyInvoiceCreation(TestCase):
         check_emails = EmailNotification.objects.filter(enqueued=True).count()
         self.assertEqual(check_emails, 2)
 
+    def test_membership_invoice_creation_expiration_renew_secondtime(self):
+        #first time invoice_creation called
+        invoice_creation(self.now)
+        result = LogEntry.objects.filter(object_repr='Factura creada pendiente de pago').count()
+        expected = 2
+        check_invoice_result = Invoice.objects.all().count()
+        self.assertEqual(result, expected)
+        self.assertEqual(check_invoice_result, expected)
+        check_emails = EmailNotification.objects.filter(enqueued=True).count()
+        self.assertEqual(check_emails, 2)
+
+        #second time invoice_creation called
+
+        invoice_creation(self.now)
+        result = LogEntry.objects.filter(object_repr='Factura creada pendiente de pago').count()
+        expected = 2
+        check_invoice_result = Invoice.objects.all().count()
+        self.assertEqual(result, expected) #STILL 2 LogEntries.
+        self.assertEqual(check_invoice_result, expected)
+        check_emails = EmailNotification.objects.filter(enqueued=True).count()
+        self.assertEqual(check_emails, 2)
+
 
 

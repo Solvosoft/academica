@@ -66,7 +66,7 @@ class MembershipsGracePeriod(TestCase):
     def test_membership_renew_graceperiod(self):
         renew_graceperiod(self.now)
         mem_check = Membership.objects.filter(state='graceperiod').count()
-        mem_expected = 5  # already have 5 graceperiod and 1 active membership on testt db
+        mem_expected = 6  # already have 5 graceperiod and 1 active membership on testt db
         result = LogEntry.objects.filter(object_repr='Membresia ha cambiado a periodo de prueba').count()
         expected = 1
         self.assertEqual(result,expected)

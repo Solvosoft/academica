@@ -7,7 +7,7 @@ from django.test import TestCase, RequestFactory
 from django.utils import timezone
 
 from membership_manager.admin_pdf import pay_invoice
-from membership_manager.models import Invoice, Membership
+from membership_manager.models import Invoice, Membership, MembershipRenew
 from membership_manager.task_utils import membership_deactivating, renew_graceperiod, invoice_creation
 from membership_manager.tests.utils import create_contacts, add_organization, generate_memberships_to_pay
 from membership_manager.utils import loademailtemplates
@@ -36,6 +36,8 @@ class MembershipNotifyPayment(TestCase):
         self.factory = RequestFactory()
         create_contacts(2)
         add_organization()
+        self.user = User.objects.create(username='myadmin', email='test@admin.com', password='123456',
+                                   first_name='Administrator', last_name='GM')
         generate_memberships_to_pay()
         self.invoices = Invoice.objects.all()
 
@@ -65,17 +67,52 @@ class MembershipNotifyPayment(TestCase):
 
     def test_membership_payment(self):
         request = self.factory.post('/admin/membership_manager/invoice/',data={})
-        user = User.objects.create(username='myadmin',email='test@admin.com',password='123456',first_name='Administrator',last_name='GM')
-        request.user = user
+        request.user = self.user
         expected = 5
+        pay_invoice(object,request,Invoice.objects.all())
         memb_check = Membership.objects.filter(state='active').count()
         memb_expected = 5
-        #FIXME: we must change membership active expected after pay_invoice get fixed
-        pay_invoice(object,request,self.invoices)
+        memb_renews_check = MembershipRenew.objects.filter(active=True, creation_date__date=timezone.now().date()).count()
+        memB_renews_expected = 4
         result = LogEntry.objects.filter(object_repr='Pago de membresía realizado, poniendo todos los periódos de gracia inactivos').count()
-        response = Invoice.objects.filter(status='paid').count()
+        response = Invoice.objects.filter(status='paid', payment_date=timezone.now().date()).count()
+        check_emails = EmailNotification.objects.filter(subject='Pago de membresía - Código Sur').count()
         self.assertEqual(response,expected)
+        self.assertEqual(result,expected)
+        self.assertEqual(check_emails,expected)
+        self.assertEqual(memb_check,memb_expected)
+        self.assertEqual(memb_renews_check,memB_renews_expected)
+
+    def test_membership_payment_secondtime(self):
+        request = self.factory.post('/admin/membership_manager/invoice/',data={})
+        request.user = self.user
+        expected = 5
+        #first time pay_invoice called
+        pay_invoice(object,request,Invoice.objects.all())
+        memb_check = Membership.objects.filter(state='active').count()
+        memb_expected = 5 #At this point we have 5 active memberships from last test.
+        memb_renews_check = MembershipRenew.objects.filter(active=True, creation_date__date=timezone.now().date()).count()
+        memB_renews_expected = 4 #At this point we have 5 active memberships from last test.
+        result = LogEntry.objects.filter(object_repr='Pago de membresía realizado, poniendo todos los periódos de gracia inactivos').count()
+        response = Invoice.objects.filter(status='paid',payment_date=timezone.now().date()).count()
+        self.assertEqual(response, expected)
         self.assertEqual(result,expected)
         check_emails = EmailNotification.objects.filter(subject='Pago de membresía - Código Sur').count()
         self.assertEqual(check_emails,expected)
-        self.assertEqual(memb_check,1) # we have to change this after pay_invoice get fixed
+        self.assertEqual(memb_check,memb_expected) # we have to change this after pay_invoice get fixed
+        self.assertEqual(memb_renews_check,memB_renews_expected) # we have to change this after pay_invoice get fixed
+
+        #second time pay_invoice called
+        pay_invoice(object,request,Invoice.objects.all())
+        response = Invoice.objects.filter(status='paid', payment_date=timezone.now().date()).count()
+        expected = 5
+        self.assertEqual(response, expected)
+        memb_renews_check = MembershipRenew.objects.filter(active=True,
+                                                           creation_date__date=timezone.now().date()).count()
+        memB_renews_expected = 4  # At this point we see that there is any change when we use twice pay_invoice
+        self.assertEqual(memb_renews_check, memB_renews_expected)
+        result = LogEntry.objects.filter(
+            object_repr='Pago de membresía realizado, poniendo todos los periódos de gracia inactivos').count()
+        self.assertEqual(result,expected)
+        check_emails = EmailNotification.objects.filter(subject='Pago de membresía - Código Sur').count()
+        self.assertEqual(check_emails, expected)

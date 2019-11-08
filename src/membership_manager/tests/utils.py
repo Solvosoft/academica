@@ -615,12 +615,12 @@ def generate_memberships_to_pay():
     membership5 = Membership.objects.create(
         creation_date=now - timezone.timedelta(days=35),  # created 25 days ago
         membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} TO_PAY_4',
+        contact=contact, organization=organization, name=f'{organization.name} TO_PAY_5',
         annual_cost=550,
         currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
         description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
         renewal_period=RenewalPeriod.objects.all().first(),
-        state='graceperiod'
+        state='inactive'
     )
     membership5.services.set(list(Service.objects.all())[:3])
     renew5 = MembershipRenew.objects.create(

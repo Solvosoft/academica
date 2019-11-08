@@ -45,3 +45,22 @@ class MembershipExpirationInactiveNotify(TestCase):
         self.assertEqual(result, expected)
         check_emails = EmailNotification.objects.filter(enqueued=True).count()
         self.assertEqual(check_emails, expected)
+
+    def test_membership_expiration_notify_secondtime(self):
+        membership_deactivating(self.now)
+        result = LogEntry.objects.filter(object_repr='Membresia inactiva por falta de pago').count()
+        expected = 1
+        memb_check = Membership.objects.filter(state='inactive').count()
+        self.assertEqual(memb_check, expected)
+        self.assertEqual(result, expected)
+        check_emails = EmailNotification.objects.filter(enqueued=True).count()
+        self.assertEqual(check_emails, expected)
+
+        membership_deactivating(self.now)
+        result = LogEntry.objects.filter(object_repr='Membresia inactiva por falta de pago').count()
+        expected = 1
+        memb_check = Membership.objects.filter(state='inactive').count()
+        self.assertEqual(memb_check, expected)
+        self.assertEqual(result, expected)
+        check_emails = EmailNotification.objects.filter(enqueued=True).count()
+        self.assertEqual(check_emails, expected)

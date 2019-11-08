@@ -47,3 +47,22 @@ class MembershipExpirationNotify(TestCase):
         self.assertEqual(check_emails, 4)
         self.assertEqual(check_invoice_result, expected)
 
+    def test_membership_expiration_notify_secondtime(self):
+        notify_invoice_expiration(self.now)
+        result = LogEntry.objects.filter(object_repr='Notificación de pago pendiente enviada').count()
+        expected = 4
+        check_invoice_result = Invoice.objects.all().count()
+        check_emails = EmailNotification.objects.filter(enqueued=True).count()
+        self.assertEqual(result, expected)
+        self.assertEqual(check_emails, 4)
+        self.assertEqual(check_invoice_result, expected)
+
+        notify_invoice_expiration(self.now)
+        result = LogEntry.objects.filter(object_repr='Notificación de pago pendiente enviada').count()
+        expected = 4
+        check_invoice_result = Invoice.objects.all().count()
+        check_emails = EmailNotification.objects.filter(enqueued=True).count()
+        self.assertEqual(result, expected)
+        self.assertEqual(check_emails, 4)
+        self.assertEqual(check_invoice_result, expected)
+
