@@ -32,7 +32,7 @@ def pay_invoice(modeladmin, request, queryset):
             user_id=request.user.pk,
             content_type_id=ContentType.objects.get_for_model(membership).pk,
             object_id=membership.pk,
-            object_repr="Pago de membresía realizado, poniendo todos los periódos de gracia inactivos",
+            object_repr="Pago de membresía realizado.",
             action_flag=CHANGE
         )
 

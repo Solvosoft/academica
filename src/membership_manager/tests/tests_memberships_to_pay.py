@@ -38,81 +38,75 @@ class MembershipNotifyPayment(TestCase):
         add_organization()
         self.user = User.objects.create(username='myadmin', email='test@admin.com', password='123456',
                                    first_name='Administrator', last_name='GM')
-        generate_memberships_to_pay()
+        self.memberships = generate_memberships_to_pay()
         self.invoices = Invoice.objects.all()
 
-    def test_membership_renew_graceperiod(self):
-        renew_graceperiod(self.now)
-        result = LogEntry.objects.filter(object_repr='Membresia ha cambiado a periodo de prueba').count()
-        expected = 0
-        check_emails = EmailNotification.objects.filter(enqueued=True).count()
-        self.assertEqual(check_emails, expected)
-        self.assertEqual(result,expected)
-
-    def test_membership_invoice_creation(self):
-        invoice_creation(self.now)
-        result = LogEntry.objects.filter(object_repr='Factura creada pendiente de pago').count()
-        expected = 0
-        check_emails = EmailNotification.objects.filter(enqueued=True).count()
-        self.assertEqual(check_emails, expected)
-        self.assertEqual(result, expected)
-
-    def test_membership_graceperiod_deactivate(self):
-        membership_deactivating(self.now)
-        result = LogEntry.objects.filter(object_repr='Membresía inactiva por falta de pago').count()
-        expected = 0
-        check_emails = EmailNotification.objects.filter(enqueued=True).count()
-        self.assertEqual(check_emails,expected)
-        self.assertEqual(result,expected)
-
     def test_membership_payment(self):
+        """
+        membership_to_pay_graceperiod_expire_today,
+        membership_to_pay_graceperiod_expired_inactive,
+        membership_to_pay_active,
+        membership_to_pay_inactive
+        :return:
+        """
         request = self.factory.post('/admin/membership_manager/invoice/',data={})
         request.user = self.user
-        expected = 5
         pay_invoice(object,request,Invoice.objects.all())
-        memb_check = Membership.objects.filter(state='active').count()
-        memb_expected = 5
-        memb_renews_check = MembershipRenew.objects.filter(active=True, creation_date__date=timezone.now().date()).count()
-        memB_renews_expected = 4
-        result = LogEntry.objects.filter(object_repr='Pago de membresía realizado, poniendo todos los periódos de gracia inactivos').count()
-        response = Invoice.objects.filter(status='paid', payment_date=timezone.now().date()).count()
+        result = LogEntry.objects.filter(object_repr='Pago de membresía realizado.').count()
+        expected = 4
+        self.assertEqual(result, expected)
         check_emails = EmailNotification.objects.filter(subject='Pago de membresía - Código Sur').count()
-        self.assertEqual(response,expected)
-        self.assertEqual(result,expected)
-        self.assertEqual(check_emails,expected)
-        self.assertEqual(memb_check,memb_expected)
-        self.assertEqual(memb_renews_check,memB_renews_expected)
+        emails_expected = 4
+        self.assertEqual(check_emails, emails_expected)
+        check_memb = Membership.objects.filter(state='active').count()
+        memb_expected = 4
+        self.assertEqual(check_memb, memb_expected)
+        check_renews = MembershipRenew.objects.filter(active=True).count()
+        renews_expected = 4
+        self.assertEqual(check_renews, renews_expected)
+        check_inv = Invoice.objects.filter(status='paid').count()
+        inv_expected = 4
+        self.assertEqual(check_inv, inv_expected)
 
-    def test_membership_payment_secondtime(self):
-        request = self.factory.post('/admin/membership_manager/invoice/',data={})
-        request.user = self.user
-        expected = 5
-        #first time pay_invoice called
-        pay_invoice(object,request,Invoice.objects.all())
-        memb_check = Membership.objects.filter(state='active').count()
-        memb_expected = 5 #At this point we have 5 active memberships from last test.
-        memb_renews_check = MembershipRenew.objects.filter(active=True, creation_date__date=timezone.now().date()).count()
-        memB_renews_expected = 4 #At this point we have 5 active memberships from last test.
-        result = LogEntry.objects.filter(object_repr='Pago de membresía realizado, poniendo todos los periódos de gracia inactivos').count()
-        response = Invoice.objects.filter(status='paid',payment_date=timezone.now().date()).count()
-        self.assertEqual(response, expected)
-        self.assertEqual(result,expected)
-        check_emails = EmailNotification.objects.filter(subject='Pago de membresía - Código Sur').count()
-        self.assertEqual(check_emails,expected)
-        self.assertEqual(memb_check,memb_expected) # we have to change this after pay_invoice get fixed
-        self.assertEqual(memb_renews_check,memB_renews_expected) # we have to change this after pay_invoice get fixed
+        memb1 = self.memberships['membership_to_pay_graceperiod_expire_today']['membership']
+        memb2 = self.memberships['membership_to_pay_graceperiod_expired_inactive']['membership']
+        memb3 = self.memberships['membership_to_pay_active']['membership']
+        memb4 = self.memberships['membership_to_pay_inactive']['membership']
 
-        #second time pay_invoice called
-        pay_invoice(object,request,Invoice.objects.all())
-        response = Invoice.objects.filter(status='paid', payment_date=timezone.now().date()).count()
-        expected = 5
-        self.assertEqual(response, expected)
-        memb_renews_check = MembershipRenew.objects.filter(active=True,
-                                                           creation_date__date=timezone.now().date()).count()
-        memB_renews_expected = 4  # At this point we see that there is any change when we use twice pay_invoice
-        self.assertEqual(memb_renews_check, memB_renews_expected)
-        result = LogEntry.objects.filter(
-            object_repr='Pago de membresía realizado, poniendo todos los periódos de gracia inactivos').count()
-        self.assertEqual(result,expected)
-        check_emails = EmailNotification.objects.filter(subject='Pago de membresía - Código Sur').count()
-        self.assertEqual(check_emails, expected)
+        ren1 = self.memberships['membership_to_pay_graceperiod_expire_today']['renew']
+        ren2 = self.memberships['membership_to_pay_graceperiod_expired_inactive']['renew']
+        ren3 = self.memberships['membership_to_pay_active']['renew']
+        ren4 = self.memberships['membership_to_pay_inactive']['renew']
+
+        ren1.refresh_from_db()
+        ren2.refresh_from_db()
+        ren3.refresh_from_db()
+        ren4.refresh_from_db()
+
+        memb1.refresh_from_db()
+        memb2.refresh_from_db()
+        memb3.refresh_from_db()
+        memb4.refresh_from_db()
+
+        inv1 = self.memberships['membership_to_pay_graceperiod_expire_today']['invoice']
+        inv2 = self.memberships['membership_to_pay_graceperiod_expired_inactive']['invoice']
+        inv3 = self.memberships['membership_to_pay_active']['invoice']
+        inv4 = self.memberships['membership_to_pay_inactive']['invoice']
+        inv1.refresh_from_db()
+        inv2.refresh_from_db()
+        inv3.refresh_from_db()
+        inv4.refresh_from_db()
+
+        self.assertEqual(inv1.status, 'paid')
+        self.assertEqual(inv2.status, 'paid')
+        self.assertEqual(inv3.status, 'paid')
+        self.assertEqual(inv4.status, 'paid')
+        self.assertEqual(memb1.state, 'active')
+        self.assertEqual(memb2.state, 'active')
+        self.assertEqual(memb3.state, 'active')
+        self.assertEqual(memb4.state, 'active')
+        self.assertFalse(ren1.active)
+        self.assertFalse(ren2.active)
+        self.assertFalse(ren3.active)
+        self.assertFalse(ren4.active)
+

@@ -52,852 +52,6 @@ def create_contacts(contacts_num):
         contacts_list.append(contact)
     Contact.objects.bulk_create(contacts_list)
 
-# CASE ONE #
-def generate_graceperiod_memberships():
-    """
-        This method create a specific scenario using memberships on graceperiod,
-         or memberships to change in future to graceperiod
-        :return nothing:
-    """
-    contact = Contact.objects.all().order_by('?').first()
-    organization = Organization.objects.filter(contact_id = contact.id).order_by('?').first()
-    currencies_list = list(SystemCurrency.objects.all())
-    now = timezone.now()
-
-    # membresìa con periodo de gracia vencida
-    mem = Membership.objects.create(
-        creation_date = now - timezone.timedelta(days=60), #created 45 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} GRACEP_1',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period= RenewalPeriod.objects.all().first(),
-        state='graceperiod'
-    )
-    mem.services.set(list(Service.objects.all())[:3])
-    ren = MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=60),
-        membership=mem,
-        start_date=now - timezone.timedelta(days=60),
-        end_date=now - timezone.timedelta(days=30),
-        graceperiod=False,
-        active=True)
-    MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=30),
-        membership=mem,
-        start_date=now - timezone.timedelta(days=30),
-        end_date=now - timezone.timedelta(days=15),
-        graceperiod=True,
-        active=True)
-    Invoice.objects.create(
-        creation_date = now - timezone.timedelta(days=60),
-        expiration_date = now - timezone.timedelta(days=30),
-        membership = mem,
-        renewal_period = ren,
-        description = 'Invoice unit test',
-        amount = int(mem.annual_cost) / int(mem.renewal_period.months),
-        currency = mem.currency,
-        status='pending'
-    )
-    # membresìa con periodo de gracia a vencer hoy
-    membership = Membership.objects.create(
-        creation_date = now - timezone.timedelta(days=45), #created 45 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} GRACEP_2',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period= RenewalPeriod.objects.all().first(),
-        state='graceperiod'
-    )
-    membership.services.set(list(Service.objects.all())[:3])
-    renew = MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=45),
-        membership=membership,
-        start_date=now - timezone.timedelta(days=45),
-        end_date=now - timezone.timedelta(days=15),
-        graceperiod=False,
-        active=True)
-    MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=15),
-        membership=membership,
-        start_date=now - timezone.timedelta(days=15),
-        end_date=now,
-        graceperiod=True,
-        active=True)
-    Invoice.objects.create(
-        creation_date = now - timezone.timedelta(days=45),
-        expiration_date = now - timezone.timedelta(days=15),
-        membership = membership,
-        renewal_period = renew,
-        description = 'Invoice unit test',
-        amount = int(membership.annual_cost) / int(membership.renewal_period.months),
-        currency = membership.currency,
-        status='pending'
-    )
-
-    # membresìa a vencer hoy
-    memb= Membership.objects.create(
-        creation_date = now - timezone.timedelta(days=30), #created 30 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} GRACEP_3',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period= RenewalPeriod.objects.all().first(),
-        state='active'
-    )
-    memb.services.set(list(Service.objects.all())[:3])
-    ren = MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=30),
-        membership=memb,
-        start_date=now - timezone.timedelta(days=30),
-        end_date=now ,
-        graceperiod=False,
-        active=True)
-
-    Invoice.objects.create(
-        creation_date = now - timezone.timedelta(days=30),
-        expiration_date = now ,
-        membership = memb,
-        renewal_period = ren,
-        description = 'Invoice unit test',
-        amount = int(memb.annual_cost) / int(memb.renewal_period.months),
-        currency = memb.currency,
-        status='pending'
-    )
-
-    #membresìas con periodo de gracia, con renewals incompletos
-    #(Fechas no coinciden y ademàs deberìan de haber dos , uno normal y otro periodo de gracia)
-    # NO SE TOMA EN CUENTA solo para realizar pago
-    membership1 = Membership.objects.create(
-        creation_date = now - timezone.timedelta(days=45), #created 45 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} GRACEP_4',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period= RenewalPeriod.objects.all().first(),
-        state='graceperiod'
-    )
-    membership1.services.set(list(Service.objects.all())[:3])
-    renew1 = MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=30),
-        membership=membership1,
-        start_date=now - timezone.timedelta(days=20),
-        end_date=now,
-        graceperiod=False,
-        active=True)
-
-    Invoice.objects.create(
-        creation_date = now - timezone.timedelta(days=20),
-        expiration_date = now,
-        membership = membership1,
-        renewal_period = renew1,
-        description = 'Invoice unit test',
-        amount = int(membership1.annual_cost) / int(membership1.renewal_period.months),
-        currency = membership1.currency,
-        status='pending'
-    )
-    #membresìas con periodo de gracia
-    membership1 = Membership.objects.create(
-        creation_date = now - timezone.timedelta(days=45), #created 45 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} GRACEP_5',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period= RenewalPeriod.objects.all().first(),
-        state='graceperiod'
-    )
-    membership1.services.set(list(Service.objects.all())[:3])
-    renew1 = MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=30),
-        membership=membership1,
-        start_date=now - timezone.timedelta(days=30),
-        end_date=now,
-        graceperiod=False,
-        active=True)
-    MembershipRenew.objects.create(
-        creation_date=now,
-        membership=membership1,
-        start_date=now,
-        end_date=now + timezone.timedelta(days=15),
-        graceperiod=True,
-        active=True)
-
-    Invoice.objects.create(
-        creation_date = now - timezone.timedelta(days=30),
-        expiration_date = now,
-        membership = membership1,
-        renewal_period = renew1,
-        description = 'Invoice unit test',
-        amount = int(membership1.annual_cost) / int(membership1.renewal_period.months),
-        currency = membership1.currency,
-        status='pending'
-    )
-    #membresìa con periodo de gracia sin renews, creada hace 30 días
-    tmp_membership = Membership.objects.create(
-        creation_date=now - timezone.timedelta(days=30),  # created 30 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} GRACEP_6',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period=RenewalPeriod.objects.all().first(),
-        state='graceperiod'
-    )
-    tmp_membership.services.set(list(Service.objects.all())[:3])
-
-    #
-# CASE TWO #
-def generate_active_memberships_to_graceperiod():
-    """
-        This method create a specific scenario using active  memberships ,
-         change to graceperiod
-        :return nothing:
-    """
-    contact = Contact.objects.all().order_by('?').first()
-    organization = Organization.objects.filter(contact_id = contact.id).order_by('?').first()
-    currencies_list = list(SystemCurrency.objects.all())
-    now = timezone.now()
-
-    # membresías activas sin periodo de renovación
-    tmp_membership = Membership.objects.create(
-        creation_date = now, #created 30 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period= RenewalPeriod.objects.all().first(),
-        state='active'
-    )
-    tmp_membership.services.set(list(Service.objects.all())[:3])
-
-    # membresías activas con periodo de renovación
-    membership1 = Membership.objects.create(
-        creation_date = now, #created today
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period= RenewalPeriod.objects.all().first(),
-        state='active'
-    )
-    membership1.services.set(list(Service.objects.all())[:3])
-    MembershipRenew.objects.create(
-        creation_date=now,
-        membership=membership1,
-        start_date=now,
-        end_date=now + timezone.timedelta(days=30),
-        graceperiod=False,
-        active=True)
-
-    # membresías activas con periodo de renovaciòn por vencer (activar periodod e gracia)
-    membership2 = Membership.objects.create(
-        creation_date = now - timezone.timedelta(days=30), #created 30 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period= RenewalPeriod.objects.all().first(),
-        state='active'
-    )
-    membership2.services.set(list(Service.objects.all())[:3])
-
-    renew2= MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=30),
-        membership=membership2,
-        start_date=now- timezone.timedelta(days=30),
-        end_date=now,
-        graceperiod=False,
-        active=True)
-
-    Invoice.objects.create(
-        creation_date = now - timezone.timedelta(days=30),
-        expiration_date = now,
-        membership = membership2,
-        renewal_period = renew2,
-        description = 'Invoice unit test',
-        amount = int(membership2.annual_cost) / int(membership2.renewal_period.months),
-        currency = membership2.currency,
-        status='pending'
-    )
-
-    # membresia sin periodo de gracia, pero renewals con periodo de gracia
-    membership3 =  Membership.objects.create(
-        creation_date = now, #created 30 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} STANDARD',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period= RenewalPeriod.objects.all().first(),
-        state='active'
-    )
-    membership3.services.set(list(Service.objects.all())[:3])
-
-    renew3 = MembershipRenew.objects.create(
-        creation_date=now,
-        membership=membership3,
-        start_date=now,
-        end_date=now + timezone.timedelta(days=30),
-        graceperiod=True,
-        active=True)
-
-    Invoice.objects.create(
-        creation_date=now - timezone.timedelta(days=30),
-        expiration_date=now,
-        membership=membership3,
-        renewal_period=renew3,
-        description='Invoice unit test',
-        amount=int(membership3.annual_cost) / int(membership3.renewal_period.months),
-        currency=membership3.currency,
-        status='pending'
-    )
-# CASE THREE #
-def generate_inactive_memberships():
-    """
-        This method create a specific scenario using inactive memberships examples,
-
-        :return nothing:
-    """
-    contact = Contact.objects.all().order_by('?').first()
-    organization = Organization.objects.filter(contact_id = contact.id).order_by('?').first()
-    currencies_list = list(SystemCurrency.objects.all())
-    now = timezone.now()
-
-    #Membresías inactivas, con periodos de gracia inactivos y pago pendiente
-    membership1 = Membership.objects.create(
-        creation_date = now - timezone.timedelta(days=60),
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} INACT_1',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period= RenewalPeriod.objects.all().first(),
-        state='inactive'
-    )
-    membership1.services.set(list(Service.objects.all())[:3])
-
-    renew1 = MembershipRenew.objects.create(
-        creation_date = now - timezone.timedelta(days=60),
-        membership = membership1,
-        start_date = now - timezone.timedelta(days=60),
-        end_date= now - timezone.timedelta(days=30),
-        graceperiod=False,
-        active=False)
-
-    MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=30),
-        membership=membership1,
-        start_date=now - timezone.timedelta(days=30),
-        end_date=now - timezone.timedelta(days=15),
-        graceperiod=True,
-        active=False)
-
-    Invoice.objects.create(
-        creation_date = now - timezone.timedelta(days=30),
-        expiration_date = now,
-        membership = membership1,
-        renewal_period = renew1,
-        description = 'Invoice unit test',
-        amount = int(membership1.annual_cost) / int(membership1.renewal_period.months),
-        currency = membership1.currency,
-        status='pending'
-    )
-
-    # Membresìas activas, con periodo de gracia vencido, varios dias
-    membership2 =  Membership.objects.create(
-        creation_date = now - timezone.timedelta(days=49),
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} INACT_2',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period= RenewalPeriod.objects.all().first(),
-        state='graceperiod'
-    )
-    membership2.services.set(list(Service.objects.all())[:3])
-
-    renew2 = MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=49),
-        membership=membership2,
-        start_date=now- timezone.timedelta(days=49),
-        end_date=now - timezone.timedelta(days=19),
-        graceperiod=False,
-        active=True)
-
-    MembershipRenew.objects.create(
-        creation_date = now - timezone.timedelta(days=19),
-        membership=membership2,
-        start_date=now - timezone.timedelta(days=19),
-        end_date=now - timezone.timedelta(days=4),
-        graceperiod=True,
-        active=True)
-
-    Invoice.objects.create(
-        creation_date=now - timezone.timedelta(days=49),
-        expiration_date=now - timezone.timedelta(days=19),
-        membership=membership2,
-        renewal_period=renew2,
-        description='Invoice unit test',
-        amount=int(membership2.annual_cost) / int(membership2.renewal_period.months),
-        currency=membership2.currency,
-        status='pending'
-    )
-    # Membresìas inactivas sin renewals
-    tmp_memb = Membership.objects.create(
-        creation_date = now - timezone.timedelta(days=49),
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} INACT_3',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period= RenewalPeriod.objects.all().first(),
-        state='inactive'
-    )
-    tmp_memb.services.set(list(Service.objects.all())[:3])
-    #
-# CASE FOUR #
-def generate_memberships_to_pay():
-    """
-        This method create a specific scenario for emberships to pay,
-
-        :return nothing:
-    """
-    contact = Contact.objects.all().order_by('?').first()
-    organization = Organization.objects.filter(contact_id = contact.id).order_by('?').first()
-    currencies_list = list(SystemCurrency.objects.all())
-    now = timezone.now()
-
-    # membresìa con periodo de gracia a vencer hoy
-    membership = Membership.objects.create(
-        creation_date=now - timezone.timedelta(days=40),  # created 45 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} TO_PAY_1',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period=RenewalPeriod.objects.all().first(),
-        state='graceperiod'
-    )
-    membership.services.set(list(Service.objects.all())[:3])
-    renew = MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=40),
-        membership=membership,
-        start_date=now - timezone.timedelta(days=40),
-        end_date=now - timezone.timedelta(days=10),
-        graceperiod=False,
-        active=True)
-    MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=10),
-        membership=membership,
-        start_date=now - timezone.timedelta(days=10),
-        end_date=now + timezone.timedelta(days=5),
-        graceperiod=True,
-        active=True)
-    Invoice.objects.create(
-        creation_date=now - timezone.timedelta(days=40),
-        expiration_date=now - timezone.timedelta(days=10),
-        membership=membership,
-        renewal_period=renew,
-        description='Invoice unit test',
-        amount=int(membership.annual_cost) / int(membership.renewal_period.months),
-        currency=membership.currency,
-        status='pending'
-    )
-
-    # Membresìa inactiva, con periodo de gracia vencido
-    membership2 = Membership.objects.create(
-        creation_date=now - timezone.timedelta(days=50),  # created 45 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} TO_PAY_2',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period=RenewalPeriod.objects.all().first(),
-        state='inactive'
-    )
-    membership2.services.set(list(Service.objects.all())[:3])
-    renew2 = MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=50),
-        membership=membership2,
-        start_date=now - timezone.timedelta(days=50),
-        end_date=now - timezone.timedelta(days=20),
-        graceperiod=False,
-        active=False)
-    MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=20),
-        membership=membership2,
-        start_date=now - timezone.timedelta(days=20),
-        end_date=now - timezone.timedelta(days=5),
-        graceperiod=True,
-        active=False)
-    Invoice.objects.create(
-        creation_date=now - timezone.timedelta(days=50),
-        expiration_date=now - timezone.timedelta(days=20),
-        membership=membership2,
-        renewal_period=renew2,
-        description='Invoice unit test',
-        amount=int(membership2.annual_cost) / int(membership2.renewal_period.months),
-        currency=membership2.currency,
-        status='pending'
-    )
-
-    #membresìas activas , no vencidas.
-    membership3 = Membership.objects.create(
-        creation_date=now - timezone.timedelta(days=25),  # created 25 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} TO_PAY_3',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period=RenewalPeriod.objects.all().first(),
-        state='active'
-    )
-    membership3.services.set(list(Service.objects.all())[:3])
-    renew3 = MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=25),
-        membership=membership2,
-        start_date=now - timezone.timedelta(days=25),
-        end_date=now + timezone.timedelta(days=5),
-        graceperiod=False,
-        active=True
-    )
-
-    Invoice.objects.create(
-        creation_date=now - timezone.timedelta(days=25),
-        expiration_date=now + timezone.timedelta(days=5),
-        membership=membership3,
-        renewal_period=renew3,
-        description='Invoice unit test',
-        amount=int(membership3.annual_cost) / int(membership3.renewal_period.months),
-        currency=membership3.currency,
-        status='pending'
-    )
-    #membresìas inactiva , no vencida factura inactiva
-    membership4 = Membership.objects.create(
-        creation_date=now - timezone.timedelta(days=35),  # created 25 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} TO_PAY_4',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period=RenewalPeriod.objects.all().first(),
-        state='inactive'
-    )
-    membership4.services.set(list(Service.objects.all())[:3])
-    renew4 = MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=35),
-        membership=membership4,
-        start_date=now - timezone.timedelta(days=35),
-        end_date=now - timezone.timedelta(days=5),
-        graceperiod=False,
-        active=False
-    )
-
-    Invoice.objects.create(
-        creation_date=now - timezone.timedelta(days=35),
-        expiration_date=now + timezone.timedelta(days=5),
-        membership=membership4,
-        renewal_period=renew4,
-        description='Invoice unit test',
-        amount=int(membership4.annual_cost) / int(membership4.renewal_period.months),
-        currency=membership4.currency,
-        status='inactive'
-    )
-    #membresìas inactiva , factura pendiente
-    membership5 = Membership.objects.create(
-        creation_date=now - timezone.timedelta(days=35),  # created 25 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} TO_PAY_5',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period=RenewalPeriod.objects.all().first(),
-        state='inactive'
-    )
-    membership5.services.set(list(Service.objects.all())[:3])
-    renew5 = MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=35),
-        membership=membership5,
-        start_date=now - timezone.timedelta(days=35),
-        end_date=now - timezone.timedelta(days=5),
-        graceperiod=False,
-        active=False
-    )
-    MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=5),
-        membership=membership5,
-        start_date=now - timezone.timedelta(days=5),
-        end_date=now + timezone.timedelta(days=10),
-        graceperiod=True,
-        active=False
-    )
-
-    Invoice.objects.create(
-        creation_date=now - timezone.timedelta(days=35),
-        expiration_date=now + timezone.timedelta(days=5),
-        membership=membership5,
-        renewal_period=renew5,
-        description='Invoice unit test',
-        amount=int(membership5.annual_cost) / int(membership5.renewal_period.months),
-        currency=membership5.currency,
-        status='pending'
-    )
-
-# NOTIFICATION SCENARIOS #
-# CASE  - NOTIFY FOR INVOICE CREATION
-def generate_memberships_to_notify_expiration_create_invoice():
-    """
-    This method create a specific scenario using memberships to expire, to thest invoice createment notifications
-    :return nothing:
-    """
-    contact = Contact.objects.all().order_by('?').first()
-    organization = Organization.objects.filter(contact_id = contact.id).order_by('?').first()
-    currencies_list = list(SystemCurrency.objects.all())
-    now = timezone.now()
-
-    # Membresìas en plazo de 60 dias por vencer (creacion de invoice) por vencer.
-    membership = Membership.objects.create(
-        creation_date=now - timezone.timedelta(days=5),  # created 5 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} NOT_INV_CR_1',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period=RenewalPeriod.objects.all().first(),
-        state='active'
-    )
-    membership.services.set(list(Service.objects.all())[:3])
-    MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=5),
-        membership=membership,
-        start_date=now - timezone.timedelta(days=5),
-        end_date=now + timezone.timedelta(days=50),
-        graceperiod=False,
-        active=True)
-
-    # Membresìas en plazo de 30 dias por vencer (creacion de invoice) por vencer.
-    membership2 = Membership.objects.create(
-        creation_date=now - timezone.timedelta(days=5),  # created 5 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} NOT_INV_CR_2',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period=RenewalPeriod.objects.all().first(),
-        state='active'
-    )
-    membership2.services.set(list(Service.objects.all())[:3])
-    MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=5),
-        membership=membership2,
-        start_date=now - timezone.timedelta(days=5),
-        end_date=now + timezone.timedelta(days=25),
-        graceperiod=False,
-        active=True)
-    # Membresìas en plazo de 110 dias por vencer (creacion de invoice) por vencer.
-    membership3 = Membership.objects.create(
-        creation_date=now - timezone.timedelta(days=5),  # created 5 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} NOT_INV_CR_3',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period=RenewalPeriod.objects.all().first(),
-        state='active'
-    )
-    membership3.services.set(list(Service.objects.all())[:3])
-# CASE - NOTIFY FOR EXPIRATION TIMES "
-def generate_memberships_to_notify_expiration():
-    """
-        This method create a specific scenario using memberships expiriration, to test invoice expiration notifications
-        :return nothing:
-    """
-    contact = Contact.objects.all().order_by('?').first()
-
-    organization = Organization.objects.filter(contact_id=contact.id).order_by('?').first()
-
-    currencies_list = list(SystemCurrency.objects.all())
-    now = timezone.now()
-
-    # Membresìas en plazo de 30 dias por vencer
-    membership = Membership.objects.create(
-        creation_date=now - timezone.timedelta(days=30),  # created 5 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} NOT_EXPIR_1',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period=RenewalPeriod.objects.all().first(),
-        state='active'
-    )
-    membership.services.set(list(Service.objects.all())[:3])
-
-    renew = MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=30),
-        membership=membership,
-        start_date=now - timezone.timedelta(days=30),
-        end_date=now + timezone.timedelta(days=30),
-        graceperiod=False,
-        active=True)
-
-    Invoice.objects.create(
-        creation_date=now - timezone.timedelta(days=30),
-        expiration_date=now + timezone.timedelta(days=30),
-        membership=membership,
-        renewal_period=renew,
-        description='Invoice unit test',
-        amount=int(membership.annual_cost) / int(membership.renewal_period.months),
-        currency=membership.currency,
-        status='pending'
-    )
-    # Membresìas en plazo de 15 dias por vencer (creacion de invoice) por vencer.
-    membership2 = Membership.objects.create(
-        creation_date=now - timezone.timedelta(days=15),  # created 5 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} NOT_EXPIR_2',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period=RenewalPeriod.objects.all().first(),
-        state='active'
-    )
-    membership2.services.set(list(Service.objects.all())[:3])
-    renew2 = MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=15),
-        membership=membership2,
-        start_date=now - timezone.timedelta(days=15),
-        end_date=now + timezone.timedelta(days=15),
-        graceperiod=False,
-        active=True)
-
-    Invoice.objects.create(
-        creation_date=now - timezone.timedelta(days=15),
-        expiration_date=now + timezone.timedelta(days=15),
-        membership=membership2,
-        renewal_period=renew2,
-        description='Invoice unit test',
-        amount=int(membership2.annual_cost) / int(membership2.renewal_period.months),
-        currency=membership2.currency,
-        status='pending'
-    )
-
-    # Membresìas en plazo de 7 dias por vencer (creacion de invoice) por vencer.
-    membership3 = Membership.objects.create(
-        creation_date=now - timezone.timedelta(days=23),  # created 5 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} NOT_EXPIR_3',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period=RenewalPeriod.objects.all().first(),
-        state='active'
-    )
-    membership3.services.set(list(Service.objects.all())[:3])
-    renew3 = MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=23),
-        membership=membership3,
-        start_date=now - timezone.timedelta(days=23),
-        end_date=now + timezone.timedelta(days=7),
-        graceperiod=False,
-        active=True)
-
-    Invoice.objects.create(
-        creation_date=now - timezone.timedelta(days=23),
-        expiration_date=now + timezone.timedelta(days=7),
-        membership=membership3,
-        renewal_period=renew3,
-        description='Invoice unit test',
-        amount=int(membership3.annual_cost) / int(membership3.renewal_period.months),
-        currency=membership3.currency,
-        status='pending'
-    )
-
-    # Membresìas en plazo de 1 dias por vencer (creacion de invoice) por vencer.
-    membership4 = Membership.objects.create(
-        creation_date=now - timezone.timedelta(days=30),  # created 5 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} NOT_EXPIR_4',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period=RenewalPeriod.objects.all().first(),
-        state='active'
-    )
-    membership4.services.set(list(Service.objects.all())[:3])
-    renew4 = MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=30),
-        membership=membership4,
-        start_date=now - timezone.timedelta(days=30),
-        end_date=now + timezone.timedelta(days=1),
-        graceperiod=False,
-        active=True)
-
-    Invoice.objects.create(
-        creation_date=now - timezone.timedelta(days=30),
-        expiration_date=now ,
-        membership=membership4,
-        renewal_period=renew4,
-        description='Invoice unit test',
-        amount=int(membership4.annual_cost) / int(membership4.renewal_period.months),
-        currency=membership4.currency,
-        status='pending'
-    )
-# CASE - NOTIFY FOR INACTIVE MEMBERSHIP ·
-def generate_memberships_to_deactivate():
-    """
-        This method create a specific scenario using expired memberships, to test invoice deactivating notifications
-        :return nothing:
-    """
-    contact = Contact.objects.all().order_by('?').first()
-    organization = Organization.objects.filter(contact_id=contact.id).order_by('?').first()
-    currencies_list = list(SystemCurrency.objects.all())
-    now = timezone.now()
-    # Membresìas vencida,
-    membership = Membership.objects.create(
-        creation_date=now - timezone.timedelta(days=45),  # created 45 days ago
-        membership_type='Organizacional',
-        contact=contact, organization=organization, name=f'{organization.name} DEACTIVATE_1',
-        annual_cost=550,
-        currency=currencies_list[randint(0,len(currencies_list)-1)],  # get random currenie instance
-        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
-        renewal_period=RenewalPeriod.objects.all().first(),
-        state='graceperiod'
-    )
-    membership.services.set(list(Service.objects.all())[:3])
-    renew = MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=45),
-        membership=membership,
-        start_date=now - timezone.timedelta(days=45),
-        end_date=now - timezone.timedelta(days=15),
-        graceperiod=False,
-        active=True)
-
-    MembershipRenew.objects.create(
-        creation_date=now - timezone.timedelta(days=15),
-        membership=membership,
-        start_date=now - timezone.timedelta(days=15),
-        end_date=now,
-        graceperiod=True,
-        active=True)
-
-    Invoice.objects.create( #expired 15 days ago
-        creation_date=now - timezone.timedelta(days=45),
-        expiration_date=now - timezone.timedelta(days=15),
-        membership=membership,
-        renewal_period=renew,
-        description='Invoice unit test',
-        amount=int(membership.annual_cost) / int(membership.renewal_period.months),
-        currency=membership.currency,
-        status='pending'
-    )
 # CASE - NOTIFY FOR GRACEPERIOD ADDED TO MEMBERSHIP ·
 def generate_memberships_to_notify_graceperiod():
     """
@@ -939,3 +93,506 @@ def generate_memberships_to_notify_graceperiod():
         amount=int(membership.annual_cost) * int(membership.renewal_period.months),
         currency=membership.currency,
         status='pending')
+
+#····· TEST MEMBERSHIP BUILDER ·····#
+def generate_test_membership(*args, **kwargs):
+    dev = {}
+    now = timezone.now()
+    contact = Contact.objects.all().order_by('?').first()
+    organization = Organization.objects.filter(contact_id=contact.id).order_by('?').first()
+    currency = SystemCurrency.objects.all().order_by('?').first()
+    renew_period = kwargs.get('renewal_period', RenewalPeriod.objects.all().first())
+    build_renewal =  kwargs.get('build_renewal', False)
+    build_invoice = kwargs.get('build_invoice', False)
+    membership = Membership.objects.create(
+        creation_date=kwargs.get('creation_date', now - timezone.timedelta(days=30)) ,  # created 5 days ago
+        membership_type='Organizacional',
+        contact=contact, organization=organization, name=f'{organization.name}',
+        annual_cost=kwargs.get('annual_cost', 550),
+        currency=kwargs.get('currency', currency),  # get random currenie instance
+        description=fake.paragraph(nb_sentences=10, variable_nb_sentences=True, ext_word_list=None),
+        renewal_period=renew_period,
+        state=kwargs.get('state','active')
+    )
+    membership.services.set(list(Service.objects.all())[:3])
+    dev['membership'] = membership
+    if build_renewal:
+        renew = MembershipRenew.objects.create(
+            creation_date=kwargs.get('creation_date', now - timezone.timedelta(days=30)),
+            membership=membership,
+            start_date=kwargs.get('start_date', now - timezone.timedelta(days=30)),
+            end_date=kwargs.get('end_date', now),
+            graceperiod=kwargs.get('graceperiod', False),
+            active=kwargs.get('active', True) )
+        dev['renew'] = renew
+
+    if build_invoice:
+        invoice = Invoice.objects.create(
+            creation_date=kwargs.get('creation_date', now - timezone.timedelta(days=30)),
+            expiration_date=kwargs.get('expiration_date',now),
+            membership=membership,
+            renewal_period=renew,
+            description='Invoice unit test',
+            amount=int(membership.annual_cost) * int(membership.renewal_period.months),
+            currency=membership.currency,
+            status=kwargs.get('status','pending'))
+        dev['invoice'] = invoice
+
+    return dev
+# TEST SCENARIO - test_memberships.py
+def generate_membershib_to_inactive():
+    now = timezone.now()
+    # It will be inactive
+    mem1 = generate_test_membership(
+        build_renewal= True, graceperiod=True, state="graceperiod",
+        build_invoice= True)
+
+    # Also inactive yesterday
+    mem2 = generate_test_membership(
+        build_renewal = True, state="graceperiod",  graceperiod=True,
+        end_date=now - timezone.timedelta(days=1), build_invoice= True)
+
+    # Not inactive, one day is need it.
+    mem3 = generate_test_membership(
+        build_renewal= True, graceperiod=True, state="graceperiod",
+        end_date=now + timezone.timedelta(days=1), build_invoice= True)
+    return [mem1, mem2, mem3]
+
+def generate_membership_to_graceperiod():
+    now = timezone.now()
+    # Active to graceperiod today
+    mem1 = generate_test_membership(
+        build_renewal=True, state="active",
+        build_invoice=True)
+
+    # Also active , one day is need it, to graceperiod.
+    mem2 = generate_test_membership(
+        build_renewal=True, state="active",
+        end_date=now + timezone.timedelta(days=1), build_invoice=True)
+
+    #active, end yesterday.
+    mem3 = generate_test_membership(
+        build_renewal=True, state="active",
+        end_date=now - timezone.timedelta(days=1),expiration_date = now - timezone.timedelta(days=1)
+        , build_invoice=True)
+    return [mem1, mem2, mem3]
+
+def generate_membership_to_create_invoice():
+    now = timezone.now()
+    # Active end today , without invoice
+    mem1 = generate_test_membership(
+        build_renewal=True, state="active",
+        )
+    # Active end in 30 days, without invoice
+    mem2 = generate_test_membership(
+        build_renewal=True, state="active",
+        end_date=now + timezone.timedelta(days=30))
+    #active, end in 30 days with invoice.
+    mem3 = generate_test_membership(
+        build_renewal=True, state="active",creation_date=now,
+        end_date=now + timezone.timedelta(days=30),expiration_date = now + timezone.timedelta(days=30)
+        , build_invoice=True)
+    return [mem1, mem2, mem3]
+
+def generate_memberships_active_with_inconsistent_features():
+    """
+        This method create a specific scenario using active  memberships with inconsistent_features,
+         next to (change to grace period, create invoice or deactivate) the membership.
+        :return nothing:
+    """
+    now = timezone.now()
+    dev = {}
+    # membresías activa sin periodo de renovación
+    mem1 = generate_test_membership(creation_date = now,
+        state="active",
+    )
+    dev['membership_active_without_renewal'] = mem1
+    # membresia activa con periodo de renovación en periodo de gracia
+    mem2 = generate_test_membership(creation_date=now,
+        state="active",build_renewal=True,
+        graceperiod=True,start_date=now, end_date=now+timezone.timedelta(days=30)
+    )
+    dev['membership_active_with_renewal_on_graceperiod'] = mem2
+    # membresia activa con periodo de renovación en periodo de gracia
+    mem3 = generate_test_membership(
+        state="active",build_renewal=True,
+        graceperiod=True, end_date=now,
+        build_invoice=True, expiration_date=now
+    )
+    dev['membership_active_with_renewal_invoice_on_graceperiod'] = mem3
+
+# TEST SCENARIO - tests_memberships_graceperiod.py
+def generate_memberships_graceperiod_to_inactive_and_active_to_graceperiod():
+    """
+        This method create a specific scenario using memberships on graceperiod,
+         or memberships to change in future to graceperiod
+        :return nothing:
+    """
+    now = timezone.now()
+    dev = {}
+    # membresía con periodo de gracia vencida (to deactivate)
+    mem1 = generate_test_membership(creation_date = now - timezone.timedelta(days=60),
+        state='graceperiod',start_date=now - timezone.timedelta(days=60),
+        end_date=now - timezone.timedelta(days=30),graceperiod=False,
+        active=True,expiration_date = now - timezone.timedelta(days=30),status='pending',
+        build_invoice=True,build_renewal=True
+    )
+    dev['membership_graceperiod_expired'] = mem1
+    MembershipRenew.objects.create(
+        creation_date=now - timezone.timedelta(days=30),
+        membership=mem1['membership'],
+        start_date=now - timezone.timedelta(days=30),
+        end_date=now - timezone.timedelta(days=15),
+        graceperiod=True,
+        active=True)
+
+    # membresìa con periodo de gracia a vencer hoy (to deactivate)
+    mem2 = generate_test_membership(creation_date = now - timezone.timedelta(days=45),
+        state='graceperiod',start_date=now - timezone.timedelta(days=45),
+        end_date=now - timezone.timedelta(days=15), graceperiod=False,
+        active=True, expiration_date = now - timezone.timedelta(days=15), status='pending',
+        build_invoice=True, build_renewal=True
+    )
+    dev['membership_graceperiod_expire_today'] = mem2
+    MembershipRenew.objects.create(
+        creation_date=now - timezone.timedelta(days=15),
+        membership=mem2['membership'],
+        start_date=now - timezone.timedelta(days=15),
+        end_date=now,
+        graceperiod=True,
+        active=True)
+
+    #membresìas con periodo de gracia, con renewals incompletos
+    #(Fechas no coinciden y ademàs deberìan de haber dos , uno normal y otro periodo de gracia)
+    # NO SE TOMA EN CUENTA solo para realizar pago
+    mem3 = generate_test_membership( creation_date = now - timezone.timedelta(days=45),
+        state='graceperiod',start_date=now - timezone.timedelta(days=20),
+        end_date=now, graceperiod=False,
+        active=True,  expiration_date = now, status='pending',
+        build_invoice=True, build_renewal=True
+    )
+    dev['membership_graceperiod_incomplete_renewals'] = mem3
+
+    #membresìas con periodo de gracia, no realiza nada, ya que está a espera de vencerse
+    mem4 = generate_test_membership( creation_date = now - timezone.timedelta(days=45),
+        state='graceperiod',start_date=now - timezone.timedelta(days=30),
+        end_date=now, graceperiod=False,
+        active=True,  expiration_date = now, status='pending',
+        build_invoice=True, build_renewal=True
+    )
+    dev['membership_graceperiod_regular'] = mem4
+    MembershipRenew.objects.create(
+        creation_date=now,
+        membership=mem4['membership'],
+        start_date=now,
+        end_date=now + timezone.timedelta(days=15),
+        graceperiod=True,
+        active=True)
+
+    #membresìa con periodo de gracia sin renews, creada hace 30 días
+    mem5 = generate_test_membership(creation_date=now - timezone.timedelta(days=30),
+        state='graceperiod'
+    )
+    dev['membership_graceperiod_without_renewals'] = mem5
+    #membresìa con periodo de gracia sin invoice, creada hace 30 días
+    mem6 = generate_test_membership(creation_date = now - timezone.timedelta(days=30),
+        state='graceperiod',start_date=now - timezone.timedelta(days=30),
+        end_date=now, graceperiod=False, active=True, build_renewal=True
+    )
+    dev['membership_graceperiod_without_invoice'] = mem6
+
+    # membresía activa ( para cambiar a graceperiod)
+    mem7 = generate_test_membership(creation_date=now - timezone.timedelta(days=30),
+                                    state='active', start_date=now - timezone.timedelta(days=30),
+                                    end_date=now, graceperiod=False,
+                                    active=True, expiration_date=now, status='pending',
+                                    build_invoice=True, build_renewal=True
+                                    )
+    dev['membership_active_expire_today'] = mem7
+
+    # membresía activa ( para cambiar a graceperiod) sin invoice
+    mem8 = generate_test_membership(creation_date=now - timezone.timedelta(days=30),
+        state='active', start_date=now - timezone.timedelta(days=30),
+        end_date=now, graceperiod=False,
+        active=True, build_renewal=True
+    )
+    dev['membership_active_expire_today_without_invoice'] = mem8
+
+    # membresía activa ( para cambiar a graceperiod) sin invoice
+    mem9 = generate_test_membership(creation_date=now - timezone.timedelta(days=31),
+        state='active', start_date=now - timezone.timedelta(days=31),
+        end_date=now - timezone.timedelta(days=1), graceperiod=False,
+        active=True, build_renewal=True
+    )
+    dev['membership_active_expire_yesterday_without_invoice'] = mem9
+
+    return dev
+# TEST SCENARIO - tests_memberships_graceperiod.py
+def generate_memberships_to_notify_expiration():
+    """
+        This method create a specific scenario using memberships expiriration, to test invoice expiration notifications
+        :return nothing:
+    """
+
+    now = timezone.now()
+    dev = {}
+    # Membresìas en plazo de 30 dias por vencer
+    mem1 = generate_test_membership(creation_date=now - timezone.timedelta(days=30),
+        state='active',start_date=now - timezone.timedelta(days=30),
+        end_date=now + timezone.timedelta(days=30),
+        active=True, expiration_date=now + timezone.timedelta(days=30),status='pending',
+        build_invoice=True,build_renewal=True
+    )
+    dev['membership_30_days_to_expire'] = mem1
+
+    # Membresìas en plazo de 15 dias por vencer
+    mem2 = generate_test_membership(creation_date=now - timezone.timedelta(days=15),
+        state='active',  start_date=now - timezone.timedelta(days=15),
+        end_date=now + timezone.timedelta(days=15),
+        active=True, expiration_date=now + timezone.timedelta(days=15), status='pending',
+        build_invoice=True, build_renewal=True
+    )
+    dev['membership_15_days_to_expire'] = mem2
+
+    # Membresìas en plazo de 7 dias por vencer
+    mem3 = generate_test_membership(creation_date=now - timezone.timedelta(days=23),
+        state='active', start_date=now - timezone.timedelta(days=23),
+        end_date=now + timezone.timedelta(days=7),
+        active=True, expiration_date=now + timezone.timedelta(days=7), status='pending',
+        build_invoice=True, build_renewal=True
+    )
+    dev['membership_7_days_to_expire'] = mem3
+
+    # Membresìas en plazo de 1 dias por vencer (.
+    mem4 = generate_test_membership(state='active', start_date=now - timezone.timedelta(days=30),
+        end_date=now + timezone.timedelta(days=1),
+        active=True,  expiration_date=now + timezone.timedelta(days=1), status='pending',
+        build_invoice=True, build_renewal=True
+    )
+    dev['membership_1_day_to_expire'] = mem4
+
+    # Membresìas en plazo de 60 dias por vencer
+    mem5 = generate_test_membership(state='active', start_date=now ,
+        end_date=now + timezone.timedelta(days=60),
+        active=True,  expiration_date=now + timezone.timedelta(days=60), status='pending',
+        build_invoice=True, build_renewal=True
+    )
+    dev['membership_60_days_to_expire'] = mem5
+    # Membresìas en plazo de 70 dias por vencer
+    mem6 = generate_test_membership(state='active', start_date=now ,
+        end_date=now + timezone.timedelta(days=70),
+        active=True,  expiration_date=now + timezone.timedelta(days=70), status='pending',
+        build_invoice=True, build_renewal=True
+    )
+    dev['membership_70_days_to_expire'] = mem6
+
+    # Membresìas vencida periodo de prueba
+    mem7 = generate_test_membership(state='graceperiod', start_date=now - timezone.timedelta(days=30),
+                                    end_date=now - timezone.timedelta(days=1),
+                                    active=True, expiration_date=now - timezone.timedelta(days=1), status='pending',
+                                    build_invoice=True, build_renewal=True
+                                    )
+    dev['membership_expired_yesterday'] = mem7
+    MembershipRenew.objects.create(
+        creation_date=now - timezone.timedelta(days=30),
+        membership=mem6['membership'],
+        start_date=now - timezone.timedelta(days=30),
+        end_date=now + timezone.timedelta(days=15),
+        graceperiod=True,
+        active=True)
+
+    return dev
+# TEST SCENARIO - test_memberships_inactives.py
+def generate_memberships_to_deactivate():
+    """
+        This method create a specific scenario using expired memberships, to test invoice deactivating notifications
+        :return nothing:
+    """
+    now = timezone.now()
+    dev = {}
+    # Membresía vencida, periodo de prueba
+    mem1 = generate_test_membership(
+        creation_date=now - timezone.timedelta(days=45),
+        state='graceperiod', start_date=now - timezone.timedelta(days=45),
+        end_date=now - timezone.timedelta(days=15),
+        active=True, expiration_date=now - timezone.timedelta(days=15), status='pending',
+        build_invoice=True, build_renewal=True
+    )
+    dev['membership_expired'] = mem1
+    MembershipRenew.objects.create(
+        creation_date=now - timezone.timedelta(days=15),
+        membership=mem1['membership'],
+        start_date=now - timezone.timedelta(days=15),
+        end_date=now,
+        graceperiod=True,
+        active=True)
+
+    # Membresìas no vencida
+    mem2 = generate_test_membership(
+        creation_date=now - timezone.timedelta(days=40),
+        state='graceperiod', start_date=now - timezone.timedelta(days=40),
+        end_date=now - timezone.timedelta(days=10),
+        active=True, expiration_date=now - timezone.timedelta(days=10), status='pending',
+        build_invoice=True, build_renewal=True
+    )
+    dev['membership_graceperiod_active'] = mem2
+    MembershipRenew.objects.create(
+        creation_date=now - timezone.timedelta(days=10),
+        membership=mem2['membership'],
+        start_date=now - timezone.timedelta(days=10),
+        end_date=now + timezone.timedelta(days=5) ,
+        graceperiod=True,
+        active=True)
+
+    # Membresìas vencida ayer
+    mem3 = generate_test_membership(
+        creation_date=now - timezone.timedelta(days=45),
+        state='graceperiod', start_date=now - timezone.timedelta(days=45),
+        end_date=now - timezone.timedelta(days=15),
+        active=True, expiration_date=now - timezone.timedelta(days=15), status='pending',
+        build_invoice=True, build_renewal=True
+    )
+    dev['membership_expired_yesterday'] = mem3
+    MembershipRenew.objects.create(
+        creation_date=now - timezone.timedelta(days=15),
+        membership=mem3['membership'],
+        start_date=now - timezone.timedelta(days=15),
+        end_date=now - timezone.timedelta(days=1),
+        graceperiod=True,
+        active=True)
+
+    # Membresìas a activar periodo de gracia
+    mem4 = generate_test_membership(
+        creation_date=now - timezone.timedelta(days=45),
+        state='graceperiod', start_date=now - timezone.timedelta(days=45),
+        end_date=now - timezone.timedelta(days=15),
+        active=True, graceperiod=True,expiration_date=now - timezone.timedelta(days=15), status='pending',
+        build_invoice=True, build_renewal=True
+    )
+    dev['membership_expired_with_one_renewal'] = mem4
+    return dev
+# TEST SCENARIO - test_memberships_invoice_creation.py
+def generate_memberships_to_notify_expiration_create_invoice():
+    """
+    This method create a specific scenario using memberships to expire, to thest invoice createment notifications
+    :return nothing:
+    """
+    contact = Contact.objects.all().order_by('?').first()
+    organization = Organization.objects.filter(contact_id = contact.id).order_by('?').first()
+    currencies_list = list(SystemCurrency.objects.all())
+    now = timezone.now()
+    dev = {}
+    # Membresìas en plazo de 60 dias por vencer (creacion de invoice) por vencer.
+    mem1 = generate_test_membership(
+        creation_date=now - timezone.timedelta(days=5),
+        state='active', start_date=now - timezone.timedelta(days=5),
+        end_date=now + timezone.timedelta(days=50),
+        active=True, status='pending', build_renewal=True
+    )
+    dev['membership_invoice_create_60days'] = mem1
+
+
+    # Membresìas en plazo de 30 dias por vencer (creacion de invoice) por vencer.
+    mem2 = generate_test_membership(
+        creation_date=now - timezone.timedelta(days=5),
+        state='active',  start_date=now - timezone.timedelta(days=5),
+        end_date=now + timezone.timedelta(days=25),
+        active=True, status='pending', build_renewal=True
+    )
+    dev['membership_invoice_create_30days'] = mem2
+
+    # Membresìas en plazo de 110 dias por vencer (creacion de invoice) por vencer.
+    mem3 = generate_test_membership(
+        creation_date=now - timezone.timedelta(days=5),
+        state='active', start_date=now - timezone.timedelta(days=5),
+        end_date=now + timezone.timedelta(days=105),
+        active=True, status='pending', build_renewal=True
+    )
+    dev['membership_invoice_create_110days'] = mem3
+
+    # Membresías en plazo de 30 días con invocie creada
+    mem4 = generate_test_membership(
+        creation_date=now - timezone.timedelta(days=5),
+        state='active', start_date=now - timezone.timedelta(days=5),
+        end_date=now + timezone.timedelta(days=25),
+        active=True,build_invoice=True,expiration_date=now + timezone.timedelta(days=25),
+        status='pending', build_renewal=True
+    )
+    dev['membership_invoice_create_30days_with_invoice'] = mem4
+
+    # Membresías vencida ayer sin invoice
+    mem5 = generate_test_membership(
+        creation_date=now - timezone.timedelta(days=31),
+        state='active', start_date=now - timezone.timedelta(days=31),
+        end_date=now - timezone.timedelta(days=1),
+        active=True,
+        status='pending', build_renewal=True
+    )
+    dev['membership_invoice_create_expired_without_invoice'] = mem5
+    return dev
+# TEST SCENARIO - test_memberships_to_pay.py
+def generate_memberships_to_pay():
+    """
+        This method create a specific scenario for emberships to pay,
+
+        :return nothing:
+    """
+    contact = Contact.objects.all().order_by('?').first()
+    organization = Organization.objects.filter(contact_id = contact.id).order_by('?').first()
+    currencies_list = list(SystemCurrency.objects.all())
+    now = timezone.now()
+    dev = {}
+    # membresìa con periodo de gracia a vencer hoy
+    mem1 = generate_test_membership(
+        creation_date=now - timezone.timedelta(days=40),
+        state='graceperiod', start_date=now - timezone.timedelta(days=40),
+        end_date=now - timezone.timedelta(days=10),
+        build_invoice=True,expiration_date=now - timezone.timedelta(days=10),
+        active=True, status='pending', build_renewal=True
+    )
+    dev['membership_to_pay_graceperiod_expire_today'] = mem1
+    MembershipRenew.objects.create(
+        creation_date=now - timezone.timedelta(days=10),
+        membership=mem1['membership'],
+        start_date=now - timezone.timedelta(days=10),
+        end_date=now,
+        graceperiod=True,
+        active=True)
+    # Membresìa , con periodo de gracia vencido
+    mem2 = generate_test_membership(
+        creation_date=now - timezone.timedelta(days=50),
+        state='inactive', start_date=now - timezone.timedelta(days=50),
+        end_date=now - timezone.timedelta(days=20),
+        build_invoice=True,expiration_date=now - timezone.timedelta(days=20),
+        active=False, status='pending', build_renewal=True
+    )
+    dev['membership_to_pay_graceperiod_expired_inactive'] = mem2
+    MembershipRenew.objects.create(
+        creation_date=now - timezone.timedelta(days=20),
+        membership=mem2['membership'],
+        start_date=now - timezone.timedelta(days=20),
+        end_date=now - timezone.timedelta(days=5),
+        graceperiod=True,
+        active=False)
+
+    #membresìas activas , no vencidas.
+    mem3 = generate_test_membership(
+        creation_date=now - timezone.timedelta(days=25),
+        state='active', start_date=now - timezone.timedelta(days=25),
+        end_date=now + timezone.timedelta(days=5),
+        build_invoice=True, expiration_date=now + timezone.timedelta(days=5),
+        active=True, status='pending', build_renewal=True
+    )
+    dev['membership_to_pay_active'] = mem3
+    #membresìas inactiva , no vencida factura pendiente
+    mem5 = generate_test_membership(
+        creation_date=now - timezone.timedelta(days=25),
+        state='inactive', start_date=now - timezone.timedelta(days=25),
+        end_date=now + timezone.timedelta(days=5),
+        build_invoice=True, expiration_date=now + timezone.timedelta(days=5),
+        active=False, status='pending', build_renewal=True
+    )
+    dev['membership_to_pay_inactive'] = mem5
+
+    return dev
+

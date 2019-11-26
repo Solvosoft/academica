@@ -63,6 +63,7 @@ def invoice_expiration_filter_queryset(queryset, filt=None):
                                    status='pending').distinct()
     else:
         now = timezone.now()
+        now = timezone.localtime(now)
         dates_list = [
                 (now + timedelta(days=x)).date() for x in [60, 45, 30, 15, 7, 0]]
 

@@ -4,17 +4,18 @@ from async_notifications.utils import send_email_from_template
 from django.conf import settings
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
 
 from membership_manager.models import Invoice, MembershipRenew
 from membership_manager.render_pdf import generate_invoice
 from membership_manager.utils import invoice_expiration_filter_queryset, renewal_expiration_filter_manager, \
     get_administrative_user
 
-
 def notify_invoice_expiration(now):
     """
     Gets the membership invoices and notify if there is any in the expiration range.
     """
+    now = timezone.localtime(now)
     qset = Invoice.objects.all()
 
     notify_qset = invoice_expiration_filter_queryset(qset)  # Specific remaining days
@@ -62,7 +63,7 @@ def invoice_creation(now):
         )
 
 def renew_graceperiod(now):
-    renews = MembershipRenew.objects.filter(end_date__date=now.date(),
+    renews = MembershipRenew.objects.filter(end_date__date__lte=now.date(),
                                             active=True,
                                             graceperiod=False,
                                             membership__state="active"
