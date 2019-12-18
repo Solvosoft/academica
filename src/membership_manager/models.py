@@ -135,3 +135,34 @@ class Invoice(models.Model):
     class Meta:
         verbose_name = "Factura"
         verbose_name_plural = "Facturas"
+
+
+class ActivityReport(models.Model):
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    description = models.TextField()
+    start_date = models.DateField()
+    end_date = models.DateField()
+    time_elapsed = models.PositiveIntegerField()
+
+    def __str__(self):
+        return "%s - %s" % (
+            self.organization, self.description
+        )
+    class Meta:
+        verbose_name = "Reporte Atencion"
+        verbose_name_plural = "Reportes de Atencion"
+
+class Attention(models):
+    activity = models.ForeignKey(ActivityReport,on_delete=models.CASCADE)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    description = models.TextField()
+
+    def __str__(self):
+        return "%s - dates: %s / %s" % (
+            self.activity, self.start_date,
+            self.end_date
+        )
+    class Meta:
+        verbose_name = "Fecha de Atencion"
+        verbose_name_plural = "Fechas de Atencion"
