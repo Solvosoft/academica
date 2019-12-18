@@ -1,6 +1,7 @@
 from dateutil.relativedelta import relativedelta
 from django.contrib import admin
 # Register your models here.
+from django.db.models import Sum
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
@@ -12,7 +13,6 @@ from membership_manager.admin_memberships import MembershipNotificationFilter, p
 from membership_manager.admin_pdf import InvoiceAdmin
 from membership_manager.forms import MembershipAddForm
 from membership_manager.models import MembershipRenew, Invoice
-
 
 class ContactAdmin(admin.ModelAdmin):
     list_filter = ('active', 'country')
@@ -80,11 +80,9 @@ class ContactAdmin(admin.ModelAdmin):
 
     memberships.short_description = "Membresías"
 
-
 class MembershipRenewAdmin(admin.StackedInline):
     model = models.MembershipRenew
     extra = 0
-
 
 class MemberShipAdmin(admin.ModelAdmin):
     actions = [payments_history]
@@ -222,6 +220,24 @@ class OrganizationAdmin(admin.ModelAdmin):
     memberships.short_description = "Membresías"
 
 
+class AttentionAdmin(admin.StackedInline):
+    model = models.Attention
+    extra = 0
+
+class ActivityReportAdmin(admin.ModelAdmin):
+    search_fields = ('start_date',)
+    list_display = ("organization", "start_date", "end_date","time_elapsed",)
+    inlines = [AttentionAdmin]
+    fields = [
+        "organization",
+        "start_date",
+        "end_date",
+        "description",
+        "time_elapsed"
+        ]
+
+
+admin.site.register(models.ActivityReport, ActivityReportAdmin)
 admin.site.register(models.Invoice, InvoiceAdmin)
 admin.site.register(models.Organization, OrganizationAdmin)
 admin.site.register(models.Contact, ContactAdmin)

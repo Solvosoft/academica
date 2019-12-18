@@ -152,11 +152,11 @@ class ActivityReport(models.Model):
         verbose_name = "Reporte Atencion"
         verbose_name_plural = "Reportes de Atencion"
 
-class Attention(models):
-    activity = models.ForeignKey(ActivityReport,on_delete=models.CASCADE)
+class Attention(models.Model):
+    activity = models.ForeignKey(ActivityReport,on_delete=models.CASCADE,related_name='attentions')
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    description = models.TextField()
+    duration = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return "%s - dates: %s / %s" % (
