@@ -186,7 +186,7 @@ class OrganizationAdmin(admin.ModelAdmin):
     list_filter = ('active', 'country')
     search_fields = ('name', 'initials')
     list_display = ("name", "email", "cellphone",
-                    "contact", "memberships", "active")
+                    "contact", "memberships","activities", "active")
     fields = [
         "name",
         "initials",
@@ -215,6 +215,18 @@ class OrganizationAdmin(admin.ModelAdmin):
             reverse("admin:membership_manager_membership_add") +
             "?organization=" + str(obj.pk) + "&membership_type=Organizacional&currency=" +
             str(obj.currency_id) + "&contact=" + str(obj.contact_id)
+        )
+    def activities(self, obj):
+        return format_html(
+            """<a href="{}" class="grp-button grp-button-state-inactive"  >{}</a> - 
+               <a href="{}" class="grp-button grp-button-state-inactive" target="_blank">Add</a>
+            """,
+            reverse("admin:membership_manager_activityreport_changelist") +
+            "?organization=" + str(obj.pk),
+            obj.activities.count(),
+            reverse("admin:membership_manager_activityreport_add") +
+            "?organization=" + str(obj.pk)
+
         )
 
     memberships.short_description = "Membresías"

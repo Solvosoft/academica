@@ -138,7 +138,7 @@ class Invoice(models.Model):
 
 
 class ActivityReport(models.Model):
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE,related_name='activities')
     description = models.TextField()
     start_date = models.DateField()
     end_date = models.DateField()
