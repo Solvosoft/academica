@@ -138,11 +138,14 @@ class Invoice(models.Model):
 
 
 class ActivityReport(models.Model):
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE,related_name='activities')
-    description = models.TextField()
-    start_date = models.DateField()
-    end_date = models.DateField()
-    time_elapsed = models.PositiveIntegerField()
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE,
+                                     related_name='activities', verbose_name="Organización")
+    description = models.TextField(verbose_name="Descripción")
+    start_date = models.DateField(verbose_name="Fecha de inicio")
+    end_date = models.DateField(verbose_name="Fecha de fin")
+    duration = models.PositiveIntegerField(default=0, verbose_name="Duración en horas",
+                                           help_text="Si se deja en 0 y se incluye atenciones la duración en horas se calcula automáticamente")
+    manual_edited = models.BooleanField(default=True)
 
     def __str__(self):
         return "%s - %s" % (
@@ -153,10 +156,14 @@ class ActivityReport(models.Model):
         verbose_name_plural = "Reportes de Atencion"
 
 class Attention(models.Model):
-    activity = models.ForeignKey(ActivityReport,on_delete=models.CASCADE,related_name='attentions')
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
-    duration = models.PositiveIntegerField(default=0)
+    activity = models.ForeignKey(ActivityReport,on_delete=models.CASCADE,
+                                 related_name='attentions')
+    start_date = models.DateTimeField( verbose_name="Hora de inicio")
+    end_date = models.DateTimeField(verbose_name="Hora de fin")
+    class Meta:
+        verbose_name = "Atencion"
+        verbose_name_plural = "Atenciones"
+
 
     def __str__(self):
         return "%s - dates: %s / %s" % (
