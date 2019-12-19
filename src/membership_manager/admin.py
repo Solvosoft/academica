@@ -240,6 +240,7 @@ class ActivityReportAdmin(admin.ModelAdmin):
     search_fields = ('start_date',)
     list_display = ("organization", "start_date", "end_date","time_elapsed",)
     inlines = [AttentionAdmin]
+    readonly_fields = ['time_elapsed',]
     fields = [
         "organization",
         "start_date",
