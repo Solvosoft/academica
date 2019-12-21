@@ -1,3 +1,5 @@
+
+window.addEventListener("load",  function(){
 (function($) {
  $(document).ready(function() {
     if(window.location.href.indexOf("/change/") !== -1){
@@ -16,4 +18,6 @@
         });
     }
     });
-})(grp.jQuery);
+})(django.jQuery);
+
+});

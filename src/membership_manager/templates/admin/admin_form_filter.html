@@ -1,0 +1,29 @@
+{% load i18n %}
+<h3>{% blocktrans with filter_title=title %} By {{ filter_title }} {% endblocktrans %}</h3>
+<ul>
+  <li>
+
+    {% with choices.0 as all_choice %}
+    <form method="GET" action="">
+        {% with  spec.get_form as form %}
+        <table>
+         {{ form }}
+        </table>
+        {{form.media}}
+        {% endwith %}
+        {% for k, v in all_choice.query_parts %}
+            <input type="hidden" name="{{ k }}" value="{{ v }}" />
+        {% endfor %}
+
+        {% if not all_choice.selected %}
+          <strong><a href="{{ all_choice.query_string }}">⨉ {% trans 'Remove' %}</a></strong>
+        {% endif %}
+
+        <input type="submit" name="submit" value="filtrar">
+    </form>
+    {% endwith %}
+  </li>
+</ul>
+<style>.ui-autocomplete{
+z-index: 99999;
+}</style>

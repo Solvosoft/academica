@@ -7,7 +7,7 @@ from membership_core.models import SystemCurrency, RenewalPeriod, Service
 
 class GeneralContactInfo(models.Model):
     PAYMENT = (
-        ("Chash", "Efectivo"),
+        ("Cash", "Efectivo"),
         ("Bank transfer", "Transferencia bancaria"),
         ("Paypal", "Paypal"),
         ("Bitcoins", "Bitcoins")
@@ -66,7 +66,7 @@ class Membership(models.Model):
              ("Honoraria", "Honoraria"))
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
     membership_type = models.CharField(max_length=50, choices=TYPES, verbose_name="Tipo de membresía")
-    contact = models.ForeignKey(Contact, null=True, blank=True, on_delete=models.CASCADE, verbose_name="Contato")
+    contact = models.ForeignKey(Contact, null=True, blank=True, on_delete=models.SET_NULL, verbose_name="Contato")
     organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=300, verbose_name="Nombre")
     annual_cost = models.FloatField(verbose_name="Costo")
@@ -84,6 +84,7 @@ class Membership(models.Model):
     class Meta:
         verbose_name = "Membresía"
         verbose_name_plural = "Membresías"
+        ordering = ('organization', )
 
 
 class MembershipRenew(models.Model):

@@ -1,0 +1,94 @@
+{% extends "admin/index.html" %}
+{% load static i18n %}
+
+{% block content %}
+<div id="content-main">
+
+<ul id="mainul">
+    <li><a href="{% url 'admin:membership_manager_organization_changelist' %}">
+        <img width="128" height="128" src="{% static 'img/organizacion.svg' %}" />
+        <p>Organización</p></a></li>
+    <li><a href="{% url 'admin:membership_manager_membership_changelist' %}">
+        <img width="128" height="128"  src="{% static 'img/membresia.svg' %}" />
+        <p>Membresías</p> </a> </li>
+    <li><a href="{% url 'admin:membership_manager_invoice_changelist' %}">
+        <img width="128" height="128"  src="{% static 'img/invoice.svg' %}" />
+        <p>Facturas</p></a></li>
+    <li><a href="{% url 'admin:membership_manager_contact_changelist' %}">
+        <img width="128" height="128"  src="{% static 'img/Contacto.svg' %}" />
+        <p>Contactos</p> </a></li>
+</ul>
+<br><br>
+   <div id="otherapp">
+{% if app_list %}
+    {% for app in app_list %}
+        {% if app.app_label != 'exchange' and app.app_label != 'membership_manager' %}
+        <div class="app-{{ app.app_label }} module">
+        <table>
+        <caption>
+            <a href="{{ app.app_url }}" class="section" title="{% blocktrans with name=app.name %}Models in the {{ name }} application{% endblocktrans %}">{{ app.name }}</a>
+        </caption>
+        {% for model in app.models %}
+            <tr class="model-{{ model.object_name|lower }}">
+            {% if model.admin_url %}
+                <th scope="row"><a href="{{ model.admin_url }}">{{ model.name }}</a></th>
+            {% else %}
+                <th scope="row">{{ model.name }}</th>
+            {% endif %}
+
+            {% if model.add_url %}
+                <td><a href="{{ model.add_url }}" class="addlink">{% trans 'Add' %}</a></td>
+            {% else %}
+                <td>&nbsp;</td>
+            {% endif %}
+
+            {% if model.admin_url %}
+                {% if model.view_only %}
+                <td><a href="{{ model.admin_url }}" class="viewlink">{% trans 'View' %}</a></td>
+                {% else %}
+                <td><a href="{{ model.admin_url }}" class="changelink">{% trans 'Change' %}</a></td>
+                {% endif %}
+            {% else %}
+                <td>&nbsp;</td>
+            {% endif %}
+            </tr>
+
+        {% endfor %}
+        </table>
+        </div>
+          {% endif %}
+    {% endfor %}
+{% else %}
+    <p>{% trans "You don't have permission to view or edit anything." %}</p>
+{% endif %}
+
+   </div>
+
+
+</div>
+
+<style>
+    #content-main{
+        width: 150%;
+    }
+    #mainul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+
+    }
+    #mainul li {
+      float: left;
+    }
+    #mainul li a {
+      display: block;
+
+      text-align: center;
+      padding: 16px;
+      text-decoration: none;
+    }
+
+</style>
+
+{% endblock %}

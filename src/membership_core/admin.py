@@ -18,4 +18,5 @@ admin.site.register(models.MembershipTemplate, MembershipTemplateAdmin)
 admin.site.site_title = "Membresias de Código Sur"
 admin.site.site_header = "Membresias de Código Sur"
 admin.site.index_title = "Membresias de Código Sur"
+admin.site.index_template =  'admin/dashboard/welcome.html'
 

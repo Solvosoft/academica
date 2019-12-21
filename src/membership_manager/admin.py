@@ -2,6 +2,7 @@ from dateutil.relativedelta import relativedelta
 from django.contrib import admin
 # Register your models here.
 from django.db.models import Sum
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
@@ -11,11 +12,12 @@ from membership_core.models import MembershipTemplate, SystemCurrency
 from membership_manager import models
 from membership_manager.admin_memberships import MembershipNotificationFilter, payments_history
 from membership_manager.admin_pdf import InvoiceAdmin
+from membership_manager.adminfilters import PaisFilter, OrganizationFilter
 from membership_manager.forms import MembershipAddForm
 from membership_manager.models import MembershipRenew, Invoice
 
 class ContactAdmin(admin.ModelAdmin):
-    list_filter = ('active', 'country')
+    list_filter = ('active', PaisFilter)
     search_fields = ('first_name', 'last_name')
     list_display = ("first_name",
                     "last_name",
@@ -80,15 +82,16 @@ class ContactAdmin(admin.ModelAdmin):
 
     memberships.short_description = "Membresías"
 
-class MembershipRenewAdmin(admin.StackedInline):
+class MembershipRenewAdmin(admin.TabularInline):
     model = models.MembershipRenew
     extra = 0
+    classes = ['collapse', 'collapsed']
 
 class MemberShipAdmin(admin.ModelAdmin):
     actions = [payments_history]
-    list_filter = (MembershipNotificationFilter, 'state', 'contact__country', 'services', 'contact', 'organization')
+    list_filter = (OrganizationFilter, MembershipNotificationFilter, 'state', 'services')
     search_fields = ('contact__first_name', 'contact__last_name')
-    list_display = ('name', 'contact', 'organization', 'annual_cost',
+    list_display = ('organization', 'annual_cost',
                     'currency', 'renewal_period', 'state', 'invoices', 'next_pay',
                     'exchange_rates')
     readonly_fields = ['exchange_rates', 'invoices', 'next_pay']
@@ -99,6 +102,9 @@ class MemberShipAdmin(admin.ModelAdmin):
               'membership_type', 'contact', 'organization',
               'name', 'description', 'annual_cost', 'currency', 'exchange_rates',
               'services', 'renewal_period', 'state']
+
+    class Media:
+        js = ('js/membership.js', )
 
     def exchange_rates(self, obj):
         if obj:
@@ -183,7 +189,7 @@ class MemberShipAdmin(admin.ModelAdmin):
 
 
 class OrganizationAdmin(admin.ModelAdmin):
-    list_filter = ('active', 'country')
+    list_filter = ('active', PaisFilter)
     search_fields = ('name', 'initials')
     list_display = ("name", "email", "cellphone",
                     "contact", "memberships","activities", "active")
@@ -238,7 +244,7 @@ class AttentionAdmin(admin.StackedInline):
 
 class ActivityReportAdmin(admin.ModelAdmin):
     search_fields = ('start_date',)
-    list_display = ("organization","duration", "description", "start_date", "end_date")
+    list_display = ("organization","duration", "get_description", "start_date", "end_date")
     inlines = [AttentionAdmin]
 
     fields = [
@@ -248,6 +254,11 @@ class ActivityReportAdmin(admin.ModelAdmin):
         "description",
         "duration"
         ]
+
+    def get_description(self, obj):
+        return mark_safe(render_to_string('activity_description.html', {'obj': obj}))
+
+    get_description.short_description = "Descripción"
 
 
 admin.site.register(models.ActivityReport, ActivityReportAdmin)

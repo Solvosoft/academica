@@ -34,9 +34,10 @@ ADMINS = [('support', 'support@solvosoft.com') ]
 # Application definition
 
 INSTALLED_APPS = [
+
     'django.contrib.contenttypes',
-    'grappelli.dashboard',
-    'grappelli',
+    #'grappelli.dashboard',
+    #'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.sessions',
@@ -48,7 +49,8 @@ INSTALLED_APPS = [
     'djmoney',
     'djmoney.contrib.exchange',
     'ajax_select',
-    'async_notifications'
+    'async_notifications',
+
 ]
 
 MIDDLEWARE = [
@@ -59,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'membresias_codigosur.urls'
@@ -175,4 +178,5 @@ ASYNC_NOTIFICATION_USER_LOOKUP_FIELDS= {'order_by': 'first_name',
                 'first_name__icontains',
                 'last_name__icontains'],
      'group_lookup': 'groups__name'}
+
 

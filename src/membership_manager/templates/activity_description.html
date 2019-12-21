@@ -1,0 +1,25 @@
+
+<div id="resume_{{obj.pk}}">
+{{ obj.description|truncatewords_html:200 }}
+    <a href="javascript:void(0)" id="l{{obj.pk}}" onclick="">Leer más</a>
+</div>
+
+<div id="more_{{obj.pk}}"  >
+    {{obj.description|safe}}
+    <a href="javascript:void(0)" id="dl{{obj.pk}}" onclick="">Leer menos</a>
+</div>
+
+<script>
+(function($){
+  $("#more_{{obj.pk}}").toggle();
+  $("#l{{obj.pk}}").on('click', function(){
+    $("#more_{{obj.pk}}").toggle();
+    $("#resume_{{obj.pk}}").toggle();
+  });
+  $("#dl{{obj.pk}}").on('click', function(){
+    $("#more_{{obj.pk}}").toggle();
+    $("#resume_{{obj.pk}}").toggle();
+  });
+
+})(django.jQuery)
+</script>

@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf import settings
+
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.decorators.csrf import csrf_exempt
@@ -21,15 +21,15 @@ from django.views.generic import RedirectView
 from django.views.static import serve
 from ajax_select import urls as ajax_select_urls
 
-from ajax_select import urls as ajax_select_urls
-
 from membership_manager.admin_memberships import MembInvoices
 from membership_manager.urls import urlpatterns as url_manager
 from membership_manager.views import UpdateBot
+from django.conf import settings
+
 
 urlpatterns = [
     path('', RedirectView.as_view(url="/admin/")),
-    path('grappelli/', include('grappelli.urls')), # grappelli URLS
+
     path('admin/', admin.site.urls),
     path('telbot/', csrf_exempt(UpdateBot.as_view())),
     path('payments/', csrf_exempt(MembInvoices.as_view())),
@@ -40,3 +40,4 @@ urlpatterns = [
             )
 
 ] + url_manager
+
