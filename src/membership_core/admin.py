@@ -3,15 +3,14 @@ from membership_core import models
 
 # Register your models here.
 admin.site.register([
-    models.SystemCurrency, models.Service, models.RenewalPeriod,
+    models.SystemCurrency, models.ServiceType, models.RenewalPeriod,
 
 ])
 
 class MembershipTemplateAdmin(admin.ModelAdmin):
-    list_filter = ('state',  'services')
+    list_filter = ('state',)
     search_fields = ('name', 'currency')
     list_display = ('name', 'annual_cost', 'currency', 'renewal_period', 'state')
-    filter_horizontal = ['services']
 
 
 admin.site.register(models.MembershipTemplate, MembershipTemplateAdmin)

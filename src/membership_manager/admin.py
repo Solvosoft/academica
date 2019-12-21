@@ -87,21 +87,26 @@ class MembershipRenewAdmin(admin.TabularInline):
     extra = 0
     classes = ['collapse', 'collapsed']
 
+class ServiceAdmin(admin.TabularInline):
+    model = models.Service
+    extra = 0
+    classes = ['collapse', 'collapsed']
+
 class MemberShipAdmin(admin.ModelAdmin):
     actions = [payments_history]
-    list_filter = (OrganizationFilter, MembershipNotificationFilter, 'state', 'services')
+    list_filter = (OrganizationFilter, MembershipNotificationFilter, 'state' )
     search_fields = ('contact__first_name', 'contact__last_name')
     list_display = ('organization', 'annual_cost',
                     'currency', 'renewal_period', 'state', 'invoices', 'next_pay',
                     'exchange_rates')
     readonly_fields = ['exchange_rates', 'invoices', 'next_pay']
-    filter_horizontal = ['services']
-    inlines = [MembershipRenewAdmin]
+
+    inlines = [ServiceAdmin, MembershipRenewAdmin]
     form_class = MembershipAddForm
     fields = ['membership_template',
               'membership_type', 'contact', 'organization',
               'name', 'description', 'annual_cost', 'currency', 'exchange_rates',
-              'services', 'renewal_period', 'state']
+              'renewal_period', 'state']
 
     class Media:
         js = ('js/membership.js', )
@@ -146,7 +151,7 @@ class MemberShipAdmin(admin.ModelAdmin):
                              'description': obj.description,
                              'renewal_period': obj.renewal_period_id,
                              'state': obj.state,
-                             'services': [svc.id for svc in obj.services.all()]})
+                             })
         return args
 
     def save_formset(self, request, form, formset, change):

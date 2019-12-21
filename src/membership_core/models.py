@@ -57,7 +57,7 @@ class RenewalPeriod(models.Model):
         verbose_name = "Periodo de renovación"
         verbose_name_plural = "Periodos de renovación"
 
-class Service(models.Model):
+class ServiceType(models.Model):
     name = models.CharField(max_length=300, verbose_name="nombre")
 
     def __str__(self):
@@ -78,7 +78,7 @@ class MembershipTemplate(models.Model):
     currency = models.ForeignKey(SystemCurrency, on_delete=models.CASCADE,
                                  verbose_name="Moneda")
     description = models.TextField(null=True, blank=True, verbose_name="Descripción")
-    services = models.ManyToManyField(Service, verbose_name="Servicios")
+    services = models.ManyToManyField(ServiceType, verbose_name="Servicios")
     renewal_period = models.ForeignKey(RenewalPeriod, on_delete=models.CASCADE,
                                        verbose_name="Periodo de renovación")
     state = models.CharField(max_length=10, choices=STATES, default="active",
