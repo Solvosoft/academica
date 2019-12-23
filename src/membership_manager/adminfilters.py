@@ -20,8 +20,8 @@ class PaisFilter(admin.SimpleListFilter):
     def queryset(self, request, queryset):
         value = self.value()
         if value:
-            return queryset.filter(Q(organization__country=self.value())|
-                               Q(contact__country=self.value()))
+            return queryset.filter(Q(country=self.value())|
+                               Q(country=self.value()))
         return queryset
 
 
