@@ -1,97 +1,142 @@
-{% extends "admin/base_site.html" %}
+{% extends "admin/change_list.html" %}
 
 <!-- LOADING -->
 {% load i18n  admin_urls static admin_list %}
 
+{% block extrastyle %}
+  {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "css/payments.css" %}">
+  <link rel="stylesheet" type="text/css" href="{% static "admin/css/changelists.css" %}">
+  {% if cl.formset %}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">
+  {% endif %}
+  {% if cl.formset or action_form %}
+    <script src="{% url 'admin:jsi18n' %}"></script>
+  {% endif %}
+  {{ media.css }}
+  {% if not actions_on_top and not actions_on_bottom %}
+    <style>
+      #changelist table thead th:first-child {width: inherit}
+    </style>
+  {% endif %}
+{% endblock %}
 {% block breadcrumbs %}
-
         <div class="breadcrumbs">
             <a href="{% url 'admin:index' %}">{% trans "Home" %}</a>
-            &rsaquo; <a href="{% url 'admin:app_list' app_label=cl.opts.app_label %}">{{ cl.opts.app_config.verbose_name }}</a>
+            &rsaquo; <a href="{% url 'admin:membership_manager_membership_changelist'%}">Gestion de {{ cl.opts.app_config.verbose_name }}</a>
             &rsaquo; {{ cl.opts.verbose_name_plural|capfirst }}
         </div>
 {% endblock %}
 <!-- CONTENT -->
+{% block extrahead %}
+{{ block.super }}
+{{ media.js }}
+{% endblock %}
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-list{% endblock %}
 
+
+{% block coltype %}flex{% endblock %}
 
 {% block content %}
-{% if object_list %}
-                {% for temp in object_list %}
-                    <div class="grp-module">
-                        <div class="grp-row">
-                            <div class="l-2cr-fluid l-d-12">
-                                <div class="c-2">
-                                    <header style="float: left"><h1>{{temp.name}}</h1></header>
-                                        <ul class="grp-horizontal-list" style="padding: 25px 10px 10px; font-weight: bold">
-                                            <li class="grp-results">
-                                                <span>Pendiente: {{temp.pending}}</span>
-                                            </li>
-                                            <li class="grp-results">
-                                                <span>Total Pagado: {{temp.paid}}</span>
-                                            </li>
-                                        </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <div class="module filtered" id="changelist">
+        {% block filters %}
+            <div id="changelist-filter">
+                <h2>Filtro</h2>
+                <h3>Busqueda por estado:</h3>
+                <ul>
+                    <li>
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <ul>
+                                <li>
+                                    <div style="float: left">
+                                        {{ form.option }}
+                                    </div>
+                                </li>
+                                <li>
+                                    <div style="float: left; margin-left: 15px">
+                                       <input type="submit" class="" value="Filtrar">
+                                   </div>
+                                </li>
+                            </ul>
+                       </form>
+                    </li>
+                </ul>
+            </div>
+        {% endblock %}
 
-                <div class="grp-module grp-changelist-results" style="margin-bottom: 40px">
-                {% if temp.no_results %}
-                    <header><h1  style="padding: 20px 15px ;font-weight: normal">{{temp.no_results}} {{ temp.filter_option }}</h1></header>
-                    {% else %}
-                     <table id="result_list" class="grp-table grp-sortable" cellspacing="0" style="width: 100%;">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="action-checkbox-column">
-                                    <div class="grp-text"><span><input type="checkbox" id="action-toggle"></span></div>
-                                </th>
-                                <th scope="col" class="sortable column-membership">
-                                    <div class="grp-text"><a href="?o=1">Membresía</a></div>
-                                </th>
-                                <th scope="col" class="sortable column-expiration_date">
-                                    <div class="grp-text"><a href="?o=2">Fecha de expiración</a></div>
-                                </th>
-                                <th scope="col" class="sortable column-amount">
-                                    <div class="grp-text"><a href="?o=3">Monto</a></div>
-                                </th>
-                                <th scope="col" class="sortable column-currency">
-                                    <div class="grp-text"><a href="?o=4">Moneda</a></div>
-                                </th>
-                                <th scope="col" class="sortable column-status">
-                                    <div class="grp-text"><a href="?o=5">Estado</a></div>
-                                </th>
-                                <th scope="col" class="sortable column-payment_date">
-                                    <div class="grp-text"><a href="?o=6">Fecha de pago</a></div>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for obj in temp.results %}
-                                <tr class="grp-row grp-row-even">
-                                    <td class="action-checkbox">
-                                        <input type="checkbox" name="_selected_action" value="4" class="action-select">
-                                    </td>
-                                    <th class="field-membership nowrap">
-                                        <a href="#">{{ obj.membership.name }}</a>
-                                    </th>
-                                    <td class="field-expiration_date nowrap">{{ obj.expiration_date }}</td>
-                                    <td class="field-amount">{{ obj.amount }}</td>
-                                    <td class="field-currency nowrap">{{ obj.currency }}</td>
-                                    <td class="field-status">{{obj.status}}</td>
-                                    <td class="field-payment_date nowrap">
-                                        {% if obj.expiration_date %}
-                                            {{ obj.expiration_date }}
-                                        {% else %}
-                                            -
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                 {% endif %}
-                </div>
-                {% endfor %}
-            {% endif %}
-
+        <form id="changelist-form" method="post"{% if cl.formset and cl.formset.is_multipart %} enctype="multipart/form-data"{% endif %} novalidate>{% csrf_token %}
+            {% block result_list %}
+             <div class="results">
+             {% if object_list %}
+                 {% for temp in object_list %}
+                     <h2>{{temp.name}}</h2>
+                     <div class="info-toolbar">
+                         <span>Pendiente: {{temp.pending}}</span>&mdash;<span>Total Pagado: {{temp.paid}}</span>
+                     </div>
+                     <div class="changelist-results" style="margin-bottom: 40px">
+                   {% if temp.no_results %}
+                       <header><h1  style="padding: 20px 15px ;font-weight: normal">{{temp.no_results}} {{ temp.filter_option }}</h1></header>
+                   {% else %}
+                       <table id="result_list" class=""  style="">
+                       <thead>
+                           <tr class="row2">
+                               <th scope="col" class="action-checkbox-column">
+                                   <div class=""><span><input type="checkbox" id="action-toggle"></span></div>
+                               </th>
+                               <th scope="col" class="sortable column-membership">
+                                   <div class="text"><a href="?o=1">Membresía</a></div>
+                               </th>
+                               <th scope="col" class="sortable column-expiration_date">
+                                   <div class="text"><a href="?o=2">Fecha de expiración</a></div>
+                               </th>
+                               <th scope="col" class="sortable column-amount">
+                                   <div class="text"><a href="?o=3">Monto</a></div>
+                               </th>
+                               <th scope="col" class="sortable column-currency">
+                                   <div class="text"><a href="?o=4">Moneda</a></div>
+                               </th>
+                               <th scope="col" class="sortable column-status">
+                                   <div class="text"><a href="?o=5">Estado</a></div>
+                               </th>
+                               <th scope="col" class="sortable column-payment_date">
+                                   <div class="text"><a href="?o=6">Fecha de pago</a></div>
+                               </th>
+                           </tr>
+                       </thead>
+                       <tbody>
+                           {% for obj in temp.results %}
+                               <tr class="row1">
+                                   <td class="action-checkbox">
+                                       <input type="checkbox" name="_selected_action" value="4" class="action-select">
+                                   </td>
+                                   <th class="field-membership nowrap">
+                                       <a href="#">{{ obj.membership.name }}</a>
+                                   </th>
+                                   <td class="field-expiration_date nowrap">{{ obj.expiration_date }}</td>
+                                   <td class="field-amount">{{ obj.amount }}</td>
+                                   <td class="field-currency nowrap">{{ obj.currency }}</td>
+                                   <td class="field-status">{{obj.status}}</td>
+                                   <td class="field-payment_date nowrap">
+                                       {% if obj.expiration_date %}
+                                           {{ obj.expiration_date }}
+                                       {% else %}
+                                           -
+                                       {% endif %}
+                                   </td>
+                               </tr>
+                           {% endfor %}
+                       </tbody>
+                       </table>
+                    {% endif %}
+                   </div>
+                   {% endfor %}
+             {% endif %}
+        {% endblock %}
+      </form>
+    </div>
 {% endblock %}
+<link href="/static/ajax_select/css/ajax_select.css" type="text/css" media="all" rel="stylesheet">
+<script type="text/javascript" src="/static/ajax_select/js/bootstrap.js"></script><script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script><script type="text/javascript" src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script type="text/javascript" src="/static/ajax_select/js/ajax_select.js"></script>
+
