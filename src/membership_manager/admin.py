@@ -84,12 +84,12 @@ class ContactAdmin(admin.ModelAdmin):
 
 class MembershipRenewAdmin(admin.TabularInline):
     model = models.MembershipRenew
-    extra = 0
+    extra = 1
     classes = ['collapse', 'collapsed']
 
 class ServiceAdmin(admin.TabularInline):
     model = models.Service
-    extra = 0
+    extra = 1
     classes = ['collapse', 'collapsed']
 
 class MemberShipAdmin(admin.ModelAdmin):
@@ -245,7 +245,7 @@ class OrganizationAdmin(admin.ModelAdmin):
 
 class AttentionAdmin(admin.StackedInline):
     model = models.Attention
-    extra = 0
+    extra = 1
 
 class ActivityReportAdmin(admin.ModelAdmin):
     search_fields = ('start_date',)
