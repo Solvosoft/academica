@@ -59,11 +59,12 @@ class MembInvoices(ListView):
         new_tmp_list = []
         for id in ids:
             tmp_dict = []
-            object_dict = {'name': '', 'paid': 0, 'pending': 0}
+            object_dict = {'name': '', 'paid': 0, 'pending': 0,'pk':0}
             for inv in queryset:
                 if inv.membership.pk == int(id):
                     if object_dict['name'] == '':
                         object_dict['name'] = inv.membership.name
+                        object_dict['pk'] = inv.membership.pk
                     tmp_dict.append(inv)
             if len(tmp_dict) >= 1:
                 object_dict['results'] = tmp_dict

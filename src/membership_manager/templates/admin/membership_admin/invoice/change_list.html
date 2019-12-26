@@ -70,7 +70,7 @@
              <div class="results">
              {% if object_list %}
                  {% for temp in object_list %}
-                     <h2>{{temp.name}}</h2>
+                     <h2> &laquo; <a style="text-decoration: none;font-weight: bold;color: #fff;" href="{% url 'admin:membership_manager_invoice_changelist'%}?membership__id__exact={{temp.pk}}">{{temp.name|capfirst}}</a> &raquo;</h2>
                      <div class="info-toolbar">
                          <span>Pendiente: {{temp.pending}}</span>&mdash;<span>Total Pagado: {{temp.paid}}</span>
                      </div>
@@ -111,7 +111,7 @@
                                        <input type="checkbox" name="_selected_action" value="4" class="action-select">
                                    </td>
                                    <th class="field-membership nowrap">
-                                       <a href="#">{{ obj.membership.name }}</a>
+                                       {{ obj.membership.name }}
                                    </th>
                                    <td class="field-expiration_date nowrap">{{ obj.expiration_date }}</td>
                                    <td class="field-amount">{{ obj.amount }}</td>
