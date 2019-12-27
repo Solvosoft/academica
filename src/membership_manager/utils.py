@@ -1,3 +1,5 @@
+import random
+import string
 from datetime import timedelta
 
 
@@ -10,6 +12,9 @@ from django.db.models import Q
 from django.utils import timezone
 
 from membership_manager.models import MembershipRenew, Membership, Invoice
+
+def stringcode_generator(size=4, chars=string.ascii_uppercase):
+    return ''.join(random.choice(chars) for _ in range(size))
 
 def get_administrative_user():
     return User.objects.filter(is_superuser=True).first().pk

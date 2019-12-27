@@ -1,4 +1,5 @@
 {% load static %}
+{% load invoice_code %}
 <html>
     <head>
         <title>Facturación</title>
@@ -341,7 +342,7 @@
     <body>
 
         <div id="header_content1">
-            FACTURA: &nbsp &nbsp &nbsp {{ invoice.id }}
+            FACTURA: &nbsp &nbsp &nbsp {% new_invoice_code invoice.id %}
         </div>
         <div id="header_content2">
             {{ invoice.status }}
