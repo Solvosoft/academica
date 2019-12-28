@@ -46,7 +46,7 @@ class Organization(GeneralContactInfo):
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, verbose_name="Contacto")
 
     def __str__(self):
-        return self.name
+        return self.name + '.'
 
     class Meta:
         verbose_name = "Organización"

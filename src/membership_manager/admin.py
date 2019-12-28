@@ -10,7 +10,8 @@ from django.utils.safestring import mark_safe
 
 from membership_core.models import MembershipTemplate, SystemCurrency
 from membership_manager import models
-from membership_manager.admin_memberships import MembershipNotificationFilter, payments_history
+from membership_manager.admin_memberships import MembershipNotificationFilter, membership_payments_history, \
+    organization_payments_history
 from membership_manager.admin_pdf import InvoiceAdmin
 from membership_manager.adminfilters import PaisFilter, OrganizationFilter
 from membership_manager.forms import MembershipAddForm
@@ -96,7 +97,7 @@ class ServiceAdmin(admin.TabularInline):
     classes = ['collapse', 'collapsed']
 
 class MemberShipAdmin(admin.ModelAdmin):
-    actions = [payments_history]
+    actions = [membership_payments_history]
     list_filter = (OrganizationFilter, MembershipNotificationFilter, 'state' )
     search_fields = ('contact__first_name', 'contact__last_name')
     list_display = ('organization', 'annual_cost',
@@ -201,6 +202,7 @@ class OrganizationAdmin(admin.ModelAdmin):
     search_fields = ('name', 'initials')
     list_display = ("name", "email", "cellphone",
                     "contact", "memberships","activities", "active")
+    actions = [organization_payments_history]
     fields = [
         "name",
         "initials",

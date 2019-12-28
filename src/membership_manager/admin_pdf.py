@@ -65,7 +65,8 @@ class InvoiceAdmin(admin.ModelAdmin):
 
     search_fields = ('membership__contact__first_name',
                      'membership__contact__last_name',
-                     'membership__name')
+                     'membership__name',
+                     'membership__organization')
     list_display = ('membership', 'expiration_date', 'amount', 'currency', 'status', 'payment_date', 'download')
     list_editable = ()
     readonly_fields = ('download',)

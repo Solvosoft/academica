@@ -7,6 +7,8 @@
   {{ block.super }}
     <link rel="stylesheet" type="text/css" href="{% static "css/payments.css" %}">
   <link rel="stylesheet" type="text/css" href="{% static "admin/css/changelists.css" %}">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/base/jquery-ui.css">
+
   {% if cl.formset %}
     <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">
   {% endif %}
@@ -70,10 +72,10 @@
              <div class="results">
              {% if object_list %}
                  {% for temp in object_list %}
-                     <h2> &laquo; <a style="text-decoration: none;font-weight: bold;color: #fff;" href="{% url 'admin:membership_manager_invoice_changelist'%}?membership__id__exact={{temp.pk}}">{{temp.name|capfirst}}</a> &raquo;</h2>
-                     <div class="info-toolbar">
-                         <span>Pendiente: {{temp.pending}}</span>&mdash;<span>Total Pagado: {{temp.paid}}</span>
-                     </div>
+                     <div class="item-collapse">
+                     <h2> &laquo; <a style="text-decoration: none;font-weight: bold;color: #fff;" href="{% url 'admin:membership_manager_invoice_changelist'%}?membership__id__exact={{temp.pk}}">{{temp.name|capfirst}}</a> &raquo; <span>Pendiente: {{temp.pending}}</span> &mdash; <span>Total Pagado: {{temp.paid}}</span></h2>
+                     <div>
+                     <h3>Facturas:</h3>
                      <div class="changelist-results" style="margin-bottom: 40px">
                    {% if temp.no_results %}
                        <header><h1  style="padding: 20px 15px ;font-weight: normal">{{temp.no_results}} {{ temp.filter_option }}</h1></header>
@@ -82,7 +84,7 @@
                        <thead>
                            <tr class="row2">
                                <th scope="col" class="action-checkbox-column">
-                                   <div class=""><span><input type="checkbox" id="action-toggle"></span></div>
+                                   <div class=""><span> - </span></div>
                                </th>
                                <th scope="col" class="sortable column-membership">
                                    <div class="text"><a href="?o=1">Membresía</a></div>
@@ -108,7 +110,7 @@
                            {% for obj in temp.results %}
                                <tr class="row1">
                                    <td class="action-checkbox">
-                                       <input type="checkbox" name="_selected_action" value="4" class="action-select">
+                                      <span>&ofcir;</span>
                                    </td>
                                    <th class="field-membership nowrap">
                                        {{ obj.membership.name }}
@@ -130,13 +132,17 @@
                        </table>
                     {% endif %}
                    </div>
+                     </div>
+                     </div>
                    {% endfor %}
              {% endif %}
         {% endblock %}
       </form>
     </div>
-{% endblock %}
-<link href="/static/ajax_select/css/ajax_select.css" type="text/css" media="all" rel="stylesheet">
-<script type="text/javascript" src="/static/ajax_select/js/bootstrap.js"></script><script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script><script type="text/javascript" src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-<script type="text/javascript" src="/static/ajax_select/js/ajax_select.js"></script>
 
+    <script type="text/javascript" src="/static/ajax_select/js/bootstrap.js"></script>
+<script src="{% static 'js/collapse.js' %}"></script>
+
+<link href="/static/ajax_select/css/ajax_select.css" type="text/css" media="all" rel="stylesheet">
+
+{% endblock %}
