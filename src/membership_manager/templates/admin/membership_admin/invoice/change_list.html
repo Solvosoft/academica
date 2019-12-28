@@ -110,7 +110,7 @@
                            {% for obj in temp.results %}
                                <tr class="row1">
                                    <td class="action-checkbox">
-                                      <span>&ofcir;</span>
+                                       <a href="{% url "admin:membership_manager_invoice_change" obj.pk %}">Ver más</a>
                                    </td>
                                    <th class="field-membership nowrap">
                                        {{ obj.membership.name }}
@@ -132,6 +132,7 @@
                        </table>
                     {% endif %}
                    </div>
+                     <a style="font-weight: bold;" href="{% url 'admin:membership_manager_membership_change' temp.pk%}">Mostrar informacion de membresia</a>
                      </div>
                      </div>
                    {% endfor %}

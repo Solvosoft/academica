@@ -76,7 +76,7 @@
              {% if object_list %}
                  {% for temp in object_list %}
                      <div class="item-collapse">
-                     <h2> &laquo; <a style="text-decoration: none;font-weight: bold;color: #fff;" href="{% url 'admin:membership_manager_organization_changelist'%}?membership__id__exact={{temp.pk}}">{{temp.name|capfirst}}</a> &raquo; <span>Pendiente: {{temp.pending}}</span> &mdash; <span>Total Pagado: {{temp.paid}}</span></h2>
+                     <h2> &laquo; {{temp.name|capfirst}} &raquo; <span>Pendiente: {{temp.pending}}</span> &mdash; <span>Total Pagado: {{temp.paid}}</span></h2>
                      <div>
                         <h3>Facturas:</h3>
                          <div class="changelist-results" style="margin-bottom: 40px">
@@ -135,6 +135,7 @@
                            </table>
                         {% endif %}
                        </div>
+                       <a href="{% url "admin:membership_manager_organization_change" temp.pk %}">Ver mas informacion de la organización</a>
                      </div>
                      </div>
                    {% endfor %}
