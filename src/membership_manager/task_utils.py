@@ -10,12 +10,13 @@ from membership_manager.models import Invoice, MembershipRenew
 from membership_manager.render_pdf import generate_invoice
 from membership_manager.utils import invoice_expiration_filter_queryset, renewal_expiration_filter_manager, \
     get_administrative_user
+from membership_telbot_manager.views import send_notification_message, send_deactivated_message
+
 
 def notify_invoice_expiration(now):
     """
     Gets the membership invoices and notify if there is any in the expiration range.
     """
-    now = timezone.localtime(now)
     qset = Invoice.objects.all()
 
     notify_qset = invoice_expiration_filter_queryset(qset)  # Specific remaining days
@@ -39,6 +40,7 @@ def notify_invoice_expiration(now):
             object_repr="Notificación de pago pendiente enviada",
             action_flag=CHANGE
         )
+        send_notification_message(invoice.membership.organization.telgroup.chat_id,invoice.membership.organization)
 
 def invoice_creation(now):
     renews = renewal_expiration_filter_manager(now)
@@ -61,6 +63,8 @@ def invoice_creation(now):
             object_repr="Factura creada pendiente de pago",
             action_flag=ADDITION
         )
+        send_notification_message(invoice.membership.organization.telgroup.chat_id,invoice.membership.organization)
+
 
 def renew_graceperiod(now):
     renews = MembershipRenew.objects.filter(end_date__date__lte=now.date(),
@@ -118,3 +122,4 @@ def membership_deactivating(now):
             object_repr="Membresia inactiva por falta de pago",
             action_flag=CHANGE
         )
+        send_deactivated_message(membership.organization.telgroup.chat_id,membership.organization)

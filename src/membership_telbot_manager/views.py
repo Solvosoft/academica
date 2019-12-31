@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from telebot import types
 
+from membership_manager.models import Organization
 from membership_telbot_manager.models import TelGroup, TelegramUser
 
 def create_membership_contact_by_template(request):
@@ -31,7 +32,7 @@ class UpdateBot(View):
     def post(self, request, *args, **kwargs):
         json_string = request.body.decode("UTF-8")
         update = telebot.types.Update.de_json(json_string)
-        bot.send_message(adminGroupID, update)
+        # bot.send_message(adminGroupID, update)
         bot.process_new_updates([update])
         return JsonResponse({'code': 200})
 
@@ -103,7 +104,6 @@ def group_migration(message):
 
 @bot.message_handler(content_types=['group_chat_created'])
 def group_creation(message):
-    bot.send_message(adminGroupID, message)
     if staff_authentication(message.from_user.id):
         TelGroup.objects.create(chat_id=message.chat.id,title=message.chat.title)
         bot.send_message(adminGroupID, f'Group {message.chat.title} added, Successfully!.')
@@ -144,13 +144,55 @@ def left_chat_member(message):
 
 def save_group_share_link(message):
     telgroup = TelGroup.objects.filter(chat_id=message.chat.id).first()
-    if telgroup:
+    if telgroup :
+        # telgroup.organization = org
         telgroup.invite_link = message.text
         telgroup.save()
-        bot.send_message(message.chat.id, f'Invite url updated!.')
+        markup = types.ForceReply(selective=False)
+        msg = bot.send_message(message.chat.id,
+                               "Ingresa el correo electronico de la organizacion la cual se va a enlazar con este grupo:",
+                               reply_markup=markup)
+        bot.register_next_step_handler(msg, link_telgroup_orgnanization)
 
-def send_invoice_message(doc):
-    bot.send_document('-302481354', doc)
 
-def send_notification_message(chat_id,message):
-    bot.send_message('-302481354', message)
+def link_telgroup_orgnanization(message):
+    telgroup = TelGroup.objects.filter(chat_id=message.chat.id).first()
+    bot.send_message(message.chat.id, message.text)
+    org = Organization.objects.filter(email=message.text).first()
+    if telgroup and org:
+        telgroup.organization = org
+
+        telgroup.save()
+        bot.send_message(message.chat.id, f'Invite url and email updated!.')
+
+def send_invoice_message(chat_id,doc):
+    bot.send_document(chat_id, doc)
+
+def send_notification_message(chat_id,organization):
+    notification_message = f'Pago pentiende: Estimado {organization.contact.first_name}' \
+                           f'\n'\
+                           f'\t Por este medio se le recuerda que su membresía está proxima a vencer y tiene un pendiente de pago.'\
+                           f'Sería una pena para Código Sur no poder renovar nuestros servicios, por favor evite esta situación cancelando'\
+                           f'su deuda antes de la fecha límite.'\
+                           f'\n'\
+                           f'Gracias por seguir con nosotros.'\
+                           F'Codigo Sur'
+
+    bot.send_message(chat_id, notification_message)
+
+def send_deactivated_message(chat_id,organization):
+    notification_message = f'Mebresia Expirada: Estimado {organization.contact.first_name}' \
+                           f'\n'\
+                           f'\t Su membresía ha sido desactivada! \n'\
+                           f'Se le informa que el tiempo regular de pago de su factura ha expirado, al igual \n que el'\
+                           f'tiempo de gracia que se le otorga a nuestros clientes como voto de confianza.\n Nos hemos'\
+                           f'visto obligados a suspenderle nuestros servicios hasta que su pago sea efectuado.\n' \
+                           f'\n' \
+                           f'Por favor asegurese cancelar su factura y reactivar su membresia.\n'\
+                           f'\n'\
+                           f'Más información: \n'\
+                           f'Tel: +506 8569 1676            Correo:ayuda@codigosur.org\n' \
+                           f'\n' \
+                           f'Codigo Sur'
+
+    bot.send_message(chat_id, notification_message)

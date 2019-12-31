@@ -151,5 +151,4 @@ class OrganizationFilter(FormFilter):
 
         for k in delitem:
             del term[k]
-        print(term)
         return term

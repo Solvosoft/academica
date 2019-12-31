@@ -5,7 +5,7 @@ from django.db import models
 from membership_manager.models import Organization
 
 class TelGroup(models.Model):
-    organization = models.OneToOneField(Organization, on_delete=models.CASCADE,null=True,blank=True)
+    organization = models.OneToOneField(Organization, on_delete=models.CASCADE,null=True,blank=True,related_name='telgroup')
     chat_id = models.IntegerField()
     title = models.CharField(max_length=250)
     invite_link = models.URLField(null=True,blank=True)

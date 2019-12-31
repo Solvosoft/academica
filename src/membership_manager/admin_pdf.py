@@ -36,7 +36,7 @@ def pay_invoice(modeladmin, request, queryset):
             object_repr="Pago de membresía realizado.",
             action_flag=CHANGE
         )
-        send_invoice_message(invoice.pdf_invoice.open())
+        send_invoice_message(invoice.membership.organization.telgroup.chat_id,invoice.pdf_invoice.open())
 
 pay_invoice.short_description = "Pagar factura"
 
