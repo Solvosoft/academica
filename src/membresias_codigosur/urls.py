@@ -23,7 +23,7 @@ from ajax_select import urls as ajax_select_urls
 
 from membership_manager.admin_memberships import MembInvoices, OrganizationInvoices
 from membership_manager.urls import urlpatterns as url_manager
-from membership_manager.views import UpdateBot
+from membership_telbot_manager.views import UpdateBot
 from django.conf import settings
 
 

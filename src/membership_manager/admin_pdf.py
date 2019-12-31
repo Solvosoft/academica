@@ -10,6 +10,7 @@ from membership_manager.models import MembershipRenew
 from membership_manager.render_pdf import generate_invoice
 from membership_manager import utils
 from membership_manager.utils import membership_payment_manager
+from membership_telbot_manager.views import send_invoice_message
 
 
 def pay_invoice(modeladmin, request, queryset):
@@ -35,6 +36,7 @@ def pay_invoice(modeladmin, request, queryset):
             object_repr="Pago de membresía realizado.",
             action_flag=CHANGE
         )
+        send_invoice_message(invoice.pdf_invoice.open())
 
 pay_invoice.short_description = "Pagar factura"
 
@@ -56,7 +58,6 @@ class InvoiceRenewalNotificationFilter(SimpleListFilter):
     def queryset(self, request, queryset):
         # This is where you process parameters selected by use via filter options:
         return utils.invoice_expiration_filter_queryset(queryset, self.value())
-
 
 class InvoiceAdmin(admin.ModelAdmin):
     actions = [pay_invoice]

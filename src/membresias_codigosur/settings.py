@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'membership_core',
     'membership_manager',
+    'membership_telbot_manager',
     'django_countries',
     'djmoney',
     'djmoney.contrib.exchange',

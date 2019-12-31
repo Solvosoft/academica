@@ -46,7 +46,7 @@ class Organization(GeneralContactInfo):
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, verbose_name="Contacto")
 
     def __str__(self):
-        return self.name + '.'
+        return self.name
 
     class Meta:
         verbose_name = "Organización"
@@ -187,6 +187,4 @@ class Attention(models.Model):
             self.activity, self.start_date,
             self.end_date
         )
-    class Meta:
-        verbose_name = "Fecha de Atencion"
-        verbose_name_plural = "Fechas de Atencion"
+
