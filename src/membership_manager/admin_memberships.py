@@ -152,7 +152,6 @@ class OrganizationInvoices(ListView):
                         object_dict['name'] = inv.membership.organization.name
                         object_dict['pk'] = inv.membership.organization.pk
                     tmp_dict.append(inv)
-            print(tmp_dict)
             if len(tmp_dict) >= 1:
                 object_dict['results'] = tmp_dict
                 object_dict = self.get_paid_value(object_dict)
@@ -165,7 +164,6 @@ class OrganizationInvoices(ListView):
                 new_tmp_list.append(object_dict)
             if filter_option is not None:
                 object_dict['filter_option'] = filter_option
-        print(new_tmp_list  )
         return new_tmp_list
 
     def get_queryset(self):
@@ -200,13 +198,11 @@ class OrganizationInvoices(ListView):
 
     def post(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()
-        print(self.object_list)
         form = self.form_class(self.request.POST or None)
         q = self.request.GET.get('ids')
         ids = q.strip('][').split(', ')
         if form.is_valid():
             tmp_qset = self.object_list.filter(status=form.cleaned_data['option'])
             new_qset = self.filter_queryset(ids, tmp_qset, self.filter_options[form.cleaned_data['option']])
-            print(new_qset)
             return self.render_to_response(self.get_context_data(object_list=new_qset, form=form))
         return self.render_to_response(self.get_context_data(object_list=self.object_list, form=form))
