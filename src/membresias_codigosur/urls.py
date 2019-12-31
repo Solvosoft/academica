@@ -32,8 +32,8 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('telbot/', csrf_exempt(UpdateBot.as_view())),
-    path('payments/membership/', csrf_exempt(MembInvoices.as_view())),
-    path('payments/organization/', csrf_exempt(OrganizationInvoices.as_view())),
+    path('payments/membership/', MembInvoices.as_view()),
+    path('payments/organization/', OrganizationInvoices.as_view()),
     re_path(r'^ajax_select/', include(ajax_select_urls)),
     re_path(r'^media/(?P<path>.*)$',
             serve,
