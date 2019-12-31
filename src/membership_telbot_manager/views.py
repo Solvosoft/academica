@@ -17,7 +17,7 @@ from django.views.generic.base import View
 import telebot
 
 bot = telebot.TeleBot('926661407:AAH_pSgLYwqzSYMtspC-nU8CoY_K_kmdmCY')
-bot.set_webhook(url="https://edd0dc42.ngrok.io/telbot/")
+bot.set_webhook(url="https://02f1ffd3.ngrok.io/telbot/")
 user_dict = {}
 adminGroupID = '-1001485781572'
 
@@ -151,3 +151,6 @@ def save_group_share_link(message):
 
 def send_invoice_message(doc):
     bot.send_document('-302481354', doc)
+
+def send_notification_message(chat_id,message):
+    bot.send_message('-302481354', message)

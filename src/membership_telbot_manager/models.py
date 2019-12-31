@@ -2,8 +2,10 @@ from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
+from membership_manager.models import Organization
 
 class TelGroup(models.Model):
+    organization = models.OneToOneField(Organization, on_delete=models.CASCADE,null=True,blank=True)
     chat_id = models.IntegerField()
     title = models.CharField(max_length=250)
     invite_link = models.URLField(null=True,blank=True)
@@ -16,7 +18,6 @@ class TelGroup(models.Model):
         return "%s" % (
             self.title
         )
-
 
 class TelegramUser(models.Model):
     user = models.OneToOneField(User,null=True,blank=True,on_delete=models.CASCADE)
