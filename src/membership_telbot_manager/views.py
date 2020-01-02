@@ -1,12 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.shortcuts import render, redirect
 
 # Create your views here.
 from telebot import types
 
-from membership_manager.models import Organization
+from membership_manager.models import Organization, Invoice
 from membership_telbot_manager.models import TelGroup, TelegramUser
 
 def create_membership_contact_by_template(request):
@@ -36,60 +37,57 @@ class UpdateBot(View):
         bot.process_new_updates([update])
         return JsonResponse({'code': 200})
 
-@bot.message_handler(commands=['start', 'login'])
-def login(message):
-    markup = types.ForceReply(selective=False)
-    msg = bot.send_message(message.chat.id, "Por favor, ingresa tu usuario:", reply_markup=markup)
-    bot.register_next_step_handler(msg, process_username_step)
-
-@bot.message_handler(commands=['salir'])
-def salir(message):
-    try:
-        markup = types.ReplyKeyboardRemove(selective=False)
-        chat_id = message.chat.id
-        option = message.text
-        user_dict['option'] = option
-        bot.send_message(chat_id, f'Saliendo del menu... ', reply_markup=markup)
-    except Exception as e:
-        bot.reply_to(message, 'Ha ocurrido un error.')
-
-@bot.message_handler(commands=['notificaciones'])
-def notifications(message):
+@bot.message_handler(commands=['ayuda', 'help'])
+def help(message):
     chat_id = message.chat.id
-    # data = message.text
-    markup = types.ReplyKeyboardMarkup(row_width=2)
-    itembtn1 = types.KeyboardButton('activar')
-    itembtn2 = types.KeyboardButton('/salir')
-    markup.add(itembtn1, itembtn2)
-    msg = bot.send_message(chat_id, 'Selecciona una opción: ', reply_markup=markup)
+    #help_dialog = open("telbot_intructions/help_dialog.txt", 'r')
+    bot.send_message(chat_id,reply_to_message_id=message.message_id,text=f"Los comandos disponibles son los siguientes: \n 1./estado\n 2./membresias")
 
-def process_username_step(message):
-    try:
-        username = message.text
-        user_dict['username'] = username
-        markup = types.ForceReply(selective=False)
-        msg = bot.send_message(message.chat.id, "Ahora por favor, ingresa tu contraseña:", reply_markup=markup)
-        bot.register_next_step_handler(msg, process_password_step)
-    except Exception as e:
-        bot.reply_to(message, 'Haocurrido algo.')
+@bot.message_handler(commands=['estado','state'])
+def state(message):
+    chat_id = message.chat.id
 
-def process_password_step(message):
-    try:
-        chat_id = message.chat.id
-        password = message.text
-        user_dict['password'] = password
-        user = authenticate(username=user_dict['username'], password=user_dict['password'])
-        if user is not None:
-            bot.send_message(message.chat.id, "Has iniciado sesión satisfactoriamente.")
-            markup = types.ReplyKeyboardMarkup(row_width=2)
-            itembtn1 = types.KeyboardButton('/notificaciones')
-            itembtn2 = types.KeyboardButton('/salir')
-            markup.add(itembtn1, itembtn2)
-            msg = bot.send_message(chat_id, 'Selecciona una opción: ', reply_markup=markup)
+    telgroup = TelGroup.objects.filter(chat_id=message.chat.id).first()
+    if telgroup:
+        memberships = Invoice.objects.filter(
+            Q(membership__state='active') | Q(membership__state='graceperiod'),
+            membership__organization__telgroup__pk=telgroup.pk,
+            status='pending')
+        if memberships:
+            new_text = "Facturas:\n"
+            for inv in memberships:
+                new_text+= f"{inv.membership.name}({inv.membership.state}) | " \
+                           f"Expira: {inv.expiration_date.date()} Estado: {inv.status} " \
+                           f"Monto: {inv.currency} {inv.amount}\n"
         else:
-            msg = bot.send_message(message.chat.id, "Usuario o contraseña incorrectos.")
-    except Exception as e:
-        bot.reply_to(message, 'Has ingresado datos incorrectos.')
+            new_text = "No cuenta con facturas pendientes.\n"
+            memberships = Invoice.objects.filter(
+                Q(membership__state='active') | Q(membership__state='inactive'),
+                membership__organization__telgroup__pk=telgroup.pk,
+                status='paid').order_by("payment_date").last()
+            if memberships:
+                for inv in memberships:
+                    new_text += f"{inv.membership.name}({inv.membership.state}) | " \
+                                f"Fecha de Pago: {inv.payment_date.date()} Estado: {inv.status} " \
+                                f"Monto: {inv.currency} {inv.amount}\n"
+
+        bot.send_message(chat_id, reply_to_message_id=message.message_id,text=new_text)
+
+@bot.message_handler(commands=['membresias','memberships'])
+def memberships_list(message):
+    chat_id = message.chat.id
+    telgroup = TelGroup.objects.filter(chat_id=message.chat.id).first()
+    if telgroup:
+        memberships = telgroup.organization.membs.all()
+        if memberships:
+            new_text = "Membresias:\n"
+            for mem in memberships:
+                new_text+= f"Nombre:{mem.name} - " \
+                           f"Estado: {mem.state} - " \
+                           f"Costo Anual: {mem.annual_cost}\n"
+        else:
+            new_text = "No cuenta con membresias.\n"
+        bot.send_message(chat_id, reply_to_message_id=message.message_id,text=new_text)
 
 @bot.message_handler(content_types=['migrate_to_chat_id'])
 def group_migration(message):
@@ -108,9 +106,6 @@ def group_creation(message):
         TelGroup.objects.create(chat_id=message.chat.id,title=message.chat.title)
         bot.send_message(adminGroupID, f'Group {message.chat.title} added, Successfully!.')
         bot.send_message(message.chat.id, f'Group {message.chat.title} added, Successfully!.')
-        markup = types.ForceReply(selective=False)
-        msg = bot.send_message(message.chat.id, "Pega aquí el link para compartir el grupo:", reply_markup=markup)
-        bot.register_next_step_handler(msg, save_group_share_link)
     else:
         bot.send_message(message.chat.id, f'Bad operation.')
 
@@ -127,7 +122,8 @@ def new_chat_member(message):
         bot.send_message(message.chat.id,
                          f'User {teluser.first_name} {teluser.last_name}  was resgistered to the group '
                                           f'{telgroup.title}, successfully!.')
-    bot.send_message(message.chat.id, f'This groups has no permissions')
+    else:
+        bot.send_message(message.chat.id, f'This groups has no permissions')
 
 @bot.message_handler(content_types=['left_chat_member'])
 def left_chat_member(message):
@@ -157,11 +153,9 @@ def save_group_share_link(message):
 
 def link_telgroup_orgnanization(message):
     telgroup = TelGroup.objects.filter(chat_id=message.chat.id).first()
-    bot.send_message(message.chat.id, message.text)
     org = Organization.objects.filter(email=message.text).first()
     if telgroup and org:
         telgroup.organization = org
-
         telgroup.save()
         bot.send_message(message.chat.id, f'Invite url and email updated!.')
 
@@ -184,14 +178,14 @@ def send_deactivated_message(chat_id,organization):
     notification_message = f'Mebresia Expirada: Estimado {organization.contact.first_name}' \
                            f'\n'\
                            f'\t Su membresía ha sido desactivada! \n'\
-                           f'Se le informa que el tiempo regular de pago de su factura ha expirado, al igual \n que el'\
-                           f'tiempo de gracia que se le otorga a nuestros clientes como voto de confianza.\n Nos hemos'\
-                           f'visto obligados a suspenderle nuestros servicios hasta que su pago sea efectuado.\n' \
+                           f'Se le informa que el tiempo regular de pago de su factura ha expirado, al igual que el'\
+                           f'tiempo de gracia que se le otorga a nuestros clientes como voto de confianza. Nos hemos'\
+                           f'visto obligados a suspenderle nuestros servicios hasta que su pago sea efectuado.' \
                            f'\n' \
                            f'Por favor asegurese cancelar su factura y reactivar su membresia.\n'\
                            f'\n'\
                            f'Más información: \n'\
-                           f'Tel: +506 8569 1676            Correo:ayuda@codigosur.org\n' \
+                           f'Tel: +506 8569 1676 \t Correo:ayuda@codigosur.org' \
                            f'\n' \
                            f'Codigo Sur'
 
