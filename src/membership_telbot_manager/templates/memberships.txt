@@ -1,0 +1,13 @@
+Membresías {{ title }}: {% if option != "none" and option != "services"%}
+{% for mem in memberships %}
+    -{{mem.name}} | Costo Anual: {{mem.currency}} {{mem.annual_cost}}
+{% endfor %}{% endif %}
+{% if option == "none" %}
+ {{memberships}}{% endif %}
+{% if option == "services" %}{% for mem in memberships %}
+    -{{mem.name}} | Costo Anual: {{mem.currency}} {{mem.annual_cost}}
+    Servicios:{% for service in mem.service_set.all %}
+        + {{service.servicetype.name}} : {{ service.description }}
+    {% endfor %}
+{% endfor %}
+{% endif %}

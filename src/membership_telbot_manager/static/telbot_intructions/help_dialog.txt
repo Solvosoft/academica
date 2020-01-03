@@ -1,6 +1,0 @@
-Lista de comandos
-Ingrese uno de los siguientes comandos:
-
-1./ESTADO (Muestra las membresias pendientes si las hay, en caso contrario muestra fecha vencimiento)
-2./MEMBRESIAS (Muestra un listado de las membresias).
-3. (more soon)...

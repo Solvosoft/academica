@@ -1,0 +1,11 @@
+{% if option == "pendientes"%}
+Facturas Pendientes {{ title }}:
+{% for inv in invoices %}
+- {{inv.membership.name}}[{{inv.membership.get_state_display}}] | Expira: {{inv.expiration_date}} Estado: {{inv.get_status_display}} Monto: {{inv.currency}}{{inv.amount}}
+{% endfor %}
+{% else %}{{ title }} No cuenta con pendientes.
+La última factura pagada es:
+- {{invoice.membership.name}}[{{invoice.membership.get_state_display}}] | Fecha de Pago: {{invoice.payment_date}} Estado: {{invoice.get_status_display}} Monto: {{invoice.currency}}{{invoice.amount}}
+{% endif %}
+
+

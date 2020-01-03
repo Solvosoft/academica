@@ -21,7 +21,7 @@ class TelGroup(models.Model):
 
 class TelegramUser(models.Model):
     user = models.OneToOneField(User,null=True,blank=True,on_delete=models.CASCADE)
-    group = models.ForeignKey(TelGroup,models.CASCADE)
+    groups = models.ManyToManyField(TelGroup)
     telegram_id = models.CharField(max_length=150)
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
