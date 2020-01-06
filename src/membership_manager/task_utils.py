@@ -40,7 +40,8 @@ def notify_invoice_expiration(now):
             object_repr="Notificación de pago pendiente enviada",
             action_flag=CHANGE
         )
-        send_notification_message(invoice.membership.organization.telgroup.chat_id,invoice.membership.organization)
+        if invoice.membership.organization.telgroup:
+            send_notification_message(invoice.membership.organization.telgroup.chat_id,invoice.membership.organization)
 
 def invoice_creation(now):
     renews = renewal_expiration_filter_manager(now)
@@ -63,7 +64,8 @@ def invoice_creation(now):
             object_repr="Factura creada pendiente de pago",
             action_flag=ADDITION
         )
-        send_notification_message(invoice.membership.organization.telgroup.chat_id,invoice.membership.organization)
+        if invoice.membership.organization.telgroup:
+            send_notification_message(invoice.membership.organization.telgroup.chat_id,invoice.membership.organization)
 
 
 def renew_graceperiod(now):
@@ -122,4 +124,5 @@ def membership_deactivating(now):
             object_repr="Membresia inactiva por falta de pago",
             action_flag=CHANGE
         )
-        send_deactivated_message(membership.organization.telgroup.chat_id,membership.organization)
+        if membership.organization.telgroup:
+            send_deactivated_message(membership.organization.telgroup.chat_id,membership.organization)
