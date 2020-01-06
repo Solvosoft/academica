@@ -20,8 +20,8 @@ def generate_invoice(membership, invoice, email_template='pay_mail', enqueued=Fa
         dest=resultFile,  # file handle to recieve result
         link_callback=link_callback)
     resultFile.seek(0)
-
-    invoice.pdf_invoice = File(resultFile, name="invoice.pdf")
+    file_name = f'factura_{membership.name}.pdf'
+    invoice.pdf_invoice = File(resultFile, name=file_name)
     invoice.save()
     if membership.contact:
         email = membership.contact.email
