@@ -1,4 +1,5 @@
 from dateutil.relativedelta import relativedelta
+from django import forms
 from django.contrib import admin
 # Register your models here.
 from django.db.models import Sum
@@ -15,7 +16,7 @@ from membership_manager.admin_memberships import MembershipNotificationFilter, m
     organization_payments_history
 from membership_manager.admin_pdf import InvoiceAdmin
 from membership_manager.adminfilters import PaisFilter, OrganizationFilter
-from membership_manager.forms import MembershipAddForm
+from membership_manager.forms import MembershipAddForm, ServiceForm
 from membership_manager.models import MembershipRenew, Invoice, Membership
 from membership_manager.utils import load_services_from_membership_template
 
@@ -95,6 +96,7 @@ class ServiceAdmin(admin.TabularInline):
     model = models.Service
     extra = 1
     classes = ['collapse', 'collapsed']
+    form = ServiceForm
 
     def get_formset(self, request, obj=None, **kwargs):
         initial = []
@@ -176,7 +178,6 @@ class MemberShipAdmin(admin.ModelAdmin):
                                            end_date=now + relativedelta(
                                                months=+instance.renewal_period.months)
                                            )
-
     def invoices(self, obj):
         dev = ""
         if obj:
