@@ -1,5 +1,7 @@
 from django.contrib.admin import SimpleListFilter
+from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponseRedirect
+from django.utils.decorators import method_decorator
 from django.views.generic import ListView
 
 from membership_manager.forms import MembInvPaymentsForm
@@ -41,6 +43,7 @@ class MembershipNotificationFilter(SimpleListFilter):
             value=False
         return membership_filter(queryset, filt=value)
 
+@method_decorator(staff_member_required, name='dispatch')
 class MembInvoices(ListView):
     template_name = 'admin/membership_admin/invoice/change_list.html'
     form_class = MembInvPaymentsForm
@@ -124,6 +127,7 @@ class MembInvoices(ListView):
             return self.render_to_response(self.get_context_data(object_list=new_qset, form=form))
         return self.render_to_response(self.get_context_data(object_list=self.object_list, form=form))
 
+@method_decorator(staff_member_required, name='dispatch')
 class OrganizationInvoices(ListView):
     template_name = 'admin/membership_admin/organization/change_list.html'
     form_class = MembInvPaymentsForm

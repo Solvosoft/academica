@@ -66,7 +66,7 @@ class Membership(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
     membership_type = models.CharField(max_length=50, choices=TYPES, verbose_name="Tipo de membresía")
     contact = models.ForeignKey(Contact, null=True, blank=True, on_delete=models.SET_NULL, verbose_name="Contato")
-    organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE,related_name='membs')
+    organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=300, verbose_name="Nombre")
     annual_cost = models.FloatField(verbose_name="Costo")
     currency = models.ForeignKey(SystemCurrency, on_delete=models.CASCADE, verbose_name="Moneda")

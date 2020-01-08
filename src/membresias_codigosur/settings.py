@@ -136,8 +136,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/templates/'
-STATIC_ROOT = os.path.join(BASE_NOCODE_DIR, 'templates/')
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_NOCODE_DIR, 'static/')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_NOCODE_DIR, 'media/')
 #LOGIN_URL = '/login'
@@ -181,3 +181,7 @@ ASYNC_NOTIFICATION_USER_LOOKUP_FIELDS= {'order_by': 'first_name',
      'group_lookup': 'groups__name'}
 
 
+
+TELEGRAM_BOT_API='926661407:AAH_pSgLYwqzSYMtspC-nU8CoY_K_kmdmCY'
+TELEGRAM_BOT_WEBHOOK="https://ea4539b9.ngrok.io/telbot/"
+TELEGRAM_ADMIN_GROUP_ID='-1001485781572'
