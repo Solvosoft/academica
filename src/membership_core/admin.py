@@ -7,11 +7,16 @@ admin.site.register([
 
 ])
 
+class ServiceMT(admin.TabularInline):
+    model = models.ServiceMT
+    extra = 1
+    classes = ['collapse', 'collapsed']
+
 class MembershipTemplateAdmin(admin.ModelAdmin):
     list_filter = ('state',)
     search_fields = ('name', 'currency')
     list_display = ('name', 'annual_cost', 'currency', 'renewal_period', 'state')
-
+    inlines = [ServiceMT,]
 
 admin.site.register(models.MembershipTemplate, MembershipTemplateAdmin)
 admin.site.site_title = "Membresias de Código Sur"

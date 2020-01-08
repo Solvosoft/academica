@@ -9,7 +9,7 @@ from django.utils.functional import curry
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from membership_core.models import MembershipTemplate, SystemCurrency, ServiceType
+from membership_core.models import MembershipTemplate, SystemCurrency, ServiceType, ServiceMT
 from membership_manager import models
 from membership_manager.admin_memberships import MembershipNotificationFilter, membership_payments_history, \
     organization_payments_history
@@ -17,6 +17,7 @@ from membership_manager.admin_pdf import InvoiceAdmin
 from membership_manager.adminfilters import PaisFilter, OrganizationFilter
 from membership_manager.forms import MembershipAddForm
 from membership_manager.models import MembershipRenew, Invoice, Membership
+from membership_manager.utils import load_services_from_membership_template
 
 
 class ContactAdmin(admin.ModelAdmin):
@@ -97,11 +98,13 @@ class ServiceAdmin(admin.TabularInline):
 
     def get_formset(self, request, obj=None, **kwargs):
         initial = []
-        initial.append({'servicetype':ServiceType.objects.all().first(),"membership":"","description":"asdasdas dasd ","observations":"Obersasdas"})
+        if request.GET.get('tid'):
+            initial, self.extra = load_services_from_membership_template(request.GET.get('tid'))
+            print(initial)
+            print(self.extra)
         formset = super(ServiceAdmin, self).get_formset(request, obj, **kwargs)
         formset.__init__ = curry(formset.__init__, initial=initial)
         return formset
-
 
 class MemberShipAdmin(admin.ModelAdmin):
     actions = [membership_payments_history]

@@ -11,6 +11,7 @@ from django.db.models import Q
 
 from django.utils import timezone
 
+from membership_core.models import ServiceMT
 from membership_manager.models import MembershipRenew, Membership, Invoice
 
 def stringcode_generator(size=4, chars=string.ascii_uppercase):
@@ -162,4 +163,12 @@ def membership_payment_manager(membership,invoice):
         membership.state = 'active'
         membership.save()
 
-
+def load_services_from_membership_template(template_id):
+    initial = []
+    services = ServiceMT.objects.filter(membership_id=template_id)
+    if (services):
+        for serv in services:
+            initial.append({'servicetype': serv.servicetype, "membership": "", "description": serv.description,
+                            "observations": serv.observations})
+    extra = services.count()
+    return initial, extra

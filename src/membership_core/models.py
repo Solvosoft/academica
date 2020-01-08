@@ -78,7 +78,6 @@ class MembershipTemplate(models.Model):
     currency = models.ForeignKey(SystemCurrency, on_delete=models.CASCADE,
                                  verbose_name="Moneda")
     description = models.TextField(null=True, blank=True, verbose_name="Descripción")
-    services = models.ManyToManyField(ServiceType, verbose_name="Servicios")
     renewal_period = models.ForeignKey(RenewalPeriod, on_delete=models.CASCADE,
                                        verbose_name="Periodo de renovación")
     state = models.CharField(max_length=10, choices=STATES, default="active",
@@ -90,3 +89,21 @@ class MembershipTemplate(models.Model):
     class Meta:
         verbose_name = "Plantilla de membresías"
         verbose_name_plural = "Plantillas de membresías"
+
+
+class ServiceMT(models.Model):
+    membership = models.ForeignKey(MembershipTemplate, on_delete=models.CASCADE,
+                                   verbose_name="Membresía", null=True, blank=True)
+    servicetype = models.ForeignKey(ServiceType, on_delete=models.DO_NOTHING,
+                                    verbose_name="Tipo de servicio")
+    description = models.CharField(max_length=250, verbose_name="Descripción")
+    observations = models.CharField(max_length=500, null=True, blank=True,
+                                    verbose_name="Observaciones")
+
+    def __str__(self):
+        return self.description
+
+    class Meta:
+        verbose_name = "Servicio"
+        verbose_name_plural = "Servicios"
+        ordering = ('membership',)
