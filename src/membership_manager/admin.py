@@ -227,7 +227,7 @@ class OrganizationAdmin(admin.ModelAdmin):
             """,
             reverse("admin:membership_manager_membership_changelist") +
             "?organization=" + str(obj.pk),
-            obj.membs.filter(state="active").count(),
+            obj.membership_set.filter(state="active").count(),
             reverse("admin:membership_manager_membership_add") +
             "?organization=" + str(obj.pk) + "&membership_type=Organizacional&currency=" +
             str(obj.currency_id) + "&contact=" + str(obj.contact_id)
