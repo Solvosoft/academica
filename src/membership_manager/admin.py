@@ -5,17 +5,19 @@ from django.db.models import Sum
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.functional import curry
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from membership_core.models import MembershipTemplate, SystemCurrency
+from membership_core.models import MembershipTemplate, SystemCurrency, ServiceType
 from membership_manager import models
 from membership_manager.admin_memberships import MembershipNotificationFilter, membership_payments_history, \
     organization_payments_history
 from membership_manager.admin_pdf import InvoiceAdmin
 from membership_manager.adminfilters import PaisFilter, OrganizationFilter
 from membership_manager.forms import MembershipAddForm
-from membership_manager.models import MembershipRenew, Invoice
+from membership_manager.models import MembershipRenew, Invoice, Membership
+
 
 class ContactAdmin(admin.ModelAdmin):
     list_filter = ('active', PaisFilter)
@@ -86,15 +88,20 @@ class ContactAdmin(admin.ModelAdmin):
 class MembershipRenewAdmin(admin.TabularInline):
     model = models.MembershipRenew
     extra = 1
-
-
     classes = ['collapse', 'collapsed']
 
 class ServiceAdmin(admin.TabularInline):
     model = models.Service
     extra = 1
-
     classes = ['collapse', 'collapsed']
+
+    def get_formset(self, request, obj=None, **kwargs):
+        initial = []
+        initial.append({'servicetype':ServiceType.objects.all().first(),"membership":"","description":"asdasdas dasd ","observations":"Obersasdas"})
+        formset = super(ServiceAdmin, self).get_formset(request, obj, **kwargs)
+        formset.__init__ = curry(formset.__init__, initial=initial)
+        return formset
+
 
 class MemberShipAdmin(admin.ModelAdmin):
     actions = [membership_payments_history]

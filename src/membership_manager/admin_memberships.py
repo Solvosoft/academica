@@ -117,7 +117,6 @@ class MembInvoices(ListView):
 
     def post(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()
-
         form = self.form_class(self.request.POST or None)
         q = self.request.GET.get('ids')
         ids = q.strip('][').split(', ')
