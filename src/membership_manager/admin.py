@@ -86,14 +86,11 @@ class ContactAdmin(admin.ModelAdmin):
 class MembershipRenewAdmin(admin.TabularInline):
     model = models.MembershipRenew
     extra = 1
-
-
     classes = ['collapse', 'collapsed']
 
 class ServiceAdmin(admin.TabularInline):
     model = models.Service
     extra = 1
-
     classes = ['collapse', 'collapsed']
 
 class MemberShipAdmin(admin.ModelAdmin):
