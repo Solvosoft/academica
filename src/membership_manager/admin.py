@@ -49,7 +49,7 @@ class ContactAdmin(admin.ModelAdmin):
         return format_html(
             """
                <a href="{}"  class="grp-button grp-button-state-inactive" >{}</a> - 
-               <a href="{}" class="grp-button grp-button-state-active" target="_blank">Add</a>
+               <a href="{}" class="grp-button grp-button-state-active" target="_blank">{% trans "Add" %}</a>
             """,
             reverse("admin:membership_manager_organization_changelist") +
             "?contact=" + str(obj.pk),
@@ -71,7 +71,7 @@ class ContactAdmin(admin.ModelAdmin):
     def memberships(self, obj):
         return format_html(
             """<a href="{}" class="grp-button grp-button-state-inactive"  >{}</a> - 
-               <a href="{}" class="grp-button grp-button-state-inactive" target="_blank">Add</a>
+               <a href="{}" class="grp-button grp-button-state-inactive" target="_blank">{% trans "Add" %}</a>
             """,
             reverse("admin:membership_manager_membership_changelist") +
             "?contact=" + str(obj.pk),
@@ -223,7 +223,7 @@ class OrganizationAdmin(admin.ModelAdmin):
     def memberships(self, obj):
         return format_html(
             """<a href="{}" class="grp-button grp-button-state-inactive"  >{}</a> - 
-               <a href="{}" class="grp-button grp-button-state-inactive" target="_blank">Add</a>
+               <a href="{}" class="grp-button grp-button-state-inactive" target="_blank">{% trans "Add" %}</a>
             """,
             reverse("admin:membership_manager_membership_changelist") +
             "?organization=" + str(obj.pk),
@@ -235,7 +235,7 @@ class OrganizationAdmin(admin.ModelAdmin):
     def activities(self, obj):
         return format_html(
             """<a href="{}" class="grp-button grp-button-state-inactive"  >{}</a> - 
-               <a href="{}" class="grp-button grp-button-state-inactive" target="_blank">Add</a>
+               <a href="{}" class="grp-button grp-button-state-inactive" target="_blank">{% trans "Add" %}</a>
             """,
             reverse("admin:membership_manager_activityreport_changelist") +
             "?organization=" + str(obj.pk),
