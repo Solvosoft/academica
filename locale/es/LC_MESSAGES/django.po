@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-09 18:37-0600\n"
-"PO-Revision-Date: 2019-10-11 10:47-0600\n"
+"POT-Creation-Date: 2020-01-09 08:10-0600\n"
+"PO-Revision-Date: 2020-01-09 08:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -16,164 +16,248 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.0.6\n"
 
-#: src/dashboard.py:27
-msgid "Administration"
-msgstr "Administración"
+#: src/membership_manager/adminfilters.py:108
+msgid "All"
+msgstr ""
 
-#: src/dashboard.py:36
-msgid "Administración del gestor de membresías"
-msgstr "Administración del gestor de membresías"
+#: src/membership_manager/templates/activity_description.html:4
+msgid "Read more"
+msgstr "Leer más"
 
-#: src/dashboard.py:44
-msgid "Gestion de membresías"
-msgstr "Gestion de membresías"
+#: src/membership_manager/templates/activity_description.html:9
+msgid "Read less"
+msgstr "Leer menos"
 
-#: src/dashboard.py:50
-msgid "Gestion de correo"
-msgstr "Gestion de correo"
+#: src/membership_manager/templates/admin/admin_form_filter.html:2
+#, python-format
+msgid " By %(filter_title)s "
+msgstr ""
 
-#: src/membership_manager/templates/admin/membership_manager/membership/change_form.html:143
-msgid "Open All Items"
-msgstr "Abrir todo"
+#: src/membership_manager/templates/admin/admin_form_filter.html:19
+msgid "Remove"
+msgstr "Remover"
 
-#: src/membership_manager/templates/admin/membership_manager/membership/change_form.html:144
-msgid "Close All Items"
-msgstr "Cerrar todo"
+#: src/membership_manager/templates/admin/admin_form_filter.html:22
+msgid "filtrar"
+msgstr ""
 
-#: src/membership_manager/templates/admin/membership_manager/membership/change_form.html:153
-msgid "Home"
-msgstr "Inicio"
+#: src/membership_manager/templates/admin/dashboard/welcome.html:11
+msgid "Organization"
+msgstr "Organización"
 
-#: src/membership_manager/templates/admin/membership_manager/membership/change_form.html:159
+#: src/membership_manager/templates/admin/dashboard/welcome.html:14
+msgid "Memberships"
+msgstr "Membresías"
+
+#: src/membership_manager/templates/admin/dashboard/welcome.html:17
+#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:78
+#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:81
+msgid "Invoices"
+msgstr "Facturas"
+
+#: src/membership_manager/templates/admin/dashboard/welcome.html:20
+msgid "Contacts"
+msgstr "Contactos"
+
+#: src/membership_manager/templates/admin/dashboard/welcome.html:30
+#, python-format
+msgid "Models in the %(name)s application"
+msgstr ""
+
+#: src/membership_manager/templates/admin/dashboard/welcome.html:41
 msgid "Add"
 msgstr "Añadir"
 
-#: src/membership_manager/templates/admin/membership_manager/membership/change_form.html:171
-msgid "History"
-msgstr "Historial"
+#: src/membership_manager/templates/admin/dashboard/welcome.html:48
+msgid "View"
+msgstr "Vista"
 
-#: src/membership_manager/templates/admin/membership_manager/membership/change_form.html:172
-msgid "View on site"
-msgstr "Ver en sitio"
+#: src/membership_manager/templates/admin/dashboard/welcome.html:50
+msgid "Change"
+msgstr "Cambiar"
 
-#: src/membership_manager/templates/admin/membership_manager/membership/change_form.html:190
-msgid "Please correct the error below."
-msgstr "Por favor corrija los errores siguientes."
+#: src/membership_manager/templates/admin/dashboard/welcome.html:63
+msgid "You don't have permission to view or edit anything."
+msgstr "No tienes permiso para ver o editar."
 
-#: src/membership_manager/templates/admin/membership_manager/membership/change_form.html:190
-msgid "Please correct the errors below."
-msgstr "Por favor corrija los errores siguientes."
+#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:27
+#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:30
+msgid "Home"
+msgstr "Inicio"
 
-#: src/membership_manager/templates/admin/membership_manager/membership/change_form.html:201
-msgid "Membership template"
-msgstr "Plantilla de membresías"
+#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:46
+#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:60
+#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:49
+#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:63
+msgid "Filter"
+msgstr "Filtrar"
 
-#: admin.py:16 models.py:18
-msgid "User"
-msgstr "Usuario"
+#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:47
+#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:50
+msgid "Search by state"
+msgstr "Búsqueda por estado"
 
-#: admin.py:21
-msgid "All mails"
-msgstr "Todos los correos"
+#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:76
+#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:79
+msgid "Pending"
+msgstr "Pendiente"
 
-#: admin.py:22
-msgid "My mails"
-msgstr "Mis correos"
+#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:90
+#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:93
+msgid "Membership"
+msgstr "Membresía"
 
-#: admin.py:77
-msgid "Send email now"
-msgstr "Enviar correo ahora"
+#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:93
+#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:96
+msgid "Expiration date"
+msgstr "Fecha de expiración"
 
-#: admin.py:82
-msgid " and more"
-msgstr " y más"
+#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:96
+#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:99
+msgid "Amount"
+msgstr "Monto"
 
-#: admin.py:84
-msgid "Recipients"
-msgstr "Lista de recibo"
+#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:99
+msgid "currency"
+msgstr "moneda"
 
-#: admin.py:110
-msgid "Template context"
-msgstr "Contexto de plantilla"
+#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:102
+#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:105
+msgid "State"
+msgstr "Estado"
 
-#: apps.py:7
-msgid "Email Notification"
-msgstr "Notificación por correo"
+#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:105
+#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:108
+msgid "Payment date"
+msgstr "Fecha de pago"
 
-#: forms.py:18 models.py:14
-msgid "Recipient list"
-msgstr "Lista de recibo"
+#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:113
+#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:116
+msgid "More"
+msgstr "Más"
 
-#: lookups.py:109
-msgid "Add external email"
-msgstr "Agregar correo externo"
+#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:135
+msgid "Show membership information"
+msgstr "Ver información de la membresía"
 
-#: lookups.py:124
-msgid "External user"
-msgstr "Usuario externo"
+#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:79
+msgid "Paid"
+msgstr "Pagado"
 
-#: models.py:11 models.py:38
-msgid "Subject"
-msgstr "Asunto"
+#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:102
+msgid "Currency"
+msgstr "Moneda"
 
-#: models.py:12 models.py:39
-msgid "Message"
-msgstr "Mensaje"
+#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:138
+msgid "Show organization information"
+msgstr "Ver información de la organización"
 
-#: models.py:16
-msgid "Enqueued"
-msgstr "Encolado"
+#~ msgid "Administration"
+#~ msgstr "Administración"
 
-#: models.py:19
-msgid "Sended"
-msgstr "Enviado"
+#~ msgid "Administración del gestor de membresías"
+#~ msgstr "Administración del gestor de membresías"
 
-#: models.py:21
-msgid "File"
-msgstr "Archivo"
+#~ msgid "Gestion de membresías"
+#~ msgstr "Gestion de membresías"
 
-#: models.py:22
-msgid "Problems"
-msgstr "Problemas"
+#~ msgid "Gestion de correo"
+#~ msgstr "Gestion de correo"
 
-#: models.py:24
-msgid "Create datetime"
-msgstr "Fecha de creación"
+#~ msgid "Open All Items"
+#~ msgstr "Abrir todo"
 
-#: models.py:27
-msgid "sended"
-msgstr "enviado"
+#~ msgid "Close All Items"
+#~ msgstr "Cerrar todo"
 
-#: models.py:27
-msgid "Not sended"
-msgstr "No enviado"
+#~ msgid "History"
+#~ msgstr "Historial"
 
-#: models.py:31
-msgid "Email notification"
-msgstr "Notificación por correo"
+#~ msgid "View on site"
+#~ msgstr "Ver en sitio"
 
-#: models.py:32
-msgid "Email notifications"
-msgstr "Notificaciones por correo"
+#~ msgid "Please correct the error below."
+#~ msgstr "Por favor corrija los errores siguientes."
 
-#: models.py:37 models.py:51
-msgid "Code"
-msgstr "Código"
+#~ msgid "Please correct the errors below."
+#~ msgstr "Por favor corrija los errores siguientes."
 
-#: models.py:45
-msgid "Email template"
-msgstr "Plantilla de correo"
+#~ msgid "User"
+#~ msgstr "Usuario"
 
-#: models.py:46
-msgid "Email templates"
-msgstr "Plantillas de correo"
+#~ msgid "All mails"
+#~ msgstr "Todos los correos"
 
-#: models.py:52
-msgid "Context dictionary"
-msgstr "Diccionario de contexto"
+#~ msgid "My mails"
+#~ msgstr "Mis correos"
 
-#: models.py:55 models.py:56
-msgid "Context of template"
-msgstr "Contexto de la plantilla"
+#~ msgid "Send email now"
+#~ msgstr "Enviar correo ahora"
+
+#~ msgid "Recipients"
+#~ msgstr "Lista de recibo"
+
+#~ msgid "Template context"
+#~ msgstr "Contexto de plantilla"
+
+#~ msgid "Email Notification"
+#~ msgstr "Notificación por correo"
+
+#~ msgid "Recipient list"
+#~ msgstr "Lista de recibo"
+
+#~ msgid "Add external email"
+#~ msgstr "Agregar correo externo"
+
+#~ msgid "External user"
+#~ msgstr "Usuario externo"
+
+#~ msgid "Subject"
+#~ msgstr "Asunto"
+
+#~ msgid "Message"
+#~ msgstr "Mensaje"
+
+#~ msgid "Enqueued"
+#~ msgstr "Encolado"
+
+#~ msgid "Sended"
+#~ msgstr "Enviado"
+
+#~ msgid "File"
+#~ msgstr "Archivo"
+
+#~ msgid "Problems"
+#~ msgstr "Problemas"
+
+#~ msgid "Create datetime"
+#~ msgstr "Fecha de creación"
+
+#~ msgid "sended"
+#~ msgstr "enviado"
+
+#~ msgid "Not sended"
+#~ msgstr "No enviado"
+
+#~ msgid "Email notification"
+#~ msgstr "Notificación por correo"
+
+#~ msgid "Email notifications"
+#~ msgstr "Notificaciones por correo"
+
+#~ msgid "Code"
+#~ msgstr "Código"
+
+#~ msgid "Email template"
+#~ msgstr "Plantilla de correo"
+
+#~ msgid "Email templates"
+#~ msgstr "Plantillas de correo"
+
+#~ msgid "Context dictionary"
+#~ msgstr "Diccionario de contexto"
+
+#~ msgid "Context of template"
+#~ msgstr "Contexto de la plantilla"

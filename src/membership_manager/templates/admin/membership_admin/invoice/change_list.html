@@ -43,8 +43,8 @@
     <div class="module filtered" id="changelist">
         {% block filters %}
             <div id="changelist-filter">
-                <h2>Filtro</h2>
-                <h3>Busqueda por estado:</h3>
+                <h2>{% trans "Filter" %}</h2>
+                <h3>{% trans "Search by state" %}:</h3>
                 <ul>
                     <li>
                         <form action="" method="post">
@@ -57,7 +57,7 @@
                                 </li>
                                 <li>
                                     <div style="float: left; margin-left: 15px">
-                                       <input type="submit" class="" value="Filtrar">
+                                       <input type="submit" class="" value="{% trans "Filter" %}">
                                    </div>
                                 </li>
                             </ul>
@@ -73,9 +73,9 @@
              {% if object_list %}
                  {% for temp in object_list %}
                      <div class="item-collapse">
-                     <h2> &laquo; <a style="text-decoration: none;font-weight: bold;color: #fff;" href="{% url 'admin:membership_manager_invoice_changelist'%}?membership__id__exact={{temp.pk}}">{{temp.name|capfirst}}</a> &raquo; <span>Pendiente: {{temp.pending}}</span> &mdash; <span>Total Pagado: {{temp.paid}}</span></h2>
+                     <h2> &laquo; <a style="text-decoration: none;font-weight: bold;color: #fff;" href="{% url 'admin:membership_manager_invoice_changelist'%}?membership__id__exact={{temp.pk}}">{{temp.name|capfirst}}</a> &raquo; <span>{% trans "Pending" %}: {{temp.pending}}</span> &mdash; <span>Total Pagado: {{temp.paid}}</span></h2>
                      <div>
-                     <h3>Facturas:</h3>
+                     <h3>{% trans "Invoices" %}:</h3>
                      <div class="changelist-results" style="margin-bottom: 40px">
                    {% if temp.no_results %}
                        <header><h1  style="padding: 20px 15px ;font-weight: normal">{{temp.no_results}} {{ temp.filter_option }}</h1></header>
@@ -87,22 +87,22 @@
                                    <div class=""><span> - </span></div>
                                </th>
                                <th scope="col" class="sortable column-membership">
-                                   <div class="text"><a href="?o=1">Membresía</a></div>
+                                   <div class="text"><a href="?o=1">{% trans "Membership" %}</a></div>
                                </th>
                                <th scope="col" class="sortable column-expiration_date">
-                                   <div class="text"><a href="?o=2">Fecha de expiración</a></div>
+                                   <div class="text"><a href="?o=2">{% trans "Expiration date" %}</a></div>
                                </th>
                                <th scope="col" class="sortable column-amount">
-                                   <div class="text"><a href="?o=3">Monto</a></div>
+                                   <div class="text"><a href="?o=3">{% trans "Amount" %}</a></div>
                                </th>
                                <th scope="col" class="sortable column-currency">
-                                   <div class="text"><a href="?o=4">Moneda</a></div>
+                                   <div class="text"><a href="?o=4">{% trans "currency" %}</a></div>
                                </th>
                                <th scope="col" class="sortable column-status">
-                                   <div class="text"><a href="?o=5">Estado</a></div>
+                                   <div class="text"><a href="?o=5">{% trans "State" %}</a></div>
                                </th>
                                <th scope="col" class="sortable column-payment_date">
-                                   <div class="text"><a href="?o=6">Fecha de pago</a></div>
+                                   <div class="text"><a href="?o=6">{% trans "Payment date" %}</a></div>
                                </th>
                            </tr>
                        </thead>
@@ -110,7 +110,7 @@
                            {% for obj in temp.results %}
                                <tr class="row1">
                                    <td class="action-checkbox">
-                                       <a href="{% url "admin:membership_manager_invoice_change" obj.pk %}">Ver más</a>
+                                       <a href="{% url "admin:membership_manager_invoice_change" obj.pk %}">{% trans "More" %}</a>
                                    </td>
                                    <th class="field-membership nowrap">
                                        {{ obj.membership.name }}
@@ -132,7 +132,7 @@
                        </table>
                     {% endif %}
                    </div>
-                     <a style="font-weight: bold;" href="{% url 'admin:membership_manager_membership_change' temp.pk%}">Mostrar informacion de membresia</a>
+                     <a style="font-weight: bold;" href="{% url 'admin:membership_manager_membership_change' temp.pk%}">{% trans "Show membership information" %}</a>
                      </div>
                      </div>
                    {% endfor %}
