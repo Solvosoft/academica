@@ -80,6 +80,7 @@ class MembInvoices(ListView):
                 object_dict['no_results'] = 'No hay facturas'
                 tmp_membship = Membership.objects.get(pk=id)
                 object_dict['name'] = tmp_membship.name
+                object_dict['pk'] = tmp_membship.pk
                 new_tmp_list.append(object_dict)
             if filter_option is not None:
                 object_dict['filter_option'] = filter_option
@@ -164,7 +165,7 @@ class OrganizationInvoices(ListView):
                 object_dict['no_results'] = 'No hay facturas'
                 tmp_org = Organization.objects.get(pk=id)
                 object_dict['name'] = tmp_org.name
-
+                object_dict['pk'] = tmp_org.pk
                 new_tmp_list.append(object_dict)
             if filter_option is not None:
                 object_dict['filter_option'] = filter_option

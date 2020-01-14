@@ -58,6 +58,7 @@
                                 <li>
                                     <div style="float: left; margin-left: 15px">
                                        <input type="submit" class="" value="{% trans "Filter" %}">
+ 
                                    </div>
                                 </li>
                             </ul>
@@ -96,7 +97,7 @@
                                    <div class="text"><a href="?o=3">{% trans "Amount" %}</a></div>
                                </th>
                                <th scope="col" class="sortable column-currency">
-                                   <div class="text"><a href="?o=4">{% trans "currency" %}</a></div>
+                                   <div class="text"><a href="?o=4">{% trans "Currency" %}</a></div>
                                </th>
                                <th scope="col" class="sortable column-status">
                                    <div class="text"><a href="?o=5">{% trans "State" %}</a></div>
@@ -111,6 +112,7 @@
                                <tr class="row1">
                                    <td class="action-checkbox">
                                        <a href="{% url "admin:membership_manager_invoice_change" obj.pk %}">{% trans "More" %}</a>
+ 
                                    </td>
                                    <th class="field-membership nowrap">
                                        {{ obj.membership.name }}
@@ -133,6 +135,7 @@
                     {% endif %}
                    </div>
                      <a style="font-weight: bold;" href="{% url 'admin:membership_manager_membership_change' temp.pk%}">{% trans "Show membership information" %}</a>
+ 
                      </div>
                      </div>
                    {% endfor %}

@@ -10,6 +10,7 @@ from membership_manager.models import MembershipRenew
 from membership_manager.render_pdf import generate_invoice
 from membership_manager import utils
 from membership_manager.utils import membership_payment_manager
+from membership_telbot_manager.models import TelGroup
 from membership_telbot_manager.views import send_invoice_message
 
 
@@ -36,7 +37,8 @@ def pay_invoice(modeladmin, request, queryset):
             object_repr="Pago de membresía realizado.",
             action_flag=CHANGE
         )
-        send_invoice_message(invoice.membership.organization.telgroup.chat_id,invoice.pdf_invoice.open())
+        if TelGroup.objects.filter(organization_id=invoice.membership.organization.pk).first():
+            send_invoice_message(invoice.membership.organization.telgroup.chat_id,invoice.pdf_invoice.open())
 
 pay_invoice.short_description = "Pagar factura"
 
