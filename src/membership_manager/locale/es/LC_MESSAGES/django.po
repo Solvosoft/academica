@@ -1,0 +1,161 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-01-13 22:46-0600\n"
+"PO-Revision-Date: 2020-01-13 22:47-0600\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.2.1\n"
+
+#: adminfilters.py:108
+msgid "All"
+msgstr "Todo"
+
+#: templates/activity_description.html:5
+msgid "Read more"
+msgstr "Leer más"
+
+#: templates/activity_description.html:10
+msgid "Read less"
+msgstr "Leer menos"
+
+#: templates/admin/admin_form_filter.html:2
+#, python-format
+msgid " By %(filter_title)s "
+msgstr " Por %(filter_title)s "
+
+#: templates/admin/admin_form_filter.html:19
+msgid "Remove"
+msgstr "Eliminar"
+
+#: templates/admin/admin_form_filter.html:21
+#: templates/admin/membership_admin/invoice/change_list.html:46
+#: templates/admin/membership_admin/invoice/change_list.html:60
+#: templates/admin/membership_admin/organization/change_list.html:49
+#: templates/admin/membership_admin/organization/change_list.html:64
+msgid "Filter"
+msgstr "Filtrar"
+
+#: templates/admin/dashboard/welcome.html:11
+msgid "Organization"
+msgstr "Organización"
+
+#: templates/admin/dashboard/welcome.html:14
+msgid "Memberships"
+msgstr "Membresias"
+
+#: templates/admin/dashboard/welcome.html:18
+#: templates/admin/membership_admin/invoice/change_list.html:79
+#: templates/admin/membership_admin/organization/change_list.html:82
+msgid "Invoices"
+msgstr "Facturas"
+
+#: templates/admin/dashboard/welcome.html:21
+msgid "Contacts"
+msgstr "Contatos"
+
+#: templates/admin/dashboard/welcome.html:32
+#, python-format
+msgid "Models in the %(name)s application"
+msgstr "Modelos en el %(name)s de aplicación"
+
+#: templates/admin/dashboard/welcome.html:42
+msgid "Add"
+msgstr "Agregar"
+
+#: templates/admin/dashboard/welcome.html:48
+msgid "View"
+msgstr "Ver"
+
+#: templates/admin/dashboard/welcome.html:50
+msgid "Change"
+msgstr "Cambiar"
+
+#: templates/admin/dashboard/welcome.html:62
+msgid "You don't have permission to view or edit anything."
+msgstr "No tiene permisos para ver o editar nada."
+
+#: templates/admin/membership_admin/invoice/change_list.html:27
+#: templates/admin/membership_admin/organization/change_list.html:30
+msgid "Home"
+msgstr "Inicio"
+
+#: templates/admin/membership_admin/invoice/change_list.html:47
+#: templates/admin/membership_admin/organization/change_list.html:50
+msgid "Search by state"
+msgstr "Buscar por estado"
+
+#: templates/admin/membership_admin/invoice/change_list.html:77
+#: templates/admin/membership_admin/organization/change_list.html:80
+msgid "Pending"
+msgstr "Pendiente"
+
+#: templates/admin/membership_admin/invoice/change_list.html:91
+#: templates/admin/membership_admin/organization/change_list.html:94
+msgid "Membership"
+msgstr "Membresía"
+
+#: templates/admin/membership_admin/invoice/change_list.html:94
+#: templates/admin/membership_admin/organization/change_list.html:97
+msgid "Expiration date"
+msgstr "Fecha de expiración"
+
+#: templates/admin/membership_admin/invoice/change_list.html:97
+#: templates/admin/membership_admin/organization/change_list.html:100
+msgid "Amount"
+msgstr "Cantidad"
+
+#: templates/admin/membership_admin/invoice/change_list.html:100
+#: templates/admin/membership_admin/organization/change_list.html:103
+msgid "Currency"
+msgstr "Moneda"
+
+#: templates/admin/membership_admin/invoice/change_list.html:103
+#: templates/admin/membership_admin/organization/change_list.html:106
+msgid "State"
+msgstr "Estado"
+
+#: templates/admin/membership_admin/invoice/change_list.html:106
+#: templates/admin/membership_admin/organization/change_list.html:109
+msgid "Payment date"
+msgstr "Fecha de pago"
+
+#: templates/admin/membership_admin/invoice/change_list.html:114
+#: templates/admin/membership_admin/organization/change_list.html:118
+msgid "More"
+msgstr "Más"
+
+#: templates/admin/membership_admin/invoice/change_list.html:137
+msgid "Show membership information"
+msgstr "Ver información de membresía"
+
+#: templates/admin/membership_admin/organization/change_list.html:80
+msgid "Paid"
+msgstr "Paga"
+
+#: templates/admin/membership_admin/organization/change_list.html:140
+msgid "Show organization information"
+msgstr "Ver información de organización"
+
+#~ msgid "Show more"
+#~ msgstr "Ver más"
+
+#~ msgid "Show less"
+#~ msgstr "Ver menos"
+
+#~ msgid "filter"
+#~ msgstr "filtro"
+
+#~ msgid "Date of payment"
+#~ msgstr "Fecha de pago"

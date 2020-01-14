@@ -8,16 +8,18 @@
 <ul id="mainul">
     <li><a href="{% url 'admin:membership_manager_organization_changelist' %}">
         <img width="128" height="128" src="{% static 'img/organizacion.svg' %}" />
-        <p>Organización</p></a></li>
+        <p>{% trans "Organization" %}</p></a></li>
     <li><a href="{% url 'admin:membership_manager_membership_changelist' %}">
         <img width="128" height="128"  src="{% static 'img/membresia.svg' %}" />
-        <p>Membresías</p> </a> </li>
+        <p>{% trans "Memberships" %}</p></a></li>
+ 
     <li><a href="{% url 'admin:membership_manager_invoice_changelist' %}">
         <img width="128" height="128"  src="{% static 'img/invoice.svg' %}" />
-        <p>Facturas</p></a></li>
+        <p>{% trans "Invoices" %}</p></a></li>
     <li><a href="{% url 'admin:membership_manager_contact_changelist' %}">
         <img width="128" height="128"  src="{% static 'img/Contacto.svg' %}" />
-        <p>Contactos</p> </a></li>
+        <p>{% trans "Contacts" %}</p></a></li>
+ 
 </ul>
 <br><br>
    <div id="otherapp">
@@ -36,13 +38,11 @@
             {% else %}
                 <th scope="row">{{ model.name }}</th>
             {% endif %}
-
             {% if model.add_url %}
                 <td><a href="{{ model.add_url }}" class="addlink">{% trans 'Add' %}</a></td>
             {% else %}
                 <td>&nbsp;</td>
             {% endif %}
-
             {% if model.admin_url %}
                 {% if model.view_only %}
                 <td><a href="{{ model.admin_url }}" class="viewlink">{% trans 'View' %}</a></td>
@@ -53,7 +53,6 @@
                 <td>&nbsp;</td>
             {% endif %}
             </tr>
-
         {% endfor %}
         </table>
         </div>
