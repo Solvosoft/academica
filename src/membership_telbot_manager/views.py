@@ -1,3 +1,5 @@
+from time import sleep
+
 from django.db.models import Q
 from django.template.loader import render_to_string
 from membership_manager.models import Organization, Invoice
@@ -8,6 +10,7 @@ from django.conf import settings
 import telebot
 
 bot = telebot.TeleBot(settings.TELEGRAM_BOT_API)
+sleep(2)
 bot.set_webhook(url=settings.TELEGRAM_BOT_WEBHOOK)
 
 

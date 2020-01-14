@@ -22,7 +22,7 @@ class GeneralContactInfo(models.Model):
     province = models.CharField(max_length=200, verbose_name="Provincia")  # Estado / Provincia
     postal_code = models.CharField(max_length=10, verbose_name="Código postal")  # Código Postal
     active = models.BooleanField(default=True, verbose_name="Activo")  # Estado(Activo, Inactivo)
-    currency = models.ForeignKey(SystemCurrency, on_delete=models.CASCADE,
+    currency = models.ForeignKey(SystemCurrency, on_delete=models.SET_DEFAULT, default=4,
                                  verbose_name="Moneda")
     payment_method = models.CharField(max_length=250, choices=PAYMENT,
                                       verbose_name="Método de pago")
@@ -69,7 +69,7 @@ class Membership(models.Model):
     organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=300, verbose_name="Nombre")
     annual_cost = models.FloatField(verbose_name="Costo")
-    currency = models.ForeignKey(SystemCurrency, on_delete=models.CASCADE, verbose_name="Moneda")
+    currency = models.ForeignKey(SystemCurrency, on_delete=models.SET_DEFAULT, default=4, verbose_name="Moneda")
     description = models.TextField(null=True, blank=True, verbose_name="Descripción")
     renewal_period = models.ForeignKey(RenewalPeriod, on_delete=models.CASCADE,
                                        verbose_name="Periodo de renovación")
@@ -138,7 +138,7 @@ class Invoice(models.Model):
                                        verbose_name="Periodo de renovación",related_name='inv_m_renews')
     description = models.TextField(verbose_name="Descripción")
     amount = models.FloatField(verbose_name="Cantidad")
-    currency = models.ForeignKey(SystemCurrency, on_delete=models.CASCADE, verbose_name="Moneda")
+    currency = models.ForeignKey(SystemCurrency, on_delete=models.SET_DEFAULT, default=4, verbose_name="Moneda")
     status = models.CharField(max_length=10, choices=STATUS, verbose_name="Estado")
     pdf_invoice = models.FileField(upload_to="invoices/", null=True, blank=True, verbose_name="Factura en PDF")
 
