@@ -74,7 +74,8 @@ def state(message):
                 membership__organization__telgroup__pk=telgroup.pk,
                 status='paid').order_by("payment_date").last()
             msgg = render_to_string('invoices.txt',
-                                    {'invoice': invoices, 'option': "pagas", 'title': invoices.membership.name})
+                                    {'invoice': invoices or [], 'option': "pagas",
+                                     'title': invoices.membership.name if invoices else "Sin facturación"})
 
         bot.send_message(chat_id, reply_to_message_id=message.message_id, text=msgg)
 
