@@ -178,7 +178,8 @@ def new_chat_member(message):
                          f'User {teluser.first_name} {teluser.last_name}  was added to the group '
                                               f'{telgroup.title}, successfully!.')
     else:
-        bot.send_message(message.chat.id, f'This groups has no permissions')
+        bot.send_message(message.chat.id, """Grupo sin permisos, por favor registre su usuario (%s) en la platafora
+         y cree un grupo en la administración con este id %s"""%(str(message.from_user.id), str(message.chat.id)))
 
 
 @bot.message_handler(content_types=['left_chat_member'])

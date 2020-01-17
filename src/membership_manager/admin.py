@@ -109,7 +109,7 @@ class ServiceAdmin(admin.TabularInline):
 class MemberShipAdmin(admin.ModelAdmin):
     actions = [membership_payments_history]
     list_filter = (OrganizationFilter, MembershipNotificationFilter, 'state' )
-    search_fields = ('contact__first_name', 'contact__last_name')
+    search_fields = ('contact__first_name', 'contact__last_name', 'organization__name')
     list_display = ('organization', 'annual_cost',
                     'currency', 'renewal_period', 'state', 'invoices', 'next_pay',
                     'exchange_rates')
