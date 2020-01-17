@@ -89,7 +89,7 @@ def memberships_list(message):
     chat_id = message.chat.id
     telgroup = TelGroup.objects.filter(chat_id=message.chat.id).first()
     if telgroup:
-        memberships = telgroup.organization.membs.all()
+        memberships = telgroup.organization.membership_set.all()
         if memberships:
             msgg = render_to_string('memberships.txt', {'memberships': memberships, 'option': "membresias",
                                                         'title': telgroup.organization.name})
@@ -111,7 +111,7 @@ def memberships_services_list(message):
     chat_id = message.chat.id
     telgroup = TelGroup.objects.filter(chat_id=message.chat.id).first()
     if telgroup:
-        memberships = telgroup.organization.membs.filter(state='active')
+        memberships = telgroup.organization.membership_set.filter(state='active')
         if memberships:
             msgg = render_to_string('memberships.txt', {'memberships': memberships, 'option': "services",
                                                         'title': telgroup.organization.name})
