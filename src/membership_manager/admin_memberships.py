@@ -1,5 +1,8 @@
+from async_notifications.utils import send_email_from_template
 from django.contrib.admin import SimpleListFilter
+from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
@@ -7,7 +10,41 @@ from django.views.generic import ListView
 from membership_manager.forms import MembInvPaymentsForm
 from membership_manager.models import Membership, Invoice, Organization
 from membership_manager.utils import membership_filter
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
+def validateEmail( email ):
+    try:
+        validate_email( email )
+        return True
+    except ValidationError:
+        return False
+
+def get_emails(membership):
+    emails = []
+    if membership.contact:
+        if validateEmail(membership.contact.email):
+            emails.append(membership.contact.email )
+    if membership.organization:
+        if validateEmail(membership.organization.email):
+            emails.append(membership.organization.email )
+    if emails:
+        emails = list(set(emails))
+    return emails
+
+def send_email_to_owner(modeladmin, request, queryset):
+    for membership in queryset:
+        emails = get_emails(membership)
+        if emails:
+            send_email_from_template('admin_to_membership_mail', emails,
+                                     context={
+                                         'membership': membership
+                                     },
+                                     enqueued=True,
+                                     user=None,
+                                     upfile=None)
+
+send_email_to_owner.short_description = "Envíar correo a responsables de las membresías"
 
 def membership_payments_history(modeladmin, request, queryset):
     id_list = []

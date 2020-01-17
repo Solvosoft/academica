@@ -1,6 +1,7 @@
 Membresías {{ title }}: {% if option != "none" and option != "services"%}
 {% for mem in memberships %}
     -{{mem.name}} | Costo Anual: {{mem.currency}} {{mem.annual_cost}}
+        Renovación: {{mem.renews.all.last.end_date|date:"SHORT_DATE_FORMAT"}}
 {% endfor %}{% endif %}
 {% if option == "none" %}
  {{memberships}}{% endif %}
@@ -8,6 +9,7 @@ Membresías {{ title }}: {% if option != "none" and option != "services"%}
     -{{mem.name}} | Costo Anual: {{mem.currency}} {{mem.annual_cost}}
     Servicios:{% for service in mem.service_set.all %}
         + {{service.servicetype.name}} : {{ service.description }}
+    Renovación: {{mem.renews.all.last.end_date|date:"SHORT_DATE_FORMAT"}}
     {% endfor %}
 {% endfor %}
 {% endif %}

@@ -179,8 +179,10 @@ def new_chat_member(message):
                          f'User {teluser.first_name} {teluser.last_name}  was added to the group '
                                               f'{telgroup.title}, successfully!.')
     else:
-        bot.send_message(message.chat.id, """Grupo sin permisos, por favor registre su usuario (%s) en la platafora
-         y cree un grupo en la administración con este id %s"""%(str(message.from_user.id), str(message.chat.id)))
+        bot.send_message(message.chat.id,
+"""¡Hola! Te contamos que un grupo para notificaciones de CódigoSur ha sido creado.
+Número de registro: %s. ID: %s. 
+Si escribes /ayuda en este chat podrás dialogar con nuestro Bot de Telegram para que te brinde información sobre tu Membresía, Estado y Servicios activos."""%(str(message.from_user.id), str(message.chat.id)))
 
 
 @bot.message_handler(content_types=['left_chat_member'])

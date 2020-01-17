@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'djmoney.contrib.exchange',
     'ajax_select',
     'async_notifications',
+    'import_export',
 
 ]
 

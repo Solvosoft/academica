@@ -14,13 +14,13 @@ class GeneralContactInfo(models.Model):
     )
 
     email = models.EmailField(verbose_name="Correo electrónico")  # Correo electrónico
-    cellphone = models.CharField(max_length=200, verbose_name="celular")  # celular
+    cellphone = models.CharField(max_length=200, verbose_name="celular", null=True, blank=True)  # celular
     phone = models.CharField(max_length=200, verbose_name="Teléfono")  # Teléfono
-    address = models.TextField(verbose_name="Dirección")  # Dirección
+    address = models.TextField(verbose_name="Dirección", null=True, blank=True )  # Dirección
     country = CountryField(verbose_name="País")  # País
-    city = models.CharField(max_length=200, verbose_name="Ciudad")  # Ciudad
-    province = models.CharField(max_length=200, verbose_name="Provincia")  # Estado / Provincia
-    postal_code = models.CharField(max_length=10, verbose_name="Código postal")  # Código Postal
+    city = models.CharField(max_length=200, verbose_name="Ciudad", null=True, blank=True)  # Ciudad
+    province = models.CharField(max_length=200, verbose_name="Provincia", null=True, blank=True)  # Estado / Provincia
+    postal_code = models.CharField(max_length=10, verbose_name="Código postal", null=True, blank=True)  # Código Postal
     active = models.BooleanField(default=True, verbose_name="Activo")  # Estado(Activo, Inactivo)
     currency = models.ForeignKey(SystemCurrency, on_delete=models.SET_DEFAULT, default=4,
                                  verbose_name="Moneda")
@@ -40,9 +40,15 @@ class Contact(GeneralContactInfo):
         verbose_name_plural = "Contactos"
 
 class Organization(GeneralContactInfo):
+    IDS_TYPE = (
+        ('RUT', 'RUT'), ('NIT', 'NIT'), ('CUIT', 'CUIT'),
+        ('cedula_juridica', 'Cédula Jurídica')
+    )
     name = models.CharField(max_length=300, verbose_name="Nombre")  # Nombre de la Organización
     initials = models.CharField(max_length=50, verbose_name="Sigla")  # SIGLA
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, verbose_name="Contacto")
+    identification_type = models.CharField(max_length=50, null=True, blank=True, choices=IDS_TYPE, verbose_name="Tipo de identificación")
+    identification  = models.CharField(max_length=50, null=True, blank=True,verbose_name="Número de Identificación")
 
     def __str__(self):
         return self.name[:80] + '.'

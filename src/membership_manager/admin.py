@@ -9,11 +9,12 @@ from django.utils import timezone
 from django.utils.functional import curry
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from import_export.admin import ExportActionMixin
 
 from membership_core.models import MembershipTemplate, SystemCurrency, ServiceType, ServiceMT
 from membership_manager import models
 from membership_manager.admin_memberships import MembershipNotificationFilter, membership_payments_history, \
-    organization_payments_history
+    organization_payments_history, send_email_to_owner
 from membership_manager.admin_pdf import InvoiceAdmin
 from membership_manager.adminfilters import PaisFilter, OrganizationFilter
 from membership_manager.forms import MembershipAddForm, ServiceForm
@@ -106,8 +107,8 @@ class ServiceAdmin(admin.TabularInline):
         formset.__init__ = curry(formset.__init__, initial=initial)
         return formset
 
-class MemberShipAdmin(admin.ModelAdmin):
-    actions = [membership_payments_history]
+class MemberShipAdmin(ExportActionMixin, admin.ModelAdmin):
+    actions = [membership_payments_history, send_email_to_owner, 'export_admin_action']
     list_filter = (OrganizationFilter, MembershipNotificationFilter, 'state' )
     search_fields = ('contact__first_name', 'contact__last_name', 'organization__name')
     list_display = ('organization', 'annual_cost',
