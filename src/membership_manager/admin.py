@@ -111,16 +111,17 @@ class MemberShipAdmin(ExportActionMixin, admin.ModelAdmin):
     actions = [membership_payments_history, send_email_to_owner, 'export_admin_action']
     list_filter = (OrganizationFilter, MembershipNotificationFilter, 'state' )
     search_fields = ('contact__first_name', 'contact__last_name', 'organization__name')
-    list_display = ('organization', 'annual_cost',
+    list_display = ('name', 'annual_cost',
                     'currency', 'renewal_period', 'state', 'invoices', 'next_pay',
                     'exchange_rates')
-    readonly_fields = ['exchange_rates', 'invoices', 'next_pay']
+    readonly_fields = ['exchange_rates', 'invoices', 'next_pay', 'name']
 
     inlines = [ServiceAdmin, MembershipRenewAdmin]
     form_class = MembershipAddForm
-    fields = ['membership_template',
+    fields = ['name',
+              'membership_template',
               'membership_type', 'contact', 'organization',
-              'name', 'description', 'annual_cost', 'currency', 'exchange_rates',
+              'annual_cost', 'currency', 'exchange_rates',
               'renewal_period', 'state']
 
     class Media:

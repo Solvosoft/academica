@@ -15,7 +15,7 @@ class GeneralContactInfo(models.Model):
 
     email = models.EmailField(verbose_name="Correo electrónico")  # Correo electrónico
     cellphone = models.CharField(max_length=200, verbose_name="celular", null=True, blank=True)  # celular
-    phone = models.CharField(max_length=200, verbose_name="Teléfono")  # Teléfono
+    phone = models.CharField(max_length=200, verbose_name="Teléfono", null=True, blank=True )  # Teléfono
     address = models.TextField(verbose_name="Dirección", null=True, blank=True )  # Dirección
     country = CountryField(verbose_name="País")  # País
     city = models.CharField(max_length=200, verbose_name="Ciudad", null=True, blank=True)  # Ciudad
@@ -73,14 +73,20 @@ class Membership(models.Model):
     membership_type = models.CharField(max_length=50, choices=TYPES, verbose_name="Tipo de membresía")
     contact = models.ForeignKey(Contact, null=True, blank=True, on_delete=models.SET_NULL, verbose_name="Contato")
     organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
-    name = models.CharField(max_length=300, verbose_name="Nombre")
     annual_cost = models.FloatField(verbose_name="Costo")
     currency = models.ForeignKey(SystemCurrency, on_delete=models.SET_DEFAULT, default=4, verbose_name="Moneda")
-    description = models.TextField(null=True, blank=True, verbose_name="Descripción")
     renewal_period = models.ForeignKey(RenewalPeriod, on_delete=models.CASCADE,
                                        verbose_name="Periodo de renovación")
     state = models.CharField(max_length=11, choices=STATES, default="active",
                              verbose_name="Estado")
+
+    @property
+    def name(self):
+        if self.organization and self.organization.name:
+            return self.organization.name
+        if self.contact and self.contact.name:
+            return self.contact.name
+        return "Membresia sin nombre"
 
     def __str__(self):
         return self.name

@@ -1,8 +1,8 @@
 from async_notifications.utils import send_email_from_template
 from django.contrib.admin import SimpleListFilter
-from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.http import HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
@@ -10,8 +10,7 @@ from django.views.generic import ListView
 from membership_manager.forms import MembInvPaymentsForm
 from membership_manager.models import Membership, Invoice, Organization
 from membership_manager.utils import membership_filter
-from django.core.validators import validate_email
-from django.core.exceptions import ValidationError
+
 
 def validateEmail( email ):
     try:
