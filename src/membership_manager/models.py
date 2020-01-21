@@ -101,7 +101,7 @@ class Service(models.Model):
                                    verbose_name="Membresía")
     servicetype = models.ForeignKey(ServiceType, on_delete=models.DO_NOTHING,
                                     verbose_name="Tipo de servicio")
-    description = models.CharField(max_length=250, verbose_name="Descripción")
+    description = models.CharField(max_length=250, verbose_name="Descripción", default="Sin descripción")
     observations = models.CharField(max_length=500, null=True, blank=True,
                                     verbose_name="Observaciones")
 
