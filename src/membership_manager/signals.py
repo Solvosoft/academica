@@ -16,7 +16,7 @@ def welcome_email(sender, instance, created, **kwargs):
                                  context={
                                      'membership': instance
                                  },
-                                 enqueued=False,
+                                 enqueued=True,
                                  user=None,
                                  upfile=None)
 
