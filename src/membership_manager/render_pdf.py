@@ -26,7 +26,7 @@ def generate_invoice(membership, invoice, email_template='pay_mail', enqueued=Fa
     if membership.contact:
         email = membership.contact.email
     else:
-        email = membership.organization.contact.email
+        email = membership.organization.email
     send_email_from_template(email_template, [email],
                              context={
                                  'invoice': invoice,

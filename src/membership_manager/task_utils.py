@@ -5,8 +5,9 @@ from django.conf import settings
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
+from django.utils.timezone import now
 
-from membership_manager.models import Invoice, MembershipRenew
+from membership_manager.models import Invoice, MembershipRenew, Membership
 from membership_manager.render_pdf import generate_invoice
 from membership_manager.utils import invoice_expiration_filter_queryset, renewal_expiration_filter_manager, \
     get_administrative_user
@@ -125,5 +126,35 @@ def membership_deactivating(now):
             object_repr="Membresia inactiva por falta de pago",
             action_flag=CHANGE
         )
+        if TelGroup.objects.filter(organization_id=membership.organization.pk).first():
+            send_deactivated_message(membership.organization.telgroup.chat_id,membership.organization)
+
+
+def membership_deactivating_membership(id_membresia):
+    membership = Membership.objects.get(pk=id_membresia)
+    renew = membership.renews.all().filter(graceperiod=False).order_by('end_date').last()
+
+
+    membership = renew.membership
+    if membership.contact:
+        email = membership.contact.email
+    else:
+        email = membership.organization.contact.email
+    invoice = membership.mem_inv.all().order_by('expiration_date').last()
+    if not invoice:
+        invoice = Invoice.objects.create(creation_date=now(),
+                                         expiration_date=renew.end_date,
+                                         payment_date=renew.end_date,
+                                         membership=membership,
+                                         renewal_period=renew,
+                                         description=f'{renew.membership.name} expira al {renew.end_date}. Debe ser pagada.',
+                                         amount=membership.annual_cost,
+                                         currency=membership.currency,
+                                         status='pending')
+    generate_invoice(membership, invoice, email_template='expiration_mail',
+                     enqueued=True)
+
+
+    if membership.organization:
         if TelGroup.objects.filter(organization_id=membership.organization.pk).first():
             send_deactivated_message(membership.organization.telgroup.chat_id,membership.organization)

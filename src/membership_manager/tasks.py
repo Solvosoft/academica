@@ -1,16 +1,16 @@
 from django.utils import timezone
 
-
-from membership_manager.models import Membership, Invoice, MembershipRenew
-
 from membership_manager.task_utils import notify_invoice_expiration, invoice_creation, renew_graceperiod, \
-    membership_deactivating
+    membership_deactivating, membership_deactivating_membership
 from membresias_codigosur.celery import app
-"""
+
 @app.task
 def task_notify_invoice_expiration():
+    """
     notify_invoice_expiration(timezone.now())
-"""
+    """
+    pass
+
 @app.task
 def task_invoice_creation():
     """
@@ -18,9 +18,15 @@ def task_invoice_creation():
     """
     #invoice_creation(timezone.now())
     pass
-"""
+
 @app.task
 def task_membership_deactivating_or_graceperiod():
+    """
     renew_graceperiod(timezone.now())
     membership_deactivating(timezone.now())
-"""
+    """
+    pass
+
+@app.task
+def task_membership_deactivating_membership(id_membership):
+    membership_deactivating_membership(id_membership)

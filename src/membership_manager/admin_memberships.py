@@ -9,6 +9,7 @@ from django.views.generic import ListView
 
 from membership_manager.forms import MembInvPaymentsForm
 from membership_manager.models import Membership, Invoice, Organization
+from membership_manager.tasks import task_membership_deactivating_membership
 from membership_manager.utils import membership_filter
 
 
@@ -42,8 +43,14 @@ def send_email_to_owner(modeladmin, request, queryset):
                                      enqueued=True,
                                      user=None,
                                      upfile=None)
-
 send_email_to_owner.short_description = "Envíar correo a responsables de las membresías"
+
+
+def send_email_vencimiento(modeladmin, request, queryset):
+    for membership in queryset:
+        task_membership_deactivating_membership.delay(membership.pk)
+
+send_email_vencimiento.short_description = "Envíar correo de vencimiento de las membresías"
 
 def membership_payments_history(modeladmin, request, queryset):
     id_list = []
