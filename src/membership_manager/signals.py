@@ -46,3 +46,4 @@ def save_attention(sender, instance, **kwargs):
 # def change_activity_time_elapsed(sender, instance, **kwargs):
 #     instance.activity.time_elapsed = instance.activity.attentions.aggregate(time_elapsed=Sum("duration"))['time_elapsed']
 #     instance.activity.save()
+

@@ -9,7 +9,7 @@ from django.utils.safestring import mark_safe
 from membership_manager.models import MembershipRenew
 from membership_manager.render_pdf import generate_invoice
 from membership_manager import utils
-from membership_manager.utils import membership_payment_manager
+from membership_manager.utils import membership_payment_manager, stringcode_generator
 from membership_telbot_manager.models import TelGroup
 from membership_telbot_manager.views import send_invoice_message
 
@@ -61,16 +61,29 @@ class InvoiceRenewalNotificationFilter(SimpleListFilter):
         # This is where you process parameters selected by use via filter options:
         return utils.invoice_expiration_filter_queryset(queryset, self.value())
 
+def recode_invoice(modeladmin, request, queryset):
+    for invoice in queryset:
+        string_code = stringcode_generator()
+        invoice.code = f'%s-%s' % (string_code, str(invoice.pk).rjust(6, "0"))
+        invoice.save()
+recode_invoice.short_description = 'Regenerar codigos de factura'
+
+def regenerepdf_invoice(modeladmin, request, queryset):
+    for invoice in queryset:
+        generate_invoice(invoice.membership, invoice,  send_email = False)
+
+regenerepdf_invoice.short_description = 'Regenerar PDF de la factura'
+
 class InvoiceAdmin(admin.ModelAdmin):
-    actions = [pay_invoice]
+    actions = [pay_invoice, recode_invoice, regenerepdf_invoice]
 
     list_filter = ('membership', 'status')
 
     search_fields = ('membership__contact__first_name',
                      'membership__contact__last_name',
-                     'membership__name',
-                     'membership__organization')
-    list_display = ('membership', 'expiration_date', 'amount', 'currency', 'status', 'payment_date', 'download')
+                     'membership__organization__name', 'code')
+    list_display = ('code', 'membership', 'expiration_date',
+                    'amount', 'currency', 'status', 'payment_date', 'download')
     list_editable = ()
     readonly_fields = ('download',)
 

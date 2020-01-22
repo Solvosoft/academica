@@ -4,24 +4,38 @@ from django.contrib import admin
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
-from membership_manager.models import Organization
-
+from membership_manager.models import Organization, Membership
 from django_countries import countries
+
+
 class PaisFilter(admin.SimpleListFilter):
     title = 'Países'
     parameter_name = 'pais'
 
+    def get_country(self, code, name):
+        return "%d | %d | %d | %s "%(
+        Membership.objects.filter(
+            organization__country=code
+        ).count(),
+        Membership.objects.filter(
+            Q(state='active') | Q(state='graceperiod'),
+            organization__country=code ).count(),
+        Membership.objects.filter(
+            organization__country=code,
+            state='inactive'
+        ).count(), name
+        )
     def lookups(self, request, model_admin):
         keys = set(Organization.objects.all().values_list('country', flat=True))
         country=dict(countries)
-        options = [(x,country[x]) for x in keys]
+        options = [('all', 'T | A | I | Nombre')]+[(x, self.get_country(x, country[x])) for x in keys]
         return options
 
     def queryset(self, request, queryset):
+        print(queryset)
         value = self.value()
-        if value:
-            return queryset.filter(Q(country=self.value())|
-                               Q(country=self.value()))
+        if value and value != 'all':
+            return queryset.filter( country=value)
         return queryset
 
 

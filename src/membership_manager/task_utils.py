@@ -10,7 +10,7 @@ from django.utils.timezone import now
 from membership_manager.models import Invoice, MembershipRenew, Membership
 from membership_manager.render_pdf import generate_invoice
 from membership_manager.utils import invoice_expiration_filter_queryset, renewal_expiration_filter_manager, \
-    get_administrative_user
+    get_administrative_user, stringcode_generator
 from membership_telbot_manager.models import TelGroup
 from membership_telbot_manager.views import send_notification_message, send_deactivated_message
 
@@ -57,7 +57,9 @@ def invoice_creation(now):
                                          amount=renew.membership.annual_cost,
                                          currency=renew.membership.currency,
                                          status='pending')
-
+        string_code = stringcode_generator()
+        invoice.code = f'%s-%s' % (string_code,str(invoice.pk).rjust(6, "0"))
+        invoice.save()
         generate_invoice(invoice.membership, invoice, email_template="notification_mail", enqueued=True)
         LogEntry.objects.log_action(
             user_id=get_administrative_user(),
@@ -151,6 +153,11 @@ def membership_deactivating_membership(id_membresia):
                                          amount=membership.annual_cost,
                                          currency=membership.currency,
                                          status='pending')
+        string_code = stringcode_generator()
+        invoice.code = f'%s-%s' % (string_code,str(invoice.pk).rjust(6, "0"))
+        invoice.save()
+
+
     generate_invoice(membership, invoice, email_template='expiration_mail',
                      enqueued=True)
 

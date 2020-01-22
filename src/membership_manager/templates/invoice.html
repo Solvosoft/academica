@@ -342,10 +342,10 @@
     <body>
 
         <div id="header_content1">
-            FACTURA: &nbsp &nbsp &nbsp {% new_invoice_code invoice.id %}
+            FACTURA: &nbsp &nbsp &nbsp {% new_invoice_code invoice %}
         </div>
         <div id="header_content2">
-            {{ invoice.status }}
+            {{ invoice.get_status_display }}
         </div>
         <div id="logo">
             <img src="logoCS.png"/>

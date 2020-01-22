@@ -114,7 +114,7 @@ class MemberShipAdmin(ExportActionMixin, admin.ModelAdmin):
     search_fields = ('contact__first_name', 'contact__last_name', 'organization__name')
     list_display = ('name', 'annual_cost',
                     'currency', 'renewal_period', 'state', 'invoices', 'next_pay',
-                    'exchange_rates')
+                    )
     readonly_fields = ['exchange_rates', 'invoices', 'next_pay', 'name']
 
     inlines = [ServiceAdmin, MembershipRenewAdmin]

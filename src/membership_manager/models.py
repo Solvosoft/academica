@@ -25,7 +25,7 @@ class GeneralContactInfo(models.Model):
     currency = models.ForeignKey(SystemCurrency, on_delete=models.SET_DEFAULT, default=4,
                                  verbose_name="Moneda")
     payment_method = models.CharField(max_length=250, choices=PAYMENT,
-                                      verbose_name="Método de pago")
+                                      verbose_name="Método de pago", null=True, blank=True)
     class Meta:
         abstract = True
 
@@ -45,7 +45,7 @@ class Organization(GeneralContactInfo):
         ('cedula_juridica', 'Cédula Jurídica')
     )
     name = models.CharField(max_length=300, verbose_name="Nombre")  # Nombre de la Organización
-    initials = models.CharField(max_length=50, verbose_name="Sigla")  # SIGLA
+    initials = models.CharField(max_length=50, verbose_name="Sigla", null=True, blank=True)  # SIGLA
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Contacto")
     identification_type = models.CharField(max_length=50, null=True, blank=True, choices=IDS_TYPE, verbose_name="Tipo de identificación")
     identification  = models.CharField(max_length=50, null=True, blank=True,verbose_name="Número de Identificación")
@@ -153,6 +153,7 @@ class Invoice(models.Model):
     currency = models.ForeignKey(SystemCurrency, on_delete=models.SET_DEFAULT, default=4, verbose_name="Moneda")
     status = models.CharField(max_length=10, choices=STATUS, verbose_name="Estado")
     pdf_invoice = models.FileField(upload_to="invoices/", null=True, blank=True, verbose_name="Factura en PDF")
+    code = models.CharField(max_length=20, null=True, blank=True, verbose_name="Código de la Factura")
 
     def __str__(self):
         return "%s %s %s" % (

@@ -8,7 +8,8 @@ from django.template.loader import render_to_string
 from xhtml2pdf import pisa
 from django.contrib.staticfiles import finders
 
-def generate_invoice(membership, invoice, email_template='pay_mail', enqueued=False):
+def generate_invoice(membership, invoice, email_template='pay_mail',
+                     enqueued=True, send_email=True):
     sourceHtml = render_to_string('invoice.html', context={
         'invoice': invoice,
         'membership': membership
@@ -27,7 +28,8 @@ def generate_invoice(membership, invoice, email_template='pay_mail', enqueued=Fa
         email = membership.contact.email
     else:
         email = membership.organization.email
-    send_email_from_template(email_template, [email],
+    if send_email:
+        send_email_from_template(email_template, [email],
                              context={
                                  'invoice': invoice,
                                  'membership': membership
