@@ -46,7 +46,7 @@ class Organization(GeneralContactInfo):
     )
     name = models.CharField(max_length=300, verbose_name="Nombre")  # Nombre de la Organización
     initials = models.CharField(max_length=50, verbose_name="Sigla")  # SIGLA
-    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, verbose_name="Contacto")
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Contacto")
     identification_type = models.CharField(max_length=50, null=True, blank=True, choices=IDS_TYPE, verbose_name="Tipo de identificación")
     identification  = models.CharField(max_length=50, null=True, blank=True,verbose_name="Número de Identificación")
 
