@@ -11,7 +11,7 @@ def welcome_email(sender, instance, created, **kwargs):
         if instance.contact:
             email = instance.contact.email
         else:
-            email = instance.organization.contact.email
+            email = instance.organization.email
         send_email_from_template('welcome_mail', [email],
                                  context={
                                      'membership': instance
