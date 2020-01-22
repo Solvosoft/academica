@@ -10,9 +10,6 @@ from django.conf import settings
 import telebot
 
 bot = telebot.TeleBot(settings.TELEGRAM_BOT_API)
-sleep(2)
-bot.set_webhook(url=settings.TELEGRAM_BOT_WEBHOOK)
-
 
 def staff_authentication(user_id):
     """
