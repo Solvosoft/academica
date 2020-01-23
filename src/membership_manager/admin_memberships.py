@@ -1,36 +1,18 @@
 from async_notifications.utils import send_email_from_template
 from django.contrib.admin import SimpleListFilter
 from django.contrib.admin.views.decorators import staff_member_required
-from django.core.exceptions import ValidationError
-from django.core.validators import validate_email
+from django.db.models import Q
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView
-
+from django.views.generic import ListView, TemplateView
+from django.contrib import messages
+from membership_manager.Simulador import ManejadorNotificaciones
 from membership_manager.forms import MembInvPaymentsForm
 from membership_manager.models import Membership, Invoice, Organization
 from membership_manager.tasks import task_membership_deactivating_membership
-from membership_manager.utils import membership_filter
+from membership_manager.utils import membership_filter, get_emails
 
-
-def validateEmail( email ):
-    try:
-        validate_email( email )
-        return True
-    except ValidationError:
-        return False
-
-def get_emails(membership):
-    emails = []
-    if membership.contact:
-        if validateEmail(membership.contact.email):
-            emails.append(membership.contact.email )
-    if membership.organization:
-        if validateEmail(membership.organization.email):
-            emails.append(membership.organization.email )
-    if emails:
-        emails = list(set(emails))
-    return emails
 
 def send_email_to_owner(modeladmin, request, queryset):
     for membership in queryset:
@@ -48,7 +30,7 @@ send_email_to_owner.short_description = "Envíar correo a responsables de las me
 
 def send_email_vencimiento(modeladmin, request, queryset):
     for membership in queryset:
-        task_membership_deactivating_membership.delay(membership.pk)
+        task_membership_deactivating_membership.delay(membership.pk, True)
 
 send_email_vencimiento.short_description = "Envíar correo de vencimiento de las membresías"
 
@@ -85,6 +67,52 @@ class MembershipNotificationFilter(SimpleListFilter):
         if value is None:
             value=False
         return membership_filter(queryset, filt=value)
+
+@method_decorator(staff_member_required, name='dispatch')
+class SimulateNotifications(TemplateView):
+    template_name = 'admin/membership_admin/simulatenotifications.html'
+    def get_context_data(self, **kwargs):
+        context = super(SimulateNotifications, self).get_context_data(**kwargs)
+        context['simulador'] = ManejadorNotificaciones()
+        return context
+
+@staff_member_required
+def repair_membership(request, pk, action):
+    if pk == '0' :
+        if action == 'graceperiod':
+            queryset = Membership.objects.filter(
+              state="active", renews__graceperiod=True, renews__active=True)
+        elif action ==  'invoice':
+            queryset = Membership.objects.filter(
+                Q(state="active") | Q(state='graceperiod'),
+                renews__graceperiod=False, renews__active=True, renews__inv_m_renews=None)
+
+    else:
+        mem = get_object_or_404(Membership, pk=pk)
+        queryset = [mem]
+    for mem in queryset:
+        if action == 'graceperiod':
+            mem.state = 'graceperiod'
+            mem.save()
+        if action == '2renews':
+            periodo = mem.renews.filter(active=True, graceperiod=True).order_by('end_date').last()
+            lastmemb = mem.renews.filter(graceperiod=False).order_by('end_date').last()
+            if lastmemb is not None and periodo is not None:
+                mem.renews.update(active=False)
+                lastmemb.active=True
+                lastmemb.save()
+                periodo.active=True
+                periodo.save()
+            else:
+                messages.warning(request, 'Lo lamentamos esta membresía "'+str(mem)+'" no se puede reparar automáticamente')
+        if action == 'invoice':
+
+            task_membership_deactivating_membership.delay(mem.pk, False)
+    if action == 'invoice':
+        messages.info(request,
+                         'Debe esperar un tiempo prudencial mientras se ejecutan las tareas para que se refleje')
+
+    return redirect('simulate')
 
 @method_decorator(staff_member_required, name='dispatch')
 class MembInvoices(ListView):

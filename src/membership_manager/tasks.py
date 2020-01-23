@@ -7,7 +7,8 @@ from membresias_codigosur.celery import app
 @app.task
 def task_notify_invoice_expiration():
     """
-    notify_invoice_expiration(timezone.now())
+    now=timezone.localtime(timezone.now())
+    notify_invoice_expiration(now)
     """
     pass
 
@@ -16,17 +17,19 @@ def task_invoice_creation():
     """
     Create a invoice, at 60 days left - renewal expiration.
     """
-    #invoice_creation(timezone.now())
+    now=timezone.localtime(timezone.now())
+    #invoice_creation(now)
     pass
 
 @app.task
 def task_membership_deactivating_or_graceperiod():
     """
-    renew_graceperiod(timezone.now())
-    membership_deactivating(timezone.now())
+    now=timezone.localtime(timezone.now())
+    renew_graceperiod(now)
+    membership_deactivating(now)
     """
     pass
 
 @app.task
-def task_membership_deactivating_membership(id_membership):
-    membership_deactivating_membership(id_membership)
+def task_membership_deactivating_membership(id_membership, email):
+    membership_deactivating_membership(id_membership, email)

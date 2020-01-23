@@ -2,17 +2,38 @@ import random
 import string
 from datetime import timedelta
 
-
 from async_notifications.register import update_template_context
-
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.models import User
-from django.db.models import Q
-
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.utils import timezone
 
 from membership_core.models import ServiceMT
 from membership_manager.models import MembershipRenew, Membership, Invoice
+
+
+def validateEmail( email ):
+    try:
+        validate_email( email )
+        return True
+    except ValidationError:
+        return False
+
+def get_emails(membership):
+    emails = []
+    if membership.contact:
+        if validateEmail(membership.contact.email):
+            emails.append(membership.contact.email )
+    if membership.organization:
+        if validateEmail(membership.organization.email):
+            emails.append(membership.organization.email )
+        if membership.organization.contact:
+            if validateEmail(membership.organization.contact.email):
+                emails.append(membership.organization.contact.email)
+    if emails:
+        emails = list(set(emails))
+    return emails
 
 def stringcode_generator(size=4, chars=string.ascii_uppercase):
     return ''.join(random.choice(chars) for _ in range(size))
@@ -35,6 +56,25 @@ def renewal_expiration_filter_manager(now=None):
                            membership__state="active",
                            inv_m_renews=None)
 
+
+def renew_graceperiod_filter_manager(now=None):
+    if now is None:
+        now = timezone.now()
+    renews = MembershipRenew.objects.filter(end_date__date__lte=now.date(),
+                                            active=True,
+                                            graceperiod=False,
+                                            membership__state="active"
+                                            )
+    return renews
+
+def  membership_deactivating_filter_manager(now=None):
+    if now is None:
+        now = timezone.now()
+    return MembershipRenew.objects.filter(end_date__date__lte=now.date(),
+                                            active=True,
+                                            graceperiod=True,
+                                            membership__state="graceperiod"
+                                            )
 def memb_invoice_expiration_filter_add_graceperiod(now=None):
     if now is None:
         now = timezone.now()
@@ -55,7 +95,7 @@ def memb_renewal_period_expiration_filter_deactivate_graceperiod(now=None):
                            state='graceperiod', renews__active=True,
                            renews__graceperiod=True, mem_inv__status='pending')
 
-def invoice_expiration_filter_queryset(queryset, filt=None):
+def invoice_expiration_filter_queryset(filt=None, now=None):
     """
     Search the possibles expiration memberships on 60, 45, 30, 15 7 or 1 day left to send a notification.
 
@@ -63,15 +103,16 @@ def invoice_expiration_filter_queryset(queryset, filt=None):
     :param filt:
     :return: Membership for days specified in filt or membership for [60, 45, 30, 15 7 or 1] days after
     """
+    queryset = Invoice.objects.all()
+    if now is None:
+        now = timezone.now()
+
     if filt is not None:
-        lookup_day = (timezone.now() + timedelta(days=int(filt))).date()
+        lookup_day = (now + timedelta(days=int(filt))).date()
         queryset = queryset.filter(expiration_date__date=lookup_day,
                                    status='pending').distinct()
     else:
-        now = timezone.now()
-        now = timezone.localtime(now)
-        dates_list = [
-                (now + timedelta(days=x)).date() for x in [60, 45, 30, 15, 7, 0]]
+        dates_list = [ (now + timedelta(days=x)).date() for x in [60, 45, 30, 15, 7, 0]]
 
         queryset = queryset.filter(expiration_date__date__in=dates_list,status='pending')
         # queryset = queryset.filter(Q(expiration_date__date__in=dates_list) & Q(status='pending'))

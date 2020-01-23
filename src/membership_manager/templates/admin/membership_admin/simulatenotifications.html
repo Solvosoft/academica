@@ -1,0 +1,167 @@
+{% extends "admin/change_list.html" %}
+
+<!-- LOADING -->
+{% load i18n  admin_urls static admin_list %}
+
+{% block extrastyle %}
+  {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "css/payments.css" %}">
+  <link rel="stylesheet" type="text/css" href="{% static "admin/css/changelists.css" %}">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/base/jquery-ui.css">
+
+  {% if cl.formset %}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">
+  {% endif %}
+  {% if cl.formset or action_form %}
+    <script src="{% url 'admin:jsi18n' %}"></script>
+  {% endif %}
+  {{ media.css }}
+  {% if not actions_on_top and not actions_on_bottom %}
+    <style>
+      #changelist table thead th:first-child {width: inherit}
+    </style>
+  {% endif %}
+{% endblock %}
+{% block breadcrumbs %}
+        <div class="breadcrumbs">
+            <a href="{% url 'admin:index' %}">{% trans "Home" %}</a>
+            &rsaquo; <a href="{% url 'admin:membership_manager_membership_changelist'%}">Gestion de {{ cl.opts.app_config.verbose_name }}</a>
+            &rsaquo; {{ cl.opts.verbose_name_plural|capfirst }}
+        </div>
+{% endblock %}
+<!-- CONTENT -->
+{% block extrahead %}
+{{ block.super }}
+{{ media.js }}
+{% endblock %}
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-list{% endblock %}
+
+
+{% block coltype %}flex{% endblock %}
+
+{% block content %}
+
+
+    <div class="module filtered" id="changelist">
+
+             <div class="results item-collapse" >
+               <h1> Errores encontrados </h1>
+                 <div>
+                 <table>
+                     <thead>
+                     <tr class="ui-tabs-anchor">
+
+                         <td>Membresía y link</td>
+                         <td>Fecha de fin</td>
+                         <td>Rango de renovación </td>
+                         <td>Plantilla de correo</td>
+                         <td>Reparación</td>
+
+                     </tr>
+                     </thead>
+                     <tbody>
+                 {% for data in simulador.get_inconsistencias %}
+                     <tr class="{{data.7}}">
+                         <td>{{forloop.counter0}}</td>
+                         <td><a href="{{data.1}}" target="_blank">{{data.0}}</a></td>
+                         <td>{{data.3}}</td>
+                         <td>{{data.2}}</td>
+
+                         <td><a href="{{data.5}}" target="_blank">{{data.6}}</a></td>
+                     </tr>
+                 {% endfor %}
+                     </tbody>
+                 </table>
+                </div>
+
+
+
+            <!-- HASTA AQUI --->
+                 <h1> Facturas a expirar </h1>
+                 <div>
+                 <table>
+                 {% for data in simulador.get_expirations %}
+                     <tr>
+                         <td>{{forloop.counter0}}</td>
+                         <td>{{data.0|date}}</td>
+                         <td><a href="{{data.2}}" target="_blank">{{data.1}}</a></td>
+                         <td><a href="{{data.4}}" target="_blank">{{data.3}}</a></td>
+                         <td>{{data.5}}</td>
+                         <td>{{data.6}}</td> <td>{{data.7}}</td>
+                     </tr>
+                 {% endfor %}
+                 </table></div>
+
+                 <h1> Creación de facturas </h1>
+                 <div>
+                 <table>
+                     <thead>
+                     <tr>
+                         <th>Día de aplicación</th>
+                         <th>Membresía y link</th>
+                         <th>Fecha de fin</th>
+                         <th>Rango de renovación </th>
+                         <th>Plantilla de correo</th>
+                         <th>Membresía activa</th>
+                         <th>Modelo usado</th>
+                     </tr>
+                     </thead>
+                     <tbody>
+                 {% for data in simulador.get_invoice_creation %}
+                     <tr>
+                         <td>{{forloop.counter0}}</td>
+                         <td>{{data.0|date}}</td>
+                         <td><a href="{{data.2}}" target="_blank">{{data.1}}</a></td>
+                         <td>{{data.3}}</td>
+                         <td>{{data.4}}</td>
+                         <td>{{data.5}}</td>
+                         <td>{{data.6}}</td> <td>{{data.7}}</td>
+                     </tr>
+                 {% endfor %}
+                     </tbody>
+                 </table>
+                </div>
+
+
+                <h1> Facturas en periodo de gracia </h1>
+                 <div>
+                 <table>
+                     <thead>
+                     <tr>
+                         <th>Día de aplicación</th>
+                         <th>Membresía y link</th>
+                         <th>Fecha de fin</th>
+                         <th>Rango de renovación </th>
+                         <th>Plantilla de correo</th>
+                         <th>Membresía activa</th>
+                         <th>Modelo usado</th>
+                     </tr>
+                     </thead>
+                     <tbody>
+                 {% for data in simulador.renew_graceperiod %}
+                     <tr>
+                         <td>{{forloop.counter0}}</td>
+                         <td>{{data.0|date}}</td>
+                         <td><a href="{{data.2}}" target="_blank">{{data.1}}</a></td>
+                         <td>{{data.3}}</td>
+                         <td>{{data.4}}</td>
+                         <td>{{data.5}}</td>
+                         <td>{{data.6}}</td> <td>{{data.7}}</td>
+                     </tr>
+                 {% endfor %}
+                     </tbody>
+                 </table>
+                </div>
+
+
+             </div>
+
+
+    </div>
+
+    <script type="text/javascript" src="/static/ajax_select/js/bootstrap.js"></script>
+<script src="{% static 'js/collapse.js' %}"></script>
+
+<link href="/static/ajax_select/css/ajax_select.css" type="text/css" media="all" rel="stylesheet">
+
+{% endblock %}

@@ -10,7 +10,10 @@ class GeneralContactInfo(models.Model):
         ("Cash", "Efectivo"),
         ("Bank transfer", "Transferencia bancaria"),
         ("Paypal", "Paypal"),
-        ("Bitcoins", "Bitcoins")
+        ("Bitcoins", "Bitcoins"),
+        ('MoneyGram', 'MoneyGram'),
+        ('WesterUnion', 'WesterUnion'),
+        ('Transferencia Bancaria Argentina', 'Transferencia Bancaria Argentina')
     )
 
     email = models.EmailField(verbose_name="Correo electrónico")  # Correo electrónico

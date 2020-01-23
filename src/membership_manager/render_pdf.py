@@ -8,6 +8,9 @@ from django.template.loader import render_to_string
 from xhtml2pdf import pisa
 from django.contrib.staticfiles import finders
 
+from membership_manager.utils import get_emails
+
+
 def generate_invoice(membership, invoice, email_template='pay_mail',
                      enqueued=True, send_email=True):
     sourceHtml = render_to_string('invoice.html', context={
@@ -24,12 +27,10 @@ def generate_invoice(membership, invoice, email_template='pay_mail',
     file_name = f'factura_{membership.name}.pdf'
     invoice.pdf_invoice = File(resultFile, name=file_name)
     invoice.save()
-    if membership.contact:
-        email = membership.contact.email
-    else:
-        email = membership.organization.email
+
     if send_email:
-        send_email_from_template(email_template, [email],
+        emails = get_emails(membership)
+        send_email_from_template(email_template, emails,
                              context={
                                  'invoice': invoice,
                                  'membership': membership
