@@ -71,7 +71,8 @@ class Membership(models.Model):
              ("Radial", "Radial"),
              ("Organizacional", "Organizacional"),
              ("Global", "Global"),
-             ("Honoraria", "Honoraria"))
+             ("Honoraria", "Honoraria"),
+             ('Básica', 'Básica'))
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
     membership_type = models.CharField(max_length=50, choices=TYPES, verbose_name="Tipo de membresía")
     contact = models.ForeignKey(Contact, null=True, blank=True, on_delete=models.SET_NULL, verbose_name="Contato")
