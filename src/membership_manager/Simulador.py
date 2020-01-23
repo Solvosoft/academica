@@ -159,7 +159,7 @@ class ManejadorNotificaciones:
                  'notification_mail',
                  reverse_lazy('reparar',
                               args=(0, 'invoice')),
-                 'Convierte la membresías a graceperiod',
+                 'Crea una factura para el periodo',
                  "ui-widget-header ui-corner-all")
             )
         for membershiprenew in queryset:
