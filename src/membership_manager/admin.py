@@ -16,7 +16,7 @@ from membership_manager import models
 from membership_manager.admin_memberships import MembershipNotificationFilter, membership_payments_history, \
     organization_payments_history, send_email_to_owner, send_email_vencimiento
 from membership_manager.admin_pdf import InvoiceAdmin
-from membership_manager.adminfilters import PaisFilter, OrganizationFilter
+from membership_manager.adminfilters import PaisFilter, OrganizationFilter, MembershipPaisFilter
 from membership_manager.forms import MembershipAddForm, ServiceForm
 from membership_manager.models import MembershipRenew, Invoice, Membership
 from membership_manager.utils import load_services_from_membership_template
@@ -110,7 +110,8 @@ class ServiceAdmin(admin.TabularInline):
 class MemberShipAdmin(ExportActionMixin, admin.ModelAdmin):
     actions = [membership_payments_history, send_email_to_owner,
                send_email_vencimiento, 'export_admin_action']
-    list_filter = (OrganizationFilter, MembershipNotificationFilter, 'state' )
+    list_filter = (OrganizationFilter, MembershipNotificationFilter, 'state',
+                   'membership_type', MembershipPaisFilter )
     search_fields = ('contact__first_name', 'contact__last_name', 'organization__name')
     list_display = ('name', 'annual_cost',
                     'currency', 'renewal_period', 'state', 'invoices', 'next_pay',

@@ -32,13 +32,19 @@ class PaisFilter(admin.SimpleListFilter):
         return options
 
     def queryset(self, request, queryset):
-        print(queryset)
+
         value = self.value()
         if value and value != 'all':
             return queryset.filter( country=value)
         return queryset
 
 
+class MembershipPaisFilter(PaisFilter):
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value and value != 'all':
+            return queryset.filter(Q( contact__country=value)|Q(organization__country=value))
+        return queryset
 
 class FormFilter(admin.ListFilter):
     template = 'admin/admin_form_filter.html'
