@@ -34,6 +34,13 @@ def send_email_vencimiento(modeladmin, request, queryset):
 
 send_email_vencimiento.short_description = "Envíar correo de vencimiento de las membresías"
 
+
+def buscar_inconsistencias(modeladmin, request, queryset):
+    return redirect('simulate')
+
+buscar_inconsistencias.short_description = "Busca inconsistencias en las membresías (desarrollo)"
+
+
 def membership_payments_history(modeladmin, request, queryset):
     id_list = []
     for membership in queryset:

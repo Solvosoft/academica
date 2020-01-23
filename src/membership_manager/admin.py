@@ -9,12 +9,13 @@ from django.utils import timezone
 from django.utils.functional import curry
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django_countries import countries
 from import_export.admin import ExportActionMixin
 
 from membership_core.models import MembershipTemplate, SystemCurrency, ServiceType, ServiceMT
 from membership_manager import models
 from membership_manager.admin_memberships import MembershipNotificationFilter, membership_payments_history, \
-    organization_payments_history, send_email_to_owner, send_email_vencimiento
+    organization_payments_history, send_email_to_owner, send_email_vencimiento, buscar_inconsistencias
 from membership_manager.admin_pdf import InvoiceAdmin
 from membership_manager.adminfilters import PaisFilter, OrganizationFilter, MembershipPaisFilter
 from membership_manager.forms import MembershipAddForm, ServiceForm
@@ -109,14 +110,14 @@ class ServiceAdmin(admin.TabularInline):
 
 class MemberShipAdmin(ExportActionMixin, admin.ModelAdmin):
     actions = [membership_payments_history, send_email_to_owner,
-               send_email_vencimiento, 'export_admin_action']
+               send_email_vencimiento, 'export_admin_action', buscar_inconsistencias]
     list_filter = (OrganizationFilter, MembershipNotificationFilter, 'state',
                    'membership_type', MembershipPaisFilter )
     search_fields = ('contact__first_name', 'contact__last_name', 'organization__name')
-    list_display = ('name', 'annual_cost',
+    list_display = ('name', 'annual_cost', 'countryspect',
                     'currency', 'renewal_period', 'state', 'invoices', 'next_pay',
                     )
-    readonly_fields = ['exchange_rates', 'invoices', 'next_pay', 'name']
+    readonly_fields = ['exchange_rates', 'invoices', 'next_pay', 'name', 'countryspect']
 
     inlines = [ServiceAdmin, MembershipRenewAdmin]
     form_class = MembershipAddForm
@@ -147,6 +148,21 @@ class MemberShipAdmin(ExportActionMixin, admin.ModelAdmin):
 
     exchange_rates.short_description = "Tipos de cambio"
 
+    def countryspect(self, obj):
+        if obj:
+            country_data = dict(countries)
+            country = ''
+            if obj.organization:
+                country = country_data[obj.organization.country]
+            elif obj.contact:
+                country = country_data[obj.contact.country]
+
+            dev = '<p style="letter-spacing:2px;" >'
+            dev += "%s <br> %s"%(country, obj.get_membership_type_display())
+            dev += "</p>"
+            return mark_safe(dev)
+        return ""
+    countryspect.short_description = "Información"
     def get_form(self, request, obj=None, **kwargs):
         kwargs['form'] = self.form_class
         return super().get_form(request, obj, **kwargs)
