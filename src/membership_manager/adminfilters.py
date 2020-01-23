@@ -143,14 +143,16 @@ class FormFilter(admin.ListFilter):
 class OrgForm(forms.Form):
     org = AutoCompleteSelectMultipleField('orgs', required=False)
     cont = AutoCompleteSelectMultipleField('contacts', required=False)
+    estado = forms.TypedChoiceField(choices=[('', '----')]+list(Membership.STATES), required=False)
+    tipo = forms.TypedChoiceField(choices=[('', '----')]+list(Membership.TYPES), required=False)
+
     #pais = forms.ChoiceField(choices=(), required=False )
 
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        keys = set(Organization.objects.all().values_list('country', flat=True))
-        country=dict(countries)
-
+        #keys = set(Organization.objects.all().values_list('country', flat=True))
+        #country=dict(countries)
         #self.fields['pais'].choices =  [('', '---------')]+[(x,country[x]) for x in keys]
 
 
@@ -162,6 +164,8 @@ class OrganizationFilter(FormFilter):
     hidden_parameters = ['cont_text', 'org_text', 'submit']
     mapped_keys = {'org': ['organization_id__in'],
                    'cont': ['contact_id__in'],
+                   'estado': ['state'],
+                   'tipo': ['membership_type']
                    #'pais': ['organization__country']
                    }
 

@@ -111,8 +111,7 @@ class ServiceAdmin(admin.TabularInline):
 class MemberShipAdmin(ExportActionMixin, admin.ModelAdmin):
     actions = [membership_payments_history, send_email_to_owner,
                send_email_vencimiento, 'export_admin_action', buscar_inconsistencias]
-    list_filter = (OrganizationFilter, MembershipNotificationFilter, 'state',
-                   'membership_type', MembershipPaisFilter )
+    list_filter = (OrganizationFilter, MembershipNotificationFilter, MembershipPaisFilter )
     search_fields = ('contact__first_name', 'contact__last_name', 'organization__name')
     list_display = ('name', 'annual_cost', 'countryspect',
                     'currency', 'renewal_period', 'state', 'invoices', 'next_pay',
