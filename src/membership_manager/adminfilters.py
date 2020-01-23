@@ -4,25 +4,26 @@ from django.contrib import admin
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
-from membership_manager.models import Organization, Membership
+from membership_manager.models import Organization, Membership, Contact
 from django_countries import countries
 
 
 class PaisFilter(admin.SimpleListFilter):
     title = 'Países'
     parameter_name = 'pais'
+    model = Organization
 
     def get_country(self, code, name):
         return "%d | %d | %d | %s "%(
-        Membership.objects.filter(
-            organization__country=code
+        self.model.objects.filter(
+            country=code
         ).count(),
-        Membership.objects.filter(
-            Q(state='active') | Q(state='graceperiod'),
-            organization__country=code ).count(),
-        Membership.objects.filter(
-            organization__country=code,
-            state='inactive'
+        self.model.objects.filter(
+            active=True,
+            country=code ).count(),
+        self.model.objects.filter(
+            country=code,
+            active=False
         ).count(), name
         )
     def lookups(self, request, model_admin):
@@ -36,11 +37,27 @@ class PaisFilter(admin.SimpleListFilter):
 
         value = self.value()
         if value and value != 'all':
-            return queryset.filter( country=value)
+            return queryset.filter(country=value)
         return queryset
 
 
+class ContactPaisFilter(PaisFilter):
+    model = Contact
+
 class MembershipPaisFilter(PaisFilter):
+    def get_country(self, code, name):
+        return "%d | %d | %d | %s "%(
+        Membership.objects.filter(
+            organization__country=code
+        ).count(),
+        Membership.objects.filter(
+            Q(state='active') | Q(state='graceperiod'),
+            organization__country=code ).count(),
+        Membership.objects.filter(
+            organization__country=code,
+            state='inactive'
+        ).count(), name
+        )
     def queryset(self, request, queryset):
         value = self.value()
         if value and value != 'all':

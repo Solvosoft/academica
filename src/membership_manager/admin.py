@@ -17,14 +17,14 @@ from membership_manager import models
 from membership_manager.admin_memberships import MembershipNotificationFilter, membership_payments_history, \
     organization_payments_history, send_email_to_owner, send_email_vencimiento, buscar_inconsistencias
 from membership_manager.admin_pdf import InvoiceAdmin
-from membership_manager.adminfilters import PaisFilter, OrganizationFilter, MembershipPaisFilter
+from membership_manager.adminfilters import PaisFilter, OrganizationFilter, MembershipPaisFilter, ContactPaisFilter
 from membership_manager.forms import MembershipAddForm, ServiceForm
 from membership_manager.models import MembershipRenew, Invoice, Membership
 from membership_manager.utils import load_services_from_membership_template
 
 
 class ContactAdmin(admin.ModelAdmin):
-    list_filter = ('active', PaisFilter)
+    list_filter = ('active', ContactPaisFilter)
     search_fields = ('first_name', 'last_name')
     list_display = ("first_name",
                     "last_name",
