@@ -26,7 +26,8 @@ class PaisFilter(admin.SimpleListFilter):
         ).count(), name
         )
     def lookups(self, request, model_admin):
-        keys = set(Organization.objects.all().values_list('country', flat=True))
+        keys = list(set(Organization.objects.all().values_list('country', flat=True)))
+        keys.sort()
         country=dict(countries)
         options = [('all', 'T | A | I | Nombre')]+[(x, self.get_country(x, country[x])) for x in keys]
         return options
@@ -142,7 +143,7 @@ class FormFilter(admin.ListFilter):
 class OrgForm(forms.Form):
     org = AutoCompleteSelectMultipleField('orgs', required=False)
     cont = AutoCompleteSelectMultipleField('contacts', required=False)
-    pais = forms.ChoiceField(choices=(), required=False )
+    #pais = forms.ChoiceField(choices=(), required=False )
 
 
     def __init__(self, *args, **kwargs):
@@ -150,7 +151,7 @@ class OrgForm(forms.Form):
         keys = set(Organization.objects.all().values_list('country', flat=True))
         country=dict(countries)
 
-        self.fields['pais'].choices =  [('', '---------')]+[(x,country[x]) for x in keys]
+        #self.fields['pais'].choices =  [('', '---------')]+[(x,country[x]) for x in keys]
 
 
 class OrganizationFilter(FormFilter):
@@ -161,7 +162,8 @@ class OrganizationFilter(FormFilter):
     hidden_parameters = ['cont_text', 'org_text', 'submit']
     mapped_keys = {'org': ['organization_id__in'],
                    'cont': ['contact_id__in'],
-                   'pais': ['organization__country']}
+                   #'pais': ['organization__country']
+                   }
 
     def get_queryset_parameters(self,term):
         delitem = []
