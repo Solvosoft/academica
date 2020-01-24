@@ -3,16 +3,14 @@ from django.db.models import Sum
 from django.db.models.signals import post_save, pre_save,post_delete
 from django.dispatch import receiver
 from membership_manager.models import Membership, Attention, ActivityReport
+from membership_manager.utils import get_emails
 
 
 @receiver(post_save, sender=Membership)
 def welcome_email(sender, instance, created, **kwargs):
     if created:
-        if instance.contact:
-            email = instance.contact.email
-        else:
-            email = instance.organization.email
-        send_email_from_template('welcome_mail', [email],
+        emails = get_emails(instance)
+        send_email_from_template('welcome_mail', emails,
                                  context={
                                      'membership': instance
                                  },
