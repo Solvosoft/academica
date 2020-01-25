@@ -1,7 +1,7 @@
 from async_notifications.utils import send_email_from_template
 from django.contrib.admin import SimpleListFilter
 from django.contrib.admin.views.decorators import staff_member_required
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
@@ -89,32 +89,47 @@ def repair_membership(request, pk, action):
         if action == 'graceperiod':
             queryset = Membership.objects.filter(
               state="active", renews__graceperiod=True, renews__active=True)
-        elif action ==  'invoice':
+        elif action == 'invoice':
             queryset = Membership.objects.filter(
                 Q(state="active") | Q(state='graceperiod'),
                 renews__graceperiod=False, renews__active=True, renews__inv_m_renews=None)
-
+        elif action == '2active':
+            queryset = Membership.objects.filter(
+                Q(state="active") | Q(state='graceperiod'),
+            ).annotate(totalmemb=Count('renews', filter=Q(renews__graceperiod=False, renews__active=True))).filter(
+                totalmemb__gt=2
+            )
+        elif action == '2renews':
+            queryset = Membership.objects.filter(Q(state="active") | Q(state='graceperiod'),
+                                                 renews__graceperiod=True,
+                                                 renews__active=True)
     else:
         mem = get_object_or_404(Membership, pk=pk)
         queryset = [mem]
     for mem in queryset:
+        if action == '2active':
+            mem.renews.filter(graceperiod=False).update(active=False)
+            lastmemb = mem.renews.filter(graceperiod=False).order_by('end_date').last()
+            lastmemb.active = True
+            lastmemb.save()
         if action == 'graceperiod':
             mem.state = 'graceperiod'
             mem.save()
         if action == '2renews':
-            periodo = mem.renews.filter(active=True, graceperiod=True).order_by('end_date').last()
-            lastmemb = mem.renews.filter(graceperiod=False).order_by('end_date').last()
-            if lastmemb is not None and periodo is not None:
-                mem.renews.update(active=False)
-                lastmemb.active=True
-                lastmemb.save()
-                periodo.active=True
-                periodo.save()
-            else:
-                messages.warning(request, 'Lo lamentamos esta membresía "'+str(mem)+'" no se puede reparar automáticamente')
+            if mem.renews.filter(active=True).count() != 2:
+                periodo = mem.renews.filter(active=True, graceperiod=True).order_by('end_date').last()
+                lastmemb = mem.renews.filter(graceperiod=False).order_by('end_date').last()
+                if lastmemb is not None and periodo is not None:
+                    mem.renews.update(active=False)
+                    lastmemb.active=True
+                    lastmemb.save()
+                    periodo.active=True
+                    periodo.save()
+                else:
+                    messages.warning(request, 'Lo lamentamos esta membresía "'+str(mem)+'" no se puede reparar automáticamente')
         if action == 'invoice':
-
             task_membership_deactivating_membership.delay(mem.pk, False)
+
     if action == 'invoice':
         messages.info(request,
                          'Debe esperar un tiempo prudencial mientras se ejecutan las tareas para que se refleje')

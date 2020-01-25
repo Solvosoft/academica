@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.urls import reverse_lazy
 from django.utils.timezone import now as timezonenow
 
@@ -92,10 +92,45 @@ class ManejadorNotificaciones:
         return list_invoice
 
 
-    def get_inconsistencias(self):
-        days = self.get_day_month()
+    def dos_periodos_activos(self):
         list_invoice = []
 
+        queryset = Membership.objects.filter(
+            Q(state="active") | Q(state='graceperiod'),
+        ).annotate(totalmemb=Count('renews', filter=Q(renews__graceperiod=False, renews__active=True))).filter(
+            totalmemb__gt=2
+        )
+        if queryset.exists():
+            list_invoice.append(
+                ("Poner todas las renovaciones de membresía desactivas excepto la última",
+                 "#",
+                 "Estas membresías tienen más 2 un periodo activo ",
+                 "Repara %d en total" % (queryset.count()),
+                 'Sin notificación',
+                 reverse_lazy('reparar',
+                              args=(0, '2active')),
+                 'Desactiva todas las renovaciones excepto la última',
+                 "ui-widget-header ui-corner-all")
+            )
+
+        for membresia in queryset:
+            list_invoice.append(
+                (membresia.name,
+                 reverse_lazy('admin:membership_manager_membership_change',
+                              args=(membresia.id,)),
+                 "\n || ".join(list(map(lambda x: str(x), membresia.renews.filter(active=True)))),
+                 "act: %d grace: %d " % (membresia.renews.filter(active=True).count(),
+                                         membresia.renews.filter(active=True, graceperiod=True).count()
+                                         ),
+                 'Sin notificacion',
+                 reverse_lazy('reparar',
+                              args=(membresia.id, '2active')),
+                 'Genera un periodo activo para la membresía tomando la fecha de vencimiento mayor', "")
+            )
+        return list_invoice
+
+    def activo_con_periodo_de_gracia(self):
+        list_invoice = []
         queryset = MembershipRenew.objects.filter(membership__state="active",
                                        graceperiod=True,
                                        active=True)
@@ -126,7 +161,11 @@ class ManejadorNotificaciones:
                  'Convierte la membresías a graceperiod', "")
             )
 
-        queryset = Membership.objects.filter(Q(state="active")|Q(state='graceperiod'),
+        return list_invoice
+
+    def dosomasomenos_peridodos_activos(self):
+        list_invoice = []
+        queryset = Membership.objects.filter(Q(state="active") | Q(state='graceperiod'),
                                              renews__graceperiod=True,
                                              renews__active=True)
         for membresia in queryset:
@@ -136,15 +175,31 @@ class ManejadorNotificaciones:
                      reverse_lazy('admin:membership_manager_membership_change',
                                   args=(membresia.id,)),
                      "\n || ".join(list(map(lambda x: str(x), membresia.renews.filter(active=True)))),
-                     "act: %d grace: %d "%(membresia.renews.filter(active=True).count(),
-                                           membresia.renews.filter(active=True, graceperiod=True).count()
-                                           ),
+                     "act: %d grace: %d " % (membresia.renews.filter(active=True).count(),
+                                             membresia.renews.filter(active=True, graceperiod=True).count()
+                                             ),
                      'Sin notificacion',
                      reverse_lazy('reparar',
                                   args=(membresia.id, '2renews')),
                      'Genera un periodo activo para la membresía tomando la fecha de vencimiento mayor', "")
                 )
 
+        if list_invoice:
+            list_invoice.insert(0,
+                ("Intenta dejar una sola renovación activa",
+                 "#",
+                 "Varios problemas con las renovaciones",
+                 "Repara %d en total"%(len(list_invoice)),
+                 'notification_mail',
+                  reverse_lazy('reparar',
+                              args=(0, '2renews')),
+                 'Deshabilita todas las renovaciones y pone la última como activa',
+                 "ui-widget-header ui-corner-all")
+            )
+        return list_invoice
+
+    def sin_factura(self):
+        list_invoice = []
 
         queryset = MembershipRenew.objects.filter(Q(membership__state="active")|Q(membership__state='graceperiod'),
                                        graceperiod=False, active=True, inv_m_renews=None)
@@ -174,4 +229,15 @@ class ManejadorNotificaciones:
                               args=(membershiprenew.membership.id, 'invoice')),
                  'Crea una factura para la membresía dada', "")
             )
+
+        return list_invoice
+    def get_inconsistencias(self):
+        days = self.get_day_month()
+        list_invoice = []
+        list_invoice += self.dos_periodos_activos()
+        list_invoice += self.activo_con_periodo_de_gracia()
+        list_invoice += self.dosomasomenos_peridodos_activos()
+        list_invoice += self.sin_factura()
+
+
         return list_invoice
