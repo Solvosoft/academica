@@ -52,28 +52,15 @@ def renewal_expiration_filter_manager(now=None):
     today_date = (now + timezone.timedelta(days=60)).date()
     return MembershipRenew.objects.filter(end_date__date__lte=today_date,
                            active=True,
-                           graceperiod=False,
                            membership__state="active",
                            inv_m_renews=None)
-
-
-def renew_graceperiod_filter_manager(now=None):
-    if now is None:
-        now = timezone.now()
-    renews = MembershipRenew.objects.filter(end_date__date__lte=now.date(),
-                                            active=True,
-                                            graceperiod=False,
-                                            membership__state="active"
-                                            )
-    return renews
 
 def  membership_deactivating_filter_manager(now=None):
     if now is None:
         now = timezone.now()
-    return MembershipRenew.objects.filter(end_date__date__lte=now.date(),
+    return MembershipRenew.objects.filter(end_date__date=now.date(),
                                             active=True,
-                                            graceperiod=True,
-                                            membership__state="graceperiod"
+                                            encobro=True
                                             )
 def memb_invoice_expiration_filter_add_graceperiod(now=None):
     if now is None:
@@ -95,47 +82,36 @@ def memb_renewal_period_expiration_filter_deactivate_graceperiod(now=None):
                            state='graceperiod', renews__active=True,
                            renews__graceperiod=True, mem_inv__status='pending')
 
-def invoice_expiration_filter_queryset(filt=None, now=None):
-    """
-    Search the possibles expiration memberships on 60, 45, 30, 15 7 or 1 day left to send a notification.
-
-    :param queryset:
-    :param filt:
-    :return: Membership for days specified in filt or membership for [60, 45, 30, 15 7 or 1] days after
-    """
-    queryset = Invoice.objects.all()
+def get_membership_next_expired(queryset, value, now=None):
     if now is None:
         now = timezone.now()
+    dates_list =  (now + timedelta(days=int(value))).date()
+    return queryset.filter(
+        state="active",
+        mem_inv__status='pending',
+        mem_inv__expiration_date__date__lte=dates_list,
+        mem_inv__renewal_period__encobro=True
+    ).order_by('mem_inv__creation_date__date').distinct()
 
-    if filt is not None:
-        lookup_day = (now + timedelta(days=int(filt))).date()
-        queryset = queryset.filter(expiration_date__date=lookup_day,
-                                   status='pending').distinct()
-    else:
-        dates_list = [ (now + timedelta(days=x)).date() for x in [60, 45, 30, 15, 7, 0]]
+def invoice_expiration_filter_queryset(now=None):
+    """
+    Search the possibles expiration invoice on 60, 45, 30, 15 7 or 1 day left to send a notification.
 
-        queryset = queryset.filter(expiration_date__date__in=dates_list,status='pending')
-        # queryset = queryset.filter(Q(expiration_date__date__in=dates_list) & Q(status='pending'))
+    :return: Invoice created in [60, 45, 30, 15 7 or 1] days after
+    """
+
+    if now is None:
+        now = timezone.now()
+    dates_list = [ (now - timedelta(days=x)).date() for x in [60, 45, 30, 15, 7, 1]]
+    queryset = Invoice.objects.filter(status='pending',
+                                      mem_inv__state="active",
+                                      creation_date__date__in=dates_list,
+                                      inv_m_renews__encobro=True,
+                                      mem_inv__contact__active=True,
+                                      mem_inv__organization__active=True
+                                      )
     return queryset
 
-def  membership_filter(queryset, filt=None, now=None):
-    # This is where you process parameters selected by use via filter options:
-    if now is None:
-        now = timezone.now()
-    if filt is not False:
-        if filt is not None:
-            lookup_day = (now + timedelta(days=int(filt))).date()
-            queryset=queryset.filter(
-                renews__end_date__date=lookup_day,
-                renews__active=True,
-                state='active')
-        else:
-            queryset = queryset.filter(
-                renews__end_date__date__in=[
-                    (now + timedelta(days=x)).date() for x in [60, 45, 30, 15, 7, 0]],
-                renews__active=True, state=True
-                 )
-    return queryset.distinct()
 
 def loademailtemplates():
     update_template_context('pay_mail',
@@ -172,37 +148,14 @@ def membership_payment_manager(membership,invoice):
     :return:
     """
     renew = invoice.renewal_period
-    if membership.state == 'active':
-        renew.active = False
-        renew.save()
-        MembershipRenew.objects.create(
-            membership=membership, creation_date=renew.end_date,
-            start_date=renew.end_date,
-            end_date=renew.end_date + relativedelta(
-                months=+membership.renewal_period.months)
-        )
-    if membership.state == 'graceperiod':
-        renew.active = False
-        renew.save()
-        invoice.membership.renews.filter(membership=membership, graceperiod=True, active=True).update(active=False)
-        MembershipRenew.objects.create(
-            membership=membership, creation_date=timezone.now(),
-            start_date=timezone.now(),
-            end_date=timezone.now() + relativedelta(
-                months=+membership.renewal_period.months)
-        )
-        membership.state = 'active'
-        membership.save()
+    renew.active = False
+    renew.encobro = False
+    renew.save()
 
     if membership.state == 'inactive':
-        MembershipRenew.objects.create(
-            membership=membership, creation_date=timezone.now(),
-            start_date=timezone.now(),
-            end_date=timezone.now() + relativedelta(
-                months=+membership.renewal_period.months)
-        )
-        membership.state = 'active'
-        membership.save()
+        if not membership.renews.filter(encobro = True).exists():
+            membership.state = 'active'
+            membership.save()
 
 def load_services_from_membership_template(template_id):
     initial = []

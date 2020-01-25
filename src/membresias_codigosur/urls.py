@@ -22,7 +22,7 @@ from django.views.static import serve
 from ajax_select import urls as ajax_select_urls
 
 from membership_manager.admin_memberships import MembInvoices, OrganizationInvoices, SimulateNotifications, \
-    repair_membership
+    repair_membership, generate_invoice
 from membership_manager.urls import urlpatterns as url_manager
 from membership_telbot_manager.views import UpdateBot
 from django.conf import settings
@@ -35,6 +35,7 @@ urlpatterns = [
     path('telbot/', csrf_exempt(UpdateBot.as_view())),
     path('payments/membership/', MembInvoices.as_view()),
     path('payments/organization/', OrganizationInvoices.as_view()),
+    path('invoice/generate/<int:pk>/', generate_invoice, name="generate_invoice"),
     path('simulate/notifications/', SimulateNotifications.as_view(), name="simulate"),
     re_path(r'reparar/(?P<pk>\d+)/(?P<action>\w+)', repair_membership, name='reparar'),
     re_path(r'^ajax_select/', include(ajax_select_urls)),

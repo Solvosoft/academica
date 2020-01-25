@@ -10,9 +10,7 @@ from django.contrib.staticfiles import finders
 
 from membership_manager.utils import get_emails
 
-
-def generate_invoice(membership, invoice, email_template='pay_mail',
-                     enqueued=True, send_email=True):
+def build_pdf_invoice(membership, invoice):
     sourceHtml = render_to_string('invoice.html', context={
         'invoice': invoice,
         'membership': membership
@@ -24,10 +22,13 @@ def generate_invoice(membership, invoice, email_template='pay_mail',
         dest=resultFile,  # file handle to recieve result
         link_callback=link_callback)
     resultFile.seek(0)
-    file_name = f'factura_{membership.name}.pdf'
+    file_name = f'factura_{invoice.pk}_{membership.name}.pdf'
     invoice.pdf_invoice = File(resultFile, name=file_name)
     invoice.save()
 
+def generate_invoice(membership, invoice, email_template='pay_mail',
+                     enqueued=True, send_email=True):
+    build_pdf_invoice(membership, invoice)
     if send_email:
         emails = get_emails(membership)
         send_email_from_template(email_template, emails,

@@ -1,40 +1,32 @@
-from datetime import timedelta
-
 from async_notifications.utils import send_email_from_template
-from django.conf import settings
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.contenttypes.models import ContentType
-from django.utils import timezone
-from django.utils.timezone import now
 
-from membership_manager.models import Invoice, MembershipRenew, Membership
+from membership_manager import utils
+from membership_manager.invoice_utils import create_invoice
+from membership_manager.models import Invoice, Membership
 from membership_manager.render_pdf import generate_invoice
-from membership_manager.utils import invoice_expiration_filter_queryset, renewal_expiration_filter_manager, \
-    get_administrative_user, stringcode_generator, get_emails, membership_deactivating_filter_manager, \
-    renew_graceperiod_filter_manager
 from membership_telbot_manager.models import TelGroup
 from membership_telbot_manager.views import send_notification_message, send_deactivated_message
-
-
 
 
 def notify_invoice_expiration(now):
     """
     Gets the membership invoices and notify if there is any in the expiration range.
     """
-    notify_qset = invoice_expiration_filter_queryset(now=now)  # Specific remaining days
+    notify_qset = utils.invoice_expiration_filter_queryset(now=now)  # Specific remaining days
 
     for invoice in notify_qset:
-        emails=get_emails(invoice.membership)
+        emails=utils.get_emails(invoice.membership)
         send_email_from_template('notification_mail', emails,
                                  context={
                                      'membership': invoice.membership
                                  },
                                  enqueued=True,
                                  user=None,
-                                 upfile=None)
+                                 upfile=invoice.pdf_invoice)
         LogEntry.objects.log_action(
-            user_id=get_administrative_user(),
+            user_id=utils.get_administrative_user(),
             content_type_id=ContentType.objects.get_for_model(invoice.membership).pk,
             object_id=invoice.membership.pk,
             object_repr="Notificación de pago pendiente enviada",
@@ -43,24 +35,16 @@ def notify_invoice_expiration(now):
         if TelGroup.objects.filter(organization_id=invoice.membership.organization.pk).first():
             send_notification_message(invoice.membership.organization.telgroup.chat_id,invoice.membership.organization)
 
+
+
+
 def invoice_creation(now):
-    renews = renewal_expiration_filter_manager(now)
+    renews = utils.renewal_expiration_filter_manager(now)
     for renew in renews:
-        invoice = Invoice.objects.create(creation_date=now,
-                                         expiration_date=renew.end_date,
-                                         payment_date=renew.end_date,
-                                         membership=renew.membership,
-                                         renewal_period=renew,
-                                         description=f'{renew.membership.name} expira al {renew.end_date}. Debe ser pagada.',
-                                         amount=renew.membership.annual_cost,
-                                         currency=renew.membership.currency,
-                                         status='pending')
-        string_code = stringcode_generator()
-        invoice.code = f'%s-%s' % (string_code,str(invoice.pk).rjust(6, "0"))
-        invoice.save()
+        invoice = create_invoice(renew)
         generate_invoice(invoice.membership, invoice, email_template="notification_mail", enqueued=True)
         LogEntry.objects.log_action(
-            user_id=get_administrative_user(),
+            user_id=utils.get_administrative_user(),
             content_type_id=ContentType.objects.get_for_model(invoice.membership).pk,
             object_id=invoice.membership.pk,
             object_repr="Factura creada pendiente de pago",
@@ -70,33 +54,11 @@ def invoice_creation(now):
             send_notification_message(invoice.membership.organization.telgroup.chat_id,invoice.membership.organization)
 
 
-def renew_graceperiod(now):
-    renews=renew_graceperiod_filter_manager(now)
-    for renew in renews:
-        membership = renew.membership
-        MembershipRenew.objects.create(
-            creation_date=now,
-            membership=renew.membership,
-            start_date=now,
-            end_date=now + timedelta(days=settings.GRACE_PERIOD_DAYS),
-            graceperiod=True,
-            active=True
-        )
-        membership.state = "graceperiod"
-        membership.save()
-        LogEntry.objects.log_action(
-            user_id=get_administrative_user(),
-            content_type_id=ContentType.objects.get_for_model(membership).pk,
-            object_id=membership.pk,
-            object_repr="Membresia ha cambiado a periodo de prueba",
-            action_flag=ADDITION
-        )
-
 def membership_deactivating(now):
-    renews = membership_deactivating_filter_manager(now)
+    renews = utils.membership_deactivating_filter_manager(now)
     for renew in renews:
         membership = renew.membership
-        emails = get_emails(membership)
+        emails = utils.get_emails(membership)
         send_email_from_template('expiration_mail', emails,
                                  context={
                                      'membership': membership
@@ -105,11 +67,8 @@ def membership_deactivating(now):
                                  user=None,
                                  upfile=None)
 
-        membership.state = "inactive"
-        membership.save()
-        MembershipRenew.objects.filter(membership=membership).update(active=False)
         LogEntry.objects.log_action(
-            user_id=get_administrative_user(),
+            user_id=utils.get_administrative_user(),
             content_type_id=ContentType.objects.get_for_model(membership).pk,
             object_id=membership.pk,
             object_repr="Membresia inactiva por falta de pago",
@@ -121,25 +80,14 @@ def membership_deactivating(now):
 
 def membership_deactivating_membership(id_membresia, email=True):
     membership = Membership.objects.get(pk=id_membresia)
-    renew = membership.renews.all().filter(graceperiod=False).order_by('end_date').last()
-    invoice = membership.mem_inv.all().order_by('expiration_date').last()
-    if not invoice:
-        invoice = Invoice.objects.create(creation_date=now(),
-                                         expiration_date=renew.end_date,
-                                         payment_date=renew.end_date,
-                                         membership=membership,
-                                         renewal_period=renew,
-                                         description=f'{renew.membership.name} expira al {renew.end_date}. Debe ser pagada.',
-                                         amount=membership.annual_cost,
-                                         currency=membership.currency,
-                                         status='pending')
-        string_code = stringcode_generator()
-        invoice.code = f'%s-%s' % (string_code,str(invoice.pk).rjust(6, "0"))
-        invoice.save()
-    generate_invoice(membership, invoice, email_template='expiration_mail',
-                     enqueued=True, send_email=email)
+    renews = membership.renews.filter(encobro=True, active=True).order_by('end_date')
+    for renew in renews:
+        invoice = renew.inv_m_renews.first()
+        if not invoice:
+            create_invoice(renew)
+        generate_invoice(membership, invoice, email_template='expiration_mail',
+                         enqueued=True, send_email=email)
 
-
-    if membership.organization and email:
-        if TelGroup.objects.filter(organization_id=membership.organization.pk).first():
-            send_deactivated_message(membership.organization.telgroup.chat_id,membership.organization)
+        if membership.organization and email:
+            if TelGroup.objects.filter(organization_id=membership.organization.pk).first():
+                send_deactivated_message(membership.organization.telgroup.chat_id,membership.organization)

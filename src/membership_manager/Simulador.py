@@ -1,11 +1,13 @@
+import calendar
+import datetime
+
 from django.db.models import Q, Count
 from django.urls import reverse_lazy
 from django.utils.timezone import now as timezonenow
 
 from membership_manager.models import Membership, MembershipRenew
-from membership_manager.utils import invoice_expiration_filter_queryset, renewal_expiration_filter_manager, \
-    membership_deactivating_filter_manager, renew_graceperiod_filter_manager
-import datetime, calendar
+from membership_manager.utils import invoice_expiration_filter_queryset, renewal_expiration_filter_manager
+
 
 class ManejadorNotificaciones:
     def get_day_month(self, now=None, today=True):
@@ -52,45 +54,6 @@ class ManejadorNotificaciones:
                          'active', 'MembershipRenew')
                 )
         return list_invoice
-
-
-    def membership_deactivating(self):
-        days = self.get_day_month()
-        list_invoice = []
-        exclude_invoice = []
-        for day in days:
-            queryset = membership_deactivating_filter_manager(now=day)
-            for membershiprenew in queryset:
-                if membershiprenew.pk not in exclude_invoice:
-                    exclude_invoice.append(membershiprenew.pk)
-                list_invoice.append(
-                    (day, membershiprenew.membership.name,
-                     reverse_lazy('admin:membership_manager_membership_change',
-                        args=(membershiprenew.membership.id,)),
-                     membershiprenew.end_date,
-                     str(membershiprenew),
-                     'expiration_mail',
-                     'active/graceperiod', 'MembershipRenew')
-                )
-        return list_invoice
-
-    def renew_graceperiod(self):
-        days = self.get_day_month()
-        list_invoice = []
-        for day in days:
-            queryset = renew_graceperiod_filter_manager(day)
-            for membershiprenew in queryset:
-                list_invoice.append(
-                        (day, membershiprenew.membership.name,
-                         reverse_lazy('admin:membership_manager_membership_change',
-                            args=(membershiprenew.membership.id,)),
-                         membershiprenew.end_date,
-                         str(membershiprenew),
-                         'Sin notificación',
-                         'active', 'MembershipRenew')
-                )
-        return list_invoice
-
 
     def dos_periodos_activos(self):
         list_invoice = []

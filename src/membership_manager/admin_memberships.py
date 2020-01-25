@@ -1,17 +1,21 @@
+import csv
+
 from async_notifications.utils import send_email_from_template
 from django.contrib.admin import SimpleListFilter
 from django.contrib.admin.views.decorators import staff_member_required
+from django.core.exceptions import FieldDoesNotExist
 from django.db.models import Q, Count
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView
 from django.contrib import messages
 from membership_manager.Simulador import ManejadorNotificaciones
 from membership_manager.forms import MembInvPaymentsForm
-from membership_manager.models import Membership, Invoice, Organization
+from membership_manager.invoice_utils import create_invoice
+from membership_manager.models import Membership, Invoice, Organization, MembershipRenew
 from membership_manager.tasks import task_membership_deactivating_membership
-from membership_manager.utils import membership_filter, get_emails
+from membership_manager.utils import get_emails
 
 
 def send_email_to_owner(modeladmin, request, queryset):
@@ -27,6 +31,42 @@ def send_email_to_owner(modeladmin, request, queryset):
                                      upfile=None)
 send_email_to_owner.short_description = "Envíar correo a responsables de las membresías"
 
+
+
+def get_headers(modeladmin, queryset):
+    data = []
+    klass = queryset.model
+    for field in modeladmin.fields:
+        if hasattr(modeladmin, field):
+            data.append(getattr(modeladmin, field).short_description)
+        elif hasattr(klass, field):
+            try:
+                data.append(klass._meta.get_field(field).verbose_name)
+            except FieldDoesNotExist:
+                data.append(field)
+        else:
+            data.append(field)
+    return data
+
+def export_csv_fields(modeladmin, request, queryset):
+    name = queryset.model.__name__
+    response = HttpResponse(content_type='text/csv; charset=utf-8')
+    response['Content-Disposition'] = 'attachment; filename="'+name+'.csv"'
+    writer = csv.writer(response,  delimiter=';', quotechar='"')
+    writer.writerow(get_headers(modeladmin, queryset))
+
+    for obj in queryset:
+        data=[]
+        for field in modeladmin.fields:
+            if hasattr(modeladmin, field):
+                data.append(getattr(modeladmin, field)(obj))
+            elif hasattr(obj, field):
+                data.append(getattr(obj, field))
+            else:
+                data.append('')
+        writer.writerow(data)
+    return response
+export_csv_fields.short_description = "Exporta a CSV"
 
 def send_email_vencimiento(modeladmin, request, queryset):
     for membership in queryset:
@@ -55,25 +95,7 @@ def organization_payments_history(modeladmin, request, queryset):
     return HttpResponseRedirect("/payments/organization/" + f"?ids={id_list}")
 
 organization_payments_history.short_description = "Historial de pagos"
-class MembershipNotificationFilter(SimpleListFilter):
-    title = 'Invoices Renewals'  # a label for our filter
-    parameter_name = 'renews'  # you can put anything here
 
-    def lookups(self, request, model_admin):
-        # This is where you create filter options; we have two:
-        return [
-            ('30', '30 days to pay'),
-            ('15', '15 days to pay'),
-            ('7', '7 days to pay'),
-            ('0', 'day to pay'),
-        ]
-
-    def queryset(self, request, queryset):
-        # This is where you process parameters selected by use via filter options:
-        value=self.value()
-        if value is None:
-            value=False
-        return membership_filter(queryset, filt=value)
 
 @method_decorator(staff_member_required, name='dispatch')
 class SimulateNotifications(TemplateView):
@@ -135,6 +157,15 @@ def repair_membership(request, pk, action):
                          'Debe esperar un tiempo prudencial mientras se ejecutan las tareas para que se refleje')
 
     return redirect('simulate')
+
+@staff_member_required
+def generate_invoice(request, pk):
+    renew = get_object_or_404(MembershipRenew, pk=pk)
+    invoice = create_invoice(renew)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="'+invoice.code+'.pdf"'
+    response.write(invoice.pdf_invoice.read())
+    return response
 
 @method_decorator(staff_member_required, name='dispatch')
 class MembInvoices(ListView):

@@ -120,7 +120,7 @@
                                    <td class="field-expiration_date nowrap">{{ obj.expiration_date }}</td>
                                    <td class="field-amount">{{ obj.amount }}</td>
                                    <td class="field-currency nowrap">{{ obj.currency }}</td>
-                                   <td class="field-status">{{obj.status}}</td>
+                                   <td class="field-status">{{obj.get_status_display}}</td>
                                    <td class="field-payment_date nowrap">
                                        {% if obj.expiration_date %}
                                            {{ obj.expiration_date }}

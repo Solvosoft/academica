@@ -51,8 +51,6 @@ INSTALLED_APPS = [
     'djmoney.contrib.exchange',
     'ajax_select',
     'async_notifications',
-    'import_export',
-
 ]
 
 MIDDLEWARE = [
@@ -169,9 +167,6 @@ OPEN_EXCHANGE_RATES_APP_ID="6226bd52ee074914a7edc6e55a97c8d3"
 
 
 TEST_RUNNER = 'membership_manager.tests.MyTestRunner'
-
-GRACE_PERIOD_DAYS = 60
-
 
 ASYNC_NOTIFICATION_USER='membership_manager.Contact'
 ASYNC_NOTIFICATION_USER_LOOKUP_FIELDS= {'order_by': 'first_name',

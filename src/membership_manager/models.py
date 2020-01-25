@@ -126,7 +126,7 @@ class MembershipRenew(models.Model):
     start_date = models.DateTimeField(verbose_name="Fecha de inicio")
 
     end_date = models.DateTimeField(verbose_name="Fecha de finalización")
-    graceperiod = models.BooleanField(default=False, verbose_name="Periodo de gracia")
+    encobro = models.BooleanField(default=False, verbose_name="En cobro")
     active = models.BooleanField(default=True, verbose_name="Activo")
 
     def __str__(self):
@@ -151,7 +151,8 @@ class Invoice(models.Model):
     membership = models.ForeignKey(Membership, on_delete=models.CASCADE,
                                    verbose_name="Membresía",related_name='mem_inv')
     renewal_period = models.ForeignKey(MembershipRenew, on_delete=models.CASCADE,
-                                       verbose_name="Periodo de renovación",related_name='inv_m_renews')
+                                       verbose_name="Periodo de renovación",
+                                       related_name='inv_m_renews')
     description = models.TextField(verbose_name="Descripción")
     amount = models.FloatField(verbose_name="Cantidad")
     currency = models.ForeignKey(SystemCurrency, on_delete=models.SET_DEFAULT, default=4, verbose_name="Moneda")

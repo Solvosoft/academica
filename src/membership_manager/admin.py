@@ -1,29 +1,26 @@
-from dateutil.relativedelta import relativedelta
-from django import forms
 from django.contrib import admin
-# Register your models here.
-from django.db.models import Sum
 from django.template.loader import render_to_string
-from django.urls import reverse
-from django.utils import timezone
+from django.urls import reverse, reverse_lazy
 from django.utils.functional import curry
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django_countries import countries
-from import_export.admin import ExportActionMixin
 
-from membership_core.models import MembershipTemplate, SystemCurrency, ServiceType, ServiceMT
+from membership_core.models import MembershipTemplate, SystemCurrency
 from membership_manager import models
-from membership_manager.admin_memberships import MembershipNotificationFilter, membership_payments_history, \
-    organization_payments_history, send_email_to_owner, send_email_vencimiento, buscar_inconsistencias
+from membership_manager.admin_memberships import membership_payments_history, \
+    organization_payments_history, send_email_to_owner, send_email_vencimiento, buscar_inconsistencias, \
+    export_csv_fields
 from membership_manager.admin_pdf import InvoiceAdmin
-from membership_manager.adminfilters import PaisFilter, OrganizationFilter, MembershipPaisFilter, ContactPaisFilter
+from membership_manager.adminfilters import PaisFilter, OrganizationFilter, MembershipPaisFilter, ContactPaisFilter, \
+    InvoiceRenewalNotificationFilter
 from membership_manager.forms import MembershipAddForm, ServiceForm
-from membership_manager.models import MembershipRenew, Invoice, Membership
+from membership_manager.renew_utils import create_renew
 from membership_manager.utils import load_services_from_membership_template
 
 
 class ContactAdmin(admin.ModelAdmin):
+    actions = [export_csv_fields]
     list_filter = ('active', ContactPaisFilter)
     search_fields = ('first_name', 'last_name')
     list_display = ("first_name",
@@ -89,10 +86,12 @@ class ContactAdmin(admin.ModelAdmin):
 
     memberships.short_description = "Membresías"
 
+
 class MembershipRenewAdmin(admin.TabularInline):
     model = models.MembershipRenew
     extra = 1
     classes = ['collapse', 'collapsed']
+
 
 class ServiceAdmin(admin.TabularInline):
     model = models.Service
@@ -108,10 +107,11 @@ class ServiceAdmin(admin.TabularInline):
         formset.__init__ = curry(formset.__init__, initial=initial)
         return formset
 
-class MemberShipAdmin(ExportActionMixin, admin.ModelAdmin):
+
+class MemberShipAdmin(admin.ModelAdmin):
     actions = [membership_payments_history, send_email_to_owner,
-               send_email_vencimiento, 'export_admin_action', buscar_inconsistencias]
-    list_filter = (OrganizationFilter, MembershipNotificationFilter, MembershipPaisFilter )
+               send_email_vencimiento, export_csv_fields, buscar_inconsistencias]
+    list_filter = (OrganizationFilter, InvoiceRenewalNotificationFilter, MembershipPaisFilter)
     search_fields = ('contact__first_name', 'contact__last_name', 'organization__name')
     list_display = ('name', 'annual_cost', 'countryspect',
                     'currency', 'renewal_period', 'state', 'invoices', 'next_pay',
@@ -127,7 +127,7 @@ class MemberShipAdmin(ExportActionMixin, admin.ModelAdmin):
               'renewal_period', 'state']
 
     class Media:
-        js = ('js/membership.js', )
+        js = ('js/membership.js',)
 
     def exchange_rates(self, obj):
         if obj:
@@ -157,11 +157,13 @@ class MemberShipAdmin(ExportActionMixin, admin.ModelAdmin):
                 country = country_data[obj.contact.country]
 
             dev = '<p style="letter-spacing:2px;" >'
-            dev += "%s <br> %s"%(country, obj.get_membership_type_display())
+            dev += "%s <br> %s" % (country, obj.get_membership_type_display())
             dev += "</p>"
             return mark_safe(dev)
         return ""
+
     countryspect.short_description = "Información"
+
     def get_form(self, request, obj=None, **kwargs):
         kwargs['form'] = self.form_class
         return super().get_form(request, obj, **kwargs)
@@ -191,12 +193,8 @@ class MemberShipAdmin(ExportActionMixin, admin.ModelAdmin):
         super(MemberShipAdmin, self).save_formset(request, form, formset, change)
         instance = form.instance
         if not instance.renews.exists():
-            now = timezone.now()
-            MembershipRenew.objects.create(membership=instance, creation_date=now,
-                                           start_date=now,
-                                           end_date=now + relativedelta(
-                                               months=+instance.renewal_period.months)
-                                           )
+            create_renew(instance)
+
     def invoices(self, obj):
         dev = ""
         if obj:
@@ -205,23 +203,34 @@ class MemberShipAdmin(ExportActionMixin, admin.ModelAdmin):
                     obj.pk
                 ),
                 obj.mem_inv.count()
-                )
-            dev= mark_safe(dev)
+            )
+            dev = mark_safe(dev)
         return dev
 
     def next_pay(self, obj):
         dev = ""
         if obj:
-            renew = obj.renews.filter(active=True).first()
-            if renew is not None:
-                dev += '<span style="color: %s">%s</span>'%(
-                    "red" if renew.graceperiod else "gray",
+            for renew in obj.renews.filter(active=True, encobro=True):
+                url = reverse_lazy('generate_invoice', args=(renew.pk,))
+                color = "red"
+                title="Generar factura"
+                if renew.inv_m_renews.all().exists():
+                    color = "gray"
+                    invoice = renew.inv_m_renews.first()
+                    if invoice.pdf_invoice:
+                        url = invoice.pdf_invoice.url
+                    title = "Pagar antes de %s"%(invoice.expiration_date.strftime("%d/%m/%Y"))
+                dev += '<a href="%s" target="_blank" title="%s"><span style="color: %s">%s</span></a><br>' % (
+                    url,
+                    title,
+                    color,
                     str(renew)
                 )
-                dev= mark_safe(dev)
+            dev = mark_safe(dev)
         return dev
 
     next_pay.short_description = "Fecha de renovación"
+    next_pay.admin_order_field = '-renews__encobro'
     invoices.short_description = "Facturas"
 
 
@@ -229,8 +238,8 @@ class OrganizationAdmin(admin.ModelAdmin):
     list_filter = ('active', PaisFilter)
     search_fields = ('name', 'initials')
     list_display = ("name", "email", "cellphone",
-                    "contact", "memberships","activities", "active")
-    actions = [organization_payments_history]
+                    "contact", "memberships", "activities", "active")
+    actions = [organization_payments_history, export_csv_fields]
     fields = [
         "name",
         "initials",
@@ -260,6 +269,7 @@ class OrganizationAdmin(admin.ModelAdmin):
             "?organization=" + str(obj.pk) + "&membership_type=Organizacional&currency=" +
             str(obj.currency_id) + "&contact=" + str(obj.contact_id)
         )
+
     def activities(self, obj):
         return format_html(
             """<a href="{}" class="grp-button grp-button-state-inactive"  >{}</a> - 
@@ -278,14 +288,13 @@ class OrganizationAdmin(admin.ModelAdmin):
 
 class AttentionAdmin(admin.StackedInline):
     model = models.Attention
-    classes = ["collapse","collapsed"]
+    classes = ["collapse", "collapsed"]
     extra = 1
-
 
 
 class ActivityReportAdmin(admin.ModelAdmin):
     search_fields = ('start_date',)
-    list_display = ("organization","duration", "get_description", "start_date", "end_date")
+    list_display = ("organization", "duration", "get_description", "start_date", "end_date")
     inlines = [AttentionAdmin]
 
     fields = [
@@ -294,7 +303,7 @@ class ActivityReportAdmin(admin.ModelAdmin):
         "end_date",
         "description",
         "duration"
-        ]
+    ]
 
     def get_description(self, obj):
         return mark_safe(render_to_string('activity_description.html', {'obj': obj}))

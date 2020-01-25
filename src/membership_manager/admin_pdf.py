@@ -1,20 +1,19 @@
-from dateutil.relativedelta import relativedelta
+from django.contrib import admin
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.contenttypes.models import ContentType
-from django.utils import timezone
 from django.utils.safestring import mark_safe
 
-from membership_manager.models import MembershipRenew
-from membership_manager.render_pdf import generate_invoice
 from membership_manager import utils
-from membership_manager.utils import membership_payment_manager, stringcode_generator
+from membership_manager.invoice_utils import pay_invoice, pending_invoice
+from membership_manager.render_pdf import generate_invoice
+from membership_manager.utils import stringcode_generator
 from membership_telbot_manager.models import TelGroup
 from membership_telbot_manager.views import send_invoice_message
 
 
-def pay_invoice(modeladmin, request, queryset):
+def pay_invoice_action(modeladmin, request, queryset):
     """This actions take a queryset of invoice, and manage the membership and renewals, to apply a payment,
      send payment email, and Create LogEntry.
 
@@ -25,11 +24,7 @@ def pay_invoice(modeladmin, request, queryset):
     """
     for invoice in queryset.filter(status__in = ['pending','inactive']):
         membership = invoice.membership
-        generate_invoice(membership, invoice)
-        invoice.status = "paid"
-        invoice.payment_date = timezone.now()
-        invoice.save()
-        membership_payment_manager(membership,invoice)
+        pay_invoice(invoice)
         LogEntry.objects.log_action(
             user_id=request.user.pk,
             content_type_id=ContentType.objects.get_for_model(membership).pk,
@@ -40,26 +35,7 @@ def pay_invoice(modeladmin, request, queryset):
         if TelGroup.objects.filter(organization_id=invoice.membership.organization.pk).first():
             send_invoice_message(invoice.membership.organization.telgroup.chat_id,invoice.pdf_invoice.open())
 
-pay_invoice.short_description = "Pagar factura"
-
-
-class InvoiceRenewalNotificationFilter(SimpleListFilter):
-    title = 'Facturas Pendientes'  # a label for our filter
-    parameter_name = 'renews'
-
-    def lookups(self, request, model_admin):
-        # This is where you create filter options; we have two:
-        return [
-            ('60', 'a 60 días'),
-            ('30', 'a 30 días'),
-            ('15', 'a 15 días'),
-            ('7', 'a 7 días'),
-            ('0', 'Hoy'),
-        ]
-
-    def queryset(self, request, queryset):
-        # This is where you process parameters selected by use via filter options:
-        return utils.invoice_expiration_filter_queryset(queryset, self.value())
+pay_invoice_action.short_description = "Pagar factura"
 
 def recode_invoice(modeladmin, request, queryset):
     for invoice in queryset:
@@ -75,7 +51,7 @@ def regenerepdf_invoice(modeladmin, request, queryset):
 regenerepdf_invoice.short_description = 'Regenerar PDF de la factura'
 
 class InvoiceAdmin(admin.ModelAdmin):
-    actions = [pay_invoice, recode_invoice, regenerepdf_invoice]
+    actions = [pay_invoice_action, recode_invoice, regenerepdf_invoice]
 
     list_filter = ('membership', 'status')
 
@@ -98,4 +74,8 @@ class InvoiceAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         super(InvoiceAdmin, self).save_model(request, obj, form, change)
-
+        if 'status' in form.changed_data:
+            if form.cleaned_data['status'] == 'paid':
+                pay_invoice(obj)
+            if form.cleaned_data['status'] == 'pending':
+                pending_invoice(obj)

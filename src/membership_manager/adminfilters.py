@@ -7,6 +7,8 @@ from django.utils.translation import gettext_lazy as _
 from membership_manager.models import Organization, Membership, Contact
 from django_countries import countries
 
+from membership_manager.utils import get_membership_next_expired
+
 
 class PaisFilter(admin.SimpleListFilter):
     title = 'Países'
@@ -195,3 +197,24 @@ class OrganizationFilter(FormFilter):
         for k in delitem:
             del term[k]
         return term
+
+
+class InvoiceRenewalNotificationFilter(admin.SimpleListFilter):
+    title = 'Facturas Pendientes'  # a label for our filter
+    parameter_name = 'renews'
+
+    def lookups(self, request, model_admin):
+        # This is where you create filter options; we have two:
+        return [
+            ('60', 'a 60 días'),
+            ('30', 'a 30 días'),
+            ('15', 'a 15 días'),
+            ('7', 'a 7 días'),
+            ('0', 'Hoy'),
+        ]
+
+    def queryset(self, request, queryset):
+        # This is where you process parameters selected by use via filter options:
+        if self.value():
+            return  get_membership_next_expired(queryset, self.value())
+        return queryset
