@@ -1,11 +1,13 @@
+from datetime import timedelta
+
 from async_notifications.utils import send_email_from_template
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.contenttypes.models import ContentType
-
+from membership_manager import renew_utils as renewutils
 from membership_manager import utils
 from membership_manager.invoice_utils import create_invoice
-from membership_manager.models import Invoice, Membership
-from membership_manager.render_pdf import generate_invoice
+from membership_manager.models import Membership, MembershipRenew
+from membership_manager.render_pdf import generate_invoice, build_pdf_invoice
 from membership_telbot_manager.models import TelGroup
 from membership_telbot_manager.views import send_notification_message, send_deactivated_message
 
@@ -20,7 +22,8 @@ def notify_invoice_expiration(now):
         emails=utils.get_emails(invoice.membership)
         send_email_from_template('notification_mail', emails,
                                  context={
-                                     'membership': invoice.membership
+                                     'membership': invoice.membership,
+                                     'invoice': invoice
                                  },
                                  enqueued=True,
                                  user=None,
@@ -36,10 +39,33 @@ def notify_invoice_expiration(now):
             send_notification_message(invoice.membership.organization.telgroup.chat_id,invoice.membership.organization)
 
 
+def generate_renew(now):
+    renews = renewutils.get_comming_expired_renew(now)
+    for renew in renews:
+        membership = renew.membership
+        new_renew = MembershipRenew.objects.create(
+            creation_date=now,
+            membership=renew.membership,
+            start_date=renew.end_date,
+            end_date=renew.end_date+timedelta(months=membership.renewal_period.months),
+            encobro=True,
+            active=True
+        )
+        LogEntry.objects.log_action(
+            user_id=utils.get_administrative_user(),
+            content_type_id=ContentType.objects.get_for_model(membership).pk,
+            object_id= membership.pk,
+            object_repr="Periodo de renovación agregado",
+            action_flag=ADDITION
+        )
 
+def inactive_renew(now):
+    renews = renewutils.get_expired_renew(now)
+    if renews.exists():
+        renews.update(active=False)
 
 def invoice_creation(now):
-    renews = utils.renewal_expiration_filter_manager(now)
+    renews = renewutils.get_renew_without_inovice(now)
     for renew in renews:
         invoice = create_invoice(renew)
         generate_invoice(invoice.membership, invoice, email_template="notification_mail", enqueued=True)
@@ -55,7 +81,7 @@ def invoice_creation(now):
 
 
 def membership_deactivating(now):
-    renews = utils.membership_deactivating_filter_manager(now)
+    renews = renewutils.get_renew_with_invoice_expired_today(now)
     for renew in renews:
         membership = renew.membership
         emails = utils.get_emails(membership)
@@ -91,3 +117,11 @@ def membership_deactivating_membership(id_membresia, email=True):
         if membership.organization and email:
             if TelGroup.objects.filter(organization_id=membership.organization.pk).first():
                 send_deactivated_message(membership.organization.telgroup.chat_id,membership.organization)
+
+def create_invoice_tool(id_renew):
+    renew = MembershipRenew.objects.get(pk=id_renew)
+    invoice = renew.inv_m_renews.first()
+    if invoice is None:
+        invoice = create_invoice(renew)
+    else:
+        build_pdf_invoice(renew.membership, invoice)

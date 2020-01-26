@@ -2,6 +2,8 @@ import random
 import string
 from datetime import timedelta
 
+from django.db.models import Q
+
 from async_notifications.register import update_template_context
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.models import User
@@ -46,46 +48,10 @@ def get_dates(filt):
     min_date = max_date - timedelta(days=1)
     return min_date, max_date
 
-def renewal_expiration_filter_manager(now=None):
-    if now is None:
-        now = timezone.now()
-    today_date = (now + timezone.timedelta(days=60)).date()
-    return MembershipRenew.objects.filter(end_date__date__lte=today_date,
-                           active=True,
-                           membership__state="active",
-                           inv_m_renews=None)
-
-def  membership_deactivating_filter_manager(now=None):
-    if now is None:
-        now = timezone.now()
-    return MembershipRenew.objects.filter(end_date__date=now.date(),
-                                            active=True,
-                                            encobro=True
-                                            )
-def memb_invoice_expiration_filter_add_graceperiod(now=None):
-    if now is None:
-        now = timezone.now()
-    queryset = Membership.objects.all()  # queryset
-    return queryset.filter(
-        mem_inv__expiration_date__date__lte=now.date(),
-        mem_inv__status='pending',
-        mem_inv__renewal_period__active=True,
-        mem_inv__renewal_period__graceperiod=False,
-        state='active').distinct()
-
-def memb_renewal_period_expiration_filter_deactivate_graceperiod(now=None):
-    if now is None:
-        now = timezone.now()
-    queryset = Membership.objects.all()  # queryset
-    today_date = now.date()
-    return queryset.filter(renews__end_date__date__lte=today_date,
-                           state='graceperiod', renews__active=True,
-                           renews__graceperiod=True, mem_inv__status='pending')
-
 def get_membership_next_expired(queryset, value, now=None):
     if now is None:
         now = timezone.now()
-    dates_list =  (now + timedelta(days=int(value))).date()
+    dates_list = (now + timedelta(days=int(value))).date()
     return queryset.filter(
         state="active",
         mem_inv__status='pending',
@@ -103,13 +69,12 @@ def invoice_expiration_filter_queryset(now=None):
     if now is None:
         now = timezone.now()
     dates_list = [ (now - timedelta(days=x)).date() for x in [60, 45, 30, 15, 7, 1]]
-    queryset = Invoice.objects.filter(status='pending',
-                                      mem_inv__state="active",
-                                      creation_date__date__in=dates_list,
-                                      inv_m_renews__encobro=True,
-                                      mem_inv__contact__active=True,
-                                      mem_inv__organization__active=True
-                                      )
+    queryset = Invoice.objects.filter(
+            Q( membership__contact__active=True)|Q( membership__organization__active=True),
+            status='pending',
+            membership__state="active",
+            creation_date__date__in=dates_list,
+            renewal_period__encobro=True )
     return queryset
 
 
@@ -148,7 +113,6 @@ def membership_payment_manager(membership,invoice):
     :return:
     """
     renew = invoice.renewal_period
-    renew.active = False
     renew.encobro = False
     renew.save()
 

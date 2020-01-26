@@ -97,6 +97,7 @@
                  <table>
                      <thead>
                      <tr>
+                         <th>#</th>
                          <th>Día de aplicación</th>
                          <th>Membresía y link</th>
                          <th>Fecha de fin</th>
@@ -123,35 +124,6 @@
                 </div>
 
 
-                <h1> Facturas en periodo de gracia </h1>
-                 <div>
-                 <table>
-                     <thead>
-                     <tr>
-                         <th>Día de aplicación</th>
-                         <th>Membresía y link</th>
-                         <th>Fecha de fin</th>
-                         <th>Rango de renovación </th>
-                         <th>Plantilla de correo</th>
-                         <th>Membresía activa</th>
-                         <th>Modelo usado</th>
-                     </tr>
-                     </thead>
-                     <tbody>
-                 {% for data in simulador.renew_graceperiod %}
-                     <tr>
-                         <td>{{forloop.counter0}}</td>
-                         <td>{{data.0|date}}</td>
-                         <td><a href="{{data.2}}" target="_blank">{{data.1}}</a></td>
-                         <td>{{data.3}}</td>
-                         <td>{{data.4}}</td>
-                         <td>{{data.5}}</td>
-                         <td>{{data.6}}</td> <td>{{data.7}}</td>
-                     </tr>
-                 {% endfor %}
-                     </tbody>
-                 </table>
-                </div>
 
 
              </div>

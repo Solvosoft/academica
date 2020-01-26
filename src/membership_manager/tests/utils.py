@@ -1,6 +1,6 @@
 from random import randint
 from django.utils import timezone
-from membership_core.models import SystemCurrency, RenewalPeriod, Service
+from membership_core.models import SystemCurrency, RenewalPeriod, ServiceType
 from membership_manager.models import Contact, Organization, Membership, MembershipRenew, Invoice
 from faker import Faker
 
@@ -74,7 +74,7 @@ def generate_memberships_to_notify_graceperiod():
         renewal_period=RenewalPeriod.objects.all().first(),
         state='graceperiod'
     )
-    membership.services.set(list(Service.objects.all())[:3])
+    membership.services.set(list(ServiceType.objects.all())[:3])
 
     renew = MembershipRenew.objects.create(
         creation_date=now - timezone.timedelta(days=30),
@@ -114,7 +114,7 @@ def generate_test_membership(*args, **kwargs):
         renewal_period=renew_period,
         state=kwargs.get('state','active')
     )
-    membership.services.set(list(Service.objects.all())[:3])
+    membership.services.set(list(ServiceType.objects.all())[:3])
     dev['membership'] = membership
     if build_renewal:
         renew = MembershipRenew.objects.create(

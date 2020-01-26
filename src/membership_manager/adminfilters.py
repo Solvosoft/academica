@@ -29,7 +29,7 @@ class PaisFilter(admin.SimpleListFilter):
         ).count(), name
         )
     def lookups(self, request, model_admin):
-        keys = list(set(Organization.objects.all().values_list('country', flat=True)))
+        keys = list(set(self.model.objects.all().values_list('country', flat=True)))
         keys.sort()
         country=dict(countries)
         options = [('all', 'T | A | I | Nombre')]+[(x, self.get_country(x, country[x])) for x in keys]

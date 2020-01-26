@@ -1,7 +1,7 @@
 import csv
+import datetime
 
-from async_notifications.utils import send_email_from_template
-from django.contrib.admin import SimpleListFilter
+from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import FieldDoesNotExist
 from django.db.models import Q, Count
@@ -9,12 +9,14 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView
-from django.contrib import messages
+
+from async_notifications.utils import send_email_from_template
 from membership_manager.Simulador import ManejadorNotificaciones
 from membership_manager.forms import MembInvPaymentsForm
 from membership_manager.invoice_utils import create_invoice
 from membership_manager.models import Membership, Invoice, Organization, MembershipRenew
-from membership_manager.tasks import task_membership_deactivating_membership
+from membership_manager.render_pdf import build_pdf_invoice
+from membership_manager.tasks import task_membership_deactivating_membership, task_create_invoice
 from membership_manager.utils import get_emails
 
 
@@ -108,51 +110,62 @@ class SimulateNotifications(TemplateView):
 @staff_member_required
 def repair_membership(request, pk, action):
     if pk == '0' :
+        if action == 'encobro':
+            queryset = MembershipRenew.objects.filter(membership__state="active",
+                                       encobro=False,
+                                       active=True)
         if action == 'graceperiod':
-            queryset = Membership.objects.filter(
-              state="active", renews__graceperiod=True, renews__active=True)
-        elif action == 'invoice':
-            queryset = Membership.objects.filter(
-                Q(state="active") | Q(state='graceperiod'),
-                renews__graceperiod=False, renews__active=True, renews__inv_m_renews=None)
-        elif action == '2active':
-            queryset = Membership.objects.filter(
-                Q(state="active") | Q(state='graceperiod'),
-            ).annotate(totalmemb=Count('renews', filter=Q(renews__graceperiod=False, renews__active=True))).filter(
-                totalmemb__gt=2
+            queryset = MembershipRenew.objects.filter(
+                Q(start_date__date=datetime.datetime(year=2020, month=1, day=1).date(),
+                  end_date__date=datetime.datetime(year=2020, month=2, day=1).date()) | Q(
+                    start_date__date=datetime.datetime(year=2020, month=2, day=1).date(),
+                    end_date__date=datetime.datetime(year=2020, month=2, day=2).date())
             )
-        elif action == '2renews':
-            queryset = Membership.objects.filter(Q(state="active") | Q(state='graceperiod'),
-                                                 renews__graceperiod=True,
-                                                 renews__active=True)
-    else:
-        mem = get_object_or_404(Membership, pk=pk)
-        queryset = [mem]
-    for mem in queryset:
-        if action == '2active':
-            mem.renews.filter(graceperiod=False).update(active=False)
-            lastmemb = mem.renews.filter(graceperiod=False).order_by('end_date').last()
-            lastmemb.active = True
-            lastmemb.save()
-        if action == 'graceperiod':
-            mem.state = 'graceperiod'
-            mem.save()
-        if action == '2renews':
-            if mem.renews.filter(active=True).count() != 2:
-                periodo = mem.renews.filter(active=True, graceperiod=True).order_by('end_date').last()
-                lastmemb = mem.renews.filter(graceperiod=False).order_by('end_date').last()
-                if lastmemb is not None and periodo is not None:
-                    mem.renews.update(active=False)
-                    lastmemb.active=True
-                    lastmemb.save()
-                    periodo.active=True
-                    periodo.save()
-                else:
-                    messages.warning(request, 'Lo lamentamos esta membresía "'+str(mem)+'" no se puede reparar automáticamente')
-        if action == 'invoice':
-            task_membership_deactivating_membership.delay(mem.pk, False)
 
-    if action == 'invoice':
+        elif action == 'invoice':
+            queryset = MembershipRenew.objects.filter(
+                Q(membership__state="active") | Q(membership__state='graceperiod'),
+                encobro=True, active=True, inv_m_renews=None)
+        elif action == 'poneactiva':
+            Membership.objects.filter(
+                state="inactive",
+                renews__active=True
+            ).update(state='active')
+            return redirect('simulate')
+        elif action == 'setinactiverenew':
+            MembershipRenew.objects.filter(membership__state="inactive", active=True).update(active=False)
+            return redirect('simulate')
+    else:
+        if action == 'encobro':
+            mem = get_object_or_404(MembershipRenew, pk=pk)
+        elif action == 'graceperiod':
+            mem = get_object_or_404(MembershipRenew, pk=pk)
+        elif action == 'invoice':
+            mem = get_object_or_404(MembershipRenew, pk=pk)
+        elif action == 'setinactiverenew':
+            mem = MembershipRenew.objects.filter(membership_id=pk, membership__state="inactive", active=True)
+        else:
+            mem = get_object_or_404(Membership, pk=pk)
+        queryset = [mem]
+
+    for mem in queryset:
+
+        if action == 'encobro':
+            mem.encobro = True
+            mem.save()
+            task_create_invoice.delay(mem.pk)
+        if action == 'graceperiod':
+            mem.delete()
+        if action == 'invoice':
+            task_create_invoice.delay(mem.pk)
+        if action == 'poneactiva':
+            mem.state = 'active'
+            mem.save()
+        if action == 'setinactiverenew':
+            mem.update(active = False)
+
+
+    if action in ('invoice', 'encobro'):
         messages.info(request,
                          'Debe esperar un tiempo prudencial mientras se ejecutan las tareas para que se refleje')
 
@@ -162,6 +175,15 @@ def repair_membership(request, pk, action):
 def generate_invoice(request, pk):
     renew = get_object_or_404(MembershipRenew, pk=pk)
     invoice = create_invoice(renew)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="'+invoice.code+'.pdf"'
+    response.write(invoice.pdf_invoice.read())
+    return response
+
+@staff_member_required
+def build_pdf_invoice_view(request, pk):
+    invoice = get_object_or_404(Invoice, pk=pk)
+    build_pdf_invoice(invoice.membership, invoice)
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="'+invoice.code+'.pdf"'
     response.write(invoice.pdf_invoice.read())

@@ -91,6 +91,38 @@ class MembershipRenewAdmin(admin.TabularInline):
     model = models.MembershipRenew
     extra = 1
     classes = ['collapse', 'collapsed']
+    fields = [ "creation_date",
+                "start_date",
+                "end_date",
+                "encobro",
+                "active",
+               "show_invoice"
+    ]
+    readonly_fields = ['show_invoice']
+
+
+    def show_invoice(self, obj):
+        dev = "-"
+        print(repr(obj))
+        if obj:
+            invoice = obj.inv_m_renews.first()
+            if invoice is None:
+                dev = '<a href="%s" target="_blank">Crear</a>'%(
+                    reverse_lazy("generate_invoice", args=(obj.pk,))
+                )
+            else:
+                if invoice.pdf_invoice:
+                    dev = '<a href="%s" target="_blank">Descargar</a>'%(
+                        invoice.pdf_invoice.url
+                    )
+                else:
+                    dev = '<a href="%s" target="_blank">Crear</a>' % (
+                        reverse_lazy("build_pdf_invoice", args=(obj.pk,))
+                    )
+
+        return mark_safe(dev)
+    show_invoice.short_description = "Factura"
+
 
 
 class ServiceAdmin(admin.TabularInline):
@@ -113,8 +145,8 @@ class MemberShipAdmin(admin.ModelAdmin):
                send_email_vencimiento, export_csv_fields, buscar_inconsistencias]
     list_filter = (OrganizationFilter, InvoiceRenewalNotificationFilter, MembershipPaisFilter)
     search_fields = ('contact__first_name', 'contact__last_name', 'organization__name')
-    list_display = ('name', 'annual_cost', 'countryspect',
-                    'currency', 'renewal_period', 'state', 'invoices', 'next_pay',
+    list_display = ('name', 'annual_cost', 'currency',
+                    'countryspect', 'renewal_period', 'state', 'invoices', 'next_pay',
                     )
     readonly_fields = ['exchange_rates', 'invoices', 'next_pay', 'name', 'countryspect']
 

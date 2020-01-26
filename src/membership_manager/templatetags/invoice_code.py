@@ -1,4 +1,5 @@
 from django import template
+from django.utils.safestring import mark_safe
 
 from membership_manager.utils import stringcode_generator
 
@@ -15,3 +16,12 @@ def new_invoice_code(invoice):
     invoice.code = new_invoice_code
     invoice.save()
     return new_invoice_code
+
+@register.simple_tag
+def limit_text_code(text):
+    dev = text
+    w = 50
+    d = [text[i:i + w] for i in range(0, len(text), w)]
+    dev = "<br>".join(d)
+    print(dev)
+    return mark_safe(dev)

@@ -65,7 +65,7 @@ class Membership(models.Model):
     STATES = (
         ("active", "Activa"),
         ("inactive", "Inactiva"),
-        ("graceperiod", "Periodo de gracia"),
+
     )
     TYPES = (("Personal", "Personal"),
              ("Radial", "Radial"),
