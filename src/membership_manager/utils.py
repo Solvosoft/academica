@@ -2,17 +2,15 @@ import random
 import string
 from datetime import timedelta
 
-from django.db.models import Q
-
-from async_notifications.register import update_template_context
-from dateutil.relativedelta import relativedelta
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.db.models import Q
 from django.utils import timezone
 
+from async_notifications.register import update_template_context
 from membership_core.models import ServiceMT
-from membership_manager.models import MembershipRenew, Membership, Invoice
+from membership_manager.models import Invoice
 
 
 def validateEmail( email ):
@@ -42,11 +40,6 @@ def stringcode_generator(size=4, chars=string.ascii_uppercase):
 
 def get_administrative_user():
     return User.objects.filter(is_superuser=True).first().pk
-
-def get_dates(filt):
-    max_date = timezone.now() + timedelta(days=int(filt))
-    min_date = max_date - timedelta(days=1)
-    return min_date, max_date
 
 def get_membership_next_expired(queryset, value, now=None):
     if now is None:

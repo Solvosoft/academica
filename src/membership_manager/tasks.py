@@ -12,9 +12,7 @@ def task_invoice_creation():
     """
     now=timezone.localtime(timezone.now())
     generate_renew(now)
-    invoice_creation(now)
-
-
+#    invoice_creation(now)
 
 @app.task
 def task_notify_invoice_expiration():
@@ -23,13 +21,13 @@ def task_notify_invoice_expiration():
     :return:
     """
     now=timezone.localtime(timezone.now())
-    notify_invoice_expiration(now)
+    #notify_invoice_expiration(now)
 
 @app.task
 def task_membership_deactivating_or_graceperiod():
     now=timezone.localtime(timezone.now())
-    membership_deactivating(now)
-    inactive_renew(now)
+    #membership_deactivating(now)
+    #inactive_renew(now)
 
 @app.task
 def task_membership_deactivating_membership(id_membership, email):

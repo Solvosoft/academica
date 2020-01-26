@@ -238,7 +238,7 @@ class ManejadorNotificaciones:
                               args=(membership.id,)),
                  mark_safe('<a href="%s" target="_blank">Poner membresia activa </a>'%reverse_lazy('reparar',
                               args=(membership.pk, 'poneactiva'))),
-                 str(membership),
+                 " | ".join([str(x) for x in membership.renews.filter(active=True)]),
                  'notification_mail',
                  reverse_lazy('reparar',
                               args=(membership.pk, 'setinactiverenew')),
