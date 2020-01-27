@@ -137,7 +137,13 @@ def group_creation(message):
     """
     if staff_authentication(message.from_user.id):
         TelGroup.objects.create(chat_id=message.chat.id,title=message.chat.title)
-        bot.send_message(message.chat.id, f'Group {message.chat.title} added, Successfully!.')
+        bot.send_message(message.chat.id, f'Grupo {message.chat.title} agregado satisfactoriamente.')
+        bot.send_message(message.chat.id,
+                         """¡Hola! Te contamos que un grupo para notificaciones de CódigoSur ha sido creado.
+                         Número de registro: %s. ID: %s. 
+                         Si escribes /ayuda en este chat podrás dialogar con nuestro Bot de Telegram para que te brinde información sobre tu Membresía, Estado y Servicios activos.""" % (
+                         str(message.from_user.id), str(message.chat.id)))
+
     else:
         bot.send_message(message.chat.id, f'Bad operation.')
 
@@ -149,9 +155,7 @@ def new_chat_member(message):
     :param message: Message Update Information, the whole information about the event executed!, received from webhook.
     :return:
     """
-    telgroup = TelGroup.objects.filter(chat_id=message.chat.id).first()
-    if not telgroup:
-        bot.send_message(message.chat.id,
+    bot.send_message(message.chat.id,
 """¡Hola! Te contamos que un grupo para notificaciones de CódigoSur ha sido creado.
 Número de registro: %s. ID: %s. 
 Si escribes /ayuda en este chat podrás dialogar con nuestro Bot de Telegram para que te brinde información sobre tu Membresía, Estado y Servicios activos."""%(str(message.from_user.id), str(message.chat.id)))
