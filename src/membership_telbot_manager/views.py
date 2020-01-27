@@ -1,13 +1,12 @@
-from time import sleep
-
-from django.db.models import Q
-from django.template.loader import render_to_string
-from membership_manager.models import Organization, Invoice
-from membership_telbot_manager.models import TelGroup, TelegramUser
-from django.http import JsonResponse
-from django.views.generic.base import View
-from django.conf import settings
 import telebot
+from django.conf import settings
+from django.db.models import Q
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+from django.views.generic.base import View
+
+from membership_manager.models import Invoice, Membership
+from membership_telbot_manager.models import TelGroup, TelegramUser
 
 bot = telebot.TeleBot(settings.TELEGRAM_BOT_API)
 
@@ -59,20 +58,13 @@ def state(message):
     telgroup = TelGroup.objects.filter(chat_id=message.chat.id).first()
     if telgroup:
         invoices = Invoice.objects.filter(
-            Q(membership__state='active') | Q(membership__state='graceperiod'),
-            membership__organization__telgroup__pk=telgroup.pk,
+            membership__state='active',
+            membership__organization=telgroup.organization,
             status='pending')
-        if invoices:
-            msgg = render_to_string('invoices.txt', {'invoices': invoices, 'option': "pendientes",
-                                                     'title': invoices.first().membership.name})
-        else:
-            invoices = Invoice.objects.filter(
-                Q(membership__state='active') | Q(membership__state='inactive'),
-                membership__organization__telgroup__pk=telgroup.pk,
-                status='paid').order_by("payment_date").last()
-            msgg = render_to_string('invoices.txt',
-                                    {'invoice': invoices or [], 'option': "pagas",
-                                     'title': invoices.membership.name if invoices else "Sin facturación"})
+
+        msgg = render_to_string('invoices.txt',  {'invoices': invoices,
+                 'memberships': Membership.objects.filter(state="active", organization=telgroup.organization)
+                     })
 
         bot.send_message(chat_id, reply_to_message_id=message.message_id, text=msgg)
 
@@ -158,24 +150,7 @@ def new_chat_member(message):
     :return:
     """
     telgroup = TelGroup.objects.filter(chat_id=message.chat.id).first()
-    if telgroup:
-        teluser = TelegramUser.objects.filter(telegram_id=message.from_user.id).first()
-        if teluser and not telgroup.telegramuser_set.filter(telegram_id=teluser.telegram_id).exists():
-           teluser.groups.add(telgroup)
-           bot.send_message(message.chat.id,
-                            f'User {teluser.first_name} {teluser.last_name}  was added to the group '
-                            f'{telgroup.title}, successfully!.')
-        elif not teluser:
-           teluser = TelegramUser(telegram_id=message.from_user.id,
-                                                  first_name=message.from_user.first_name,
-                                                  last_name=message.from_user.last_name,
-                                                  username=message.from_user.username)
-           teluser.save()
-           teluser.groups.add(telgroup)
-           bot.send_message(message.chat.id,
-                         f'User {teluser.first_name} {teluser.last_name}  was added to the group '
-                                              f'{telgroup.title}, successfully!.')
-    else:
+    if not telgroup:
         bot.send_message(message.chat.id,
 """¡Hola! Te contamos que un grupo para notificaciones de CódigoSur ha sido creado.
 Número de registro: %s. ID: %s. 

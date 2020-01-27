@@ -1,0 +1,15 @@
+{% extends 'admin/change_form.html' %}
+{% load static %}
+
+{% block admin_change_form_document_ready %}
+{{ block.super }}
+<script>var jQuery=django.jQuery.noConflict(true);
+var $=jQuery;
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+<script>$('#id_organization').select2();</script>
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+{% endblock %}
