@@ -267,6 +267,13 @@ class MemberShipAdmin(admin.ModelAdmin):
             dev = mark_safe(dev)
         return dev
 
+    def get_queryset(self, request):
+        queryset = super(MemberShipAdmin, self).get_queryset(request)
+        return  queryset.distinct()
+        #return Membership.objects.filter(
+        #    pk__in=queryset.values_list('id', flat=True)
+        #)
+
     next_pay.short_description = "Fecha de renovación"
     next_pay.admin_order_field = '-renews__encobro'
     invoices.short_description = "Facturas"

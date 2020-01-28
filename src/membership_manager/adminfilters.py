@@ -155,7 +155,7 @@ class FormFilter(admin.ListFilter):
         term = self.value()
 
         if term is None:
-            return
+            return queryset
         term = self.get_queryset_parameters(term)
         return queryset.filter(**term)
 
