@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.contrib.admin.models import LogEntry, CHANGE
+from django.contrib.contenttypes.models import ContentType
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.functional import curry
@@ -94,7 +96,7 @@ class MembershipRenewAdmin(admin.TabularInline):
     fields = [ "creation_date",
                 "start_date",
                 "end_date",
-                "encobro",
+               'encobro',
                 "active",
                "show_invoice"
     ]
@@ -103,7 +105,7 @@ class MembershipRenewAdmin(admin.TabularInline):
 
     def show_invoice(self, obj):
         dev = "-"
-        print(repr(obj))
+        str(obj)
         if obj:
             invoice = obj.inv_m_renews.first()
             if invoice is None:
@@ -114,10 +116,14 @@ class MembershipRenewAdmin(admin.TabularInline):
                 if invoice.pdf_invoice:
                     dev = '<a href="%s" target="_blank">Descargar</a>'%(
                         invoice.pdf_invoice.url
+                    ) + '<a href="%s" target="_blank"> - Ver</a>'%(
+                        reverse_lazy("admin:membership_manager_invoice_change", args=(invoice.pk,))
                     )
                 else:
-                    dev = '<a href="%s" target="_blank">Crear</a>' % (
+                    dev = '<a href="%s" target="_blank">Crear PDF</a>' % (
                         reverse_lazy("build_pdf_invoice", args=(obj.pk,))
+                    )+ '<a href="%s" target="_blank"> - Ver</a>'%(
+                        reverse_lazy("admin:membership_manager_invoice_change", args=(invoice.pk,))
                     )
 
         return mark_safe(dev)
@@ -326,7 +332,8 @@ class AttentionAdmin(admin.StackedInline):
 
 class ActivityReportAdmin(admin.ModelAdmin):
     search_fields = ('start_date',)
-    list_display = ("organization", "duration", "get_description", "start_date", "end_date")
+    list_display = ("organization", "duration", "get_description",
+                    "start_date", "end_date")
     inlines = [AttentionAdmin]
 
     fields = [
@@ -337,8 +344,13 @@ class ActivityReportAdmin(admin.ModelAdmin):
         "duration"
     ]
 
+    def save_model(self, request, obj, form, change):
+        obj.user = request.user
+        super().save_model(request, obj, form, change)
+
     def get_description(self, obj):
-        return mark_safe(render_to_string('activity_description.html', {'obj': obj}))
+        return mark_safe(render_to_string('activity_description.html',
+                                          {'obj': obj}))
 
     get_description.short_description = "Descripción"
 

@@ -1,5 +1,7 @@
 {% load i18n %}
-
+{% if obj.user %}
+<p style="color: green">Creado por: {{obj.user}}</p>
+{% endif %}
 <div id="resume_{{obj.pk}}">
 {{ obj.description|truncatewords_html:200 }}
     <a href="javascript:void(0)" id="l{{obj.pk}}" onclick="">{% trans "Read more" %}</a>

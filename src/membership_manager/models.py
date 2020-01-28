@@ -1,4 +1,5 @@
 from django.contrib.admin import SimpleListFilter
+from django.contrib.auth.models import User
 from django.db import models
 from django_countries.fields import CountryField
 
@@ -172,6 +173,8 @@ class Invoice(models.Model):
 
 
 class ActivityReport(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,
+                              verbose_name="Usuario creador")
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE,
                                      related_name='activities', verbose_name="Organización")
     description = models.TextField(verbose_name="Descripción")
@@ -194,6 +197,7 @@ class Attention(models.Model):
                                  related_name='attentions')
     start_date = models.DateTimeField( verbose_name="Hora de inicio")
     end_date = models.DateTimeField(verbose_name="Hora de fin")
+
     class Meta:
         verbose_name = "Atencion"
         verbose_name_plural = "Atenciones"
