@@ -5,17 +5,18 @@ from django_countries.fields import CountryField
 
 from membership_core.models import SystemCurrency, RenewalPeriod, ServiceType
 
+PAYMENT = (
+    ("Cash", "Efectivo"),
+    ("Bank transfer", "Transferencia bancaria"),
+    ("Paypal", "Paypal"),
+    ("Bitcoins", "Bitcoins"),
+    ('MoneyGram', 'MoneyGram'),
+    ('WesterUnion', 'WesterUnion'),
+    ('Transferencia Bancaria Argentina', 'Transferencia Bancaria Argentina')
+)
 
 class GeneralContactInfo(models.Model):
-    PAYMENT = (
-        ("Cash", "Efectivo"),
-        ("Bank transfer", "Transferencia bancaria"),
-        ("Paypal", "Paypal"),
-        ("Bitcoins", "Bitcoins"),
-        ('MoneyGram', 'MoneyGram'),
-        ('WesterUnion', 'WesterUnion'),
-        ('Transferencia Bancaria Argentina', 'Transferencia Bancaria Argentina')
-    )
+
 
     email = models.EmailField(verbose_name="Correo electrónico")  # Correo electrónico
     cellphone = models.CharField(max_length=200, verbose_name="celular", null=True, blank=True)  # celular
@@ -160,6 +161,14 @@ class Invoice(models.Model):
     status = models.CharField(max_length=10, choices=STATUS, verbose_name="Estado")
     pdf_invoice = models.FileField(upload_to="invoices/", null=True, blank=True, verbose_name="Factura en PDF")
     code = models.CharField(max_length=20, null=True, blank=True, verbose_name="Código de la Factura")
+
+    payment_method = models.CharField(max_length=250, choices=PAYMENT,
+                                      verbose_name="Método de pago", null=True, blank=True)
+
+    transaction_number = models.CharField(max_length=250, verbose_name="Número de transaccción", null=True, blank=True)
+
+    receipt = models.FileField(upload_to='comprobantes/', null=True, blank=True,
+                                   verbose_name="Comprobante de pago")
 
     def __str__(self):
         return "%s %s %s" % (

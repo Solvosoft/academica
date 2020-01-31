@@ -150,7 +150,8 @@ class MemberShipAdmin(admin.ModelAdmin):
     actions = [membership_payments_history, send_email_to_owner,
                send_email_vencimiento, export_csv_fields, buscar_inconsistencias]
     list_filter = (OrganizationFilter, InvoiceRenewalNotificationFilter, MembershipPaisFilter)
-    search_fields = ('contact__first_name', 'contact__last_name', 'organization__name')
+    search_fields = ('contact__first_name', 'contact__last_name', 'organization__name',
+                     'organization__initials')
     list_display = ('name', 'annual_cost', 'currency',
                     'countryspect', 'renewal_period', 'state', 'invoices', 'next_pay',
                     )
@@ -248,22 +249,28 @@ class MemberShipAdmin(admin.ModelAdmin):
     def next_pay(self, obj):
         dev = ""
         if obj:
-            for renew in obj.renews.filter(active=True, encobro=True):
-                url = reverse_lazy('generate_invoice', args=(renew.pk,))
-                color = "red"
-                title="Generar factura"
-                if renew.inv_m_renews.all().exists():
-                    color = "gray"
-                    invoice = renew.inv_m_renews.first()
-                    if invoice.pdf_invoice:
-                        url = invoice.pdf_invoice.url
-                    title = "Pagar antes de %s"%(invoice.expiration_date.strftime("%d/%m/%Y"))
-                dev += '<a href="%s" target="_blank" title="%s"><span style="color: %s">%s</span></a><br>' % (
-                    url,
-                    title,
-                    color,
-                    str(renew)
-                )
+            renews = obj.renews.filter(active=True, encobro=True)
+            if renews.exists():
+                for renew in renews:
+                    url = reverse_lazy('generate_invoice', args=(renew.pk,))
+                    color = "red"
+                    title="Generar factura"
+                    if renew.inv_m_renews.all().exists():
+                        color = "green"
+                        invoice = renew.inv_m_renews.first()
+                        if invoice.pdf_invoice:
+                            url = invoice.pdf_invoice.url
+                        title = "Pagar antes de %s"%(invoice.expiration_date.strftime("%d/%m/%Y"))
+                    dev += '<a href="%s" target="_blank" title="%s"><span style="color: %s">%s</span></a><br>' % (
+                        url,
+                        title,
+                        color,
+                        str(renew)
+                    )
+            else:
+                renews = obj.renews.filter(active=True).order_by('end_date').last()
+                if renews:
+                    dev = str(renews)
             dev = mark_safe(dev)
         return dev
 
