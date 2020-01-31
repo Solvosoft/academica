@@ -96,7 +96,7 @@ class MembershipRenewAdmin(admin.TabularInline):
     fields = [ "creation_date",
                 "start_date",
                 "end_date",
-               #'encobro',
+               'encobro',
                 "active",
                "show_invoice"
     ]
