@@ -260,6 +260,8 @@ class MemberShipAdmin(admin.ModelAdmin):
                         invoice = renew.inv_m_renews.first()
                         if invoice.pdf_invoice:
                             url = invoice.pdf_invoice.url
+                        if invoice.status == 'pending':
+                            color='red'
                         title = "Pagar antes de %s"%(invoice.expiration_date.strftime("%d/%m/%Y"))
                     dev += '<a href="%s" target="_blank" title="%s"><span style="color: %s">%s</span></a><br>' % (
                         url,
