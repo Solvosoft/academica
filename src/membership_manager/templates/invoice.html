@@ -102,7 +102,21 @@
                 top: 11.09cm;
                 height: 3.09cm;
             }
+            @frame header_frame {
+                -pdf-frame-content: line_col51;
+                left: 3cm;
+                width: 4.5cm;
+                top: 12.12cm;
+                height: 3.09cm;
+            }
 
+            @frame {
+                -pdf-frame-content: line_col52;
+                right: 3cm;
+                width: 10.5cm;
+                top: 12.12cm;
+                height: 3.09cm;
+            }
             @frame header_frame {
                 -pdf-frame-content: tablelvl11;
                 left: 3cm;
@@ -244,7 +258,7 @@
             border-top-width: 1px;
         }
 
-        #line_col21, #line_col22, #line_col31, #line_col32 {
+        #line_col21, #line_col22, #line_col31, #line_col32,#line_col41, #line_col42 {
             font-size: 12pt;
             padding-top: 9pt;
             border-bottom-color: black;
@@ -252,7 +266,7 @@
             border-bottom-width: 1px;
         }
 
-        #line_col41, #line_col42{
+        #line_col51,#line_col52{
             font-size: 12pt;
             padding-top: 9pt;
         }
@@ -361,36 +375,51 @@
             Correo: ayuda@codigosur.org
         </div>
         <div id="line_col11">
-            Fecha de vencimiento
+            Organización
         </div>
         <div id="line_col12">
-            {{ invoice.expiration_date|date:"D d M Y" }}
+            {% if invoice.membership.organization %}
+                {% limit_text_code invoice.membership.organization.name %}
+            {% else %}
+                {% limit_text_code invoice.membership.name %}
+            {% endif %}
+
         </div>
         <div id="line_col21">
-            País
+            Identificación
         </div>
         <div id="line_col22">
+            {% if invoice.membership.organization %}
+                {{invoice.membership.organization.identification_type }}
+                {{invoice.membership.organization.identification }}
+            {% else %}
+            {% endif %}
+        </div>
+        <div id="line_col31">
+            País
+        </div>
+        <div id="line_col32">
             {% if invoice.membership.organization %}
                 {{ invoice.membership.organization.country }}
             {% else %}
                 {{ invoice.membership.contact.country }}
             {% endif %}
         </div>
-        <div id="line_col31">
+        <div id="line_col41">
             Ciudad
         </div>
-        <div id="line_col32">
+        <div id="line_col42">
             {% if invoice.membership.organization %}
             {{ invoice.membership.organization.city }}, {{ invoice.membership.organization.province }}
             {% else %}
              {{ invoice.membership.contact.city }}, {{ invoice.membership.contact.province }}
             {% endif %}
         </div>
-        <div id="line_col41">
-            Organización
+        <div id="line_col51">
+            Fecha de vencimiento
         </div>
-        <div id="line_col42">
-            {% limit_text_code invoice.membership.name %}
+        <div id="line_col52">
+            {{ invoice.expiration_date|date:"D d M Y" }}
         </div>
         <div id="tablelvl11">
             Descripción
