@@ -292,7 +292,7 @@ class OrganizationAdmin(admin.ModelAdmin):
     list_filter = ('active', PaisFilter)
     search_fields = ('name', 'initials')
     list_display = ("name", "email", "cellphone",
-                    "contact", "memberships", "activities", "active")
+                    "contact","identification_type","identification","memberships", "activities", "active")
     actions = [organization_payments_history, export_csv_fields]
     fields = [
         "name",
@@ -308,7 +308,9 @@ class OrganizationAdmin(admin.ModelAdmin):
         "active",
         "currency",
         "payment_method",
-        "contact"
+        "contact",
+        "identification_type",
+        "identification",
     ]
 
     def memberships(self, obj):
