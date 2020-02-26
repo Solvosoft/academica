@@ -3,230 +3,19 @@
 <html>
     <head>
         <title>Facturación</title>
-    </head>
-    <style>
-        /* Page layout */
-        @page {
-            @frame header_frame {
-                -pdf-frame-content: header_content1;
-                left: 3cm;
-                width: 10cm;
-                top: 2.5cm;
-                height: .80cm;
-            }
 
-            @frame {
-                -pdf-frame-content: header_content2;
-                left: 13cm;
-                width: 5cm;
-                top: 2.5cm;
-                height: .80cm;
-            }
-
-            @frame {
-                -pdf-frame-content: logo;
-                left: 3cm;
-                width: 7cm;
-                top: 4.5cm;
-                height: 5cm;
-            }
-
-            @frame {
-                -pdf-frame-content: invoice_info;
-                right: 3cm;
-                width: 5cm;
-                top: 4.5cm;
-                height: 6cm;
-            }
-
-            @frame header_frame {
-                -pdf-frame-content: line_col11;
-                left: 3cm;
-                width: 4.5cm;
-                top: 8cm;
-                height: 1.03cm;
-            }
-
-            @frame {
-                -pdf-frame-content: line_col12;
-                right: 3cm;
-                width: 10.5cm;
-                top: 8cm;
-                height: 1.03cm;
-            }
-
-            @frame header_frame {
-                -pdf-frame-content: line_col21;
-                left: 3cm;
-                width: 4.5cm;
-                top: 9.03cm;
-                height: 1.03cm;
-            }
-
-            @frame {
-                -pdf-frame-content: line_col22;
-                right: 3cm;
-                width: 10.5cm;
-                top: 9.03cm;
-                height: 1.03cm;
-            }
-
-            @frame header_frame {
-                -pdf-frame-content: line_col31;
-                left: 3cm;
-                width: 4.5cm;
-                top: 10.06cm;
-                height: 1.03cm;
-            }
-
-            @frame {
-                -pdf-frame-content: line_col32;
-                right: 3cm;
-                width: 10.5cm;
-                top: 10.06cm;
-                height: 1.03cm;
-            }
-
-            @frame header_frame {
-                -pdf-frame-content: line_col41;
-                left: 3cm;
-                width: 4.5cm;
-                top: 11.09cm;
-                height: 3.09cm;
-            }
-
-            @frame {
-                -pdf-frame-content: line_col42;
-                right: 3cm;
-                width: 10.5cm;
-                top: 11.09cm;
-                height: 3.09cm;
-            }
-            @frame header_frame {
-                -pdf-frame-content: line_col51;
-                left: 3cm;
-                width: 4.5cm;
-                top: 12.12cm;
-                height: 3.09cm;
-            }
-
-            @frame {
-                -pdf-frame-content: line_col52;
-                right: 3cm;
-                width: 10.5cm;
-                top: 12.12cm;
-                height: 3.09cm;
-            }
-            @frame header_frame {
-                -pdf-frame-content: tablelvl11;
-                left: 3cm;
-                width: 11cm;
-                top: 15cm;
-                height: 1.06cm;
-            }
-
-            @frame {
-                -pdf-frame-content: tablelvl12;
-                right: 3cm;
-                width: 4cm;
-                top: 15cm;
-                height: 1.03cm;
-            }
-
-            @frame header_frame {
-                -pdf-frame-content: tablelvl21;
-                left: 3cm;
-                width: 11cm;
-                top: 16.03cm;
-                height: 1.03cm;
-            }
-
-            @frame {
-                -pdf-frame-content: tablelvl22;
-                right: 3cm;
-                width: 4cm;
-                top: 16.03cm;
-                height: 1.03cm;
-            }
-
-            @frame header_frame {
-                -pdf-frame-content: tablelvl31;
-                left: 3cm;
-                width: 11cm;
-                top: 17.06cm;
-                height: 1.06cm;
-            }
-
-            @frame {
-                -pdf-frame-content: tablelvl32;
-                right: 3cm;
-                width: 4cm;
-                top: 17.06cm;
-                height: 1.06cm;
-            }
-
-            @frame header_frame {
-                -pdf-frame-content: tablelvl41;
-                left: 3cm;
-                width: 11cm;
-                top: 18.12cm;
-                height: 1.06cm;
-            }
-
-            @frame {
-                -pdf-frame-content: tablelvl42;
-                right: 3cm;
-                width: 4cm;
-                top: 18.12cm;
-                height: 1.06cm;
-            }
-
-            @frame header_frame {
-                -pdf-frame-content: tablelvl51;
-                left: 3cm;
-                width: 11cm;
-                top: 19.18cm;
-                height: 1.06cm;
-            }
-
-            @frame {
-                -pdf-frame-content: tablelvl52;
-                right: 3cm;
-                width: 4cm;
-                top: 19.18cm;
-                height: 1.06cm;
-            }
-
-            @frame header_frame {
-                -pdf-frame-content: tablelvl61;
-                left: 3cm;
-                width: 11cm;
-                top: 20.24cm;
-                height: 1.06cm;
-            }
-
-            @frame {
-                -pdf-frame-content: tablelvl62;
-                right: 3cm;
-                width: 4cm;
-                top: 20.24cm;
-                height: 1.06cm;
-            }
-
-            @frame {
-                -pdf-frame-content: footer;
-                right: 3cm;
-                width: 15cm;
-                top: 25.5cm;
-                height: 2cm;
-            }
+        <style>
+        .grid {
+            display: grid;
+            grid-template-areas: "head head" "menu main" "foot foot";
         }
 
+        /* Page layout */
         body {
             font-family: Helvetica, "sansserif";
         }
-
         #header_content1, #header_content2 {
+            grid-area: head;
             font-size: 11pt;
             padding-top: 4pt;
             font-weight: bold;
@@ -243,9 +32,11 @@
         }
 
         #invoice_info {
+            grid-area: menu;
             text-align: right;
             font-size: 10pt;
         }
+        .main{ grid-area: main;}
 
         #line_col11, #line_col12 {
             font-size: 12pt;
@@ -270,6 +61,7 @@
             font-size: 12pt;
             padding-top: 9pt;
         }
+
         #tablelvl11, #tablelvl12 {
             text-align: center;
             font-size: 12pt;
@@ -350,6 +142,7 @@
         }
 
         #footer {
+            grid-area: foot;
             font-size: 12pt;
             text-align: center;
             vertical-align: middle;
@@ -357,110 +150,115 @@
         }
 
     </style>
+
+    </head>
     <body>
+        <div class="grid">
+            <div id="header_content1" class="">
+                FACTURA: &nbsp &nbsp &nbsp {% new_invoice_code invoice %}
+            </div>
+            <div id="header_content2">
+                {{ invoice.get_status_display }}
+            </div>
+            <div id="logo">
+                <img src="logoCS.png" alt="logo"/>
+            </div>
+            <div id="invoice_info">
+                Código Sur Sociedad Civil<br />
+                Cédula Juridica: 3-106-639831<br />
+                Telefono +506 8569 1676<br />
+                Correo: ayuda@codigosur.org
+            </div>
+            <div id="line_col11">
+                Organización
+            </div>
+            <div id="line_col12">
+                {% if invoice.membership.organization %}
+                    <p>{% limit_long_text_code invoice.membership.organization.name %}</p>
+                {% else %}
+                    <p>{% limit_long_text_code invoice.membership.name %}</p>
+                {% endif %}
 
-        <div id="header_content1">
-            FACTURA: &nbsp &nbsp &nbsp {% new_invoice_code invoice %}
-        </div>
-        <div id="header_content2">
-            {{ invoice.get_status_display }}
-        </div>
-        <div id="logo">
-            <img src="logoCS.png"/>
-        </div>
-        <div id="invoice_info">
-            Código Sur Sociedad Civil<br />
-            Cédula Juridica: 3-106-639831<br />
-            Telefono +506 8569 1676<br />
-            Correo: ayuda@codigosur.org
-        </div>
-        <div id="line_col11">
-            Organización
-        </div>
-        <div id="line_col12">
-            {% if invoice.membership.organization %}
-                {% limit_text_code invoice.membership.organization.name %}
-            {% else %}
-                {% limit_text_code invoice.membership.name %}
-            {% endif %}
+            </div>
+            <div id="line_col21">
+                Identificación
+            </div>
+            <div id="line_col22">
+                {% if invoice.membership.organization %}
+                    {{invoice.membership.organization.identification_type }}
+                    {{invoice.membership.organization.identification }}
+                {% else %}
+                {% endif %}
+            </div>
+            <div id="line_col31">
+                País
+            </div>
+            <div id="line_col32">
+                {% if invoice.membership.organization %}
+                    {{ invoice.membership.organization.country }}
+                {% else %}
+                    {{ invoice.membership.contact.country }}
+                {% endif %}
+            </div>
+            <div id="line_col41">
+                Ciudad
+            </div>
+            <div id="line_col42">
+                {% if invoice.membership.organization %}
+                {{ invoice.membership.organization.city }}, {{ invoice.membership.organization.province }}
+                {% else %}
+                 {{ invoice.membership.contact.city }}, {{ invoice.membership.contact.province }}
+                {% endif %}
+            </div>
+            <div id="line_col51">
+                Fecha de vencimiento
+            </div>
+            <div id="line_col52">
+                {{ invoice.expiration_date|date:"D d M Y" }}
+            </div>
+            <div class="main">
+                <div id="tablelvl11">
+                    Descripción
+                </div>
+                <div id="tablelvl12">
+                    Precio
+                </div>
+                <div id="tablelvl21">
+                   &nbsp &nbsp &nbsp Renovación Periodo {{ invoice.renewal_period }}
+                </div>
+                <div id="tablelvl22">
+                    &nbsp &nbsp &nbsp
+                </div>
+                <div id="tablelvl31">
+                    Membresía
+                </div>
+                <div id="tablelvl32">
+                    {{ invoice.membership.annual_cost }} {{ invoice.membership.currency.currency}}
+                </div>
+                <div id="tablelvl41">
+                    Subtotal
+                </div>
+                <div id="tablelvl42">
+                    {{ invoice.membership.annual_cost }} {{ invoice.membership.currency.currency}}
+                </div>
+                <div id="tablelvl51">
+                    I.V.I
+                </div>
+                <div id="tablelvl52">
+                    *
+                </div>
+                <div id="tablelvl61">
+                    Total
+                </div>
+                <div id="tablelvl62">
+                    {{ invoice.membership.annual_cost }} {{ invoice.membership.currency.currency}}
+                </div>
+            </div>
+            <div id="footer">
+                Código Sur, San José. Costa Rica. CP 11501. Teléfono +506 8569 1676.<br />
+                Email: ayuda@codigosur.org – Web: https://codigosur.org
+            </div>
 
         </div>
-        <div id="line_col21">
-            Identificación
-        </div>
-        <div id="line_col22">
-            {% if invoice.membership.organization %}
-                {{invoice.membership.organization.identification_type }}
-                {{invoice.membership.organization.identification }}
-            {% else %}
-            {% endif %}
-        </div>
-        <div id="line_col31">
-            País
-        </div>
-        <div id="line_col32">
-            {% if invoice.membership.organization %}
-                {{ invoice.membership.organization.country }}
-            {% else %}
-                {{ invoice.membership.contact.country }}
-            {% endif %}
-        </div>
-        <div id="line_col41">
-            Ciudad
-        </div>
-        <div id="line_col42">
-            {% if invoice.membership.organization %}
-            {{ invoice.membership.organization.city }}, {{ invoice.membership.organization.province }}
-            {% else %}
-             {{ invoice.membership.contact.city }}, {{ invoice.membership.contact.province }}
-            {% endif %}
-        </div>
-        <div id="line_col51">
-            Fecha de vencimiento
-        </div>
-        <div id="line_col52">
-            {{ invoice.expiration_date|date:"D d M Y" }}
-        </div>
-        <div id="tablelvl11">
-            Descripción
-        </div>
-        <div id="tablelvl12">
-            Precio
-        </div>
-        <div id="tablelvl21">
-           &nbsp &nbsp &nbsp Renovación Periodo {{ invoice.renewal_period }}
-        </div>
-        <div id="tablelvl22">
-            &nbsp &nbsp &nbsp
-        </div>
-        <div id="tablelvl31">
-            Membresía
-        </div>
-        <div id="tablelvl32">
-            {{ invoice.membership.annual_cost }} {{ invoice.membership.currency.currency}}
-        </div>
-        <div id="tablelvl41">
-            Subtotal
-        </div>
-        <div id="tablelvl42">
-            {{ invoice.membership.annual_cost }} {{ invoice.membership.currency.currency}}
-        </div>
-        <div id="tablelvl51">
-            I.V.I
-        </div>
-        <div id="tablelvl52">
-            *
-        </div>
-        <div id="tablelvl61">
-            Total
-        </div>
-        <div id="tablelvl62">
-            {{ invoice.membership.annual_cost }} {{ invoice.membership.currency.currency}}
-        </div>
-        <div id="footer">
-            Código Sur, San José. Costa Rica. CP 11501. Teléfono +506 8569 1676.<br />
-            Email: ayuda@codigosur.org – Web: https://codigosur.org
-        </div>
-
     </body>
 </html>

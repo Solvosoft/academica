@@ -1,6 +1,10 @@
 import io
 import os
 
+from django.http import HttpResponse
+from django.shortcuts import render
+from django_xhtml2pdf.utils import generate_pdf, pdf_decorator
+
 from async_notifications.utils import send_email_from_template
 from django.conf import settings
 from django.core.files.base import File
@@ -10,17 +14,23 @@ from django.contrib.staticfiles import finders
 
 from membership_manager.utils import get_emails
 
+
 def build_pdf_invoice(membership, invoice):
+    html= 'invoice.html'
     sourceHtml = render_to_string('invoice.html', context={
         'invoice': invoice,
         'membership': membership
     })
     #FIXME the variable 'enqueued' == False, it must be false o we should change it to True?!
     resultFile = io.BytesIO()
+
     pisaStatus = pisa.CreatePDF(
         sourceHtml,  # the HTML to convert
         dest=resultFile,  # file handle to recieve result
         link_callback=link_callback)
+    if pisaStatus.err:
+        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err,
+                                                                               html))
     resultFile.seek(0)
     file_name = f'factura_{invoice.pk}_{membership.name}.pdf'
     invoice.pdf_invoice = File(resultFile, name=file_name)
@@ -40,6 +50,9 @@ def generate_invoice(membership, invoice, email_template='pay_mail',
                              user=None,
                              upfile=invoice.pdf_invoice)
 
+@pdf_decorator(pdfname='new_filename.pdf')
+def generate_new_invoice(request):
+        return render(request, 'mytemplate.html')
 
 def link_callback(uri, rel):
     """
