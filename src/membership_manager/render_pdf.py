@@ -2,8 +2,6 @@ import io
 import os
 
 from django.http import HttpResponse
-from django.shortcuts import render
-from django_xhtml2pdf.utils import generate_pdf, pdf_decorator
 
 from async_notifications.utils import send_email_from_template
 from django.conf import settings
@@ -49,10 +47,6 @@ def generate_invoice(membership, invoice, email_template='pay_mail',
                              enqueued=enqueued,
                              user=None,
                              upfile=invoice.pdf_invoice)
-
-@pdf_decorator(pdfname='new_filename.pdf')
-def generate_new_invoice(request):
-        return render(request, 'mytemplate.html')
 
 def link_callback(uri, rel):
     """

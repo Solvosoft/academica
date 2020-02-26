@@ -1,3 +1,5 @@
+import textwrap
+
 from django import template
 from django.utils.safestring import mark_safe
 
@@ -19,9 +21,14 @@ def new_invoice_code(invoice):
 
 @register.simple_tag
 def limit_text_code(text):
-    dev = text
     w = 50
     d = [text[i:i + w] for i in range(0, len(text), w)]
     dev = "<br>".join(d)
-    print(dev)
+    return mark_safe(dev)
+
+@register.simple_tag
+def limit_long_text_code(text):
+    w = 50
+    lines = textwrap.wrap(text, w)
+    dev = "<br>".join(lines)
     return mark_safe(dev)
