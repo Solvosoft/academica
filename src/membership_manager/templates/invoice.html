@@ -319,7 +319,7 @@
                 <table style="width:100%">
                   <tr>
                     <th class="line_col11" style="width: 25%; text-align: left;">Organización:</th>
-                    <td class="line_col12" style="width: 75%; text-align: left;">
+                    <td class="line_col12" style="width: 75%;text-align: left; padding-left: 10px;">
                         {% if invoice.membership.organization %}
                             <p>{{ invoice.membership.organization.name }}</p>
                         {% else %}
@@ -329,7 +329,7 @@
                   </tr>
                   <tr>
                     <th class="line_col21" style="width: 25%;text-align: left;">Identificación</th>
-                    <td class="line_col22" style ="width: 75%;text-align: left;">
+                    <td class="line_col22" style ="width: 75%;text-align: left; padding-left: 10px;">
                         {% if invoice.membership.organization %}
                             {{invoice.membership.organization.identification_type }}
                             {{invoice.membership.organization.identification }}
@@ -339,7 +339,7 @@
                   </tr>
                   <tr>
                     <th class="line_col31" style="width: 25%; text-align: left;">País</th>
-                    <td class="line_col32" style =" width: 75%">
+                    <td class="line_col32" style =" width: 75%;text-align: left; padding-left: 10px;">
                          {% if invoice.membership.organization %}
                             {{ invoice.membership.organization.country }}
                         {% else %}
@@ -349,7 +349,7 @@
                   </tr>
                 <tr>
                     <th class="line_col41" style="width: 25%; text-align: left;">Ciudad</th>
-                    <td class="line_col42" style =" width: 75%;text-align: left;">
+                    <td class="line_col42" style =" width: 75%;text-align: left; padding-left: 10px;">
                         {% if invoice.membership.organization %}
                             {{ invoice.membership.organization.city }}, {{ invoice.membership.organization.province }}
                         {% else %}
@@ -359,7 +359,7 @@
                   </tr>
                     <tr>
                     <th class="line_col51" style="width: 25%; text-align: left;" >Fecha de vencimiento</th>
-                    <td class="line_col52" style =" width: 75%;text-align: left;">
+                    <td class="line_col52" style =" width: 75%;text-align: left; padding-left: 10px">
                         {{ invoice.expiration_date|date:"D d M Y" }}
                     </td>
                   </tr>
