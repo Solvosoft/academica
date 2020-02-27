@@ -46,7 +46,7 @@ class Contact(GeneralContactInfo):
 
 class Organization(GeneralContactInfo):
     IDS_TYPE = (
-        ('RUT', 'RUT'), ('NIT', 'NIT'), ('CUIT', 'CUIT'),
+        ('RUT', 'RUT'), ('NIT', 'NIT'), ('CUIT', 'CUIT'),('RTN', 'RTN'),('ETC','ETC'),
         ('cedula_juridica', 'Cédula Jurídica')
     )
     name = models.CharField(max_length=300, verbose_name="Nombre")  # Nombre de la Organización

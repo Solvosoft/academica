@@ -28,6 +28,8 @@ def build_pdf_invoice(membership, invoice):
 
 def generate_invoice(membership, invoice, email_template='pay_mail',
                      enqueued=True, send_email=True):
+    if invoice.pdf_invoice:
+        invoice.pdf_invoice.delete(False)
     build_pdf_invoice(membership, invoice)
     if send_email:
         emails = get_emails(membership)

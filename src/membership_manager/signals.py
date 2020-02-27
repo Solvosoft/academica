@@ -1,8 +1,10 @@
+import os
+
 from async_notifications.utils import send_email_from_template
 from django.db.models import Sum
-from django.db.models.signals import post_save, pre_save,post_delete
+from django.db.models.signals import post_save, pre_save, post_delete, pre_delete
 from django.dispatch import receiver
-from membership_manager.models import Membership, Attention, ActivityReport
+from membership_manager.models import Membership, Attention, ActivityReport, Invoice
 from membership_manager.utils import get_emails
 
 
@@ -33,15 +35,8 @@ def save_attention(sender, instance, **kwargs):
         instance.duration = total
         instance.__class__.objects.filter(pk=instance.pk).update(duration=int(total))
 
-    # if instance.duration == 0 or instance.duration == None:
-    #     start_date = instance.start_date
-    #     end_date = instance.end_date
-    #     diff = start_date - end_date
-    #     total_seconds = abs(diff.total_seconds())
-    #     instance.duration = total_seconds / 3600
 
-# @receiver([post_save,post_delete], sender=Attention)
-# def change_activity_time_elapsed(sender, instance, **kwargs):
-#     instance.activity.time_elapsed = instance.activity.attentions.aggregate(time_elapsed=Sum("duration"))['time_elapsed']
-#     instance.activity.save()
-
+@receiver([pre_delete], sender=Invoice)
+def remove_invoice_pdf(sender, instance, using,**kwargs):
+    if instance.pdf_invoice:
+        instance.pdf_invoice.delete(False)
