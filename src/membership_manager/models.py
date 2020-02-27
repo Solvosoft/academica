@@ -56,7 +56,11 @@ class Organization(GeneralContactInfo):
     identification  = models.CharField(max_length=50, null=True, blank=True,verbose_name="Número de Identificación")
 
     def __str__(self):
-        return self.name[:80] + '.'
+        mstr = self.name[:80]+ '. '
+        if self.initials:
+            mstr = mstr +'( ' + self.initials +' )'
+
+        return mstr
 
     class Meta:
         verbose_name = "Organización"
