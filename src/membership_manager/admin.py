@@ -138,8 +138,8 @@ class ServiceAdmin(admin.TabularInline):
         initial = []
         if request.GET.get('tid'):
             initial, self.extra = load_services_from_membership_template(request.GET.get('tid'))
+            kwargs['initial'] = initial
         formset = super(ServiceAdmin, self).get_formset(request, obj, **kwargs)
-        formset=formset(initial=initial)
         return formset
 
 
