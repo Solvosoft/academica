@@ -1,3 +1,4 @@
+django>=3.0
 django-countries>=6.0
 pyuca
 django-money[exchange]
