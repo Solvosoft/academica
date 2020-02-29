@@ -1,6 +1,9 @@
+import textwrap
+
 from django.contrib.admin import SimpleListFilter
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.safestring import mark_safe
 from django_countries.fields import CountryField
 
 from membership_core.models import SystemCurrency, RenewalPeriod, ServiceType
@@ -180,6 +183,12 @@ class Invoice(models.Model):
             self.get_status_display()
         )
 
+    @property
+    def membership_name(self):
+        text = str(self.membership)
+        lines=textwrap.wrap(text, 50)
+        dev = "<br>".join(lines)
+        return mark_safe(dev)
     class Meta:
         verbose_name = "Factura"
         verbose_name_plural = "Facturas"

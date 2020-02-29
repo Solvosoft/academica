@@ -7,6 +7,6 @@ class MembershipTelbotManagerConfig(AppConfig):
     name = 'membership_telbot_manager'
     def ready(self):
         super().ready()
-        if not settings.DEBUG:
+        if not settings.DEBUG or settings.TEST_TELEGRAM:
             bot = telebot.TeleBot(settings.TELEGRAM_BOT_API)
             bot.set_webhook(url=settings.TELEGRAM_BOT_WEBHOOK)

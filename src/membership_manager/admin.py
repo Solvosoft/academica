@@ -1,9 +1,6 @@
 from django.contrib import admin
-from django.contrib.admin.models import LogEntry, CHANGE
-from django.contrib.contenttypes.models import ContentType
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
-from django.utils.functional import curry
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django_countries import countries
@@ -12,7 +9,7 @@ from membership_core.models import MembershipTemplate, SystemCurrency
 from membership_manager import models
 from membership_manager.admin_memberships import membership_payments_history, \
     organization_payments_history, send_email_to_owner, send_email_vencimiento, buscar_inconsistencias, \
-    export_csv_fields
+    export_csv_fields, send_welcome_email
 from membership_manager.admin_pdf import InvoiceAdmin
 from membership_manager.adminfilters import PaisFilter, OrganizationFilter, MembershipPaisFilter, ContactPaisFilter, \
     InvoiceRenewalNotificationFilter
@@ -142,12 +139,12 @@ class ServiceAdmin(admin.TabularInline):
         if request.GET.get('tid'):
             initial, self.extra = load_services_from_membership_template(request.GET.get('tid'))
         formset = super(ServiceAdmin, self).get_formset(request, obj, **kwargs)
-        formset.__init__ = curry(formset.__init__, initial=initial)
+        formset=formset(initial=initial)
         return formset
 
 
 class MemberShipAdmin(admin.ModelAdmin):
-    actions = [membership_payments_history, send_email_to_owner,
+    actions = [membership_payments_history, send_email_to_owner, send_welcome_email,
                send_email_vencimiento, export_csv_fields, buscar_inconsistencias]
     list_filter = (OrganizationFilter, InvoiceRenewalNotificationFilter, MembershipPaisFilter)
     search_fields = ('contact__first_name', 'contact__last_name', 'organization__name',
@@ -312,6 +309,9 @@ class OrganizationAdmin(admin.ModelAdmin):
         "identification_type",
         "identification",
     ]
+
+    class Media:
+        js = ('js/membership.js',)
 
     def memberships(self, obj):
         return format_html(

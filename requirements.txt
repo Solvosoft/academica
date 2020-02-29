@@ -1,4 +1,4 @@
-django-countries
+django-countries>=6.0
 pyuca
 django-money[exchange]
 pyTelegramBotAPI

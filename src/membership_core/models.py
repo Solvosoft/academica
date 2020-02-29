@@ -80,7 +80,7 @@ class MembershipTemplate(models.Model):
     description = models.TextField(null=True, blank=True, verbose_name="Descripción")
     renewal_period = models.ForeignKey(RenewalPeriod, on_delete=models.CASCADE,
                                        verbose_name="Periodo de renovación")
-    state = models.CharField(max_length=10, choices=STATES, default="active",
+    state = models.CharField(max_length=15, choices=STATES, default="active",
                              verbose_name="Estado")
 
     def __str__(self):

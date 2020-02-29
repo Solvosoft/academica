@@ -1,16 +1,14 @@
 from django.contrib import admin
-from django.contrib import admin
-from django.contrib.admin import SimpleListFilter
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.contenttypes.models import ContentType
 from django.utils.safestring import mark_safe
 
-from membership_manager import utils
+from async_notifications.utils import send_email_from_template
 from membership_manager.invoice_utils import pay_invoice, pending_invoice
 from membership_manager.render_pdf import generate_invoice
-from membership_manager.utils import stringcode_generator
+from membership_manager.utils import stringcode_generator, get_emails
 from membership_telbot_manager.models import TelGroup
-from membership_telbot_manager.views import send_invoice_message
+from membership_telbot_manager.views import send_invoice_message, send_notification_message
 
 
 def pay_invoice_action(modeladmin, request, queryset):
@@ -32,8 +30,13 @@ def pay_invoice_action(modeladmin, request, queryset):
             object_repr="Pago de membresía realizado.",
             action_flag=CHANGE
         )
-        if TelGroup.objects.filter(organization_id=invoice.membership.organization.pk).first():
-            send_invoice_message(invoice.membership.organization.telgroup.chat_id,invoice.pdf_invoice.open())
+        if membership.organization:
+            telgroup = TelGroup.objects.filter(organization_id=membership.organization.pk).first()
+            if telgroup:
+                send_notification_message(telgroup.chat_id, membership.organization)
+                if invoice.pdf_invoice:
+                    send_invoice_message(telgroup.chat_id, invoice.pdf_invoice)
+
 
 pay_invoice_action.short_description = "Pagar factura"
 
@@ -50,18 +53,51 @@ def regenerepdf_invoice(modeladmin, request, queryset):
 
 regenerepdf_invoice.short_description = 'Regenerar PDF de la factura'
 
+def send_paid_invoice(queryset, templatename):
+    for invoice in queryset:
+        membership = invoice.membership
+        emails = get_emails(membership)
+        send_email_from_template(templatename, emails,
+                             context={
+                                 'invoice': invoice,
+                                 'membership': membership
+                             },
+                             enqueued=False,
+                             user=None,
+                             upfile=invoice.pdf_invoice)
+        if membership.organization and emails:
+            telgroup = TelGroup.objects.filter(organization_id=membership.organization.pk).first()
+            if telgroup:
+                send_notification_message(telgroup.chat_id, membership.organization)
+                if invoice.pdf_invoice:
+                    send_invoice_message(telgroup.chat_id, invoice.pdf_invoice)
+
+def send_invoice_remainder_email(modeladmin, request, queryset):
+    send_paid_invoice(queryset, 'notification_mail')
+send_invoice_remainder_email.short_description = 'Enviar recordatorio facturas'
+
+
+def send_invoice_paid_email(modeladmin, request, queryset):
+    send_paid_invoice(queryset, 'pay_mail')
+send_invoice_paid_email.short_description = 'Enviar notificación de pago de facturas'
+
+
 class InvoiceAdmin(admin.ModelAdmin):
-    actions = [pay_invoice_action, recode_invoice, regenerepdf_invoice]
+    actions = [pay_invoice_action,send_invoice_paid_email, send_invoice_remainder_email, recode_invoice, regenerepdf_invoice]
 
     list_filter = ('membership', 'status')
 
     search_fields = ('membership__contact__first_name',
                      'membership__contact__last_name',
                      'membership__organization__name', 'code')
-    list_display = ('code', 'membership', 'expiration_date',
+    list_display = ('code', 'membership_name', 'expiration_date',
                     'amount', 'currency', 'status', 'payment_date', 'download')
     list_editable = ()
     readonly_fields = ('download',)
+
+    class Media:
+        js = ('js/membership.js',)
+
 
     def download(self, obj):
         dev = ""

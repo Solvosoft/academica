@@ -5,20 +5,14 @@ from django.db.models import Sum
 from django.db.models.signals import post_save, pre_save, post_delete, pre_delete
 from django.dispatch import receiver
 from membership_manager.models import Membership, Attention, ActivityReport, Invoice
+from membership_manager.task_utils import send_welcome_notification
 from membership_manager.utils import get_emails
 
 
 @receiver(post_save, sender=Membership)
 def welcome_email(sender, instance, created, **kwargs):
     if created:
-        emails = get_emails(instance)
-        send_email_from_template('welcome_mail', emails,
-                                 context={
-                                     'membership': instance
-                                 },
-                                 enqueued=True,
-                                 user=None,
-                                 upfile=None)
+        send_welcome_notification(instance.pk)
 
 @receiver(post_save, sender=ActivityReport)
 def save_attention(sender, instance, **kwargs):

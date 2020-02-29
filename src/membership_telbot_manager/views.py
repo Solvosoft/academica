@@ -42,7 +42,8 @@ def help(message):
     :return:
     """
     chat_id = message.chat.id
-    rendered = render_to_string('help_dialog.txt')
+
+    rendered = render_to_string('help_dialog.txt', context={'chat_id': str(chat_id)})
     bot.send_message(chat_id, reply_to_message_id=message.message_id, text=rendered)
 
 

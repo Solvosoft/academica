@@ -8,6 +8,7 @@ from membership_manager import utils
 from membership_manager.invoice_utils import create_invoice
 from membership_manager.models import Membership, MembershipRenew
 from membership_manager.render_pdf import generate_invoice, build_pdf_invoice
+from membership_manager.utils import get_emails
 from membership_telbot_manager.models import TelGroup
 from membership_telbot_manager.views import send_notification_message, send_deactivated_message
 
@@ -125,3 +126,15 @@ def create_invoice_tool(id_renew):
         invoice = create_invoice(renew)
     else:
         build_pdf_invoice(renew.membership, invoice)
+
+
+def send_welcome_notification(id_membership):
+    instance = Membership.objects.filter(pk=id_membership).first()
+    emails = get_emails(instance)
+    send_email_from_template('welcome_mail', emails,
+                             context={
+                                 'membership': instance
+                             },
+                             enqueued=True,
+                             user=None,
+                             upfile=None)

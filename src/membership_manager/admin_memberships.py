@@ -16,6 +16,7 @@ from membership_manager.forms import MembInvPaymentsForm
 from membership_manager.invoice_utils import create_invoice
 from membership_manager.models import Membership, Invoice, Organization, MembershipRenew
 from membership_manager.render_pdf import build_pdf_invoice
+from membership_manager.task_utils import send_welcome_notification
 from membership_manager.tasks import task_membership_deactivating_membership, task_create_invoice
 from membership_manager.utils import get_emails
 
@@ -32,6 +33,13 @@ def send_email_to_owner(modeladmin, request, queryset):
                                      user=None,
                                      upfile=None)
 send_email_to_owner.short_description = "Envíar correo a responsables de las membresías"
+
+
+def send_welcome_email(modeladmin, request, queryset):
+    for membership in queryset:
+        send_welcome_notification(membership.pk)
+
+send_welcome_email.short_description = "Envíar mensaje de bienvenida de membresía"
 
 
 
