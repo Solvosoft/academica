@@ -4,6 +4,8 @@ from django.contrib import admin
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
+
+from membership_core.utils import country_data
 from membership_manager.models import Organization, Membership, Contact
 from django_countries import countries
 
@@ -31,7 +33,7 @@ class PaisFilter(admin.SimpleListFilter):
     def lookups(self, request, model_admin):
         keys = list(set(self.model.objects.all().values_list('country', flat=True)))
         keys.sort()
-        country=dict(countries)
+        country= country_data
         options = [('all', 'T | A | I | Nombre')]+[(x, self.get_country(x, country[x])) for x in keys]
         return options
 

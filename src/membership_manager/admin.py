@@ -1,3 +1,6 @@
+import functools
+
+from ajax_select.admin import AjaxSelectAdmin
 from django.contrib import admin
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
@@ -6,6 +9,7 @@ from django.utils.safestring import mark_safe
 from django_countries import countries
 
 from membership_core.models import MembershipTemplate, SystemCurrency
+from membership_core.utils import country_data
 from membership_manager import models
 from membership_manager.admin_memberships import membership_payments_history, \
     organization_payments_history, send_email_to_owner, send_email_vencimiento, buscar_inconsistencias, \
@@ -24,9 +28,9 @@ class ContactAdmin(admin.ModelAdmin):
     search_fields = ('first_name', 'last_name')
     list_display = ("first_name",
                     "last_name",
-                    "email",
+                    "show_email",
                     "cellphone",
-                    "country",
+                    "show_country",
                     "organizations",
                     "memberships",
                     "active")
@@ -47,6 +51,24 @@ class ContactAdmin(admin.ModelAdmin):
         "payment_method"
     ]
 
+    def show_email(self, obj):
+        if obj:
+            if obj.email:
+                email = '<a href="%s" target="_blank">%s</a>' % (
+                    reverse("admin:async_notifications_emailnotification_add") + '?recipient=' + obj.email,
+                    obj.email
+                )
+                return mark_safe(email)
+        return ''
+
+    show_email.short_description = "Correo"
+    def show_country(self, obj):
+        if obj:
+            if obj.country:
+                return country_data[obj.country]
+        return ""
+
+    show_country.short_description = "País"
     def organizations(self, obj):
         return format_html(
             """
@@ -138,20 +160,22 @@ class ServiceAdmin(admin.TabularInline):
         initial = []
         if request.GET.get('tid'):
             initial, self.extra = load_services_from_membership_template(request.GET.get('tid'))
-            kwargs['initial'] = initial
+
         formset = super(ServiceAdmin, self).get_formset(request, obj, **kwargs)
+        formset.__init__ = functools.partialmethod(formset.__init__,   initial=initial)
         return formset
 
 
-class MemberShipAdmin(admin.ModelAdmin):
+
+
+
+class MemberShipAdmin(AjaxSelectAdmin, admin.ModelAdmin):
     actions = [membership_payments_history, send_email_to_owner, send_welcome_email,
-               send_email_vencimiento, export_csv_fields, buscar_inconsistencias]
+              send_email_vencimiento, export_csv_fields, buscar_inconsistencias]
     list_filter = (OrganizationFilter, InvoiceRenewalNotificationFilter, MembershipPaisFilter)
     search_fields = ('contact__first_name', 'contact__last_name', 'organization__name',
                      'organization__initials')
-    list_display = ('name', 'annual_cost', 'currency',
-                    'countryspect', 'renewal_period', 'state', 'invoices', 'next_pay',
-                    )
+    list_display = ('name', 'show_amount', 'countryspect', 'state', 'invoices', 'next_pay' )
     readonly_fields = ['exchange_rates', 'invoices', 'next_pay', 'name', 'countryspect']
 
     inlines = [ServiceAdmin, MembershipRenewAdmin]
@@ -183,9 +207,12 @@ class MemberShipAdmin(admin.ModelAdmin):
 
     exchange_rates.short_description = "Tipos de cambio"
 
+    def show_amount(self, obj):
+        if obj:
+            return "%.2f %s"%(obj.annual_cost, obj.currency)
+        return ""
     def countryspect(self, obj):
         if obj:
-            country_data = dict(countries)
             country = ''
             if obj.organization:
                 country = country_data[obj.organization.country]
@@ -193,7 +220,9 @@ class MemberShipAdmin(admin.ModelAdmin):
                 country = country_data[obj.contact.country]
 
             dev = '<p style="letter-spacing:2px;" >'
-            dev += "%s <br> %s" % (country, obj.get_membership_type_display())
+            dev += "%s <br> %s <br> %s" % (country, obj.get_membership_type_display(),
+                                           obj.renewal_period
+                                           )
             dev += "</p>"
             return mark_safe(dev)
         return ""
@@ -288,8 +317,7 @@ class MemberShipAdmin(admin.ModelAdmin):
 class OrganizationAdmin(admin.ModelAdmin):
     list_filter = ('active', PaisFilter)
     search_fields = ('name', 'initials')
-    list_display = ("name", "email", "cellphone",
-                    "contact","identification_type","identification","memberships", "activities", "active")
+    list_display = ("name", "contact_information","memberships", "activities", "active")
     actions = [organization_payments_history, export_csv_fields]
     fields = [
         "name",
@@ -313,7 +341,32 @@ class OrganizationAdmin(admin.ModelAdmin):
     class Media:
         js = ('js/membership.js',)
 
+    def contact_information(self, obj):
+        if obj:
+            contacto,email, cel, identification = '','','',''
+            if obj.contact:
+                contacto = str(obj.contact)
+            if obj.email:
+                email = '<a href="%s" target="_blank">%s</a>'%(
+                reverse("admin:async_notifications_emailnotification_add") + '?recipient='+obj.email,
+                obj.email
+                )
+
+            if obj.cellphone:
+                cel = obj.cellphone
+            if obj.identification and obj.identification_type:
+                identification = obj.get_identification_type_display() +": "+ obj.identification
+
+            dev = "%s<br>%s<br>%s<br>%s"%(
+                contacto,email,cel, identification
+            )
+            return mark_safe(dev)
+        return ""
+
     def memberships(self, obj):
+        contact = ''
+        if obj.contact_id:
+            contact = "&contact=" + str(obj.contact_id)
         return format_html(
             """<a href="{}" class="grp-button grp-button-state-inactive"  >{}</a> - 
                <a href="{}" class="grp-button grp-button-state-inactive" target="_blank">Agregar</a>
@@ -323,7 +376,7 @@ class OrganizationAdmin(admin.ModelAdmin):
             obj.membership_set.filter(state="active").count(),
             reverse("admin:membership_manager_membership_add") +
             "?organization=" + str(obj.pk) + "&membership_type=Organizacional&currency=" +
-            str(obj.currency_id) + "&contact=" + str(obj.contact_id)
+            str(obj.currency_id) + contact
         )
 
     def activities(self, obj):

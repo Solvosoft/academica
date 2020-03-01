@@ -28,5 +28,5 @@ class ContactsLookup(LookupChannel):
             last_name__icontains=q ))
 
     def format_item_display(self, item):
-        return u"<span class='tag'>%s</span>" % item.name
+        return u"<span class='tag'>%s</span>" % str(item)
 

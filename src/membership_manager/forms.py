@@ -1,3 +1,4 @@
+from ajax_select.fields import AutoCompleteSelectField
 from django import forms
 
 from membership_core.models import MembershipTemplate
@@ -17,6 +18,10 @@ class MembInvPaymentsForm(forms.Form):
 
 
 class MembershipAddForm(forms.ModelForm):
+
+    organization=AutoCompleteSelectField('orgs', label="Organización")
+    contact = AutoCompleteSelectField('contacts', label="Contacto")
+
     membership_template = forms.ModelChoiceField(
         queryset=MembershipTemplate.objects.filter(state="active"),
         required=False,

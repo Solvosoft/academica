@@ -177,7 +177,9 @@ ASYNC_NOTIFICATION_USER_LOOKUP_FIELDS= {'order_by': 'first_name',
      'group_lookup': 'groups__name'}
 
 
-
-TELEGRAM_BOT_API='926661407:AAH_pSgLYwqzSYMtspC-nU8CoY_K_kmdmCY'
-TELEGRAM_BOT_WEBHOOK="https://ea4539b9.ngrok.io/telbot/"
+TELEGRAM_BOT_API='1051485056:AAH8trHRYe31ZpHqVoswAbaxc2oQrKFANM0'
+#TELEGRAM_BOT_API='926661407:AAH_pSgLYwqzSYMtspC-nU8CoY_K_kmdmCY'
+TELEGRAM_BOT_WEBHOOK="https://ee9700fa.ngrok.io/telbot/"
 TELEGRAM_ADMIN_GROUP_ID='-1001485781572'
+TEST_TELEGRAM = False
+ASYNC_BCC  =  'membresias@codigosur.org'
