@@ -25,7 +25,7 @@ class ContactsLookup(LookupChannel):
     def get_query(self, q, request):
 
         return self.model.objects.filter(Q(first_name__icontains=q)|Q(
-            last_name__icontains=q ))
+            last_name__icontains=q )|Q(email__icontains=q ))
 
     def format_item_display(self, item):
         return u"<span class='tag'>%s</span>" % str(item)
