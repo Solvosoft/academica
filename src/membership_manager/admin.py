@@ -17,7 +17,7 @@ from membership_manager.admin_memberships import membership_payments_history, \
 from membership_manager.admin_pdf import InvoiceAdmin
 from membership_manager.adminfilters import PaisFilter, OrganizationFilter, MembershipPaisFilter, ContactPaisFilter, \
     InvoiceRenewalNotificationFilter
-from membership_manager.forms import MembershipAddForm, ServiceForm
+from membership_manager.forms import MembershipAddForm, ServiceForm, OrganizationForm
 from membership_manager.renew_utils import create_renew
 from membership_manager.utils import load_services_from_membership_template
 
@@ -314,7 +314,7 @@ class MemberShipAdmin(AjaxSelectAdmin, admin.ModelAdmin):
     invoices.short_description = "Facturas"
 
 
-class OrganizationAdmin(admin.ModelAdmin):
+class OrganizationAdmin(AjaxSelectAdmin, admin.ModelAdmin):
     list_filter = ('active', PaisFilter)
     search_fields = ('name', 'initials')
     list_display = ("name", "contact_information","memberships", "activities", "active")
@@ -322,6 +322,7 @@ class OrganizationAdmin(admin.ModelAdmin):
     fields = [
         "name",
         "initials",
+        "contact",
         "email",
         "cellphone",
         "phone",
@@ -333,10 +334,11 @@ class OrganizationAdmin(admin.ModelAdmin):
         "active",
         "currency",
         "payment_method",
-        "contact",
         "identification_type",
         "identification",
     ]
+
+    form = OrganizationForm
 
     class Media:
         js = ('js/membership.js',)

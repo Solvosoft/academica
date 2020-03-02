@@ -2,7 +2,7 @@ from ajax_select.fields import AutoCompleteSelectField
 from django import forms
 
 from membership_core.models import MembershipTemplate
-from membership_manager.models import Membership, Service
+from membership_manager.models import Membership, Service, Organization
 
 
 class TemplateWidget(forms.Select):
@@ -45,3 +45,28 @@ class ServiceForm(forms.ModelForm):
         """
         changed_data = super(ServiceForm, self).has_changed()
         return bool(self.initial or changed_data)
+
+
+class OrganizationForm(forms.ModelForm):
+    contact = AutoCompleteSelectField('contacts', label="Contacto")
+
+    class Meta:
+        model = Organization
+        fields = [
+            "name",
+            "initials",
+            "contact",
+            "email",
+            "cellphone",
+            "phone",
+            "address",
+            "country",
+            "city",
+            "province",
+            "postal_code",
+            "active",
+            "currency",
+            "payment_method",
+            "identification_type",
+            "identification",
+        ]
