@@ -1,8 +1,6 @@
 from dateutil.relativedelta import relativedelta
 from django.db.models import Q
 from django.utils import timezone
-
-from membership_manager.invoice_utils import create_invoice
 from membership_manager.models import MembershipRenew
 
 
@@ -14,7 +12,7 @@ def create_renew(instance):
                                    end_date=now + relativedelta(
                                        months=+instance.renewal_period.months)
                                    )
-    create_invoice(renew)
+
     return renew
 
 
