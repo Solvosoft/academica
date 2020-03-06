@@ -17,7 +17,8 @@ def notify_invoice_expiration(now):
     Gets the membership invoices and notify if there is any in the expiration range.
     """
     notify_qset = utils.invoice_expiration_filter_queryset(now=now)  # Specific remaining days
-
+    total = notify_qset.count()
+    dev = ''
     for invoice in notify_qset:
         emails=utils.get_emails(invoice.membership)
         delta = invoice.expiration_date - now
@@ -36,15 +37,20 @@ def notify_invoice_expiration(now):
             content_type_id=ContentType.objects.get_for_model(invoice.membership).pk,
             object_id=invoice.membership.pk,
             object_repr="Notificación de pago pendiente enviada",
-            action_flag=CHANGE
+            action_flag=CHANGE,
+            change_message="Notificación de pago pendiente enviada "+ str(invoice)
         )
+        dev += str(invoice)+"\n"
         telgroup = TelGroup.objects.filter(organization_id=invoice.membership.organization.pk).first()
         if telgroup:
             send_notification_message(telgroup.chat_id,invoice.membership.organization)
 
+    return total, dev
 
 def generate_renew(now):
     renews = renewutils.get_today_expired_renew(now)
+    total = renews.count()
+    dev = ''
     for renew in renews:
         membership = renew.membership
         new_renew = MembershipRenew.objects.create(
@@ -63,7 +69,7 @@ def generate_renew(now):
             action_flag=ADDITION,
             change_message="Periodo de renovación agregado %s %s"%(str(new_renew), str(renew.membership))
         )
-
+        dev += "%s %s %d\n"%(str(new_renew), str(renew.membership), membership.annual_cost)
         if membership.annual_cost == 0:
             emails = utils.get_emails(membership)
             send_email_from_template('membresia_gratuita', emails,
@@ -73,19 +79,25 @@ def generate_renew(now):
                                      enqueued=True,
                                      user=None,
                                      upfile=None)
+    return total, dev
 
 def inactive_renew(now):
     renews = renewutils.get_expired_renew(now)
+    total = renews.count()
     if renews.exists():
         renews.update(active=False)
+    return total, ''
 
 def invoice_creation(now):
     # Devuelve los renews que en 60 días vencen
     renews = renewutils.get_renew_without_inovice(now)
+    total = 0
+    dev = ''
     for renew in renews:
         invoice = create_invoice(renew)
         if invoice.amount == 0:
             continue
+        total += 1
         membership = invoice.membership
         generate_invoice(membership, invoice, buildpdf=False, email_template="notification_mail", enqueued=True, now=now)
 
@@ -97,13 +109,17 @@ def invoice_creation(now):
             action_flag=ADDITION,
             change_message="Factura creada pendiente de pago %s  " % (str(invoice),)
         )
+        dev += str(invoice)+"\n"
         telgroup = TelGroup.objects.filter(organization_id=membership.organization.pk).first()
         if telgroup:
             send_notification_message(telgroup.chat_id, membership.organization)
 
+    return total, dev
 
 def membership_deactivating(now):
     renews = renewutils.get_renew_with_invoice_expired_today(now)
+    total = renews.count()
+    dev = ''
     for renew in renews:
         membership = renew.membership
         emails = utils.get_emails(membership)
@@ -124,10 +140,11 @@ def membership_deactivating(now):
             change_message="Membresia inactiva por falta de pago %s  " % (str(membership),)
 
         )
+        dev += str(membership)+"\n"
         telgroup = TelGroup.objects.filter(organization_id=membership.organization.pk).first()
         if telgroup:
             send_deactivated_message(telgroup.chat_id, membership.organization)
-
+    return total, dev
 
 def membership_deactivating_membership(id_membresia, email=True):
     membership = Membership.objects.get(pk=id_membresia)

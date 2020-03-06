@@ -331,8 +331,8 @@
                     <th class="line_col21" style="width: 25%;text-align: left;">Identificación</th>
                     <td class="line_col22" style ="width: 75%;text-align: left; padding-left: 10px;">
                         {% if invoice.membership.organization %}
-                            {{invoice.membership.organization.identification_type }}
-                            {{invoice.membership.organization.identification }}
+                            {{invoice.membership.organization.identification_type|default_if_none:" "  }}
+                            {{invoice.membership.organization.identification|default_if_none:" " }}
                         {% else %}
                         {% endif %}
                     </td>
