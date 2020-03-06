@@ -1,5 +1,4 @@
-from datetime import timedelta
-
+from dateutil.relativedelta import relativedelta
 from async_notifications.utils import send_email_from_template
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.contenttypes.models import ContentType
@@ -21,10 +20,13 @@ def notify_invoice_expiration(now):
 
     for invoice in notify_qset:
         emails=utils.get_emails(invoice.membership)
+        delta = invoice.expiration_date - now
         send_email_from_template('notification_mail', emails,
                                  context={
                                      'membership': invoice.membership,
-                                     'invoice': invoice
+                                     'invoice': invoice,
+                                     'today': now,
+                                     'days': delta.days
                                  },
                                  enqueued=True,
                                  user=None,
@@ -48,7 +50,7 @@ def generate_renew(now):
             creation_date=now,
             membership=renew.membership,
             start_date=renew.end_date,
-            end_date=renew.end_date+timedelta(months=membership.renewal_period.months),
+            end_date=renew.end_date+relativedelta(months=membership.renewal_period.months),
             encobro=True,
             active=True
         )
@@ -56,8 +58,9 @@ def generate_renew(now):
             user_id=utils.get_administrative_user(),
             content_type_id=ContentType.objects.get_for_model(membership).pk,
             object_id= membership.pk,
-            object_repr="Periodo de renovación agregado",
-            action_flag=ADDITION
+            object_repr="Periodo de renovación agregado " ,
+            action_flag=ADDITION,
+            change_message="Periodo de renovación agregado %s %s"%(str(new_renew), str(renew.membership))
         )
 
 def inactive_renew(now):
@@ -69,13 +72,14 @@ def invoice_creation(now):
     renews = renewutils.get_renew_without_inovice(now)
     for renew in renews:
         invoice = create_invoice(renew)
-        generate_invoice(invoice.membership, invoice, email_template="notification_mail", enqueued=True)
+        generate_invoice(invoice.membership, invoice, email_template="notification_mail", enqueued=True, now=now)
         LogEntry.objects.log_action(
             user_id=utils.get_administrative_user(),
             content_type_id=ContentType.objects.get_for_model(invoice.membership).pk,
             object_id=invoice.membership.pk,
             object_repr="Factura creada pendiente de pago",
-            action_flag=ADDITION
+            action_flag=ADDITION,
+            change_message="Factura creada pendiente de pago %s  " % (str(invoice),)
         )
         if TelGroup.objects.filter(organization_id=invoice.membership.organization.pk).first():
             send_notification_message(invoice.membership.organization.telgroup.chat_id,invoice.membership.organization)
@@ -99,7 +103,9 @@ def membership_deactivating(now):
             content_type_id=ContentType.objects.get_for_model(membership).pk,
             object_id=membership.pk,
             object_repr="Membresia inactiva por falta de pago",
-            action_flag=CHANGE
+            action_flag=CHANGE,
+            change_message="Membresia inactiva por falta de pago %s  " % (str(membership),)
+
         )
         if TelGroup.objects.filter(organization_id=membership.organization.pk).first():
             send_deactivated_message(membership.organization.telgroup.chat_id,membership.organization)

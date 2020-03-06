@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
 from django.utils.safestring import mark_safe
 
 from async_notifications.utils import send_email_from_template
@@ -57,10 +58,14 @@ def send_paid_invoice(queryset, templatename):
     for invoice in queryset:
         membership = invoice.membership
         emails = get_emails(membership)
+        now = timezone.now()
+        delta = invoice.expiration_date - now
         send_email_from_template(templatename, emails,
                              context={
                                  'invoice': invoice,
-                                 'membership': membership
+                                 'membership': membership,
+                                 'today': now,
+                                 'days': delta.days
                              },
                              enqueued=False,
                              user=None,

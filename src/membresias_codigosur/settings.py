@@ -183,3 +183,4 @@ TELEGRAM_BOT_WEBHOOK="https://ee9700fa.ngrok.io/telbot/"
 TELEGRAM_ADMIN_GROUP_ID='-1001485781572'
 TEST_TELEGRAM = False
 ASYNC_BCC  =  'membresias@codigosur.org'
+#ASYNC_SEND_ONLY_EMAIL = ['membresias@codigosur.org']
