@@ -67,7 +67,9 @@ def invoice_expiration_filter_queryset(now=None):
             status='pending',
             membership__state="active",
             creation_date__date__in=dates_list,
-            renewal_period__encobro=True )
+            renewal_period__encobro=True,
+            amount__gt=0
+    )
     return queryset
 
 
