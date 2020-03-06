@@ -8,7 +8,7 @@ from membership_manager.render_pdf import build_pdf_invoice, generate_invoice
 from membership_manager.utils import stringcode_generator, membership_payment_manager
 
 
-def create_invoice(renew, startdate=None):
+def create_invoice(renew, startdate=None, buildpdf=True):
 
     startdate = startdate if startdate is not None else now()
     expiration = startdate + timedelta(days=60)
@@ -22,7 +22,8 @@ def create_invoice(renew, startdate=None):
                                      status='pending')
     string_code = stringcode_generator()
     invoice.code = f'%s-%s' % (string_code, str(invoice.pk).rjust(6, "0"))
-    build_pdf_invoice(renew.membership, invoice)
+    if buildpdf:
+        build_pdf_invoice(renew.membership, invoice)
     return invoice
 
 def pay_invoice(invoice):

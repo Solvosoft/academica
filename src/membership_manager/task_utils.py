@@ -38,20 +38,21 @@ def notify_invoice_expiration(now):
             object_repr="Notificación de pago pendiente enviada",
             action_flag=CHANGE
         )
-        if TelGroup.objects.filter(organization_id=invoice.membership.organization.pk).first():
-            send_notification_message(invoice.membership.organization.telgroup.chat_id,invoice.membership.organization)
+        telgroup = TelGroup.objects.filter(organization_id=invoice.membership.organization.pk).first()
+        if telgroup:
+            send_notification_message(telgroup.chat_id,invoice.membership.organization)
 
 
 def generate_renew(now):
-    renews = renewutils.get_comming_expired_renew(now)
+    renews = renewutils.get_today_expired_renew(now)
     for renew in renews:
         membership = renew.membership
         new_renew = MembershipRenew.objects.create(
             creation_date=now,
             membership=renew.membership,
-            start_date=renew.end_date,
+            start_date=renew.end_date+relativedelta(days=1),
             end_date=renew.end_date+relativedelta(months=membership.renewal_period.months),
-            encobro=True,
+            encobro=membership.annual_cost > 0 ,
             active=True
         )
         LogEntry.objects.log_action(
@@ -63,26 +64,42 @@ def generate_renew(now):
             change_message="Periodo de renovación agregado %s %s"%(str(new_renew), str(renew.membership))
         )
 
+        if membership.annual_cost == 0:
+            emails = utils.get_emails(membership)
+            send_email_from_template('membresia_gratuita', emails,
+                                     context={
+                                         'membership': membership,
+                                     },
+                                     enqueued=True,
+                                     user=None,
+                                     upfile=None)
+
 def inactive_renew(now):
     renews = renewutils.get_expired_renew(now)
     if renews.exists():
         renews.update(active=False)
 
 def invoice_creation(now):
+    # Devuelve los renews que en 60 días vencen
     renews = renewutils.get_renew_without_inovice(now)
     for renew in renews:
         invoice = create_invoice(renew)
-        generate_invoice(invoice.membership, invoice, email_template="notification_mail", enqueued=True, now=now)
+        if invoice.amount == 0:
+            continue
+        membership = invoice.membership
+        generate_invoice(membership, invoice, buildpdf=False, email_template="notification_mail", enqueued=True, now=now)
+
         LogEntry.objects.log_action(
             user_id=utils.get_administrative_user(),
-            content_type_id=ContentType.objects.get_for_model(invoice.membership).pk,
-            object_id=invoice.membership.pk,
+            content_type_id=ContentType.objects.get_for_model(membership).pk,
+            object_id=membership.pk,
             object_repr="Factura creada pendiente de pago",
             action_flag=ADDITION,
             change_message="Factura creada pendiente de pago %s  " % (str(invoice),)
         )
-        if TelGroup.objects.filter(organization_id=invoice.membership.organization.pk).first():
-            send_notification_message(invoice.membership.organization.telgroup.chat_id,invoice.membership.organization)
+        telgroup = TelGroup.objects.filter(organization_id=membership.organization.pk).first()
+        if telgroup:
+            send_notification_message(telgroup.chat_id, membership.organization)
 
 
 def membership_deactivating(now):
@@ -107,8 +124,9 @@ def membership_deactivating(now):
             change_message="Membresia inactiva por falta de pago %s  " % (str(membership),)
 
         )
-        if TelGroup.objects.filter(organization_id=membership.organization.pk).first():
-            send_deactivated_message(membership.organization.telgroup.chat_id,membership.organization)
+        telgroup = TelGroup.objects.filter(organization_id=membership.organization.pk).first()
+        if telgroup:
+            send_deactivated_message(telgroup.chat_id, membership.organization)
 
 
 def membership_deactivating_membership(id_membresia, email=True):

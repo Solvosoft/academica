@@ -8,7 +8,7 @@ from django.utils.safestring import mark_safe
 from django.utils.timezone import now as timezonenow
 
 from membership_manager.models import Membership, MembershipRenew
-from membership_manager.renew_utils import get_renew_without_inovice, get_comming_expired_renew
+from membership_manager.renew_utils import get_renew_without_inovice, get_today_expired_renew
 from membership_manager.utils import invoice_expiration_filter_queryset
 
 
@@ -68,7 +68,7 @@ class ManejadorNotificaciones:
                          'notification_mail',
                          'active', 'MembershipRenew')
                 )
-            queryset = get_comming_expired_renew(day)
+            queryset = get_today_expired_renew(day)
             for memrenew in queryset:
                 membershiprenew = self.simule_renew(day, memrenew)
                 list_invoice.append(

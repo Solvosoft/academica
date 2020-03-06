@@ -61,15 +61,13 @@ def invoice_expiration_filter_queryset(now=None):
 
     if now is None:
         now = timezone.now()
-    dates_list = [ (now - timedelta(days=x)).date() for x in [60, 45, 30, 15, 7, 1]]
+    dates_list = [ (now + timedelta(days=x)).date() for x in [ 45, 30, 15, 7, 3,2, 1]]
     queryset = Invoice.objects.filter(
             Q( membership__contact__active=True)|Q( membership__organization__active=True),
             status='pending',
             membership__state="active",
             creation_date__date__in=dates_list,
-            renewal_period__encobro=True,
-            amount__gt=0
-    )
+            renewal_period__encobro=True, amount__gt=0 )
     return queryset
 
 
