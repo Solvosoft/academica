@@ -19,8 +19,8 @@ class MembInvPaymentsForm(forms.Form):
 
 class MembershipAddForm(forms.ModelForm):
 
-    organization=AutoCompleteSelectField('orgs', label="Organización")
-    contact = AutoCompleteSelectField('contacts', label="Contacto")
+    organization=AutoCompleteSelectField('orgs', label="Organización", required=False)
+    contact = AutoCompleteSelectField('contacts', label="Contacto", required=False)
 
     membership_template = forms.ModelChoiceField(
         queryset=MembershipTemplate.objects.filter(state="active"),

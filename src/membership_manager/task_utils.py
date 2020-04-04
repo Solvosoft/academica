@@ -5,7 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from membership_manager import renew_utils as renewutils
 from membership_manager import utils
 from membership_manager.invoice_utils import create_invoice
-from membership_manager.models import Membership, MembershipRenew
+from membership_manager.models import Membership, MembershipRenew, Invoice
 from membership_manager.render_pdf import generate_invoice, build_pdf_invoice
 from membership_manager.utils import get_emails
 from membership_telbot_manager.models import TelGroup
@@ -123,13 +123,16 @@ def membership_deactivating(now):
     for renew in renews:
         membership = renew.membership
         emails = utils.get_emails(membership)
+        invoice = Invoice.objects.filter(renewal_period=renew).first()
         send_email_from_template('expiration_mail', emails,
                                  context={
-                                     'membership': membership
+                                     'membership': membership,
+                                     'renew': renew,
+                                     'invoice': invoice
                                  },
                                  enqueued=True,
                                  user=None,
-                                 upfile=None)
+                                 upfile=invoice.pdf_invoice if invoice is not None else None)
 
         LogEntry.objects.log_action(
             user_id=utils.get_administrative_user(),
