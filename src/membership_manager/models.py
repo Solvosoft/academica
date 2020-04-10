@@ -92,6 +92,10 @@ class Membership(models.Model):
                                        verbose_name="Periodo de renovación")
     state = models.CharField(max_length=11, choices=STATES, default="active",
                              verbose_name="Estado")
+    apply_fees = models.BooleanField(default=False, verbose_name="Aplicar impuestos", help_text="Si no se selecciona, el campo de impuestos es ignorado")
+    fees = models.IntegerField(default=13, null=True, blank=True, verbose_name="Impuestos",
+                               help_text="Un número de 0 a 100")
+
 
     @property
     def name(self):
@@ -189,6 +193,38 @@ class Invoice(models.Model):
         lines=textwrap.wrap(text, 50)
         dev = "<br>".join(lines)
         return mark_safe(dev)
+
+    @property
+    def total_amount(self):
+        amount = self.amount
+        if self.membership.apply_fees:
+            amount = amount*(1+self.membership.fees/100)
+        return amount
+
+    @property
+    def fees(self):
+        if not self.membership.apply_fees:
+            return ''
+        amount = self.amount
+        amount = amount*(self.membership.fees/100)
+        return "%.2f"%(amount)
+
+    @property
+    def feed_percent(self):
+        if not self.membership.apply_fees:
+            return ''
+        fee = self.membership.fees
+        return "(%d %%)"%(fee)
+
+    @property
+    def status_color(self):
+        color = 'background-color: gray;'
+        if self.status == 'pending':
+            color = 'background-color: red;'
+        elif self.status == 'paid':
+            color = 'background-color: green;'
+        return color
+
     class Meta:
         verbose_name = "Factura"
         verbose_name_plural = "Facturas"

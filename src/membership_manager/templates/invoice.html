@@ -147,8 +147,8 @@
                 -pdf-frame-content: footer;
                 right: 1.5cm;
                 width: 18cm;
-                top: 25.5cm;
-                height: 2cm;
+                top: 24.5cm;
+                height: 3cm;
             }
         }
 
@@ -168,7 +168,7 @@
         }
 
         #header_content2 {
-            background-color: green;
+            {{ invoice.status_color }}
             text-align: center;
             vertical-align: middle;
             color: white;
@@ -300,7 +300,7 @@
     <body>
 
             <div id="header_content1" class="">
-                RECIBO: &nbsp &nbsp &nbsp {% new_invoice_code invoice %}
+                MEMBRESIA: &nbsp &nbsp &nbsp {% new_invoice_code invoice %}
             </div>
             <div id="header_content2">
                 {{ invoice.get_status_display }}
@@ -382,30 +382,36 @@
                     Membresía
                 </div>
                 <div id="tablelvl32">
-                    {{ invoice.membership.annual_cost }} {{ invoice.membership.currency.currency}}
+                    {{ invoice.amount }} {{ invoice.membership.currency.currency}}
                 </div>
                 <div id="tablelvl41">
                     Subtotal
                 </div>
                 <div id="tablelvl42">
-                    {{ invoice.membership.annual_cost }} {{ invoice.membership.currency.currency}}
+                    {{ invoice.amount }} {{ invoice.membership.currency.currency}}
                 </div>
                 <div id="tablelvl51">
-                    I.V.A
+                    Impuestos {{ invoice.feed_percent }}
                 </div>
                 <div id="tablelvl52">
-                    *
+                    * {{ invoice.fees }}
                 </div>
                 <div id="tablelvl61">
                     Total
                 </div>
                 <div id="tablelvl62">
-                    {{ invoice.membership.annual_cost }} {{ invoice.membership.currency.currency}}
+                    {{ invoice.total_amount }} {{ invoice.membership.currency.currency }}
                 </div>
+
             </div>
+
             <div id="footer">
+                 ** Documento no válido como factura **
+                <br><br>
                 Código Sur, San José. Costa Rica. CP 11501. Teléfono +506 8569 1676.<br />
                 Email: ayuda@codigosur.org – Web: https://codigosur.org
+
+
             </div>
 
         </div>

@@ -183,8 +183,11 @@ class MemberShipAdmin(AjaxSelectAdmin, admin.ModelAdmin):
     fields = ['name',
               'membership_template',
               'membership_type', 'contact', 'organization',
-              'annual_cost', 'currency', 'exchange_rates',
-              'renewal_period', 'state']
+              'annual_cost', 'currency',
+              ('apply_fees', 'fees'),
+              'exchange_rates',
+              'renewal_period', 'state'
+              ]
 
     class Media:
         js = ('js/membership.js',)
