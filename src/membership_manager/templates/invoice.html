@@ -373,13 +373,13 @@
                     Precio
                 </div>
                 <div id="tablelvl21">
-                   &nbsp &nbsp &nbsp Renovación Periodo {{ invoice.renewal_period }}
+                   &nbsp &nbsp &nbsp  Periodo: {{ invoice.renewal_period }}
                 </div>
                 <div id="tablelvl22">
                     &nbsp &nbsp &nbsp
                 </div>
                 <div id="tablelvl31">
-                    Membresía
+                    Membresía {{ invoice.membership.get_membership_type_display }}
                 </div>
                 <div id="tablelvl32">
                     {{ invoice.amount }} {{ invoice.membership.currency.currency}}
