@@ -34,6 +34,17 @@ class GeneralContactInfo(models.Model):
                                  verbose_name="Moneda")
     payment_method = models.CharField(max_length=250, choices=PAYMENT,
                                       verbose_name="Método de pago", null=True, blank=True)
+
+
+    @property
+    def get_region(self):
+        data = []
+        if self.city:
+            data.append(self.city)
+        if self.province:
+            data.append(self.province)
+        return ", ".join(data)
+
     class Meta:
         abstract = True
 

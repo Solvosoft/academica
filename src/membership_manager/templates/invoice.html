@@ -351,9 +351,9 @@
                     <th class="line_col41" style="width: 25%; text-align: left;">Ciudad</th>
                     <td class="line_col42" style =" width: 75%;text-align: left; padding-left: 10px;">
                         {% if invoice.membership.organization %}
-                            {{ invoice.membership.organization.city }}, {{ invoice.membership.organization.province }}
+                            {{ invoice.membership.organization.get_region }}
                         {% else %}
-                            {{ invoice.membership.contact.city }}, {{ invoice.membership.contact.province }}
+                            {{ invoice.membership.contact.get_region }}
                         {% endif %}
                     </td>
                   </tr>
