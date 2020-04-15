@@ -169,6 +169,8 @@ def create_invoice_tool(id_renew):
     if invoice is None:
         invoice = create_invoice(renew)
     else:
+        if invoice.pdf_invoice:
+            invoice.pdf_invoice.delete(False)
         build_pdf_invoice(renew.membership, invoice)
 
 
@@ -182,3 +184,13 @@ def send_welcome_notification(id_membership):
                              enqueued=True,
                              user=None,
                              upfile=None)
+
+
+def update_last_daterenew():
+    memberships = Membership.objects.filter(
+        state="active"
+    )
+
+    for memb in memberships:
+        memb.last_renew_start_date =memb.last_renew
+        memb.save()

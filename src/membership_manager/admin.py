@@ -6,17 +6,16 @@ from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from django_countries import countries
 
 from membership_core.models import MembershipTemplate, SystemCurrency
 from membership_core.utils import country_data
 from membership_manager import models
 from membership_manager.admin_memberships import membership_payments_history, \
-    organization_payments_history, send_email_to_owner, send_email_vencimiento, buscar_inconsistencias, \
-    export_csv_fields, send_welcome_email
+    organization_payments_history, send_email_to_owner, send_email_vencimiento, export_csv_fields, send_welcome_email, \
+    rebuild_encobro_renews
 from membership_manager.admin_pdf import InvoiceAdmin
 from membership_manager.adminfilters import PaisFilter, OrganizationFilter, MembershipPaisFilter, ContactPaisFilter, \
-    InvoiceRenewalNotificationFilter
+    InvoiceRenewalNotificationFilter, InvoiceNextExpirationFilter
 from membership_manager.forms import MembershipAddForm, ServiceForm, OrganizationForm
 from membership_manager.renew_utils import create_renew
 from membership_manager.utils import load_services_from_membership_template
@@ -171,8 +170,8 @@ class ServiceAdmin(admin.TabularInline):
 
 class MemberShipAdmin(AjaxSelectAdmin, admin.ModelAdmin):
     actions = [membership_payments_history, send_email_to_owner, send_welcome_email,
-              send_email_vencimiento, export_csv_fields, buscar_inconsistencias]
-    list_filter = (OrganizationFilter, InvoiceRenewalNotificationFilter, MembershipPaisFilter)
+              send_email_vencimiento, export_csv_fields, rebuild_encobro_renews]
+    list_filter = (OrganizationFilter, InvoiceNextExpirationFilter,  InvoiceRenewalNotificationFilter, MembershipPaisFilter)
     search_fields = ('contact__first_name', 'contact__last_name', 'organization__name',
                      'organization__initials')
     list_display = ('name', 'show_amount', 'countryspect', 'state', 'invoices', 'next_pay' )
@@ -188,6 +187,8 @@ class MemberShipAdmin(AjaxSelectAdmin, admin.ModelAdmin):
               'exchange_rates',
               'renewal_period', 'state'
               ]
+
+    date_hierarchy = 'last_renew_start_date'
 
     class Media:
         js = ('js/membership.js',)

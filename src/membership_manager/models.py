@@ -107,6 +107,7 @@ class Membership(models.Model):
     fees = models.IntegerField(default=13, null=True, blank=True, verbose_name="Impuestos",
                                help_text="Un número de 0 a 100")
 
+    last_renew_start_date = models.DateField(null=True, blank=True)
 
     @property
     def name(self):
@@ -115,6 +116,12 @@ class Membership(models.Model):
         if self.contact and self.contact.name:
             return self.contact.name
         return "Membresia sin nombre"
+
+    @property
+    def last_renew(self):
+        renew = self.renews.filter(encobro=True, active=True).order_by('end_date').last()
+        if renew:
+            return renew.end_date
 
     def __str__(self):
         return self.name

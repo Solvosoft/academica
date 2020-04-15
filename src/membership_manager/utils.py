@@ -52,6 +52,25 @@ def get_membership_next_expired(queryset, value, now=None):
         mem_inv__renewal_period__encobro=True
     ).order_by('mem_inv__creation_date__date').distinct()
 
+def get_membership_start_expired(queryset, value, now=None, start_in=None):
+    if now is None:
+        now = timezone.now()
+    dates_list = (now + timedelta(days=int(value))).date()
+
+    filters = {
+        'state': "active",
+        'renews__active': True,
+        'renews__start_date__date__lte': dates_list,
+        'renews__encobro': True
+    }
+    if start_in:
+        filters['renews__start_date__date__gte']=start_in
+
+    return queryset.filter( **filters ).order_by('renews__start_date__date').distinct()
+
+
+
+
 def invoice_expiration_filter_queryset(now=None):
     """
     Search the possibles expiration invoice on 60, 45, 30, 15 7 or 1 day left to send a notification.

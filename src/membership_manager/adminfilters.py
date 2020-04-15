@@ -3,13 +3,14 @@ from django import forms
 from django.contrib import admin
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Q
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
 from membership_core.utils import country_data
 from membership_manager.models import Organization, Membership, Contact
 from django_countries import countries
 
-from membership_manager.utils import get_membership_next_expired
+from membership_manager.utils import get_membership_next_expired, get_membership_start_expired
 
 
 class PaisFilter(admin.SimpleListFilter):
@@ -219,4 +220,36 @@ class InvoiceRenewalNotificationFilter(admin.SimpleListFilter):
         # This is where you process parameters selected by use via filter options:
         if self.value():
             return  get_membership_next_expired(queryset, self.value())
+        return queryset
+
+
+class InvoiceNextExpirationFilter(admin.SimpleListFilter):
+    title = 'Renovaciones Cercanas'  # a label for our filter
+    parameter_name = 'nexre'
+
+    def lookups(self, request, model_admin):
+        # This is where you create filter options; we have two:
+        return [
+            ('90', 'a 90 días'),
+            ('60', 'a 60 días'),
+            ('30', 'a 30 días'),
+            ('15', 'a 15 días'),
+            ('7', 'a 7 días'),
+            ('0', 'Hoy'),
+            ('-7', 'hoy a 7 días'),
+            ('-15', 'hoy a 15 días'),
+            ('-30', 'hoy a 30 días'),
+            ('-60', 'hoy a 60 días'),
+
+        ]
+
+    def queryset(self, request, queryset):
+        # This is where you process parameters selected by use via filter options:
+        value = self.value()
+        if value:
+            v = int(value)
+            if v < 0 :
+                start_in = now().date()
+                value = abs(v)
+            return get_membership_start_expired(queryset, value, start_in=start_in)
         return queryset

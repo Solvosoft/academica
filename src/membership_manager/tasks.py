@@ -1,7 +1,8 @@
 from django.utils import timezone
 
 from membership_manager.task_utils import notify_invoice_expiration, invoice_creation, \
-    membership_deactivating, membership_deactivating_membership, create_invoice_tool, generate_renew, inactive_renew
+    membership_deactivating, membership_deactivating_membership, create_invoice_tool, generate_renew, inactive_renew, \
+    update_last_daterenew
 from membresias_codigosur.celery import app
 
 
@@ -43,5 +44,6 @@ def task_create_invoice(id_renew):
     create_invoice_tool(id_renew)
 
 
-
-
+@app.task
+def update_last_daterenew_task():
+    update_last_daterenew()

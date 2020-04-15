@@ -42,5 +42,10 @@ app.conf.CELERYBEAT_SCHEDULE = {
         'task': 'async_notifications.tasks.send_daily',
         'schedule': crontab(minute='*/5'),  # execute 01:00h
     },
+    'update_last_daterenew_task': {
+        'task': 'membership_manager.tasks.update_last_daterenew_task',
+        'schedule': crontab(minute=11, hour=5),  # execute 00:01h
+
+    }
 }
 app.conf.CELERY_TIMEZONE = settings.TIME_ZONE

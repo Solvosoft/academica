@@ -90,6 +90,13 @@ def buscar_inconsistencias(modeladmin, request, queryset):
 
 buscar_inconsistencias.short_description = "Busca inconsistencias en las membresías (desarrollo)"
 
+def rebuild_encobro_renews(modeladmin, request, queryset):
+    for membership in queryset:
+        for renew in membership.renews.filter(encobro=True, active=True):
+            task_create_invoice.delay(renew.pk)
+
+
+rebuild_encobro_renews.short_description = "Regenerar facturas en cobro"
 
 def membership_payments_history(modeladmin, request, queryset):
     id_list = []

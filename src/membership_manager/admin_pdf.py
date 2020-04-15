@@ -99,6 +99,7 @@ class InvoiceAdmin(admin.ModelAdmin):
                     'amount', 'currency', 'status', 'payment_date', 'download')
     list_editable = ()
     readonly_fields = ('download',)
+    date_hierarchy = 'expiration_date'
 
     class Media:
         js = ('js/membership.js',)
