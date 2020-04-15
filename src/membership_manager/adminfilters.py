@@ -246,6 +246,7 @@ class InvoiceNextExpirationFilter(admin.SimpleListFilter):
     def queryset(self, request, queryset):
         # This is where you process parameters selected by use via filter options:
         value = self.value()
+        start_in=None
         if value:
             v = int(value)
             if v < 0 :
