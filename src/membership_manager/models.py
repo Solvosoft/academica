@@ -210,7 +210,7 @@ class Invoice(models.Model):
         amount = self.amount
         if self.membership.apply_fees:
             amount = amount*(1+self.membership.fees/100)
-        return amount
+        return "%.2f"%amount
 
     @property
     def fees(self):
