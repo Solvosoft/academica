@@ -121,7 +121,7 @@ class Membership(models.Model):
     def last_renew(self):
         renew = self.renews.filter(encobro=True, active=True).order_by('end_date').last()
         if renew:
-            return renew.end_date
+            return renew.start_date
 
     def __str__(self):
         return self.name
