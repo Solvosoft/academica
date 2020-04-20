@@ -54,6 +54,14 @@ class Contact(GeneralContactInfo):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+    @property
+    def name(self):
+        name = self.first_name
+        if self.last_name:
+            name = ' '+self.last_name
+        return name
+
     class Meta:
         verbose_name = "Contacto"
         verbose_name_plural = "Contactos"

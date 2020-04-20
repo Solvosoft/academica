@@ -6,7 +6,6 @@ from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-
 from membership_core.models import MembershipTemplate, SystemCurrency
 from membership_core.utils import country_data
 from membership_manager import models
@@ -215,6 +214,7 @@ class MemberShipAdmin(AjaxSelectAdmin, admin.ModelAdmin):
         if obj:
             return "%.2f %s"%(obj.annual_cost, obj.currency)
         return ""
+
     def countryspect(self, obj):
         if obj:
             country = ''
@@ -258,8 +258,8 @@ class MemberShipAdmin(AjaxSelectAdmin, admin.ModelAdmin):
                              })
         return args
 
-    def save_formset(self, request, form, formset, change):
-        super(MemberShipAdmin, self).save_formset(request, form, formset, change)
+    def save_related(self,request, form, formsets, change):
+        super(MemberShipAdmin, self).save_related(request, form, formsets, change)
         instance = form.instance
         if not instance.renews.exists():
             create_renew(instance)

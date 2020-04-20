@@ -48,7 +48,7 @@ class ServiceForm(forms.ModelForm):
 
 
 class OrganizationForm(forms.ModelForm):
-    contact = AutoCompleteSelectField('contacts', label="Contacto")
+    contact = AutoCompleteSelectField('contacts', label="Contacto", required=False)
 
     class Meta:
         model = Organization
