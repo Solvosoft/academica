@@ -14,7 +14,7 @@ def welcome_email(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=MembershipRenew)
 def rebuild_invoice(sender, instance, created, **kwargs):
-    if instance.encobro and instance.active:
+    if instance.active:
         task_create_invoice(instance.pk)
 
 @receiver(post_save, sender=ActivityReport)
