@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.safestring import mark_safe
 from django_countries.fields import CountryField
-
+from django.utils.timezone import localtime
 from membership_core.models import SystemCurrency, RenewalPeriod, ServiceType
 
 PAYMENT = (
@@ -169,9 +169,10 @@ class MembershipRenew(models.Model):
     active = models.BooleanField(default=True, verbose_name="Activo")
 
     def __str__(self):
-
-        return "De %s a %s" % (self.start_date.strftime("%d/%m/%Y"),
-                                  self.end_date.strftime("%d/%m/%Y"))
+        start_date = localtime(self.start_date)
+        end_date = localtime(self.end_date)
+        return "De %s a %s" % (start_date.strftime("%d/%m/%Y"),
+                               end_date.strftime("%d/%m/%Y"))
 
     class Meta:
         verbose_name = "Renovación de membresía"

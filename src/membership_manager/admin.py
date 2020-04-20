@@ -126,9 +126,12 @@ class MembershipRenewAdmin(admin.TabularInline):
         if obj:
             invoice = obj.inv_m_renews.first()
             if invoice is None:
-                dev = '<a href="%s" target="_blank">Crear</a>'%(
+                if obj.pk is not None:
+                    dev = '<a href="%s" target="_blank">Crear</a>'%(
                     reverse_lazy("generate_invoice", args=(obj.pk,))
-                )
+                    )
+                else:
+                    dev = ''
             else:
                 if invoice.pdf_invoice:
                     dev = '<a href="%s" target="_blank">Descargar</a>'%(
