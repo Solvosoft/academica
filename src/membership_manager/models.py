@@ -68,6 +68,7 @@ class Contact(GeneralContactInfo):
 
 class Organization(GeneralContactInfo):
     IDS_TYPE = (
+        ('CIF', 'CIF'), ('RFC', 'RFC'),
         ('RUT', 'RUT'), ('NIT', 'NIT'), ('CUIT', 'CUIT'),('RTN', 'RTN'),('ETC','ETC'),
         ('cedula_juridica', 'Cédula Jurídica')
     )
