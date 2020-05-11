@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'djmoney.contrib.exchange',
     'ajax_select',
     'async_notifications',
+    'markitup'
 ]
 
 MIDDLEWARE = [
@@ -185,3 +186,6 @@ TEST_TELEGRAM = False
 ASYNC_BCC  =  'membresias@codigosur.org'
 #ASYNC_SEND_ONLY_EMAIL = ['membresias@codigosur.org']
 ASYNC_SMTP_DEBUG=True
+ASYNC_NEWSLETTER_WIDGET = 'markitup.widgets.AdminMarkItUpWidget'
+MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
+MARKITUP_SET = 'markitup/sets/markdown/'

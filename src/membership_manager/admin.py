@@ -6,6 +6,8 @@ from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+
+from async_notifications.utils import register_model, register_news_basemodel
 from membership_core.models import MembershipTemplate, SystemCurrency
 from membership_core.utils import country_data
 from membership_manager import models
@@ -16,6 +18,7 @@ from membership_manager.admin_pdf import InvoiceAdmin
 from membership_manager.adminfilters import PaisFilter, OrganizationFilter, MembershipPaisFilter, ContactPaisFilter, \
     InvoiceRenewalNotificationFilter, InvoiceNextExpirationFilter
 from membership_manager.forms import MembershipAddForm, ServiceForm, OrganizationForm
+from membership_manager import newsletterform
 from membership_manager.renew_utils import create_renew
 from membership_manager.utils import load_services_from_membership_template
 
@@ -440,3 +443,13 @@ admin.site.register(models.Invoice, InvoiceAdmin)
 admin.site.register(models.Organization, OrganizationAdmin)
 admin.site.register(models.Contact, ContactAdmin)
 admin.site.register(models.Membership, MemberShipAdmin)
+
+register_model('membership_manager.membershib', models.Membership, prefix='membresia.')
+register_model('membership_manager.contact', models.Contact, prefix='contacto.')
+register_model('membership_manager.organization', models.Organization, prefix='organizacion.')
+register_model('membership_manager.invoice', models.Invoice, prefix='factura.')
+
+register_news_basemodel('membership_manager.membershib', "Membresías", newsletterform.MembershipManager)
+register_news_basemodel('membership_manager.contact', "Contactos", newsletterform.ContactManager)
+register_news_basemodel('membership_manager.organization', "Organizaciones", newsletterform.OrganizationManager)
+register_news_basemodel('membership_manager.invoice', "Facturas", newsletterform.InvoiceManager)

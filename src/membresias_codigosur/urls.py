@@ -15,12 +15,14 @@ Including another URLconf
 """
 
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
 from django.urls import path, include, re_path
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import RedirectView
 from django.views.static import serve
 from ajax_select import urls as ajax_select_urls
 
+from async_notifications.markitup.views import preview_newsletter
 from membership_manager.admin_memberships import MembInvoices, OrganizationInvoices, SimulateNotifications, \
     repair_membership, generate_invoice, build_pdf_invoice_view
 from membership_manager.urls import urlpatterns as url_manager
@@ -30,7 +32,7 @@ from django.conf import settings
 
 urlpatterns = [
     path('', RedirectView.as_view(url="/admin/")),
-
+    path('async_notifications/', include('async_notifications.urls')),
     path('admin/', admin.site.urls),
     path('telbot/', csrf_exempt(UpdateBot.as_view())),
     path('payments/membership/', MembInvoices.as_view()),
@@ -43,7 +45,8 @@ urlpatterns = [
     re_path(r'^media/(?P<path>.*)$',
             serve,
             {'document_root': settings.MEDIA_ROOT,}
-            )
+            ),
+    re_path(r'^markitup/preview/$', login_required(preview_newsletter), name="markitup_preview")
 
-] + url_manager
+    ] + url_manager
 
