@@ -18,6 +18,12 @@ PAYMENT = (
     ('Transferencia Bancaria Argentina', 'Transferencia Bancaria Argentina')
 )
 
+IDS_TYPE = (
+    ('CIF', 'CIF'), ('RFC', 'RFC'),
+    ('RUT', 'RUT'), ('NIT', 'NIT'), ('CUIT', 'CUIT'), ('RTN', 'RTN'), ('ETC', 'ETC'),
+    ('cedula_juridica', 'Cédula Jurídica')
+)
+
 class GeneralContactInfo(models.Model):
 
 
@@ -67,11 +73,7 @@ class Contact(GeneralContactInfo):
         verbose_name_plural = "Contactos"
 
 class Organization(GeneralContactInfo):
-    IDS_TYPE = (
-        ('CIF', 'CIF'), ('RFC', 'RFC'),
-        ('RUT', 'RUT'), ('NIT', 'NIT'), ('CUIT', 'CUIT'),('RTN', 'RTN'),('ETC','ETC'),
-        ('cedula_juridica', 'Cédula Jurídica')
-    )
+
     name = models.CharField(max_length=300, verbose_name="Nombre")  # Nombre de la Organización
     initials = models.CharField(max_length=50, verbose_name="Sigla", null=True, blank=True)  # SIGLA
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Contacto")

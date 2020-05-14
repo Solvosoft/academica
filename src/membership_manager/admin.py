@@ -445,11 +445,11 @@ admin.site.register(models.Contact, ContactAdmin)
 admin.site.register(models.Membership, MemberShipAdmin)
 
 register_model('membership_manager.membershib', models.Membership, prefix='membresia.')
-register_model('membership_manager.contact', models.Contact, prefix='contacto.')
+#register_model('membership_manager.contact', models.Contact, prefix='contacto.')
 register_model('membership_manager.organization', models.Organization, prefix='organizacion.')
 register_model('membership_manager.invoice', models.Invoice, prefix='factura.')
 
 register_news_basemodel('membership_manager.membershib', "Membresías", newsletterform.MembershipManager)
-register_news_basemodel('membership_manager.contact', "Contactos", newsletterform.ContactManager)
+#register_news_basemodel('membership_manager.contact', "Contactos", newsletterform.ContactManager)
 register_news_basemodel('membership_manager.organization', "Organizaciones", newsletterform.OrganizationManager)
 register_news_basemodel('membership_manager.invoice', "Facturas", newsletterform.InvoiceManager)
