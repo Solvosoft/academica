@@ -1,11 +1,10 @@
 from django import forms
-from django.contrib.admin.widgets import AdminDateWidget
 
 from async_notifications.interfaces import NewsLetterInterface
 from membership_core.models import SystemCurrency, ServiceType
+from membership_core.utils import country_data
 from membership_manager.models import Organization, Membership, PAYMENT, IDS_TYPE, Invoice
 
-from membership_core.utils import country_data
 
 def get_countries_en_membresias():
     keys = list(set(Organization.objects.all().values_list('country', flat=True)))
@@ -91,6 +90,23 @@ class MembershipManager(NewsLetterInterface):
         return list(set(mails)-self.excludedata)
 
 
+    def get_emails_instance(self):
+        mails = []
+        pks_used = []
+        busqueda = self.form.cleaned_data.get('busqueda_en', '0')
+        if not busqueda:
+            busqueda='0'
+        if busqueda == '0' or busqueda == '2':
+            mails += list(self.queryset.exclude(organization__email__isnull=True).values_list('organization__email', 'pk'))
+        if busqueda == '0' or busqueda == '1':
+            mails += list(self.queryset.exclude(contact__email__isnull=True).values_list('contact__email', 'pk'))
+        for item in mails:
+            pk, email = item[1], item[0]
+            key = str(pk)+"_"+email
+            if email not in self.excludedata and key not in pks_used:
+                yield self.model.objects.filter(pk=pk).first(), email
+                pks_used.append(key)
+
 
 class OrganizationFilterForm(forms.Form):
     ACTIVE_CHOICE = (
@@ -120,12 +136,18 @@ class OrganizationManager(NewsLetterInterface):
         }
     }
 
-
-
     def get_emails(self):
         return list(set(self.queryset.exclude(email__isnull=True).values_list('email', flat=True)))
 
-
+    def get_emails_instance(self):
+        pks_used=[]
+        mails = self.queryset.exclude(email__isnull=True).values_list('email', 'id')
+        for item in mails:
+            pk, email = item[1], item[0]
+            key = str(pk) + "_" + email
+            if email not in self.excludedata and key not in pks_used:
+                yield self.model.objects.filter(pk=pk).first(), email
+                pks_used.append(key)
 
 class InvoiceFilterForm(forms.Form):
     ACTIVE_CHOICE = (
@@ -205,3 +227,20 @@ class InvoiceManager(NewsLetterInterface):
         if busqueda == '0' or busqueda == '1':
             mails += list(self.queryset.exclude(membership__contact__email__isnull=True).values_list('membership__contact__email', flat=True))
         return list(set(mails)-self.excludedata)
+
+    def get_emails_instance(self):
+        mails = []
+        pks_used = []
+        busqueda = self.form.cleaned_data.get('busqueda_en', '0')
+        if not busqueda:
+            busqueda = '0'
+        if busqueda == '0' or busqueda == '2':
+            mails += list(self.queryset.exclude(membership__organization__email__isnull=True).values_list('membership__organization__email', 'id'))
+        if busqueda == '0' or busqueda == '1':
+            mails += list(self.queryset.exclude(membership__contact__email__isnull=True).values_list('membership__contact__email', 'id'))
+        for item in mails:
+            pk, email = item[1], item[0]
+            key = str(pk) + "_" + email
+            if email not in self.excludedata and key not in pks_used:
+                yield self.model.objects.filter(pk=pk).first(), email
+                pks_used.append(key)

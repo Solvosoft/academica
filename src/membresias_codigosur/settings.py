@@ -189,3 +189,16 @@ ASYNC_SMTP_DEBUG=True
 ASYNC_NEWSLETTER_WIDGET = 'markitup.widgets.AdminMarkItUpWidget'
 MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
 MARKITUP_SET = 'markitup/sets/markdown/'
+
+"""
+ASYNC_NEWSLETTER_SEVER_CONFIGS={
+    'host': 'localhost',
+    'port': '1026',
+    'fail_silently': False,
+    'backend': None,
+    'from': 'Luisza <luisza@luisza.com>'
+#username=my_username,
+#password=my_password,
+#use_tls=my_use_tls
+}
+"""
