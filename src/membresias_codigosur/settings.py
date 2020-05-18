@@ -197,8 +197,8 @@ ASYNC_NEWSLETTER_SEVER_CONFIGS={
     'fail_silently': False,
     'backend': None,
     'from': 'Luisza <luisza@luisza.com>'
-#username=my_username,
-#password=my_password,
-#use_tls=my_use_tls
+    #username=my_username,
+    #password=my_password,
+    #use_tls=my_use_tls
 }
 """
