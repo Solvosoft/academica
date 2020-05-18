@@ -11,7 +11,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         messages = []
-        print(repr(options))
+        print(repr(get_connections_config()))
         with mail.get_connection(**get_connections_config()) as connection:
             message = mail.EmailMessage('test email server',
                             "This is a email test from newsletter functionality",
