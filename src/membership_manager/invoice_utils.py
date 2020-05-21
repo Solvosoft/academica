@@ -36,7 +36,7 @@ def pay_invoice(invoice):
 def pending_invoice(invoice):
     membership = invoice.membership
     renew = invoice.renewal_period
-    generate_invoice(membership, invoice)
+    generate_invoice(membership, invoice, email_template="notification_mail")
     renew.active = True
     renew.encobro = True
     renew.save()
