@@ -33,6 +33,16 @@ class MembershipAddForm(forms.ModelForm):
         model = Membership
         fields = '__all__'
 
+    def clean(self):
+        cleaned_data = super(MembershipAddForm, self).clean()
+        organization = cleaned_data.get("organization")
+        contact = cleaned_data.get("contact")
+
+        if organization or contact :
+            return  cleaned_data
+        else:
+            raise forms.ValidationError("Debe ingresar una organización o contacto.")
+
 class ServiceForm(forms.ModelForm):
     class Meta:
         model = Service
