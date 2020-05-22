@@ -70,9 +70,9 @@ class SendWelcomeNotificationTestCase(TestCase):
         self.records = 1
 
         while self.records < 9:
-            membership_pk =  Membership.objects.all()[self.records-1].pk
+            membership_pk = Membership.objects.all()[self.records-1].pk
 
-            action = {'action': 'send_welcome_email',
+            action = {'action': 'send_welcome_notification',
                     '_selected_action': [membership_pk, ]}
 
             change_url = reverse('admin:membership_manager_membership_changelist')
