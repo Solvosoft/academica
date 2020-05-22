@@ -47,8 +47,6 @@ INSTALLED_APPS = [
     'membership_manager',
     'membership_telbot_manager',
     'django_countries',
-    'djmoney',
-    'djmoney.contrib.exchange',
     'ajax_select',
     'async_notifications',
     'markitup'
