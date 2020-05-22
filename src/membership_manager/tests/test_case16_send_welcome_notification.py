@@ -1,13 +1,9 @@
+from async_notifications.models import EmailNotification
 from django.utils.timezone import now
-from django.contrib.auth.models import User
 from django.test import TestCase
-from django.urls import reverse
-from dateutil.relativedelta import relativedelta
 from django_countries.fields import Country
-
 from membership_core.models import SystemCurrency, RenewalPeriod
-from membership_manager.models import Invoice, Membership, MembershipRenew, Contact, Organization
-
+from membership_manager.models import Membership, Contact, Organization
 
 class SendWelcomeNotificationTestCase(TestCase):
 
@@ -15,11 +11,7 @@ class SendWelcomeNotificationTestCase(TestCase):
                 'membership_core.json']
 
     def setUp(self):
-        self.username = 'user'
-        self.password = 'password'
-        self.user = User.objects.create_superuser(self.username, 'test@example.com', self.password)
         self.now = now()
-
         self.count = 1
         self.state = True
         self.state_membership = "active"
@@ -67,22 +59,37 @@ class SendWelcomeNotificationTestCase(TestCase):
 
     def test_send_welcome_email_base(self):
 
-        self.records = 1
+        email1 = EmailNotification.objects.filter(message__contains="Orga1")[0]
+        email2 = EmailNotification.objects.filter(message__contains="Orga2")[0]
+        email3 = EmailNotification.objects.filter(message__contains="Orga3")[0]
+        email4 = EmailNotification.objects.filter(message__contains="Orga4")[0]
+        email5 = EmailNotification.objects.filter(message__contains="contact1 contact1")[0]
+        email6 = EmailNotification.objects.filter(message__contains="contact2 contact2")[0]
+        email7 = EmailNotification.objects.filter(message__contains="contact3 contact3")[0]
+        email8 = EmailNotification.objects.filter(message__contains="contact4 contact4")[0]
 
-        while self.records < 9:
-            membership_pk = Membership.objects.all()[self.records-1].pk
+        """
+        Se espera que el email1 y el email5 pasen la prueba porque son los únicos que tiene una organización
+         o contacto activo y una membresía activa
+        """
 
-            action = {'action': 'send_welcome_notification',
-                    '_selected_action': [membership_pk, ]}
+        self.assertTrue(email1 is not None)
+        self.assertTrue(email5 is not None)
 
-            change_url = reverse('admin:membership_manager_membership_changelist')
-            self.client.login(username=self.username, password=self.password)
-            response = self.client.post(change_url, action, follow=True)
-            self.client.logout()
+        """
+        Se espera que el resto de los siguientes emails sean nulos.
+        """
 
-            self.assertEqual(response.status_code, 200)
+        self.assertFalse(email2 is not None)
+        self.assertFalse(email3 is not None)
+        self.assertFalse(email4 is not None)
+        self.assertFalse(email6 is not None)
+        self.assertFalse(email7 is not None)
+        self.assertFalse(email8 is not None)
 
-            self.records += 1
+
+
+
 
 
 
