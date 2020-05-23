@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.safestring import mark_safe
 from django_countries.fields import CountryField
-from django.utils.timezone import localtime
+from django.utils.timezone import localtime, now
 from membership_core.models import SystemCurrency, RenewalPeriod, ServiceType
 
 PAYMENT = (
@@ -132,11 +132,13 @@ class Membership(models.Model):
     def last_renew(self):
         # Fixme: No se ordena por pk por lo que pude conflictuar
         # si 2 renew tiene la misma end_date
-        renew = self.renews.filter(encobro=True, active=True).order_by('end_date').last()
+        renew = self.renews.filter(encobro=True, active=True).order_by('end_date', 'pk').last()
         if renew:
             return renew.start_date
         # Fixme: debería retornar el start_date de la membresía que esté activa (start_date < now() > end_date)
-
+        renew = self.renews.filter(start_date__date__lte=now().date(), end_date__date__gte=now().date()).order_by('end_date', 'pk').last()
+        if renew:
+            return renew.start_date
 
     def __str__(self):
         return self.name
