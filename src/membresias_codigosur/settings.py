@@ -158,18 +158,11 @@ EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS','False').lower() == "true"
 EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL','False').lower() == "true"
 
 
-# docker run --name membresias-redis -p 6379:6379 -d redis
+# docker run -d --rm --name membresias-rabbitmq -p 5672:5672 -d rabbitmq:3
 CELERY_MODULE = "membresias_codigosur.celery"
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_ACCEPT_CONTENT = ['pickle', 'json']
-CELERY_BROKER_URL = os.getenv('BROKER_URL', 'redis://localhost:6379/0')
-
-GRAPPELLI_INDEX_DASHBOARD = 'dashboard.CustomIndexDashboard'
-#EXCHANGE_BACKEND = 'djmoney.contrib.exchange.backends.FixerBackend'
-OPEN_EXCHANGE_RATES_APP_ID="6226bd52ee074914a7edc6e55a97c8d3"
-
-
-TEST_RUNNER = 'membership_manager.tests.MyTestRunner'
+CELERY_BROKER_URL = os.getenv('BROKER_URL', 'amqp://guest:guest@localhost:5672')
 
 ASYNC_NOTIFICATION_USER='membership_manager.Contact'
 ASYNC_NOTIFICATION_USER_LOOKUP_FIELDS= {'order_by': 'first_name',
@@ -187,7 +180,7 @@ TELEGRAM_ADMIN_GROUP_ID='-1001485781572'
 TEST_TELEGRAM = False
 ASYNC_BCC  =  'membresias@codigosur.org'
 #ASYNC_SEND_ONLY_EMAIL = ['membresias@codigosur.org']
-ASYNC_SMTP_DEBUG=True
+ASYNC_SMTP_DEBUG=False
 ASYNC_NEWSLETTER_WIDGET = 'markitup.widgets.AdminMarkItUpWidget'
 MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
 MARKITUP_SET = 'markitup/sets/markdown/'

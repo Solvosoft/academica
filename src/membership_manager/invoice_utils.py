@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from django.utils import timezone
-from django.utils.timezone import now
+
 
 from membership_manager.models import Invoice
 from membership_manager.render_pdf import build_pdf_invoice, generate_invoice
@@ -9,10 +9,10 @@ from membership_manager.utils import stringcode_generator, membership_payment_ma
 
 
 def create_invoice(renew, startdate=None, buildpdf=True):
-
-    startdate = startdate if startdate is not None else now()
+    if startdate is None:
+        startdate =  timezone.localtime(timezone.now()).date()
     expiration = startdate + timedelta(days=60)
-    invoice = Invoice.objects.create(creation_date=now(),
+    invoice = Invoice.objects.create(creation_date=timezone.localtime(timezone.now()),
                                      expiration_date=expiration,
                                      membership=renew.membership,
                                      renewal_period=renew,

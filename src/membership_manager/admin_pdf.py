@@ -8,7 +8,7 @@ from async_notifications.utils import send_email_from_template
 from membership_manager.invoice_utils import pay_invoice, pending_invoice
 from membership_manager.render_pdf import generate_invoice
 from membership_manager.utils import stringcode_generator, get_emails
-from membership_telbot_manager.models import TelGroup
+from membership_telbot_manager.utils import get_telegram_group
 from membership_telbot_manager.views import send_invoice_message, send_notification_message
 
 
@@ -32,7 +32,7 @@ def pay_invoice_action(modeladmin, request, queryset):
             action_flag=CHANGE
         )
         if membership.organization:
-            telgroup = TelGroup.objects.filter(organization_id=membership.organization.pk).first()
+            telgroup = get_telegram_group(membership)
             if telgroup:
                 send_notification_message(telgroup.chat_id, membership.organization)
                 if invoice.pdf_invoice:
@@ -58,7 +58,7 @@ def send_paid_invoice(queryset, templatename):
     for invoice in queryset:
         membership = invoice.membership
         emails = get_emails(membership)
-        now = timezone.now()
+        now = timezone.localdate(timezone.now())
         delta = invoice.expiration_date - now
         send_email_from_template(templatename, emails,
                              context={
@@ -71,7 +71,7 @@ def send_paid_invoice(queryset, templatename):
                              user=None,
                              upfile=invoice.pdf_invoice)
         if membership.organization and emails:
-            telgroup = TelGroup.objects.filter(organization_id=membership.organization.pk).first()
+            telgroup = get_telegram_group(membership)
             if telgroup:
                 send_notification_message(telgroup.chat_id, membership.organization)
                 if invoice.pdf_invoice:

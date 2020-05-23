@@ -13,7 +13,7 @@ class CreateInvoiceToolTestCase(TestCase):
                 'membership_core.json']
 
     def setUp(self):
-        self.now = now()
+        self.now = now().date()
 
         self.organization1 = Organization.objects.create(
             name="Orga",
@@ -36,22 +36,15 @@ class CreateInvoiceToolTestCase(TestCase):
     def test_create_invoice_tool_base(self):
 
         self.renew = create_renew(self.membership1)
-        create_invoice_tool(self.renew.pk)
+        #create_invoice_tool(self.renew.pk)  Create_renew ahora tiene una nueva funcionalidad para crear facturas
         self.invoice = Invoice.objects.get(renewal_period=self.renew)
 
 
         """
         Resultado esperado la función create_invoice_tool genera la factura en caso de que no exista y construye su pdf
         """
-        self.assertTrue(self.invoice.pdf_invoice is not None)
 
-
-        """
-       Resultado contrario no se crea la factura ni el pdf
-       """
-
-        self.assertFalse(self.invoice.pdf_invoice is not None)
-
+        self.assertIsNotNone(self.invoice.pdf_invoice, msg="la función create_invoice_tool genera la factura en caso de que no exista y construye su pdf")
 
 
 

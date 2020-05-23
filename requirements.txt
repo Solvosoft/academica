@@ -1,11 +1,9 @@
 django>=3.0
 django-countries>=6.0
-pyuca
-django-money[exchange]
 pyTelegramBotAPI
 async_notifications==0.1.19
 django-ajax-selects==1.9.1
-celery[redis]>4.2
+celery>4.2
 xhtml2pdf
 fake
 python-dateutil

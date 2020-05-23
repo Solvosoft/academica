@@ -1,4 +1,6 @@
 from dateutil.relativedelta import relativedelta
+from django.db.models import Q
+
 from async_notifications.utils import send_email_from_template
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.contenttypes.models import ContentType
@@ -8,9 +10,13 @@ from membership_manager.invoice_utils import create_invoice
 from membership_manager.models import Membership, MembershipRenew, Invoice
 from membership_manager.render_pdf import generate_invoice, build_pdf_invoice
 from membership_manager.utils import get_emails
-from membership_telbot_manager.models import TelGroup
-from membership_telbot_manager.views import send_notification_message, send_deactivated_message
 
+from membership_telbot_manager.views import send_notification_message, send_deactivated_message
+from membership_telbot_manager.models import TelGroup
+
+def get_telegram_group(membership):
+    if membership.organization:
+        return TelGroup.objects.filter(organization_id=membership.organization.pk).first()
 
 def notify_invoice_expiration(now):
     """
@@ -41,7 +47,7 @@ def notify_invoice_expiration(now):
             change_message="Notificación de pago pendiente enviada "+ str(invoice)
         )
         dev += str(invoice)+"\n"
-        telgroup = TelGroup.objects.filter(organization_id=invoice.membership.organization.pk).first()
+        telgroup = get_telegram_group(invoice.membership)
         if telgroup:
             send_notification_message(telgroup.chat_id,invoice.membership.organization)
 
@@ -110,7 +116,7 @@ def invoice_creation(now, extrafilters={}):
             change_message="Factura creada pendiente de pago %s  " % (str(invoice),)
         )
         dev += str(invoice)+"\n"
-        telgroup = TelGroup.objects.filter(organization_id=membership.organization.pk).first()
+        telgroup = get_telegram_group(membership)
         if telgroup:
             send_notification_message(telgroup.chat_id, membership.organization)
 
@@ -144,7 +150,7 @@ def membership_deactivating(now):
 
         )
         dev += str(membership)+"\n"
-        telgroup = TelGroup.objects.filter(organization_id=membership.organization.pk).first()
+        telgroup = get_telegram_group(membership)
         if telgroup:
             send_deactivated_message(telgroup.chat_id, membership.organization)
     return total, dev
@@ -160,8 +166,9 @@ def membership_deactivating_membership(id_membresia, email=True):
                          enqueued=True, send_email=email)
 
         if membership.organization and email:
-            if TelGroup.objects.filter(organization_id=membership.organization.pk).first():
-                send_deactivated_message(membership.organization.telgroup.chat_id,membership.organization)
+            telgroup = get_telegram_group(membership)
+            if telgroup:
+                send_deactivated_message(telgroup.chat_id, membership.organization)
 
 def create_invoice_tool(id_renew):
     renew = MembershipRenew.objects.get(pk=id_renew)
@@ -175,9 +182,10 @@ def create_invoice_tool(id_renew):
     return invoice
 
 def send_welcome_notification(id_membership):
-    instance = Membership.objects.filter(pk=id_membership).first()
-    emails = get_emails(instance)
-    send_email_from_template('welcome_mail', emails,
+    instance = Membership.objects.filter(Q(contact__active=True)|Q(organization__active=True), pk=id_membership).first()
+    if instance:
+        emails = get_emails(instance)
+        send_email_from_template('welcome_mail', emails,
                              context={
                                  'membership': instance
                              },

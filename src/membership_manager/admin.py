@@ -6,7 +6,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from django.utils.timezone import now
+from django.utils import timezone
 
 from async_notifications.utils import register_model, register_news_basemodel
 from membership_core.models import MembershipTemplate, SystemCurrency
@@ -272,7 +272,7 @@ class MemberShipAdmin(AjaxSelectAdmin, admin.ModelAdmin):
         if not instance.renews.exists():
             create_renew(instance)
         elif not change:
-            today = now()
+            today = timezone.localdate(timezone.now())
             invoice_creation(today, extrafilters={'membership':instance})
 
     def invoices(self, obj):

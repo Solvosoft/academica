@@ -1,5 +1,5 @@
 from django.db import models
-from djmoney.settings import CURRENCY_CHOICES
+from .currency import CURRENCY_CHOICES
 DECIMAL_PLACES=2
 
 class SystemCurrency(models.Model):

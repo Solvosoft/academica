@@ -2,6 +2,7 @@ import random
 import string
 from datetime import timedelta
 
+from dateutil.relativedelta import relativedelta
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -43,19 +44,19 @@ def get_administrative_user():
 
 def get_membership_next_expired(queryset, value, now=None):
     if now is None:
-        now = timezone.now()
-    dates_list = (now + timedelta(days=int(value))).date()
+        now = timezone.localdate(timezone.now())
+    dates_list = now + relativedelta(days=int(value))
     return queryset.filter(
         state="active",
         mem_inv__status='pending',
         mem_inv__expiration_date__lte=dates_list,
         mem_inv__renewal_period__encobro=True
-    ).order_by('mem_inv__creation_date__date').distinct()
+    ).order_by('mem_inv__creation_date').distinct()
 
 def get_membership_start_expired(queryset, value, now=None, start_in=None):
     if now is None:
-        now = timezone.now()
-    dates_list = (now + timedelta(days=int(value))).date()
+        now = timezone.localdate(timezone.now())
+    dates_list = now + relativedelta(days=int(value))
 
     filters = {
         'state': "active",
@@ -66,7 +67,7 @@ def get_membership_start_expired(queryset, value, now=None, start_in=None):
     if start_in:
         filters['renews__start_date__gte']=start_in
 
-    return queryset.filter( **filters ).order_by('renews__start_date__date').distinct()
+    return queryset.filter( **filters ).order_by('renews__start_date').distinct()
 
 
 

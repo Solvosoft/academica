@@ -2,17 +2,18 @@ from dateutil.relativedelta import relativedelta
 from django.db.models import Q
 from django.utils import timezone
 from membership_manager.models import MembershipRenew
-from membership_manager.task_utils import create_invoice_tool
 from membership_manager.render_pdf import generate_invoice
 
-def create_renew(instance):
-    now = timezone.localtime(timezone.now()).date()
+def create_renew(instance, now=None):
+    if now is None:
+        now = timezone.localtime(timezone.now()).date()
     renew = MembershipRenew.objects.create(membership=instance, creation_date=now,
                                    start_date=now,
                                    encobro=True,
                                    end_date=now + relativedelta(
                                        months=+instance.renewal_period.months)
                                    )
+    from membership_manager.task_utils import create_invoice_tool
     invoice=create_invoice_tool(renew.pk)
     generate_invoice(instance, invoice, buildpdf=False, email_template="notification_mail", enqueued=True, now=now)
 
@@ -21,17 +22,17 @@ def create_renew(instance):
 
 def get_expired_renew(now=None):
     if now is None:
-        now = timezone.now()
-    today_date = now.date()
+        now = timezone.localdate(timezone.now())
+
     return MembershipRenew.objects.filter(
         Q(membership__contact__active=True) | Q(membership__organization__active=True),
-        end_date__lte=today_date, encobro=False, active=True, membership__state="active")
+        end_date__lte=now, encobro=False, active=True, membership__state="active")
 
 
 def get_renew_without_inovice(now=None):
     if now is None:
-        now = timezone.now()
-    today_date = (now + timezone.timedelta(days=60)).date()
+        now = timezone.localdate(timezone.now())
+    today_date = now + relativedelta(days=60)
     return MembershipRenew.objects.filter(
         Q(membership__contact__active=True) | Q(membership__organization__active=True),
         start_date__lte=today_date,
@@ -41,14 +42,14 @@ def get_renew_without_inovice(now=None):
 
 def  get_renew_with_invoice_expired_today(now=None):
     if now is None:
-        now = timezone.now()
+        now = timezone.localdate(timezone.now())
     return MembershipRenew.objects.filter(
-        inv_m_renews__expiration_date__date=now.date(), active=True, encobro=True )
+        inv_m_renews__expiration_date=now, active=True, encobro=True )
 
 def get_today_expired_renew(now=None):
     if now is None:
-        now = timezone.now()
-    today_date = now.date()
+        now = timezone.localdate(timezone.now())
+
     return MembershipRenew.objects.filter(
         Q(membership__contact__active=True) | Q(membership__organization__active=True),
-        end_date__date=today_date, active=True, membership__state="active")
+        end_date=now, active=True, membership__state="active")

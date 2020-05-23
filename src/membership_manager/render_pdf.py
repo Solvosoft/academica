@@ -38,7 +38,7 @@ def build_pdf_invoice(membership, invoice):
 def generate_invoice(membership, invoice, email_template='pay_mail',
                      enqueued=True, send_email=True, now=None, buildpdf=True):
     if now is None:
-        now = timezone.now().date()
+        now = timezone.localtime(timezone.now()).date()
 
     if buildpdf:
         if invoice.pdf_invoice:

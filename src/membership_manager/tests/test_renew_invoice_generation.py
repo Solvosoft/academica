@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 
 # last_renew_start_date
-from django.utils.timezone import now
+from django.utils import timezone
 from django_countries.fields import Country
 
 from membership_core.models import SystemCurrency, RenewalPeriod
@@ -20,7 +20,7 @@ class RenewStartDateTestCase(TestCase):
     fixtures = ['async_notifications_email_template.json', 'async_notifications_template_context.json', 'membership_core.json']
 
     def setUp(self):
-        self.now = now()
+        self.now = timezone.localdate( timezone.now())
         self.organization = Organization.objects.create(
             name="Orga",
             email="org@gmail.com",
@@ -29,7 +29,7 @@ class RenewStartDateTestCase(TestCase):
         )
 
         self.membership = Membership.objects.create(
-            creation_date=now(),
+            creation_date=timezone.now(),
             membership_type="Personal",
             annual_cost=120,
             currency=SystemCurrency.objects.first(),
@@ -48,7 +48,7 @@ class RenewStartDateTestCase(TestCase):
         Caso base, debe seleccionarse la segunda por estar posterior en el tiempo
         """
         MembershipRenew.objects.create(
-            creation_date=now(),
+            creation_date=timezone.now(),
             membership = self.membership,
             start_date = self.now+relativedelta(months=-12),
             end_date = self.now+relativedelta(days=+60),
@@ -56,7 +56,7 @@ class RenewStartDateTestCase(TestCase):
             active = True,
         )
         meminv=MembershipRenew.objects.create(
-            creation_date=now(),
+            creation_date=timezone.now(),
             membership = self.membership,
             start_date = self.now+relativedelta(days=+60),
             end_date = self.now+relativedelta(months=+12),

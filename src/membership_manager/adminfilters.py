@@ -1,9 +1,10 @@
 from ajax_select.fields import AutoCompleteSelectMultipleField
+from dateutil.relativedelta import relativedelta
 from django import forms
 from django.contrib import admin
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Q
-from django.utils.timezone import now
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from membership_core.utils import country_data
@@ -250,7 +251,7 @@ class InvoiceNextExpirationFilter(admin.SimpleListFilter):
         if value:
             v = int(value)
             if v < 0 :
-                start_in = now().date()
+                start_in = timezone.localdate(timezone.now()+relativedelta(days=v))
                 value = abs(v)
             return get_membership_start_expired(queryset, value, start_in=start_in)
         return queryset

@@ -59,14 +59,14 @@ class SendWelcomeNotificationTestCase(TestCase):
 
     def test_send_welcome_email_base(self):
 
-        email1 = EmailNotification.objects.filter(message__contains="Orga1")[0]
-        email2 = EmailNotification.objects.filter(message__contains="Orga2")[0]
-        email3 = EmailNotification.objects.filter(message__contains="Orga3")[0]
-        email4 = EmailNotification.objects.filter(message__contains="Orga4")[0]
-        email5 = EmailNotification.objects.filter(message__contains="contact1 contact1")[0]
-        email6 = EmailNotification.objects.filter(message__contains="contact2 contact2")[0]
-        email7 = EmailNotification.objects.filter(message__contains="contact3 contact3")[0]
-        email8 = EmailNotification.objects.filter(message__contains="contact4 contact4")[0]
+        email1 = EmailNotification.objects.filter(message__contains="Orga1").first()
+        email2 = EmailNotification.objects.filter(message__contains="Orga2").first()
+        email3 = EmailNotification.objects.filter(message__contains="Orga3").first()
+        email4 = EmailNotification.objects.filter(message__contains="Orga4").first()
+        email5 = EmailNotification.objects.filter(message__contains="contact1 contact1").first()
+        email6 = EmailNotification.objects.filter(message__contains="contact2 contact2").first()
+        email7 = EmailNotification.objects.filter(message__contains="contact3 contact3").first()
+        email8 = EmailNotification.objects.filter(message__contains="contact4 contact4").first()
 
         """
         Se espera que el email1 y el email5 pasen la prueba porque son los únicos que tiene una organización

@@ -23,8 +23,7 @@ from django.views.static import serve
 from ajax_select import urls as ajax_select_urls
 
 from async_notifications.markitup.views import preview_newsletter
-from membership_manager.admin_memberships import MembInvoices, OrganizationInvoices, SimulateNotifications, \
-    repair_membership, generate_invoice, build_pdf_invoice_view
+from membership_manager.admin_memberships import MembInvoices, OrganizationInvoices, generate_invoice, build_pdf_invoice_view
 from membership_manager.urls import urlpatterns as url_manager
 from membership_telbot_manager.views import UpdateBot
 from django.conf import settings
@@ -39,8 +38,6 @@ urlpatterns = [
     path('payments/organization/', OrganizationInvoices.as_view()),
     path('invoice/generate/<int:pk>/', generate_invoice, name="generate_invoice"),
     path('invoice/build/<int:pk>/', build_pdf_invoice_view, name="build_pdf_invoice"),
-    path('simulate/notifications/', SimulateNotifications.as_view(), name="simulate"),
-    re_path(r'reparar/(?P<pk>\d+)/(?P<action>\w+)', repair_membership, name='reparar'),
     re_path(r'^ajax_select/', include(ajax_select_urls)),
     re_path(r'^media/(?P<path>.*)$',
             serve,

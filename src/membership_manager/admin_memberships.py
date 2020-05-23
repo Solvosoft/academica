@@ -11,7 +11,6 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView
 
 from async_notifications.utils import send_email_from_template
-from membership_manager.Simulador import ManejadorNotificaciones
 from membership_manager.forms import MembInvPaymentsForm
 from membership_manager.invoice_utils import create_invoice
 from membership_manager.models import Membership, Invoice, Organization, MembershipRenew
@@ -113,78 +112,6 @@ def organization_payments_history(modeladmin, request, queryset):
 
 organization_payments_history.short_description = "Historial de pagos"
 
-
-@method_decorator(staff_member_required, name='dispatch')
-class SimulateNotifications(TemplateView):
-    template_name = 'admin/membership_admin/simulatenotifications.html'
-    def get_context_data(self, **kwargs):
-        context = super(SimulateNotifications, self).get_context_data(**kwargs)
-        context['simulador'] = ManejadorNotificaciones()
-        return context
-
-@staff_member_required
-def repair_membership(request, pk, action):
-    if pk == '0' :
-        if action == 'encobro':
-            queryset = MembershipRenew.objects.filter(membership__state="active",
-                                       encobro=False,
-                                       active=True)
-        if action == 'graceperiod':
-            queryset = MembershipRenew.objects.filter(
-                Q(start_date__date=datetime.datetime(year=2020, month=1, day=1).date(),
-                  end_date__date=datetime.datetime(year=2020, month=2, day=1).date()) | Q(
-                    start_date__date=datetime.datetime(year=2020, month=2, day=1).date(),
-                    end_date__date=datetime.datetime(year=2020, month=2, day=2).date())
-            )
-
-        elif action == 'invoice':
-            queryset = MembershipRenew.objects.filter(
-                Q(membership__state="active") | Q(membership__state='graceperiod'),
-                encobro=True, active=True, inv_m_renews=None)
-        elif action == 'poneactiva':
-            Membership.objects.filter(
-                state="inactive",
-                renews__active=True
-            ).update(state='active')
-            return redirect('simulate')
-        elif action == 'setinactiverenew':
-            MembershipRenew.objects.filter(membership__state="inactive", active=True).update(active=False)
-            return redirect('simulate')
-    else:
-        if action == 'encobro':
-            mem = get_object_or_404(MembershipRenew, pk=pk)
-        elif action == 'graceperiod':
-            mem = get_object_or_404(MembershipRenew, pk=pk)
-        elif action == 'invoice':
-            mem = get_object_or_404(MembershipRenew, pk=pk)
-        elif action == 'setinactiverenew':
-            mem = MembershipRenew.objects.filter(membership_id=pk, membership__state="inactive", active=True)
-        else:
-            mem = get_object_or_404(Membership, pk=pk)
-        queryset = [mem]
-
-    for mem in queryset:
-
-        if action == 'encobro':
-            mem.encobro = True
-            mem.save()
-            task_create_invoice.delay(mem.pk)
-        if action == 'graceperiod':
-            mem.delete()
-        if action == 'invoice':
-            task_create_invoice.delay(mem.pk)
-        if action == 'poneactiva':
-            mem.state = 'active'
-            mem.save()
-        if action == 'setinactiverenew':
-            mem.update(active = False)
-
-
-    if action in ('invoice', 'encobro'):
-        messages.info(request,
-                         'Debe esperar un tiempo prudencial mientras se ejecutan las tareas para que se refleje')
-
-    return redirect('simulate')
 
 @staff_member_required
 def generate_invoice(request, pk):

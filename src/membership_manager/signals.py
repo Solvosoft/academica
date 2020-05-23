@@ -8,7 +8,7 @@ from membership_manager.tasks import task_create_invoice
 
 @receiver(post_save, sender=Membership)
 def welcome_email(sender, instance, created, **kwargs):
-    if created:
+    if created and instance.state == "active":
         send_welcome_notification(instance.pk)
 
 
