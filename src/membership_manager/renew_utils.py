@@ -2,16 +2,19 @@ from dateutil.relativedelta import relativedelta
 from django.db.models import Q
 from django.utils import timezone
 from membership_manager.models import MembershipRenew
-
+from membership_manager.task_utils import create_invoice_tool
+from membership_manager.render_pdf import generate_invoice
 
 def create_renew(instance):
-    now = timezone.now()
+    now = timezone.localtime(timezone.now()).date()
     renew = MembershipRenew.objects.create(membership=instance, creation_date=now,
                                    start_date=now,
                                    encobro=True,
                                    end_date=now + relativedelta(
                                        months=+instance.renewal_period.months)
                                    )
+    invoice=create_invoice_tool(renew.pk)
+    generate_invoice(instance, invoice, buildpdf=False, email_template="notification_mail", enqueued=True, now=now)
 
     return renew
 
@@ -22,7 +25,7 @@ def get_expired_renew(now=None):
     today_date = now.date()
     return MembershipRenew.objects.filter(
         Q(membership__contact__active=True) | Q(membership__organization__active=True),
-        end_date__date__lte=today_date, encobro=False, active=True, membership__state="active")
+        end_date__lte=today_date, encobro=False, active=True, membership__state="active")
 
 
 def get_renew_without_inovice(now=None):
@@ -31,7 +34,7 @@ def get_renew_without_inovice(now=None):
     today_date = (now + timezone.timedelta(days=60)).date()
     return MembershipRenew.objects.filter(
         Q(membership__contact__active=True) | Q(membership__organization__active=True),
-        end_date__date__lte=today_date,
+        start_date__lte=today_date,
         active=True, encobro=True,
         membership__state="active",
         inv_m_renews=None)

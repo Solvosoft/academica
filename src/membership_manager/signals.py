@@ -12,11 +12,11 @@ def welcome_email(sender, instance, created, **kwargs):
         send_welcome_notification(instance.pk)
 
 
-@receiver(post_save, sender=MembershipRenew)
-def rebuild_invoice(sender, instance, created, **kwargs):
-    if instance.active:
-        task_create_invoice(instance.pk)
-
+# @receiver(post_save, sender=MembershipRenew)
+# def rebuild_invoice(sender, instance, created, **kwargs):
+#     if instance.active:
+#        task_create_invoice(instance.pk)
+#    pass
 @receiver(post_save, sender=ActivityReport)
 def save_attention(sender, instance, **kwargs):
 

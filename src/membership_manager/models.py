@@ -1,11 +1,11 @@
 import textwrap
 
-from django.contrib.admin import SimpleListFilter
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.safestring import mark_safe
+from django.utils.timezone import localtime
 from django_countries.fields import CountryField
-from django.utils.timezone import localtime, now
+
 from membership_core.models import SystemCurrency, RenewalPeriod, ServiceType
 
 PAYMENT = (
@@ -130,15 +130,10 @@ class Membership(models.Model):
 
     @property
     def last_renew(self):
-        # Fixme: No se ordena por pk por lo que pude conflictuar
-        # si 2 renew tiene la misma end_date
         renew = self.renews.filter(encobro=True, active=True).order_by('end_date', 'pk').last()
         if renew:
             return renew.start_date
-        # Fixme: debería retornar el start_date de la membresía que esté activa (start_date < now() > end_date)
-        renew = self.renews.filter(start_date__date__lte=now().date(), end_date__date__gte=now().date()).order_by('end_date', 'pk').last()
-        if renew:
-            return renew.start_date
+
 
     def __str__(self):
         return self.name
@@ -171,17 +166,15 @@ class MembershipRenew(models.Model):
     membership = models.ForeignKey(Membership, on_delete=models.CASCADE,
                                    verbose_name="Membresía"
                                    , related_name='renews')
-    start_date = models.DateTimeField(verbose_name="Fecha de inicio")
+    start_date = models.DateField(verbose_name="Fecha de inicio")
 
-    end_date = models.DateTimeField(verbose_name="Fecha de finalización")
+    end_date = models.DateField(verbose_name="Fecha de finalización")
     encobro = models.BooleanField(default=False, verbose_name="En cobro")
     active = models.BooleanField(default=True, verbose_name="Activo")
 
     def __str__(self):
-        start_date = localtime(self.start_date)
-        end_date = localtime(self.end_date)
-        return "De %s a %s" % (start_date.strftime("%d/%m/%Y"),
-                               end_date.strftime("%d/%m/%Y"))
+        return "De %s a %s" % (self.start_date.strftime("%d/%m/%Y"),
+                               self.end_date.strftime("%d/%m/%Y"))
 
     class Meta:
         verbose_name = "Renovación de membresía"
@@ -193,9 +186,9 @@ class Invoice(models.Model):
         ("paid", "Pagada"),
         ("inactive", "Inactiva")
     )
-    creation_date = models.DateTimeField(auto_created=True,
+    creation_date = models.DateField(auto_created=True,
                                          verbose_name="Fecha de creación")
-    expiration_date = models.DateTimeField(verbose_name="Fecha de expiración")
+    expiration_date = models.DateField(verbose_name="Fecha de expiración")
     payment_date = models.DateField(null=True, blank=True, verbose_name="Fecha de pago")
     membership = models.ForeignKey(Membership, on_delete=models.CASCADE,
                                    verbose_name="Membresía",related_name='mem_inv')

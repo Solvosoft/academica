@@ -201,8 +201,8 @@ class InvoiceManager(NewsLetterInterface):
             'payment_method': 'payment_method__in',
             'apply_fees': 'membership__apply_fees',
             'status': 'status',
-            'expiration_start_date': 'expiration_date__date__gte',
-            'expiration_end_date': 'expiration_date__date__lte'
+            'expiration_start_date': 'expiration_date__gte',
+            'expiration_end_date': 'expiration_date__lte'
         }
     }
 

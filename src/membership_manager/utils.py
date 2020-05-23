@@ -48,7 +48,7 @@ def get_membership_next_expired(queryset, value, now=None):
     return queryset.filter(
         state="active",
         mem_inv__status='pending',
-        mem_inv__expiration_date__date__lte=dates_list,
+        mem_inv__expiration_date__lte=dates_list,
         mem_inv__renewal_period__encobro=True
     ).order_by('mem_inv__creation_date__date').distinct()
 
@@ -60,11 +60,11 @@ def get_membership_start_expired(queryset, value, now=None, start_in=None):
     filters = {
         'state': "active",
         'renews__active': True,
-        'renews__start_date__date__lte': dates_list,
+        'renews__start_date__lte': dates_list,
         'renews__encobro': True
     }
     if start_in:
-        filters['renews__start_date__date__gte']=start_in
+        filters['renews__start_date__gte']=start_in
 
     return queryset.filter( **filters ).order_by('renews__start_date__date').distinct()
 
@@ -85,7 +85,7 @@ def invoice_expiration_filter_queryset(now=None):
             Q( membership__contact__active=True)|Q( membership__organization__active=True),
             status='pending',
             membership__state="active",
-            creation_date__date__in=dates_list,
+            creation_date__in=dates_list,
             renewal_period__encobro=True, amount__gt=0 )
     return queryset
 

@@ -6,11 +6,13 @@ from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django.utils.timezone import now
 
 from async_notifications.utils import register_model, register_news_basemodel
 from membership_core.models import MembershipTemplate, SystemCurrency
 from membership_core.utils import country_data
 from membership_manager import models
+from membership_manager import newsletterform
 from membership_manager.admin_memberships import membership_payments_history, \
     organization_payments_history, send_email_to_owner, send_email_vencimiento, export_csv_fields, send_welcome_email, \
     rebuild_encobro_renews
@@ -18,8 +20,8 @@ from membership_manager.admin_pdf import InvoiceAdmin
 from membership_manager.adminfilters import PaisFilter, OrganizationFilter, MembershipPaisFilter, ContactPaisFilter, \
     InvoiceRenewalNotificationFilter, InvoiceNextExpirationFilter
 from membership_manager.forms import MembershipAddForm, ServiceForm, OrganizationForm
-from membership_manager import newsletterform
 from membership_manager.renew_utils import create_renew
+from membership_manager.task_utils import invoice_creation
 from membership_manager.utils import load_services_from_membership_template
 
 
@@ -269,6 +271,9 @@ class MemberShipAdmin(AjaxSelectAdmin, admin.ModelAdmin):
         instance = form.instance
         if not instance.renews.exists():
             create_renew(instance)
+        elif not change:
+            today = now()
+            invoice_creation(today, extrafilters={'membership':instance})
 
     def invoices(self, obj):
         dev = ""

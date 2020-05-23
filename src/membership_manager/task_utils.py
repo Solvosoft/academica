@@ -88,12 +88,12 @@ def inactive_renew(now):
         renews.update(active=False)
     return total, ''
 
-def invoice_creation(now):
+def invoice_creation(now, extrafilters={}):
     # Devuelve los renews que en 60 días vencen
     renews = renewutils.get_renew_without_inovice(now)
     total = 0
     dev = ''
-    for renew in renews:
+    for renew in renews.filter(**extrafilters):
         invoice = create_invoice(renew)
         if invoice.amount == 0:
             continue
@@ -155,7 +155,7 @@ def membership_deactivating_membership(id_membresia, email=True):
     for renew in renews:
         invoice = renew.inv_m_renews.first()
         if not invoice:
-            create_invoice(renew)
+            invoice = create_invoice(renew)
         generate_invoice(membership, invoice, email_template='expiration_mail',
                          enqueued=True, send_email=email)
 
@@ -171,8 +171,8 @@ def create_invoice_tool(id_renew):
     else:
         if invoice.pdf_invoice:
             invoice.pdf_invoice.delete(False)
-        build_pdf_invoice(renew.membership, invoice)
-
+    build_pdf_invoice(renew.membership, invoice)
+    return invoice
 
 def send_welcome_notification(id_membership):
     instance = Membership.objects.filter(pk=id_membership).first()

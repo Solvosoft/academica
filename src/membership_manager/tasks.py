@@ -11,7 +11,7 @@ def task_invoice_creation():
     """
     Create a invoice, at 60 days left - renewal expiration.
     """
-    now=timezone.localtime(timezone.now())
+    now=timezone.localtime(timezone.now()).date()
 
     # Genero las facturas que están por vencerse
     invoice_creation(now)
@@ -26,12 +26,12 @@ def task_notify_invoice_expiration():
     For all pending invoice calc if notification needs to be send
     :return:
     """
-    now=timezone.localtime(timezone.now())
+    now=timezone.localtime(timezone.now()).date()
     notify_invoice_expiration(now)
 
 @app.task
 def task_membership_deactivating_or_graceperiod():
-    now=timezone.localtime(timezone.now())
+    now=timezone.localtime(timezone.now()).date()
     membership_deactivating(now)
     inactive_renew(now)
 

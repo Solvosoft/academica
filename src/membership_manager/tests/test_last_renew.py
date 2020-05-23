@@ -26,7 +26,7 @@ class RenewStartDateTestCase(TestCase):
     fixtures = ['async_notifications_email_template.json', 'async_notifications_template_context.json', 'membership_core.json']
 
     def setUp(self):
-        self.now = now()
+        self.now = now().date()
         self.membership = Membership.objects.create(
             creation_date=now(),
             membership_type="Personal",
@@ -149,4 +149,4 @@ class RenewStartDateTestCase(TestCase):
             encobro=False,
             active=True,
         )
-        self.assertEqual(ok_date, self.membership.last_renew)
+        self.assertEqual(None, self.membership.last_renew)
