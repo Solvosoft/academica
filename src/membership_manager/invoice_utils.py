@@ -10,7 +10,7 @@ from membership_manager.utils import stringcode_generator, membership_payment_ma
 
 def create_invoice(renew, startdate=None, buildpdf=True):
     if startdate is None:
-        startdate =  timezone.localtime(timezone.now()).date()
+        startdate =  timezone.localdate(timezone.now())
     expiration = startdate + timedelta(days=60)
     invoice = Invoice.objects.create(creation_date=timezone.localtime(timezone.now()),
                                      expiration_date=expiration,

@@ -6,7 +6,7 @@ from membership_manager.render_pdf import generate_invoice
 
 def create_renew(instance, now=None):
     if now is None:
-        now = timezone.localtime(timezone.now()).date()
+        now = timezone.localdate(timezone.now())
     renew = MembershipRenew.objects.create(membership=instance, creation_date=now,
                                    start_date=now,
                                    encobro=True,
