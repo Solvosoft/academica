@@ -123,7 +123,13 @@ class MembershipRenewAdmin(admin.TabularInline):
                "show_invoice"
     ]
     readonly_fields = ['show_invoice']
+    ordering = ['-end_date']
 
+
+    # def get_queryset(self, request):
+    #     queryset = super().get_queryset(request)
+    #
+    #     return queryset[:3]
 
     def show_invoice(self, obj):
         dev = "-"
@@ -141,8 +147,9 @@ class MembershipRenewAdmin(admin.TabularInline):
                 if invoice.pdf_invoice:
                     dev = '<a href="%s" target="_blank">Descargar</a>'%(
                         invoice.pdf_invoice.url
-                    ) + '<a href="%s" target="_blank"> - Ver</a>'%(
-                        reverse_lazy("admin:membership_manager_invoice_change", args=(invoice.pk,))
+                    ) + '<a href="%s" target="_blank"> - Ver - %s</a>'%(
+                        reverse_lazy("admin:membership_manager_invoice_change", args=(invoice.pk,)),
+                             invoice.get_status_display()
                     )
                 else:
                     dev = '<a href="%s" target="_blank">Crear PDF</a>' % (

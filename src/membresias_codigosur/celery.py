@@ -34,10 +34,6 @@ app.conf.CELERYBEAT_SCHEDULE = {
         'task': 'membership_manager.tasks.task_notify_invoice_expiration',
         'schedule': crontab(minute=11, hour=1),  # execute 00:01h
     },
-    'update_rates': {  # this adds email notifications to the list too
-        'task': 'membership_core.tasks.update_rates',
-        'schedule': crontab(hour='*/6', minute=8),  # execute 00:01h
-    },
     'send_daily_emails': {  # this sends the emails in the email notifications list
         'task': 'async_notifications.tasks.send_daily',
         'schedule': crontab(minute='*/5'),  # execute 01:00h
