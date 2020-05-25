@@ -50,6 +50,19 @@ def get_today_expired_renew(now=None):
     if now is None:
         now = timezone.localdate(timezone.now())
 
-    return MembershipRenew.objects.filter(
+    membs = MembershipRenew.objects.filter(
         Q(membership__contact__active=True) | Q(membership__organization__active=True),
         end_date=now, active=True, membership__state="active")
+
+    memb_none_end = MembershipRenew.objects.filter(
+        Q(membership__contact__active=True) | Q(membership__organization__active=True),
+        membership__renewal_period__months__lt=60,
+        end_date__lt=now, end_date__gt=now+relativedelta(days=-60),   active=True, membership__state="active")
+
+    if memb_none_end.exists():
+        membs = MembershipRenew.objects.filter(pk__in=
+                                   list(membs.values_list('pk', flat=True)) +
+                                   list(memb_none_end.values_list('pk', flat=True))
+                                       )
+
+    return membs

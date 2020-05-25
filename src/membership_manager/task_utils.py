@@ -54,11 +54,15 @@ def notify_invoice_expiration(now):
     return total, dev
 
 def generate_renew(now):
-    renews = renewutils.get_today_expired_renew(now)
-    total = renews.count()
+    renews = renewutils.get_today_expired_renew(now+relativedelta(days=60))
+    total = 0
     dev = ''
     for renew in renews:
         membership = renew.membership
+        thelast = membership.renews.all().order_by('end_date').last()
+        if thelast.pk != renew.pk:
+            continue
+        total += 1
         new_renew = MembershipRenew.objects.create(
             creation_date=now,
             membership=renew.membership,
