@@ -252,6 +252,6 @@ class InvoiceNextExpirationFilter(admin.SimpleListFilter):
             v = int(value)
             if v < 0 :
                 start_in = timezone.localdate(timezone.now()+relativedelta(days=v))
-                value = abs(v)
+                value = 0
             return get_membership_start_expired(queryset, value, start_in=start_in)
         return queryset

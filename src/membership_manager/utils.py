@@ -56,16 +56,15 @@ def get_membership_next_expired(queryset, value, now=None):
 def get_membership_start_expired(queryset, value, now=None, start_in=None):
     if now is None:
         now = timezone.localdate(timezone.now())
-    dates_list = now + relativedelta(days=int(value))
-
+    end_in = now + relativedelta(days=int(value))
+    start_in  = start_in or now
     filters = {
         'state': "active",
         'renews__active': True,
-        'renews__start_date__lte': dates_list,
+        'renews__start_date__lte': end_in,
+        'renews__start_date__gte': start_in,
         'renews__encobro': True
     }
-    if start_in:
-        filters['renews__start_date__gte']=start_in
 
     return queryset.filter( **filters ).order_by('renews__start_date').distinct()
 
