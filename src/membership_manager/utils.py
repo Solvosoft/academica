@@ -57,7 +57,7 @@ def get_membership_start_expired(queryset, value, now=None, start_in=None):
     if now is None:
         now = timezone.localdate(timezone.now())
     end_in = now + relativedelta(days=int(value))
-
+    start_in  = start_in or now
     filters = {
         'state': "active",
         'renews__active': True,
