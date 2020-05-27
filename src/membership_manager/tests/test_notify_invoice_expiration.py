@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
-from nose.tools import assert_is_not_none
 
 from membership_core.models import SystemCurrency, RenewalPeriod
 from membership_manager.models import Organization, Membership, MembershipRenew, Invoice
@@ -125,10 +124,10 @@ class TestNotifyInvoiceExpiration(TestCase):
         self.assertEqual(invoice_expiration_filter_queryset(self.now).count(), 1)
 
         """
-        En esta prueba falla porque existe una sola factura que si esta en dentro del rango [45, 30, 15, 7, 3, 2, 1]
+        En esta prueba hay una sola factura dentro del rango [45, 30, 15, 7, 3, 2, 1] no importa si se ejecuta consecutivamente
         """
 
-        self.assertEqual(invoice_expiration_filter_queryset(self.now).count(), 0)
+        self.assertEqual(invoice_expiration_filter_queryset(self.now).count(), 1)
 
 
     def test_notifity_invoice_expiration(self):
@@ -141,7 +140,7 @@ class TestNotifyInvoiceExpiration(TestCase):
 
         email = EmailNotification.objects.filter(message__contains="Orga").first()
 
-        assert_is_not_none(email, msg="Se envio el email a la única factura pronta a vencer dentro del rango establecido")
+        self.assertIsNotNone(email, msg="Se envio el email a la única factura pronta a vencer dentro del rango establecido")
 
 
 
