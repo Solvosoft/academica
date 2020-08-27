@@ -10,3 +10,4 @@ python-dateutil
 django-markitup==4.0.0
 markdown==3.2.2
 psycopg2-binary
+git+https://github.com/luisza/django-gentelella-widgets.git#egg=djgentelella

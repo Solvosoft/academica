@@ -49,7 +49,9 @@ INSTALLED_APPS = [
     'django_countries',
     'ajax_select',
     'async_notifications',
-    'markitup'
+    'markitup',
+    'djgentelella',
+    'mptt',
 ]
 
 MIDDLEWARE = [
