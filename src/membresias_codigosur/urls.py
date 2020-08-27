@@ -27,9 +27,9 @@ from membership_manager.admin_memberships import MembInvoices, OrganizationInvoi
 from membership_manager.urls import urlpatterns as url_manager
 from membership_telbot_manager.views import UpdateBot
 from django.conf import settings
+from djgentelella.urls import urlpatterns as djgentelellaurls
 
-
-urlpatterns = [
+urlpatterns = djgentelellaurls + [
     path('', RedirectView.as_view(url="/admin/")),
     path('async_notifications/', include('async_notifications.urls')),
     path('admin/', admin.site.urls),

@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'markitup',
     'djgentelella',
     'mptt',
+    'rest_framework',
+    'chunked_upload',
 ]
 
 MIDDLEWARE = [
@@ -185,8 +187,21 @@ ASYNC_BCC  =  'membresias@codigosur.org'
 #ASYNC_SEND_ONLY_EMAIL = ['membresias@codigosur.org']
 ASYNC_SMTP_DEBUG=False
 ASYNC_NEWSLETTER_WIDGET = 'markitup.widgets.AdminMarkItUpWidget'
+
+
+DATE_INPUT_FORMATS=[
+    '%Y-%m-%d', '%d/%m/%Y', '%d/%m/%y'
+]
+
+DATETIME_INPUT_FORMATS = [
+    '%m/%d/%Y %H:%M %p',
+    '%Y-%m-%d %H:%M %p',
+    '%d/%m/%y %H:%M %p'
+]
+
 MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
 MARKITUP_SET = 'markitup/sets/markdown/'
+JQUERY_URL = None
 
 """
 ASYNC_NEWSLETTER_SEVER_CONFIGS={
