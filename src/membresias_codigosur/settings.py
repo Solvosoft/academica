@@ -96,7 +96,7 @@ WSGI_APPLICATION = 'membresias_codigosur.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'membresias',
+        'NAME': 'codigosur',
         'USER': 'codigosur',
         'PASSWORD': 'codigosur',
         'HOST': 'localhost',
@@ -148,7 +148,7 @@ STATIC_ROOT = os.path.join(BASE_NOCODE_DIR, 'static/')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_NOCODE_DIR, 'media/')
 #LOGIN_URL = '/login'
-#LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/home/'
 LOCALE_PATHS = (
     os.path.join(BASE_NOCODE_DIR, 'locale/'),
 )
