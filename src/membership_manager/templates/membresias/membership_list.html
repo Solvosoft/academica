@@ -1,0 +1,42 @@
+{% extends 'membresias/djgentelella/base.html' %}
+
+{% block content %} 
+    <h2>Membresías</h2>
+    <div class="row">
+        {% for membership in object_list %}
+            <div class="col-md-3 widget widget_tally_box">
+                <div class="x_panel fixed_height_390">
+                    <div class="x_title">
+                        <span class="membership_title">{{membership.name|truncatechars:60}}</span>
+                        <a class="close_button"><i class="fa fa-close"></i></a>
+                    <div>
+                    <div class="clearfix"></div>
+                    <div class="x_content">
+                        <div style="text-align: left; margin-bottom: 15px;">
+                            <h4>Información:</h4>
+                            <div>
+                                {% if membership.contact.country.name is None %}
+                                    País no especificado
+                                {% else %} 
+                                    {{membership.contact.country.name }}
+                                {% endif %}
+                                </div>
+                            <div>{{membership.membership_type}}</div>
+                            <div>{{membership.renewal_period}}</div>
+                            <br/>
+                            <div>Estado: {{membership.state}}</div>
+                            <div>Número de Facturas: 4</div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="x_footer">
+                Cantidad: {{membership.annual_cost}}{{membership.currency}}
+            </div>
+            </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}
