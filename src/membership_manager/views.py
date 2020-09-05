@@ -22,3 +22,5 @@ class OrganizationView(CRUDView):
 
 class MembershipListView(ListView):
     model = Membership
+    template_name = "membresias/membership_list.html"
+    paginate_by = 10

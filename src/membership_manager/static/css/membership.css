@@ -30,3 +30,7 @@
     line-height: 4em;
     padding-left: 20px;
 }
+.paginator_container{
+    margin: 0 auto !important;
+    text-align: center !important;
+}
