@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from membership_manager.models import Contact
+from membership_manager.models import Contact, Organization
 from djgentelella.cruds.base import CRUDView
 
 
@@ -11,4 +11,9 @@ def index(request):
 
 class ContactView(CRUDView):
     model = Contact
+    template_name_base = "membresias/djgentelella/cruds"
+
+
+class OrganizationView(CRUDView):
+    model = Organization
     template_name_base = "membresias/djgentelella/cruds"
