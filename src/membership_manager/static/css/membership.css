@@ -34,3 +34,7 @@
     margin: 0 auto !important;
     text-align: center !important;
 }
+.search_options .buttons{
+    text-align: right;
+    padding-right: 100px;
+}

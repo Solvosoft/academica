@@ -1,8 +1,26 @@
 {% extends 'membresias/djgentelella/base.html' %}
 
-{% block content %} 
+{% block content %}
+    
     <h2>Membresías</h2>
-    <div class="row">
+    <div class="search_options">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Buscar por país, organazación o contacto">
+                    <span class="input-group-btn">
+                        <button class="btn btn-success" type="button">Go!</button>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="buttons">
+                    <button class="btn btn-primary">Nueva Membresía</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row membership_cards">
         {% for membership in object_list %}
             <div class="col-md-3 widget widget_tally_box">
                 <div class="x_panel fixed_height_390">
