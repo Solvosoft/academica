@@ -12,3 +12,4 @@ src/celerybeat-schedule.dat
 src/celerybeat-schedule.dir
 src/celerybeat-schedule
 .vscode/
+venv/
