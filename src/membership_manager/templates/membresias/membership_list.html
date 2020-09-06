@@ -23,7 +23,7 @@
         </div>
     </div>
     <div class="row membership_cards">
-        {% for membership in memberships %}
+        {% for membership in object_list %}
             <div class="col-md-3 widget widget_tally_box">
                 <div class="x_panel fixed_height_390">
                     <div class="x_title">
@@ -63,7 +63,11 @@
         {% if is_paginated %}
             <ul class="pagination">
                 {% if page_obj.has_previous %}
-                    <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                    {% if q is None or q == '' %}
+                        <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                    {% else %}
+                        <li><a href="?page={{ page_obj.previous_page_number }}&q={{q}}">&laquo;</a></li>
+                    {% endif%}
                 {% else %}
                     <li class="disabled"><span>&laquo;</span></li>
                 {% endif %}
@@ -71,11 +75,19 @@
                     {% if page_obj.number == i %}
                         <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
                     {% else %}
-                        <li><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% if q is None or q == '' %}
+                            <li><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% else %}
+                            <li><a href="?page={{ i }}&q={{q}}">{{ i }}</a></li>
+                        {% endif %}
                     {% endif %}
                 {% endfor %}
                 {% if page_obj.has_next %}
-                    <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                    {% if q is None or q == '' %}
+                        <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                     {% else %}
+                        <li><a href="?page={{ page_obj.next_page_number }}&q={{q}}">&raquo;</a></li>
+                     {% endif %}
                 {% else %}
                     <li class="disabled"><span>&raquo;</span></li>
                 {% endif %}

@@ -4,6 +4,7 @@ from membership_manager.models import Contact, Organization, Membership
 from djgentelella.cruds.base import CRUDView
 from django.views.generic import ListView
 from django.db.models import Q
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 
 @login_required
@@ -23,14 +24,12 @@ class OrganizationView(CRUDView):
 
 class MembershipListView(ListView):
     template_name = "membresias/membership_list.html"
-    paginate_by = 10
-    model = Membership
+    paginate_by = 8
     
-    def get_context_data(self, **kwargs):
+    def get_queryset(self):
         queryset = Membership.objects.all()
-        context = super().get_context_data(**kwargs)
         q = self.request.GET.get('q')
-        if( q != None):
+        if(q != None):
             #need to implement countries filter but it will be overwrite soon
             queryset = Membership.objects.filter(
                     #Q(contact__country__in=q) | 
@@ -38,8 +37,11 @@ class MembershipListView(ListView):
                     Q(contact__first_name__icontains=q) |
                     Q(contact__last_name__icontains=q)
                     )
-        context['memberships'] = queryset
-        context['q'] = ''
-        if q != None:
-            context["q"]=q
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in the publisher
+        context['q'] = self.request.GET.get('q','')
         return context
