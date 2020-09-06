@@ -6,12 +6,14 @@
     <div class="search_options">
         <div class="row">
             <div class="col-md-6">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Buscar por país, organazación o contacto">
-                    <span class="input-group-btn">
-                        <button class="btn btn-success" type="button">Go!</button>
-                    </span>
-                </div>
+                <form method="GET">
+                    <div class="input-group">
+                        <input type="text" value="{{q}}" name="q" class="form-control" placeholder="Buscar por país, organazación o contacto">
+                        <span class="input-group-btn">
+                            <button class="btn btn-success" type="submit">Go!</button>
+                        </span>
+                    </div>
+                </form>
             </div>
             <div class="col-md-6">
                 <div class="buttons">
@@ -21,7 +23,7 @@
         </div>
     </div>
     <div class="row membership_cards">
-        {% for membership in object_list %}
+        {% for membership in memberships %}
             <div class="col-md-3 widget widget_tally_box">
                 <div class="x_panel fixed_height_390">
                     <div class="x_title">
