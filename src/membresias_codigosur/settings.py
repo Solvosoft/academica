@@ -28,8 +28,8 @@ ALLOWED_HOSTS = [c for c in os.getenv('ALLOWED_HOSTS', '').split(',') if DEBUG a
 if not ALLOWED_HOSTS:
     ALLOWED_HOSTS=['*']
 
-ADMINS = [('support', 'support@solvosoft.com') ]
-
+ADMINS = [('support', 'sitio@solvosoft.com') ]
+ASYNC_TEMPLATES_NOTIFICATION = os.path.join(BASE_NOCODE_DIR, 'news_templates/')
 
 # Application definition
 
@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'mptt',
     'rest_framework',
     'chunked_upload',
+    'django_celery_results',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -72,7 +74,7 @@ ROOT_URLCONF = 'membresias_codigosur.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [ASYNC_TEMPLATES_NOTIFICATION],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -164,10 +166,20 @@ EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL','False').lower() == "true"
 
 
 # docker run -d --rm --name membresias-rabbitmq -p 5672:5672 -d rabbitmq:3
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
 CELERY_MODULE = "membresias_codigosur.celery"
 CELERY_TIMEZONE = TIME_ZONE
-CELERY_ACCEPT_CONTENT = ['pickle', 'json']
+CELERY_ACCEPT_CONTENT = ['json']
 CELERY_BROKER_URL = os.getenv('BROKER_URL', 'amqp://guest:guest@localhost:5672')
+
+# django setting.
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',
+    }
+}
 
 ASYNC_NOTIFICATION_USER='membership_manager.Contact'
 ASYNC_NOTIFICATION_USER_LOOKUP_FIELDS= {'order_by': 'first_name',

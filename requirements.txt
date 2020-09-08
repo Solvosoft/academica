@@ -1,9 +1,11 @@
-django>=3.0
+django>=3.1
 django-countries>=6.0
 pyTelegramBotAPI
-async_notifications==0.1.20
+async_notifications==0.1.21
 django-ajax-selects==1.9.1
-celery>4.2
+celery==4.4.7
+django-celery-beat==2.0.0
+django-celery-results==1.2.1
 xhtml2pdf
 fake
 python-dateutil
