@@ -1,7 +1,7 @@
 django>=3.0
 django-countries>=6.0
 pyTelegramBotAPI
-async_notifications==0.1.19
+async_notifications==0.1.20
 django-ajax-selects==1.9.1
 celery>4.2
 xhtml2pdf
@@ -10,3 +10,4 @@ python-dateutil
 django-markitup==4.0.0
 markdown==3.2.2
 psycopg2-binary
+djgentelella==0.0.4
