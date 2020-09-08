@@ -8,21 +8,21 @@ from django.db.models import Q
 
 @login_required
 def index(request):
-    return render(request, 'membresias/home.html')
+    return render(request, 'membership/home.html')
 
 
 class ContactView(CRUDView):
     model = Contact
-    template_name_base = "membresias/djgentelella/cruds"
+    template_name_base = "membership/djgentelella/cruds"
 
 
 class OrganizationView(CRUDView):
     model = Organization
-    template_name_base = "membresias/djgentelella/cruds"
+    template_name_base = "membership/djgentelella/cruds"
 
 
 class MembershipListView(ListView):
-    template_name = "membresias/membership_list.html"
+    template_name = "membership/membership_list.html"
     paginate_by = 8
 
     def get_queryset(self):
