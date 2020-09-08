@@ -1,0 +1,40 @@
+.membership_title{
+    color: black !important;
+    font-size: large;
+    max-width: 200px !important;
+    margin:0 !important;
+    padding:0 !important;
+    text-align: left !important;
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+.close_button{
+    line-height: 12px;
+    color: white;
+    background: red;
+    z-index: 100;
+    cursor: pointer;
+    font-size: 28pt;
+    font-family: tahoma;
+    position:absolute;
+    top:0;
+    right:0;
+}
+.x_footer{
+    border: 1px solid #E6E9ED;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    left:0;
+    line-height: 4em;
+    padding-left: 20px;
+}
+.paginator_container{
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+.search_options .buttons{
+    text-align: right;
+    padding-right: 100px;
+}

@@ -1,0 +1,97 @@
+{% extends 'membresias/djgentelella/base.html' %}
+
+{% block content %}
+    
+    <h2>Membresías</h2>
+    <div class="search_options">
+        <div class="row">
+            <div class="col-md-6">
+                <form method="GET">
+                    <div class="input-group">
+                        <input type="text" value="{{q}}" name="q" class="form-control" placeholder="Buscar por país, organazación o contacto">
+                        <span class="input-group-btn">
+                            <button class="btn btn-success" type="submit">Go!</button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <div class="buttons">
+                    <button class="btn btn-primary">Nueva Membresía</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row membership_cards">
+        {% for membership in object_list %}
+            <div class="col-md-3 widget widget_tally_box">
+                <div class="x_panel fixed_height_390">
+                    <div class="x_title">
+                        <span class="membership_title">{{membership.name|truncatechars:60}}</span>
+                        <a class="close_button"><i class="fa fa-close"></i></a>
+                    <div>
+                    <div class="clearfix"></div>
+                    <div class="x_content">
+                        <div style="text-align: left; margin-bottom: 15px;">
+                            <h4>Información:</h4>
+                            <div>
+                                {% if membership.contact.country.name is None %}
+                                    País no especificado
+                                {% else %} 
+                                    {{membership.contact.country.name }}
+                                {% endif %}
+                                </div>
+                            <div>{{membership.membership_type}}</div>
+                            <div>{{membership.renewal_period}}</div>
+                            <br/>
+                            <div>Estado: {{membership.state}}</div>
+                            <div>Número de Facturas: 4</div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="x_footer">
+                Cantidad: {{membership.annual_cost}}{{membership.currency}}
+            </div>
+            </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="paginator_container">
+        {% if is_paginated %}
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    {% if q is None or q == '' %}
+                        <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                    {% else %}
+                        <li><a href="?page={{ page_obj.previous_page_number }}&q={{q}}">&laquo;</a></li>
+                    {% endif%}
+                {% else %}
+                    <li class="disabled"><span>&laquo;</span></li>
+                {% endif %}
+                {% for i in paginator.page_range %}
+                    {% if page_obj.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                    {% else %}
+                        {% if q is None or q == '' %}
+                            <li><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% else %}
+                            <li><a href="?page={{ i }}&q={{q}}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    {% if q is None or q == '' %}
+                        <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                     {% else %}
+                        <li><a href="?page={{ page_obj.next_page_number }}&q={{q}}">&raquo;</a></li>
+                     {% endif %}
+                {% else %}
+                    <li class="disabled"><span>&raquo;</span></li>
+                {% endif %}
+            </ul>
+        {% endif %}
+    </div>
+{% endblock content %}

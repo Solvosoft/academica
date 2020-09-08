@@ -49,7 +49,11 @@ INSTALLED_APPS = [
     'django_countries',
     'ajax_select',
     'async_notifications',
-    'markitup'
+    'markitup',
+    'djgentelella',
+    'mptt',
+    'rest_framework',
+    'chunked_upload',
 ]
 
 MIDDLEWARE = [
@@ -92,7 +96,7 @@ WSGI_APPLICATION = 'membresias_codigosur.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'membresias',
+        'NAME': 'codigosur',
         'USER': 'codigosur',
         'PASSWORD': 'codigosur',
         'HOST': 'localhost',
@@ -144,7 +148,7 @@ STATIC_ROOT = os.path.join(BASE_NOCODE_DIR, 'static/')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_NOCODE_DIR, 'media/')
 #LOGIN_URL = '/login'
-#LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/home/'
 LOCALE_PATHS = (
     os.path.join(BASE_NOCODE_DIR, 'locale/'),
 )
@@ -183,8 +187,21 @@ ASYNC_BCC  =  'membresias@codigosur.org'
 #ASYNC_SEND_ONLY_EMAIL = ['membresias@codigosur.org']
 ASYNC_SMTP_DEBUG=False
 ASYNC_NEWSLETTER_WIDGET = 'markitup.widgets.AdminMarkItUpWidget'
+
+
+DATE_INPUT_FORMATS=[
+    '%Y-%m-%d', '%d/%m/%Y', '%d/%m/%y'
+]
+
+DATETIME_INPUT_FORMATS = [
+    '%m/%d/%Y %H:%M %p',
+    '%Y-%m-%d %H:%M %p',
+    '%d/%m/%y %H:%M %p'
+]
+
 MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
 MARKITUP_SET = 'markitup/sets/markdown/'
+JQUERY_URL = None
 
 """
 ASYNC_NEWSLETTER_SEVER_CONFIGS={
