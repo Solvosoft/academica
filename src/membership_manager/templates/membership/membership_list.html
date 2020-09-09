@@ -8,7 +8,7 @@
             <div class="col-md-6">
                 <form method="GET">
                     <div class="input-group">
-                        <input type="text" value="{{q}}" name="q" class="form-control" placeholder="Buscar por país, organazación o contacto">
+                        <input type="text" value="{{q}}" name="q" class="form-control" placeholder="Buscar por país, organización o contacto">
                         <span class="input-group-btn">
                             <button class="btn btn-success" type="submit">Go!</button>
                         </span>
@@ -27,7 +27,7 @@
             <div class="col-md-3 widget widget_tally_box">
                 <div class="x_panel fixed_height_390">
                     <div class="x_title">
-                        <h2>{{membership.name|truncatechars:20}}</h2>
+                        <h2><img src="{{membership.contact.country.flag}}" /> <b>{{membership.membership_type}}</b></h2>
                         <ul class="nav navbar-right panel_toolbox">
                             <li><a class="close-link"><i class="fa fa-close"></i></a></li>
                         </ul>
@@ -36,6 +36,7 @@
                     <div class="x_content">
                         <div style="text-align: left; margin-bottom: 15px;">
                             <h4>Información:</h4>
+                            <h5>{{membership.name}}</h5>
                             <div>
                                 {% if membership.contact.country.name is None %}
                                     País no especificado
