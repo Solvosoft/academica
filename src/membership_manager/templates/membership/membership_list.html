@@ -1,4 +1,4 @@
-{% extends 'membresias/djgentelella/base.html' %}
+{% extends 'membership/djgentelella/base.html' %}
 
 {% block content %}
     
@@ -27,10 +27,12 @@
             <div class="col-md-3 widget widget_tally_box">
                 <div class="x_panel fixed_height_390">
                     <div class="x_title">
-                        <span class="membership_title">{{membership.name|truncatechars:60}}</span>
-                        <a class="close_button"><i class="fa fa-close"></i></a>
-                    <div>
-                    <div class="clearfix"></div>
+                        <h2>{{membership.name|truncatechars:20}}</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
                     <div class="x_content">
                         <div style="text-align: left; margin-bottom: 15px;">
                             <h4>Información:</h4>
@@ -40,7 +42,7 @@
                                 {% else %} 
                                     {{membership.contact.country.name }}
                                 {% endif %}
-                                </div>
+                            </div>
                             <div>{{membership.membership_type}}</div>
                             <div>{{membership.renewal_period}}</div>
                             <br/>
@@ -49,13 +51,10 @@
                         </div>
                         <div class="clearfix"></div>
                     </div>
-                    <div class="clearfix"></div>
+                    <div class="x_footer">
+                    <h4>Cantidad: <b>{{membership.annual_cost}} {{membership.currency}}</b></h4>
                 </div>
-            </div>
-            <div class="x_footer">
-                Cantidad: {{membership.annual_cost}}{{membership.currency}}
-            </div>
-            </div>
+                </div>
             </div>
         {% endfor %}
     </div>
