@@ -1,0 +1,34 @@
+{% extends 'membership/djgentelella/base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+    <div class='col-md-8 col-md-offset-2 col-xs-12'>
+        <div class="x_panel">
+            <div class="x_title">
+                <h1 class="text-center">Crear boletín</h1>
+
+            </div>
+
+            <form action="" method="post">
+                {% csrf_token %}
+
+                {{form.as_horizontal}}
+
+
+                <div class="form-group" style="text-align:center; margin-top:40px;">
+
+                            <button class="btn btn-success text-center"
+                                    type="submit">Insertar</button>
+
+                        </div>
+                </form>
+
+            </div>
+            </div>
+
+        </div>
+</div>
+
+{% endblock content %}
