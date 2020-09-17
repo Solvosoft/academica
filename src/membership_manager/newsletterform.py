@@ -261,15 +261,22 @@ class NewsLetterTemplateForm(CustomForm, forms.Form):
 
 class NewsLetterForm(CustomForm, forms.Form):
 
-
-    subject = forms.CharField(widget=genwidgets.TextInput, required=True)
-    context = forms.ChoiceField(widget=genwidgets.Select, choices=[])
-    message = forms.CharField(widget=NEWSLETTER_WIDGET, required=True)
-    file = forms.FileField(widget=genwidgets.FileInput)
-    create_datetime = forms.DateField(widget=genwidgets.DateInput, required=True)
+    subject = forms.CharField(widget=genwidgets.TextInput, required=True, label="Asunto")
+    context = forms.ChoiceField(widget=genwidgets.Select, choices=[], label="Contexto")
+    message = forms.CharField(widget=NEWSLETTER_WIDGET, required=True, label="Mensaje")
+    file = forms.FileField(widget=genwidgets.FileInput, label="Archivo")
+    extra_emails = forms.CharField(widget=genwidgets.Textarea, label="Correos adicionales", required=False)
+    confirmation_send_extra_emails = forms.BooleanField(widget=genwidgets.YesNoInput,
+                                                        label="¿Enviar también a los correos adicionales?", required=False)
+    create_datetime = forms.DateTimeField(widget=genwidgets.DateTimeInput, required=True, label="Fecha y hora de envío",
+                                      help_text="La fecha y hora ingresada no debe ser inferior a la fecha y hora actual.")
 
     def __init__(self, *args, **kwargs):
         pk = kwargs.pop('pk')
         super().__init__(*args, **kwargs)
 
         self.fields['context'].choices = get_context_news_letter(pk)
+
+    class Media:
+
+        js = ['async_notifications/previewupdater.js']
