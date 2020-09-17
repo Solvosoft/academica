@@ -27,7 +27,14 @@
             <div class="col-md-3 widget widget_tally_box">
                 <div class="x_panel fixed_height_390">
                     <div class="x_title">
-                        <h2><img src="{{membership.contact.country.flag}}" /> <b>{{membership.membership_type}}</b></h2>
+                        <h2>
+                            {% if membership.contact.country %}
+                                <img src="{{membership.contact.country.flag}}" />
+                            {% else %}
+                                <img src="{{membership.organization.country.flag}}" />
+                            {% endif %}
+                            {{membership.membership_type}}</b>
+                        </h2>
                         <ul class="nav navbar-right panel_toolbox">
                             <li><a class="close-link"><i class="fa fa-close"></i></a></li>
                         </ul>
@@ -37,18 +44,15 @@
                         <div style="text-align: left; margin-bottom: 15px;">
                             <h4>Información:</h4>
                             <h5>{{membership.name}}</h5>
-                            <div>
-                                {% if membership.contact.country.name is None %}
-                                    País no especificado
-                                {% else %} 
-                                    {{membership.contact.country.name }}
+                            <div>Renovación: {{membership.renewal_period}}</div>
+                            <div>Estado:
+                                {% if membership.state == 'active'%} 
+                                    Activa
+                                {% else %}
+                                    Inactiva
                                 {% endif %}
                             </div>
-                            <div>{{membership.membership_type}}</div>
-                            <div>{{membership.renewal_period}}</div>
-                            <br/>
-                            <div>Estado: {{membership.state}}</div>
-                            <div>Número de Facturas: 4</div>
+                            <div>Número de Facturas:{{membership.mem_inv.all.count}}</div>
                         </div>
                         <div class="clearfix"></div>
                     </div>

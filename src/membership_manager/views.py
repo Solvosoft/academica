@@ -4,6 +4,7 @@ from membership_manager.models import Contact, Organization, Membership
 from djgentelella.cruds.base import CRUDView
 from django.views.generic import ListView
 from django.db.models import Q
+from django.db.models import Count
 
 
 @login_required
@@ -23,7 +24,7 @@ class OrganizationView(CRUDView):
 
 class MembershipListView(ListView):
     template_name = "membership/membership_list.html"
-    paginate_by = 8
+    paginate_by = 10
 
     def get_queryset(self):
         queryset = Membership.objects.all()
@@ -41,6 +42,5 @@ class MembershipListView(ListView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in the publisher
         context['q'] = self.request.GET.get('q', '')
         return context
