@@ -1,9 +1,11 @@
+from async_notifications.models import NewsLetter
+from async_notifications.tasks import task_send_newsletter
 from django.shortcuts import render, redirect
 
 from membership_manager.newsletterform import NewsLetterTemplateForm, NewsLetterForm
 
 
-def news_letter(request):
+def news_letter_list(request):
 
     if request.method == 'POST':
         form = NewsLetterTemplateForm(request.POST)
@@ -15,7 +17,10 @@ def news_letter(request):
     else:
         form = NewsLetterTemplateForm()
 
-    return render(request, "news_letter/news_letter.html", context={'form': form})
+    lista_boletines = NewsLetter.objects.all()
+
+    return render(request, "news_letter/news_letter_list.html", context={'form': form,
+                                                                        'lista_boletines': lista_boletines })
 
 
 def create_news_letter(request, pk):
@@ -27,3 +32,12 @@ def create_news_letter(request, pk):
         form = NewsLetterForm(pk=pk)
 
     return render(request, "news_letter/create_news_letter.html", context={'form': form})
+
+
+def send_news_letter(request, pk):
+    task_send_newsletter.delay(pk)
+    return redirect('news_letter_list')
+
+def delete_news_letter(request, pk):
+    NewsLetter.objects.filter(pk=pk).delete()
+    return redirect('news_letter_list')
