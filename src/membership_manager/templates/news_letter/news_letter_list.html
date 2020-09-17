@@ -32,5 +32,47 @@
             </div>
 
         </div>
+    <div class="row">
+    <div class='col-md-12 col-xs-12'>
+        <h1 class="text-center"> Listado de boletines</h1>
+
+
+                    <div class="x_panel">
+
+<div class="x_content" style="display: block;">
+<div class="dashboard-widget-content">
+<table id="listadoboletines" class="table table-striped table-bordered" style="width:100%">
+        <thead>
+            <tr>
+                <th>Asunto</th>
+                <th>Plantilla</th>
+                <th>Fecha de envío</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+
+{% for boletin in lista_boletines %}
+        <tr>
+                <td>{{ boletin.subject }} </td>
+                <td>{{ boletin.template }}</td>
+                <td>{{ boletin.create_datetime }}</td>
+                <td>
+                    <a class="btn btn-sm" href=""><i class="fa fa-edit fa-2x"></i> </a>
+                    <a class="btn btn-sm" href="{% url 'delete_news_letter' boletin.pk %}" ><i class="fa fa-trash fa-2x"></i></a>
+                    <a class="btn btn-sm" href="{% url 'send_news_letter' boletin.pk %}" ><i class="fa fa-send fa-2x"></i></a>
+                    <a class="btn btn-sm" href="" ><i class="fa fa-clock-o fa-2x"></i></a>
+                </td>
+    </tr>
+    {% endfor %}
+
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+        </div>
+    </div>
 </div>
 {% endblock content %}
