@@ -4,7 +4,6 @@ from membership_manager.models import Contact, Organization, Membership
 from djgentelella.cruds.base import CRUDView
 from django.views.generic import ListView
 from django.db.models import Q
-from django.db.models import Count
 
 
 @login_required
