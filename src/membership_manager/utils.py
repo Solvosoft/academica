@@ -2,6 +2,8 @@ import random
 import string
 from datetime import timedelta
 
+from async_notifications.models import NewsLetterTemplate
+from async_notifications.utils import get_newsletter_context
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -142,3 +144,20 @@ def load_services_from_membership_template(template_id):
                             "observations": serv.observations})
     extra = services.count()
     return initial, extra
+
+
+def get_context_news_letter(template_pk):
+    context_list = []
+    template = NewsLetterTemplate.objects.filter(pk=template_pk).first()
+
+    if template:
+        context = get_newsletter_context(template.model_base)
+
+        for x in context:
+
+            context_list.append(
+
+                (x[0], f'{x[0]} -- {x[1]}{x[2]}')
+            )
+
+    return context_list

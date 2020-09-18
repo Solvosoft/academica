@@ -1,9 +1,14 @@
-from django import forms
-
 from async_notifications.interfaces import NewsLetterInterface
+from async_notifications.models import NewsLetterTemplate
+from async_notifications.settings import NEWSLETTER_WIDGET
+from django import forms
+from djgentelella.forms.forms import CustomForm
+from djgentelella.widgets import core as genwidgets
+
 from membership_core.models import SystemCurrency, ServiceType
 from membership_core.utils import country_data
 from membership_manager.models import Organization, Membership, PAYMENT, IDS_TYPE, Invoice
+from membership_manager.utils import get_context_news_letter
 
 
 def get_countries_en_membresias():
@@ -244,3 +249,34 @@ class InvoiceManager(NewsLetterInterface):
             if email not in self.excludedata and key not in pks_used:
                 yield self.model.objects.filter(pk=pk).first(), email
                 pks_used.append(key)
+
+
+class NewsLetterTemplateForm(CustomForm, forms.Form):
+
+    news_letter_template = forms.ModelChoiceField(widget=genwidgets.Select, queryset=NewsLetterTemplate.objects.all(),
+                                                  required=True, label="Plantilla de boletín")
+
+
+
+
+class NewsLetterForm(CustomForm, forms.Form):
+
+    subject = forms.CharField(widget=genwidgets.TextInput, required=True, label="Asunto")
+    context = forms.ChoiceField(widget=genwidgets.Select, choices=[], label="Contexto")
+    message = forms.CharField(widget=NEWSLETTER_WIDGET, required=True, label="Mensaje")
+    file = forms.FileField(widget=genwidgets.FileInput, label="Archivo")
+    extra_emails = forms.CharField(widget=genwidgets.Textarea, label="Correos adicionales", required=False)
+    confirmation_send_extra_emails = forms.BooleanField(widget=genwidgets.YesNoInput,
+                                                        label="¿Enviar también a los correos adicionales?", required=False)
+    create_datetime = forms.DateTimeField(widget=genwidgets.DateTimeInput, required=True, label="Fecha y hora de envío",
+                                      help_text="La fecha y hora ingresada no debe ser inferior a la fecha y hora actual.")
+
+    def __init__(self, *args, **kwargs):
+        pk = kwargs.pop('pk')
+        super().__init__(*args, **kwargs)
+
+        self.fields['context'].choices = get_context_news_letter(pk)
+
+    class Media:
+
+        js = ['async_notifications/previewupdater.js']
