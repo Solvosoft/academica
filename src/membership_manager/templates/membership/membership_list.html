@@ -1,5 +1,10 @@
 {% extends 'gentelella/base.html' %}
 
+{% load static %}
+{% block extra_css %}
+    <link href="{% static 'css/membership.css' %}" rel="stylesheet">
+{% endblock extra_css %}
+
 {% block content %}
     
     <h2>Membresías</h2>
