@@ -10,7 +10,6 @@ from django.utils import timezone
 
 from async_notifications.utils import register_model, register_news_basemodel
 from membership_core.models import MembershipTemplate, SystemCurrency
-from membership_core.utils import country_data
 from membership_manager import models
 from membership_manager import newsletterform
 from membership_manager.admin_memberships import membership_payments_history, \
@@ -68,7 +67,7 @@ class ContactAdmin(admin.ModelAdmin):
     def show_country(self, obj):
         if obj:
             if obj.country:
-                return country_data[obj.country]
+                return str(obj.country)
         return ""
 
     show_country.short_description = "País"
@@ -234,9 +233,9 @@ class MemberShipAdmin(AjaxSelectAdmin, admin.ModelAdmin):
         if obj:
             country = ''
             if obj.organization:
-                country = country_data[obj.organization.country]
+                country = str(obj.organization.country)
             elif obj.contact:
-                country = country_data[obj.contact.country]
+                country = str(obj.contact.country)
 
             dev = '<p style="letter-spacing:2px;" >'
             dev += "%s <br> %s <br> %s" % (country, obj.get_membership_type_display(),

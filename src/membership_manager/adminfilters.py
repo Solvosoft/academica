@@ -7,10 +7,8 @@ from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from membership_core.utils import country_data
+from membership_core.models import Country
 from membership_manager.models import Organization, Membership, Contact
-from django_countries import countries
-
 from membership_manager.utils import get_membership_next_expired, get_membership_start_expired
 
 
@@ -32,11 +30,10 @@ class PaisFilter(admin.SimpleListFilter):
             active=False
         ).count(), name
         )
+
     def lookups(self, request, model_admin):
-        keys = list(set(self.model.objects.all().values_list('country', flat=True)))
-        keys.sort()
-        country= country_data
-        options = [('all', 'T | A | I | Nombre')]+[(x, self.get_country(x, country[x])) for x in keys]
+        keys = Country.objects.all().values('name', 'id')
+        options = [('all', 'T | A | I | Nombre')]+[(x, self.get_country(x['id'], x['name'])) for x in keys]
         return options
 
     def queryset(self, request, queryset):

@@ -2,6 +2,7 @@ from django.db import models
 from .currency import CURRENCY_CHOICES
 DECIMAL_PLACES=2
 
+
 class SystemCurrency(models.Model):
     currency = models.CharField(max_length=4,
                                 choices=CURRENCY_CHOICES,
@@ -84,3 +85,12 @@ class ServiceMT(models.Model):
         verbose_name = "Servicio"
         verbose_name_plural = "Servicios"
         ordering = ('membership',)
+
+
+class Country(models.Model):
+    name = models.CharField(max_length=150)
+    flag = models.CharField(max_length=25)
+    code = models.CharField(max_length=5)
+
+    def __str__(self):
+        return self.name

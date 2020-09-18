@@ -6,7 +6,7 @@ from django.utils.safestring import mark_safe
 from django.utils.timezone import localtime
 from django_countries.fields import CountryField
 
-from membership_core.models import SystemCurrency, RenewalPeriod, ServiceType
+from membership_core.models import SystemCurrency, RenewalPeriod, ServiceType, Country
 
 PAYMENT = (
     ("Cash", "Efectivo"),
@@ -25,13 +25,11 @@ IDS_TYPE = (
 )
 
 class GeneralContactInfo(models.Model):
-
-
     email = models.EmailField(verbose_name="Correo electrónico")  # Correo electrónico
     cellphone = models.CharField(max_length=200, verbose_name="celular", null=True, blank=True)  # celular
     phone = models.CharField(max_length=200, verbose_name="Teléfono", null=True, blank=True )  # Teléfono
     address = models.TextField(verbose_name="Dirección", null=True, blank=True )  # Dirección
-    country = CountryField(verbose_name="País")  # País
+    country = models.ForeignKey(Country, on_delete=models.DO_NOTHING, verbose_name="País")
     city = models.CharField(max_length=200, verbose_name="Ciudad", null=True, blank=True)  # Ciudad
     province = models.CharField(max_length=200, verbose_name="Provincia", null=True, blank=True)  # Estado / Provincia
     postal_code = models.CharField(max_length=10, verbose_name="Código postal", null=True, blank=True)  # Código Postal

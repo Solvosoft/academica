@@ -4,7 +4,7 @@ from membership_core import models
 # Register your models here.
 admin.site.register([
     models.SystemCurrency, models.ServiceType, models.RenewalPeriod,
-
+    models.Country
 ])
 
 class ServiceMT(admin.TabularInline):

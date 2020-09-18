@@ -5,18 +5,16 @@ from django import forms
 from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as genwidgets
 
-from membership_core.models import SystemCurrency, ServiceType
-from membership_core.utils import country_data
+from membership_core.models import SystemCurrency, ServiceType, Country
 from membership_manager.models import Organization, Membership, PAYMENT, IDS_TYPE, Invoice
 from membership_manager.utils import get_context_news_letter
 
 
 def get_countries_en_membresias():
-    keys = list(set(Organization.objects.all().values_list('country', flat=True)))
-    keys.sort()
+    keys = Country.objects.all().values('id', 'name')
 
     for x in keys:
-        yield (x, country_data[x])
+        yield (x['id'], x['name'])
 
 
 
