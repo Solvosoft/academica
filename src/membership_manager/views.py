@@ -4,6 +4,7 @@ from membership_manager.models import Contact, Organization, Membership
 from djgentelella.cruds.base import CRUDView
 from django.views.generic import ListView
 from django.db.models import Q
+import datetime
 
 
 @login_required
@@ -42,4 +43,5 @@ class MembershipListView(ListView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         context['q'] = self.request.GET.get('q', '')
+        context['today'] = datetime.datetime.now
         return context
