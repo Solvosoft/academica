@@ -23,7 +23,7 @@ class OrganizationView(CRUDView):
 
 class MembershipListView(ListView):
     template_name = "membership/membership_list.html"
-    paginate_by = 8
+    paginate_by = 10
 
     def get_queryset(self):
         queryset = Membership.objects.all()
@@ -41,6 +41,5 @@ class MembershipListView(ListView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in the publisher
         context['q'] = self.request.GET.get('q', '')
         return context

@@ -134,6 +134,12 @@ class Membership(models.Model):
         if renew:
             return renew.start_date
 
+    @property
+    def country(self):
+        country = self.organization.country
+        if country is None:
+            country = self.contact.country
+        return country
 
     def __str__(self):
         return self.name
