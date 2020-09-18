@@ -1,4 +1,4 @@
-{% extends 'membership/djgentelella/base.html' %}
+{% extends 'gentelella/base.html' %}
 {% load i18n %}
 {% load crud_tags %}
 
@@ -12,7 +12,7 @@
 
 <ul class="nav navbar-left panel_toolbox">
         {% if crud_perms.list %}
-        <li><a href="{{ url_list }}{{getparams}}" title=" {% trans "Back to" %} {{ model_verbose_name_plural|lower }}">
+        <li><a href="{{ url_list }}{{getparams}}" title="{% trans "Back to" %} {{ model_verbose_name_plural|lower }}">
             <i class="fa fa-angle-double-left red"></i>
         </a></li>
         {% endif %}

@@ -3,8 +3,6 @@ import textwrap
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.safestring import mark_safe
-from django.utils.timezone import localtime
-from django_countries.fields import CountryField
 
 from membership_core.models import SystemCurrency, RenewalPeriod, ServiceType, Country
 
@@ -282,6 +280,7 @@ class ActivityReport(models.Model):
     class Meta:
         verbose_name = "Reporte Atencion"
         verbose_name_plural = "Reportes de Atencion"
+
 
 class Attention(models.Model):
     activity = models.ForeignKey(ActivityReport,on_delete=models.CASCADE,

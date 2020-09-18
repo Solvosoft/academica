@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+
+from membership_manager.dashboard import TopStats
 from membership_manager.models import Contact, Organization, Membership
 from djgentelella.cruds.base import CRUDView
 from django.views.generic import ListView
@@ -9,6 +11,7 @@ import datetime
 
 @login_required
 def index(request):
+    context = {'topstat': TopStats()}
     return render(request, 'membership/home.html')
 
 
