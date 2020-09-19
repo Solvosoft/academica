@@ -31,7 +31,8 @@
         <div class="row membership_cards">
             {% for membership in object_list %}
                 <div class="col-md-3 widget widget_tally_box">
-                    <div class="x_panel fixed_height_390 {% if membership.last_renew < today.date %}{{"expired_membership"}}{% endif%}">
+                    <div class="x_panel fixed_height_390 {% if membership.last_renew < today.date %}{{"expired_membership"}}{% endif%}
+                    {% if membership.state == 'inactive' %}{{"inactive_membership"}}{% endif %}">
                         <div class="x_title">
                             <h2>
                                 <span class="{{ membership.country.flag }}"></span>
@@ -48,7 +49,7 @@
                                 <h5>{{membership.name}}</h5>
                                 <div>Renovación: {{membership.renewal_period}}</div>
                                 <div>Estado:
-                                    {% if membership.state == 'active'%} 
+                                    {% if membership.state == 'active' %} 
                                         Activa
                                     {% else %}
                                         Inactiva
