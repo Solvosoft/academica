@@ -1,17 +1,36 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 
+from membership_core.models import Country, ServiceType
 from membership_manager.dashboard import TopStats
 from membership_manager.models import Contact, Organization, Membership
 from djgentelella.cruds.base import CRUDView
 from django.views.generic import ListView
-from django.db.models import Q
+from django.db.models import Q, Count
 import datetime
 
+def servicios_stats():
+    for service in ServiceType.objects.all():
+        yield (service.name, service.service_set.count())
+
+def country_stats():
+    for country in Country.objects.all().order_by('name'):
+        total = Membership.objects.filter(
+            Q(organization__country=country)|Q(contact__country=country),
+            state='active'
+        ).distinct().count()
+        if total:
+            yield (country.flag, country.name, total)
 
 @login_required
 def index(request):
-    context = {'topstat': TopStats()}
+    context = {'topstat': TopStats(),
+               'vencimientoanual_url': reverse('vencimientoanual-list'),
+               'pagoanual_url': reverse('pagoanual-list'),
+               'countries': country_stats(),
+               'servicios_stats': servicios_stats()
+               }
     return render(request, 'membership/home.html', context=context)
 
 
