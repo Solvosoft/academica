@@ -1,8 +1,25 @@
 {% extends 'gentelella/base.html' %}
+{% load gtsettings %}
+
+{% block pre_head %}
+    {% define_true  "use_chartjs" %}
+{% endblock %}
 
 {% block content %}
 <div class="container">
  {{topstat.render}}
 </div>
+<div class="container">
+ <div class="row">
+  <div class="col-md-12">
+   <div class="x_panel">
+    <div class="x_title">
+     <h2>Vencimientos del año <small>mensuales</small></h2>
+     <div class="filter">
+      <div id="vencimientos" data-widget="DJGraph" >
 
+      </div>
+     </div>
+     <div class="clearfix"></div>
+    </div>
 {% endblock %}

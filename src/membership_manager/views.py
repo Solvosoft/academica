@@ -12,7 +12,7 @@ import datetime
 @login_required
 def index(request):
     context = {'topstat': TopStats()}
-    return render(request, 'membership/home.html')
+    return render(request, 'membership/home.html', context=context)
 
 
 class ContactView(CRUDView):

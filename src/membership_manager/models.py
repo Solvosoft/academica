@@ -132,7 +132,9 @@ class Membership(models.Model):
 
     @property
     def country(self):
-        country = self.organization.country
+        country = None
+        if self.organization:
+            country = self.organization.country
         if country is None:
             country = self.contact.country
         return country

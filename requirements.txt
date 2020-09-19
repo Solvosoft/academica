@@ -1,5 +1,4 @@
 django>=3.1
-django-countries>=6.0
 pyTelegramBotAPI
 async_notifications==0.1.21
 django-ajax-selects==1.9.1
@@ -12,5 +11,5 @@ python-dateutil
 django-markitup==4.0.0
 markdown==3.2.2
 psycopg2-binary
-djgentelella==0.0.4
+djgentelella==0.0.5
 djangorestframework==3.11.0
