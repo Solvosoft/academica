@@ -4,7 +4,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.safestring import mark_safe
 
-from membership_core.models import SystemCurrency, RenewalPeriod, ServiceType, Country
+from membership_core.models import SystemCurrency, RenewalPeriod,\
+    ServiceType, Country
 
 PAYMENT = (
     ("Cash", "Efectivo"),
@@ -21,6 +22,7 @@ IDS_TYPE = (
     ('RUT', 'RUT'), ('NIT', 'NIT'), ('CUIT', 'CUIT'), ('RTN', 'RTN'), ('ETC', 'ETC'),
     ('cedula_juridica', 'Cédula Jurídica')
 )
+
 
 class GeneralContactInfo(models.Model):
     email = models.EmailField(verbose_name="Correo electrónico")  # Correo electrónico

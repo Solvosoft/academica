@@ -1,7 +1,9 @@
 from django.urls import path
 from membership_manager import views
-from membership_manager.news_letter import create_news_letter, news_letter_list, send_news_letter, delete_news_letter
-from membership_manager.views import OrganizationView, MembershipListView, ContactListView
+from membership_manager.news_letter import create_news_letter,\
+        news_letter_list, send_news_letter, delete_news_letter
+from membership_manager.views import OrganizationView,\
+        MembershipListView, ContactListView
 from django.contrib.auth.decorators import login_required
 
 organization_view = OrganizationView()

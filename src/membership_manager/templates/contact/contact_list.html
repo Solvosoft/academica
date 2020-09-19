@@ -28,15 +28,20 @@
                 </div>
             </div>
         </div>
-        <div class="row membership_cards">
-            {% for membership in object_list %}
+        <div class="row contact_cards">
+            {% for contact in object_list %}
                 <div class="col-md-3 widget widget_tally_box">
-                    <div class="x_panel fixed_height_390 {% if membership.last_renew < today.date %}{{"expired_membership"}}{% endif%}
-                    {% if membership.state == 'inactive' %}{{"inactive_membership"}}{% endif %}">
+                    <div class="x_panel fixed_height_390">
                         <div class="x_title">
                             <h2>
-                                <span class="{{ membership.country.flag }}"></span>
-                                <b>{{membership.membership_type}}</b>
+                                <span class="{{ contact.country.flag }}"></span>
+                                <b>
+                                    {% if contact.last_name is None %}
+                                        {{contact.last_name|truncatechars:18|title}}</b>
+                                    {% else %}
+                                        {{contact.first_name|truncatechars:18|title}}
+                                    {% endif %}
+                                </b>
                             </h2>
                             <ul class="nav navbar-right panel_toolbox">
                                 <li><a class="close-link"><i class="fa fa-close"></i></a></li>
@@ -46,24 +51,12 @@
                         <div class="x_content">
                             <div style="text-align: left; margin-bottom: 15px;">
                                 <h4>Información:</h4>
-                                <h5>{{membership.name}}</h5>
-                                <div>Renovación: {{membership.renewal_period}}</div>
-                                <div>Estado:
-                                    {% if membership.state == 'active' %} 
-                                        Activa
-                                    {% else %}
-                                        Inactiva
-                                    {% endif %}
-                                </div>
-                                <div>Número de Facturas:{{membership.mem_inv.all.count}}</div>
-                                <div>
-                                    Fecha de renovación: {{ membership.last_renew|date:"Y-m-d" }}
-                                </div>
+                                <h5>{{contact.first_name}}</h5>
                             </div>
                             <div class="clearfix"></div>
                         </div>
                         <div class="x_footer">
-                        <h4>Cantidad: <b>{{membership.annual_cost}} {{membership.currency}}</b></h4>
+                        <h4>Cantidad: <b>something in footer</b></h4>
                     </div>
                     </div>
                 </div>
@@ -105,6 +98,6 @@
             {% endif %}
         </div>
     {% else %}
-        <h1>Usted no tiene suficientes permisos para ver Membresías</h1>
+        <h1>Usted no tiene suficientes permisos para ver Contactos</h1>
     {% endif %}
 {% endblock content %}

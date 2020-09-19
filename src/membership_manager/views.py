@@ -5,6 +5,8 @@ from membership_manager.models import Contact, Organization, Membership
 from djgentelella.cruds.base import CRUDView
 from django.views.generic import ListView
 from django.db.models import Q
+from django.db.models.functions import Concat
+from django.db.models import Value
 import datetime
 
 
@@ -53,12 +55,10 @@ class ContactListView(ListView):
         queryset = Contact.objects.all()
         q = self.request.GET.get('q')
         if(q is not None):
-            queryset = Contact.objects.filter(
-                    Q(name__icontains=q) |
-                    Q(email__icontains=q) |
-                    Q(first_name__icontains=q) |
-                    Q(last_name__icontains=q)
-                    )
+            queryset = queryset.annotate(fullname=Concat(
+                'first_name', Value(' '), 'last_name'))
+            queryset = queryset.filter(
+                Q(email__icontains=q) | Q(fullname__icontains=q))
         return queryset
 
     def get_context_data(self, **kwargs):
