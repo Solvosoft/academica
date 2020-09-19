@@ -35,7 +35,8 @@ class MembershipListView(ListView):
         if(q is not None):
             # need to implement countries filter but it will be overwrite soon
             queryset = Membership.objects.filter(
-                    # Q(contact__country__in=q) |
+                    Q(contact__country__name__icontains=q) |
+                    Q(organization__country__name__icontains=q) |
                     Q(organization__name__icontains=q) |
                     Q(contact__first_name__icontains=q) |
                     Q(contact__last_name__icontains=q)
