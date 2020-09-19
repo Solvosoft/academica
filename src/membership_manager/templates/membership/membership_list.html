@@ -1,103 +1,109 @@
 {% extends 'gentelella/base.html' %}
 
+{% load static %}
+{% block extra_css %}
+    <link href="{% static 'css/membership.css' %}" rel="stylesheet">
+{% endblock extra_css %}
+
 {% block content %}
     
     <h2>Membresías</h2>
-    <div class="search_options">
-        <div class="row">
-            <div class="col-md-6">
-                <form method="GET">
-                    <div class="input-group">
-                        <input type="text" value="{{q}}" name="q" class="form-control" placeholder="Buscar por país, organización o contacto">
-                        <span class="input-group-btn">
-                            <button class="btn btn-success" type="submit">Go!</button>
-                        </span>
+    {% if perms.membership_manager.view_membership %}
+        <div class="search_options">
+            <div class="row">
+                <div class="col-md-6">
+                    <form method="GET">
+                        <div class="input-group">
+                            <input type="text" value="{{q}}" name="q" class="form-control" placeholder="Buscar por país, organización o contacto">
+                            <span class="input-group-btn">
+                                <button class="btn btn-success" type="submit">Go!</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <div class="buttons">
+                        <button class="btn btn-primary">Nueva Membresía</button>
                     </div>
-                </form>
-            </div>
-            <div class="col-md-6">
-                <div class="buttons">
-                    <button class="btn btn-primary">Nueva Membresía</button>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row membership_cards">
-        {% for membership in object_list %}
-            <div class="col-md-3 widget widget_tally_box">
-                <div class="x_panel fixed_height_390">
-                    <div class="x_title">
-                        <h2>
-                            <span class="{{ membership.country.flag }}"></span>
-                            <b>{{membership.membership_type}}</b>
-                        </h2>
-                        <ul class="nav navbar-right panel_toolbox">
-                            <li><a class="close-link"><i class="fa fa-close"></i></a></li>
-                        </ul>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <div style="text-align: left; margin-bottom: 15px;">
-                            <h4>Información:</h4>
-                            <h5>{{membership.name}}</h5>
-                            <div>Renovación: {{membership.renewal_period}}</div>
-                            <div>Estado:
-                                {% if membership.state == 'active'%} 
-                                    Activa
-                                {% else %}
-                                    Inactiva
-                                {% endif %}
-                            </div>
-                            <div>Número de Facturas:{{membership.mem_inv.all.count}}</div>
-                            <div>
-                                Fecha de renovación: {{ membership.last_renew }}
-                                {% if membership.last_renew < today.date %}
-                                    <label style="color:red"><i class="fa fa-flag" aria-hidden="true"></i></label>
-                                {% endif%}
-                            </div>
+        <div class="row membership_cards">
+            {% for membership in object_list %}
+                <div class="col-md-3 widget widget_tally_box">
+                    <div class="x_panel fixed_height_390 {% if membership.last_renew < today.date %}{{"expired_membership"}}{% endif%}">
+                        <div class="x_title">
+                            <h2>
+                                <span class="{{ membership.country.flag }}"></span>
+                                <b>{{membership.membership_type}}</b>
+                            </h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                            </ul>
+                            <div class="clearfix"></div>
                         </div>
-                        <div class="clearfix"></div>
+                        <div class="x_content">
+                            <div style="text-align: left; margin-bottom: 15px;">
+                                <h4>Información:</h4>
+                                <h5>{{membership.name}}</h5>
+                                <div>Renovación: {{membership.renewal_period}}</div>
+                                <div>Estado:
+                                    {% if membership.state == 'active'%} 
+                                        Activa
+                                    {% else %}
+                                        Inactiva
+                                    {% endif %}
+                                </div>
+                                <div>Número de Facturas:{{membership.mem_inv.all.count}}</div>
+                                <div>
+                                    Fecha de renovación: {{ membership.last_renew|date:"Y-m-d" }}
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_footer">
+                        <h4>Cantidad: <b>{{membership.annual_cost}} {{membership.currency}}</b></h4>
                     </div>
-                    <div class="x_footer">
-                    <h4>Cantidad: <b>{{membership.annual_cost}} {{membership.currency}}</b></h4>
+                    </div>
                 </div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-    <div class="paginator_container">
-        {% if is_paginated %}
-            <ul class="pagination">
-                {% if page_obj.has_previous %}
-                    {% if q is None or q == '' %}
-                        <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
-                    {% else %}
-                        <li><a href="?page={{ page_obj.previous_page_number }}&q={{q}}">&laquo;</a></li>
-                    {% endif%}
-                {% else %}
-                    <li class="disabled"><span>&laquo;</span></li>
-                {% endif %}
-                {% for i in paginator.page_range %}
-                    {% if page_obj.number == i %}
-                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-                    {% else %}
+            {% endfor %}
+        </div>
+        <div class="paginator_container">
+            {% if is_paginated %}
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
                         {% if q is None or q == '' %}
-                            <li><a href="?page={{ i }}">{{ i }}</a></li>
+                            <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
                         {% else %}
-                            <li><a href="?page={{ i }}&q={{q}}">{{ i }}</a></li>
-                        {% endif %}
+                            <li><a href="?page={{ page_obj.previous_page_number }}&q={{q}}">&laquo;</a></li>
+                        {% endif%}
+                    {% else %}
+                        <li class="disabled"><span>&laquo;</span></li>
                     {% endif %}
-                {% endfor %}
-                {% if page_obj.has_next %}
-                    {% if q is None or q == '' %}
-                        <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-                     {% else %}
-                        <li><a href="?page={{ page_obj.next_page_number }}&q={{q}}">&raquo;</a></li>
-                     {% endif %}
-                {% else %}
-                    <li class="disabled"><span>&raquo;</span></li>
-                {% endif %}
-            </ul>
-        {% endif %}
-    </div>
+                    {% for i in paginator.page_range %}
+                        {% if page_obj.number == i %}
+                            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                        {% else %}
+                            {% if q is None or q == '' %}
+                                <li><a href="?page={{ i }}">{{ i }}</a></li>
+                            {% else %}
+                                <li><a href="?page={{ i }}&q={{q}}">{{ i }}</a></li>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        {% if q is None or q == '' %}
+                            <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                        {% else %}
+                            <li><a href="?page={{ page_obj.next_page_number }}&q={{q}}">&raquo;</a></li>
+                        {% endif %}
+                    {% else %}
+                        <li class="disabled"><span>&raquo;</span></li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+        </div>
+    {% else %}
+        <h1>Usted no tiene suficientes permisos para ver Membresías</h1>
+    {% endif %}
 {% endblock content %}
