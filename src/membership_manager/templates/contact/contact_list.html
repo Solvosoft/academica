@@ -7,14 +7,14 @@
 
 {% block content %}
     
-    <h2>Membresías</h2>
-    {% if perms.membership_manager.view_membership %}
+    <h2>Contactos</h2>
+    {% if perms.membership_manager.view_contact %}
         <div class="search_options">
             <div class="row">
                 <div class="col-md-6">
                     <form method="GET">
                         <div class="input-group">
-                            <input type="text" value="{{q}}" name="q" class="form-control" placeholder="Buscar por país, organización o contacto">
+                            <input type="text" value="{{q}}" name="q" class="form-control" placeholder="Buscar por nombres, apellidos o correo">
                             <span class="input-group-btn">
                                 <button class="btn btn-success" type="submit">Go!</button>
                             </span>
@@ -23,7 +23,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="buttons">
-                        <button class="btn btn-primary">Nueva Membresía</button>
+                        <button class="btn btn-primary">Nuevo Contacto</button>
                     </div>
                 </div>
             </div>
