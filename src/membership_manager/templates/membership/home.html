@@ -2,24 +2,84 @@
 {% load gtsettings %}
 
 {% block pre_head %}
-    {% define_true  "use_chartjs" %}
+{% define_true  "use_chartjs" %}
 {% endblock %}
 
 {% block content %}
 <div class="container">
- {{topstat.render}}
+    {{topstat.render}}
 </div>
-<div class="container">
- <div class="row">
-  <div class="col-md-12">
-   <div class="x_panel">
-    <div class="x_title">
-     <h2>Vencimientos del año <small>mensuales</small></h2>
-     <div class="filter">
-      <div id="vencimientos" data-widget="DJGraph" >
 
-      </div>
-     </div>
-     <div class="clearfix"></div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Pagos del año <small>mensuales</small></h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    {% include 'gentelella/widgets/chartjs.html' with graph_url=pagoanual_url %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Países</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                <div class="x_content">
+                    <ul class="list-unstyled top_profiles " style="overflow: auto">
+                        {% for pais in countries%}
+                        <li class="media event">
+                        <a class="pull-left {% cycle 'border-aero' 'border-green ' %} profile_thumb">
+                        <i class="{{pais.0}}"></i>
+                        </a>
+                        <div class="media-body">
+                        <a class="title" href="#">{{pais.1}}</a>
+                        <p><strong>{{pais.2}} </strong> Membresías  </p>
+                        <p> <small>Cobrado este año</small>
+                        </p>
+                        </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Vencimientos del año <small>mensuales</small></h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        {% include 'gentelella/widgets/chartjs.html' with graph_url=vencimientoanual_url %}
+                    </div>
+                </div>
+            </div>
+
+        <div class="col-md-4">
+            <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Servicios</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                <div class="x_content">
+                    <ul class="list-unstyled top_profiles ">
+                {% for se in servicios_stats%}
+                        <li> {{ se.0 }} <span class="badge pull-right">{{ se.1}} </span> </li>
+                {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+
+        </div>
     </div>
-{% endblock %}
+    {% endblock %}
