@@ -141,6 +141,15 @@ class Membership(models.Model):
             country = self.contact.country
         return country
 
+    @property
+    def email(self):
+        email = None
+        if self.organization:
+            email = self.organization.email
+        if email is None:
+            email = self.contact.email
+        return email
+
     def __str__(self):
         return self.name
 
