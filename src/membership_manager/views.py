@@ -53,12 +53,18 @@ class MembershipListView(ListView):
         q = self.request.GET.get('q')
         if (q is not None):
             # need to implement other filters
-            queryset = Membership.objects.filter(
+            queryset = queryset.annotate(fullname_organization=Concat(
+                'organization__contact__first_name',
+                Value(' '), 'organization__contact__last_name'))
+            queryset = queryset.annotate(fullname_contact=Concat(
+                'contact__first_name',
+                Value(' '), 'contact__last_name'))
+            queryset = queryset.filter(
                 Q(contact__country__name__icontains=q) |
                 Q(organization__country__name__icontains=q) |
                 Q(organization__name__icontains=q) |
-                Q(contact__first_name__icontains=q) |
-                Q(contact__last_name__icontains=q)
+                Q(fullname_organization__icontains=q) |
+                Q(fullname_contact__icontains=q)
             )
         return queryset
 
