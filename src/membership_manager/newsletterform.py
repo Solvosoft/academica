@@ -4,11 +4,12 @@ from async_notifications.settings import NEWSLETTER_WIDGET
 from django import forms
 from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as genwidgets
+from djgentelella.widgets.tagging import EmailTaggingInput
 
 from membership_core.models import SystemCurrency, ServiceType, Country
 from membership_manager.models import Organization, Membership, PAYMENT, IDS_TYPE, Invoice
 from membership_manager.utils import get_context_news_letter
-
+import datetime
 
 def get_countries_en_membresias():
     keys = Country.objects.all().values('id', 'name')
@@ -257,13 +258,15 @@ class NewsLetterTemplateForm(CustomForm, forms.Form):
 
 
 
+
 class NewsLetterForm(CustomForm, forms.Form):
 
     subject = forms.CharField(widget=genwidgets.TextInput, required=True, label="Asunto")
     context = forms.ChoiceField(widget=genwidgets.Select, choices=[], label="Contexto")
     message = forms.CharField(widget=NEWSLETTER_WIDGET, required=True, label="Mensaje")
-    file = forms.FileField(widget=genwidgets.FileInput, label="Archivo")
-    extra_emails = forms.CharField(widget=genwidgets.Textarea, label="Correos adicionales", required=False)
+    recipient = forms.CharField(widget=forms.HiddenInput)
+    file = forms.FileField(widget=genwidgets.FileInput, label="Archivo", required=False)
+    extra_emails = forms.CharField(widget=EmailTaggingInput, label="Correos adicionales", required=False)
     confirmation_send_extra_emails = forms.BooleanField(widget=genwidgets.YesNoInput,
                                                         label="¿Enviar también a los correos adicionales?", required=False)
     create_datetime = forms.DateTimeField(widget=genwidgets.DateTimeInput, required=True, label="Fecha y hora de envío",
@@ -276,5 +279,68 @@ class NewsLetterForm(CustomForm, forms.Form):
         self.fields['context'].choices = get_context_news_letter(pk)
 
     class Media:
-
         js = ['async_notifications/previewupdater.js']
+
+    def clean(self):
+
+        cleaned_data = super(NewsLetterForm, self).clean()
+        current_date = datetime.datetime.now()
+        create_datetime = cleaned_data.get("create_datetime").replace(tzinfo=None)
+
+        if create_datetime > current_date:
+            return cleaned_data
+        else:
+            raise forms.ValidationError("La fecha y hora ingresada no debe ser inferior a la fecha y hora actual.")
+
+
+class FilterEmailsForm(CustomForm, forms.Form):
+
+    MEMBERSHIP_STATES = (
+        (None, "Todas"),
+        ("active", "Activas"),
+        ("inactive", "Inactivas"),
+    )
+    MEMBERSHIP_TYPES = (("Personal", "Personal"),
+             ("Radial", "Radial"),
+             ("Organizacional", "Organizacional"),
+             ("Global", "Global"),
+             ("Honoraria", "Honoraria"),
+             ('Básica', 'Básica'))
+
+    PAYMENT_METHOD = (
+        ("Cash", "Efectivo"),
+        ("Bank transfer", "Transferencia bancaria"),
+        ("Paypal", "Paypal"),
+        ("Bitcoins", "Bitcoins"),
+        ('MoneyGram', 'MoneyGram'),
+        ('WesterUnion', 'WesterUnion'),
+        ('Transferencia Bancaria Argentina', 'Transferencia Bancaria Argentina')
+    )
+
+    APPLY_FEES = (
+        (None, "Todas"),
+        (True, "Con impuestos"),
+        (False, "Sin impuestos"),
+    )
+
+    INVOICES_CHOICES = (
+        (None, "Todas"),
+        ("pending", "Con facturas pendientes"),
+        ("paid", "Sin pendientes"),
+    )
+
+    SEARCH_IN_CHOICES = (
+        (None, "Ambos"),
+        ("contacto", "Contacto"),
+        ("organizacion", "Organizacion"),
+    )
+
+    state = forms.ChoiceField(widget=genwidgets.Select, choices=MEMBERSHIP_STATES, required=False, label="Estado")
+    country = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Country.objects.all(), required=False, label="País")
+    currency = forms.ModelChoiceField(widget=genwidgets.SelectMultiple, queryset=SystemCurrency.objects.all(), required=False, label="Moneda")
+    payment_method = forms.MultipleChoiceField(widget=genwidgets.SelectMultiple, choices=PAYMENT_METHOD, required=False, label="Método de pago")
+    apply_fees = forms.ChoiceField(widget=genwidgets.Select, choices=APPLY_FEES, required=False, label="Tarifas aplicadas")
+    invoices = forms.ChoiceField(widget=genwidgets.Select, choices=INVOICES_CHOICES, required=False, label="Facturas")
+    search_in = forms.ChoiceField(widget=genwidgets.Select, choices=SEARCH_IN_CHOICES, required=False, label="Búsqueda en")
+    service_type = forms.ModelChoiceField(widget=genwidgets.SelectMultiple, queryset=ServiceType.objects.all(), required=False, label="Tipo de servicio")
+    membership_type = forms.MultipleChoiceField(widget=genwidgets.SelectMultiple, choices=MEMBERSHIP_TYPES, required=False, label="Tipo de membresía")

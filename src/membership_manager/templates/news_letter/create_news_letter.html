@@ -4,31 +4,40 @@
 
 <div class="container">
     <div class="row">
-    <div class='col-md-8 col-md-offset-2 col-xs-12'>
-        <div class="x_panel">
-            <div class="x_title">
-                <h1 class="text-center">Nuevo boletín</h1>
 
-            </div>
+        <div class='col-md-10 col-md-offset-1 col-xs-12'>
+            <div class="x_panel">
+                <div class="x_title">
+                    <h1 class="text-center">Nuevo boletín</h1>
+                </div>
+                <div class="x_content">
+                    <div class='col-md-8'>
+                        <form action="" method="post">
+                            {% csrf_token %}
 
-            <form action="" method="post">
-                {% csrf_token %}
+                            {{form.as_horizontal}}
 
-                {{form.as_horizontal}}
+                            <div class="form-group" style="text-align:center; margin-top:40px;">
+                                <button class="btn btn-success"
+                                        type="submit">Insertar</button>
 
-
-                <div class="form-group" style="text-align:center; margin-top:40px;">
-
-                            <button class="btn btn-success text-center"
-                                    type="submit">Insertar</button>
-
+                            </div>
+                        </form>
+                    </div>
+                    <div class='col-md-4'>
+                        <h4 class="text-center">Filtrar remitentes</h4>
+                        <div class="form-group" style="text-align:center;">
+                            <form id="formfilters" action="" method="post">
+                            {% csrf_token %}
+                            {{ form_filter.as_inline }}
+                            <button id="emails" class="btn btn-primary" type="button">Ver remitentes</button>
+                                </form>
                         </div>
-                </form>
-
+                    </div>
+                </div>
             </div>
-            </div>
-
         </div>
+    </div>
 </div>
 
 {% endblock content %}
@@ -37,7 +46,7 @@
 {{ form.media }}
 <script>
 (function(){
-    $("#id_message").css({'width': 505 });
+    $("#id_message").css({'width': 407 });
 })(jQuery);
 </script>
 {% endblock %}
