@@ -59,9 +59,9 @@
                 <td>{{ boletin.create_datetime }}</td>
                 <td>
                     <a class="btn btn-sm" href=""><i class="fa fa-edit fa-2x"></i> </a>
-                    <a class="btn btn-sm" href="{% url 'delete_news_letter' boletin.pk %}" ><i class="fa fa-trash fa-2x"></i></a>
-                    <a class="btn btn-sm" href="{% url 'send_news_letter' boletin.pk %}" ><i class="fa fa-send fa-2x"></i></a>
-                    <a class="btn btn-sm" href="" ><i class="fa fa-clock-o fa-2x"></i></a>
+                    <a class="btn btn-sm" href="{% url 'delete_news_letter' pk=boletin.pk %}" ><i class="fa fa-trash fa-2x"></i></a>
+                    <a class="btn btn-sm" href="{% url 'send_news_letter' pk=boletin.pk %}" ><i class="fa fa-send fa-2x"></i></a>
+                    <a class="btn btn-sm"><i class="fa fa-clock-o fa-2x"></i></a>
                 </td>
     </tr>
     {% endfor %}
@@ -74,5 +74,6 @@
 
         </div>
     </div>
+
 </div>
 {% endblock content %}

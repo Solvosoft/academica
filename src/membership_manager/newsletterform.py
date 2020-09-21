@@ -269,8 +269,7 @@ class NewsLetterForm(CustomForm, forms.Form):
     extra_emails = forms.CharField(widget=EmailTaggingInput, label="Correos adicionales", required=False)
     confirmation_send_extra_emails = forms.BooleanField(widget=genwidgets.YesNoInput,
                                                         label="¿Enviar también a los correos adicionales?", required=False)
-    create_datetime = forms.DateTimeField(widget=genwidgets.DateTimeInput, required=True, label="Fecha y hora de envío",
-                                      help_text="La fecha y hora ingresada no debe ser inferior a la fecha y hora actual.")
+
 
     def __init__(self, *args, **kwargs):
         pk = kwargs.pop('pk')
@@ -280,18 +279,6 @@ class NewsLetterForm(CustomForm, forms.Form):
 
     class Media:
         js = ['async_notifications/previewupdater.js']
-
-    def clean(self):
-
-        cleaned_data = super(NewsLetterForm, self).clean()
-        current_date = datetime.datetime.now()
-        create_datetime = cleaned_data.get("create_datetime").replace(tzinfo=None)
-
-        if create_datetime > current_date:
-            return cleaned_data
-        else:
-            raise forms.ValidationError("La fecha y hora ingresada no debe ser inferior a la fecha y hora actual.")
-
 
 class FilterEmailsForm(CustomForm, forms.Form):
 
@@ -344,3 +331,21 @@ class FilterEmailsForm(CustomForm, forms.Form):
     search_in = forms.ChoiceField(widget=genwidgets.Select, choices=SEARCH_IN_CHOICES, required=False, label="Búsqueda en")
     service_type = forms.ModelChoiceField(widget=genwidgets.SelectMultiple, queryset=ServiceType.objects.all(), required=False, label="Tipo de servicio")
     membership_type = forms.MultipleChoiceField(widget=genwidgets.SelectMultiple, choices=MEMBERSHIP_TYPES, required=False, label="Tipo de membresía")
+
+
+class SentDate(CustomForm, forms.Form):
+
+    create_datetime = forms.DateTimeField(widget=genwidgets.DateTimeInput, required=True, label="Fecha y hora de envío",
+                                          help_text="La fecha y hora ingresada no debe ser inferior a la fecha y hora actual.")
+
+    def clean(self):
+
+        cleaned_data = super(SentDate, self).clean()
+        current_date = datetime.datetime.now()
+        create_datetime = cleaned_data.get("create_datetime").replace(tzinfo=None)
+
+        if create_datetime > current_date:
+            return cleaned_data
+        else:
+            raise forms.ValidationError("La fecha y hora ingresada no debe ser inferior a la fecha y hora actual.")
+

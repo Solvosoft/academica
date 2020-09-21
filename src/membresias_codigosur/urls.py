@@ -32,6 +32,7 @@ from djgentelella.urls import urlpatterns as djgentelellaurls
 urlpatterns = djgentelellaurls + [
     path('', RedirectView.as_view(url="/home/")),
     path('async_notifications/', include('async_notifications.urls')),
+    path('api/', include('api.urls')),
     path('admin/', admin.site.urls),
     path('telbot/', csrf_exempt(UpdateBot.as_view())),
     path('payments/membership/', MembInvoices.as_view()),

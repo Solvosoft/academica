@@ -12,17 +12,20 @@
                 </div>
                 <div class="x_content">
                     <div class='col-md-8'>
-                        <form action="" method="post">
+                        <form action="" method="post" id="formcreatenewsletter">
                             {% csrf_token %}
 
                             {{form.as_horizontal}}
 
-                            <div class="form-group" style="text-align:center; margin-top:40px;">
+
+                        </form>
+                        {% include 'gentelella/blocks/crud_list.html' with title="Programar envío" form=form_sent_date  object_list_gencrud=news_letter_task_list gencrud_form_url=url_news_letter_task gencrud_delete_url=url_news_letter_task %}
+
+                        <div class="form-group" style="text-align:center; margin-top:40px;">
                                 <button class="btn btn-success"
-                                        type="submit">Insertar</button>
+                                        type="button" id="createnewsletter">Insertar</button>
 
                             </div>
-                        </form>
                     </div>
                     <div class='col-md-4'>
                         <h4 class="text-center">Filtrar remitentes</h4>
@@ -32,6 +35,7 @@
                             {{ form_filter.as_inline }}
                             <button id="emails" class="btn btn-primary" type="button">Ver remitentes</button>
                                 </form>
+
                         </div>
                     </div>
                 </div>
@@ -47,6 +51,11 @@
 <script>
 (function(){
     $("#id_message").css({'width': 407 });
+    $("#createnewsletter").on('click', function(){
+        $("#formcreatenewsletter").submit()
+     });
+
+
 })(jQuery);
 </script>
 {% endblock %}

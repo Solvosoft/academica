@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'mptt',
     'rest_framework',
     'chunked_upload',
+    'api.apps.ApiConfig',
     'django_celery_results',
     'django_celery_beat',
 ]

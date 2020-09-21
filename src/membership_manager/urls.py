@@ -14,13 +14,7 @@ urlpatterns = [
         login_required(MembershipListView.as_view()), name="organizations"),
     path('memberships/', MembershipListView.as_view(), name="memberships"),
     path('newsletter/', news_letter_list, name="news_letter_list"),
-    path(
-        'newsletter/create/<int:pk>/',
-        create_news_letter, name="create_news_letter"),
-    path(
-        'newsletter/send/<int:pk>/',
-        send_news_letter, name="send_news_letter"),
-    path(
-        'newsletter/delete/<int:pk>/',
-        delete_news_letter, name="delete_news_letter"),
+    path('newsletter/create/<int:pk>/', create_news_letter, name="create_news_letter"),
+    path('newsletter/send/<int:pk>/', send_news_letter, name="send_news_letter"),
+    path('newsletter/delete/<int:pk>/', delete_news_letter, name="delete_news_letter"),
 ]
