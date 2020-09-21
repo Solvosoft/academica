@@ -333,18 +333,17 @@ class FilterEmailsForm(CustomForm, forms.Form):
     membership_type = forms.MultipleChoiceField(widget=genwidgets.SelectMultiple, choices=MEMBERSHIP_TYPES, required=False, label="Tipo de membresía")
 
 
-class SentDate(CustomForm, forms.Form):
+class SendDateForm(CustomForm, forms.Form):
 
-    create_datetime = forms.DateTimeField(widget=genwidgets.DateTimeInput, required=True, label="Fecha y hora de envío",
+    send_date = forms.DateTimeField(widget=genwidgets.DateTimeInput, required=True, label="Fecha y hora de envío",
                                           help_text="La fecha y hora ingresada no debe ser inferior a la fecha y hora actual.")
 
     def clean(self):
 
-        cleaned_data = super(SentDate, self).clean()
-        current_date = datetime.datetime.now()
-        create_datetime = cleaned_data.get("create_datetime").replace(tzinfo=None)
-
-        if create_datetime > current_date:
+        cleaned_data = super(SendDateForm, self).clean()
+        current_date = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
+        send_date = cleaned_data.get("send_date").strftime("%d/%m/%Y, %H:%M:%S")
+        if send_date > current_date:
             return cleaned_data
         else:
             raise forms.ValidationError("La fecha y hora ingresada no debe ser inferior a la fecha y hora actual.")

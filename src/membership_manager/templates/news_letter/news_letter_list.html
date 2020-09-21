@@ -16,17 +16,15 @@
 
                 {{form.as_horizontal}}
 
-
-
                 <div class="form-group" style="text-align:center; margin-top:40px;">
 
-                            <button class="btn btn-success text-center"
-                                    type="submit">Nuevo boletín</button>
-                            <a class="btn btn-primary text-center"
-                               href="" type="button">Nueva plantilla</a>
+                    <button class="btn btn-success text-center"
+                            type="submit">Nuevo boletín</button>
+                    <a class="btn btn-primary text-center"
+                       href="" type="button">Nueva plantilla</a>
 
-                        </div>
-                </form>
+                </div>
+            </form>
 
             </div>
             </div>
@@ -56,12 +54,20 @@
         <tr>
                 <td>{{ boletin.subject }} </td>
                 <td>{{ boletin.template }}</td>
-                <td>{{ boletin.create_datetime }}</td>
                 <td>
-                    <a class="btn btn-sm" href=""><i class="fa fa-edit fa-2x"></i> </a>
-                    <a class="btn btn-sm" href="{% url 'delete_news_letter' pk=boletin.pk %}" ><i class="fa fa-trash fa-2x"></i></a>
+                {% for task in boletin.newslettertask_set.all %}
+                    <div class="row text-center">
+                        {{ task.send_date }} <a class="btn btn-sm" data-url="{% url 'delete_task' pk=task.pk %}" onclick="deleteelement(this)"><i class="fa fa-close" style="color:red"></i></a>
+
+                    </div>
+                   {% endfor %}
+                </td>
+                <td>
+                    <a class="btn btn-sm" href="{% url 'edit_news_letter' pk=boletin.pk %}"><i class="fa fa-edit fa-2x"></i> </a>
+                    <a class="btn btn-sm" data-url="{% url 'delete_news_letter' pk=boletin.pk %}" onclick="deleteelement(this)"><i class="fa fa-trash fa-2x"></i></a>
                     <a class="btn btn-sm" href="{% url 'send_news_letter' pk=boletin.pk %}" ><i class="fa fa-send fa-2x"></i></a>
-                    <a class="btn btn-sm"><i class="fa fa-clock-o fa-2x"></i></a>
+                    <a class="btn btn-sm" data-url="{% url 'create_task' pk=boletin.pk %}" onclick="show_task(this)"
+                    id="btnshowtask"><i class="fa fa-clock-o fa-2x"></i></a>
                 </td>
     </tr>
     {% endfor %}
@@ -75,5 +81,75 @@
         </div>
     </div>
 
+    <div id="showsenddate" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Programe una nueva fecha de envío</h4>
+      </div>
+      <div class="modal-body">
+            <form id="senddateform" method="post">
+                {% csrf_token %}
+
+                <div class="form-group">
+                  <div class="col-sm-2">
+                    {{ send_date_form.send_date.label_tag }}
+                  </div>
+                  <div class="col-sm-10">
+                    {{send_date_form.send_date}}
+                    {{ send_date_form.send_date.errors }}
+                  </div>
+                </div>
+                <div class="form-group" style="text-align:center; margin-top:40px;">
+                    <button class="btn btn-success" type="submit">Guardar</button>
+                </div>
+            </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div id="modaldeletetask" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">¿Está seguro que desea eliminar este elemento?</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                <a class="btn btn-danger" id="deletetask">Eliminar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 </div>
 {% endblock content %}
+{% block js %}
+<script>
+
+function show_task(element){
+    url = $(element).data('url');
+    $("#senddateform").attr("action", url);
+    $("#showsenddate").modal();
+}
+
+function deleteelement(element){
+    $("#deletetask").attr("href", $(element).data('url'));
+    $("#modaldeletetask").modal();
+}
+
+(function(){
+    $("#id_message").css({'width': 407 });
+    $("#btndeletetask").on('click', function(){
+    });
+
+})(jQuery);
+</script>
+{% endblock %}
