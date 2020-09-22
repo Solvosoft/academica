@@ -16,38 +16,38 @@
                         <form method="GET">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <input type="text" value="{{q}}" name="q" class="form-control" placeholder="Buscar por país, organización o contacto">
+                                    <input type="text" value="{{q}}" name="q" class="form-control" placeholder="Buscar por organización o contacto">
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group form-inline">
                                         <label class="control-label">País: </label>
                                         <select id="countries" name='p' class="form-control">
                                             <option value="">No filtrar</option>
-                                            {% for p in countries %}
-                                                <option value="{{p.pk}}">{{p.name}}</option>
+                                            {% for country in countries %}
+                                                <option value="{{country.pk}}">{{country.name}}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6 form-inline">
                                     <label class="control-label">Moneda: </label>
-                                    <select name='c' class="form-control">
+                                    <select id="currency" name='c' class="form-control">
                                         <option value="">No filtrar</option>
                                         {% for c in currency %}
-                                            <option value="{{c.name}}">{{c}}</option>
+                                            <option value="{{c.currency}}">{{c.currency}}</option>
                                         {% endfor %}
                                     </select>
                                     <label class="control-label">Estado: </label>
-                                    <select name='s' class="form-control">
+                                    <select id="state" name='s' class="form-control">
                                         <option value="">No filtrar</option>
                                         {% for state, name in states %}
                                             <option value="{{state}}">{{name}}</option>
                                         {% endfor %}
                                     </select>
                                     <label class="control-label">Vencidas: </label>
-                                    Si:<input type="radio" class="flat" name="due_date" id="yes" value="yes" required /> 
+                                    Si:<input type="radio" class="flat" name="due_date" id="yes" value="yes" /> 
                                     No:<input type="radio" class="flat" name="due_date" id="no" value="no" />
-                                    No filtrar:<input type="radio" class="flat" name="due_date" id="nofiltrar" value="nofiltrar" checked required /> 
+                                    No filtrar:<input type="radio" class="flat" name="due_date" id="nofiltrar" checked /> 
                                 </div>
                                 <div class="col-md-12">
                                     <div class="text-right">
@@ -95,6 +95,9 @@
                                 <div>Número de Facturas:{{membership.mem_inv.all.count}}</div>
                                 <div>
                                     Fecha de renovación: {{ membership.last_renew|date:"Y-m-d" }}
+                                </div>
+                                <div>
+                                    Moneda: {{ membership.currency.currency }}
                                 </div>
                                 <div>Contactar: 
                                     {% if membership.organization.telgroup.chat_id != "" %}
@@ -156,6 +159,9 @@
     <script type="text/javascript">
         $(document).ready(function(){
             $('#countries').select2();
+            $('#countries').val("{{p}}").change();
+            $('#state').val("{{s}}").change();
+            $('#currency').val("{{c}}").change();
             $('input.flat').iCheck({
                 checkboxClass: 'icheckbox_flat-green',
                 radioClass: 'iradio_flat-green'

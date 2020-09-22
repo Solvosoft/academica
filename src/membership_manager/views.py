@@ -7,8 +7,7 @@ from django.db.models import Value
 from django.db.models import Q
 from django.views.generic import ListView
 from djgentelella.cruds.base import CRUDView
-from membership_core.models import Country, ServiceType, SystemCurrency,\
-    Country
+from membership_core.models import Country, ServiceType, SystemCurrency
 from membership_manager.dashboard import TopStats
 from membership_manager.models import Contact, Organization, Membership
 
@@ -50,8 +49,11 @@ class MembershipListView(ListView):
 
     def get_queryset(self):
         queryset = Membership.objects.all()
-        q = self.request.GET.get('q')
-        if (q is not None):
+        q = self.request.GET.get('q', None)
+        p = self.request.GET.get('p', None)
+        s = self.request.GET.get('s', None)
+        c = self.request.GET.get('c', None)
+        if (q is not None and q != ''):
             # need to implement other filters
             queryset = queryset.annotate(fullname_organization=Concat(
                 'organization__contact__first_name',
@@ -60,11 +62,20 @@ class MembershipListView(ListView):
                 'contact__first_name',
                 Value(' '), 'contact__last_name'))
             queryset = queryset.filter(
-                Q(contact__country__name__icontains=q) |
-                Q(organization__country__name__icontains=q) |
                 Q(organization__name__icontains=q) |
                 Q(fullname_organization__icontains=q) |
                 Q(fullname_contact__icontains=q)
+            )
+        if(p is not None and p != ""):
+            queryset = queryset.filter(
+                Q(organization__country__pk=p))
+        if(s is not None and s != ""):
+            queryset = queryset.filter(
+                Q(state__exact=s)
+            )
+        if(c is not None and c != ""):
+            queryset = queryset.filter(
+                Q(currency__currency__exact=c)
             )
         return queryset
 
@@ -72,6 +83,9 @@ class MembershipListView(ListView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         context['q'] = self.request.GET.get('q', '')
+        context['p'] = self.request.GET.get('p', '')
+        context['s'] = self.request.GET.get('s', '')
+        context['c'] = self.request.GET.get('c', '')
         context['today'] = datetime.datetime.now
         context['currency'] = SystemCurrency.objects.all()
         context['states'] = Membership.STATES
