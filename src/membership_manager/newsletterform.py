@@ -10,6 +10,8 @@ from membership_core.models import SystemCurrency, ServiceType, Country
 from membership_manager.models import Organization, Membership, PAYMENT, IDS_TYPE, Invoice
 from membership_manager.utils import get_context_news_letter
 import datetime
+from froala_editor.widgets import FroalaEditor
+
 
 def get_countries_en_membresias():
     keys = Country.objects.all().values('id', 'name')
@@ -273,15 +275,15 @@ class NewsLetterForm(CustomForm, forms.ModelForm):
         widgets = {
             'template': forms.HiddenInput,
             'subject': genwidgets.TextInput,
-            'message': genwidgets.Textarea,
+            'message':  FroalaEditor,
             'recipient': EmailTaggingInput,
             'creator': forms.HiddenInput,
             'filters': forms.HiddenInput,
-            'file': genwidgets.FileInput,
+            'file': genwidgets.FileInput
         }
 
     class Media:
-        js = ['async_notifications/previewupdater.js']
+        js = ['js/newsletter.js']
 
 class FilterEmailsForm(CustomForm, forms.Form):
 

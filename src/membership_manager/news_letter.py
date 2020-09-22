@@ -1,7 +1,7 @@
 from async_notifications.models import NewsLetter, NewsLetterTemplate, NewsLetterTask
 from async_notifications.tasks import task_send_newsletter
 from django.contrib import messages
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import UpdateView
 
@@ -29,7 +29,7 @@ def news_letter_list(request):
                                                                          'send_date_form': send_date_form,
                                                                          'lista_boletines': lista_boletines})
 def create_news_letter(request, pk):
-    template = NewsLetterTemplate.objects.get(pk=pk)
+    template = get_object_or_404(NewsLetterTemplate, pk=pk)
 
     if request.method == 'POST':
         form = NewsLetterForm(request.POST, pk=pk, initial={'template': pk, 'creator': request.user.pk})
@@ -46,12 +46,14 @@ def create_news_letter(request, pk):
             )
             news_letter.save()
     else:
-        form = NewsLetterForm(pk=pk, initial={'template': pk, 'creator': request.user.pk})
+        form = NewsLetterForm(pk=pk, initial={'template': pk, 'message': template.message, 'creator': request.user.pk})
         form_filter = FilterEmailsForm()
 
 
 
-    return render(request, "news_letter/create_news_letter.html", context={'form': form, 'form_filter': form_filter})
+    return render(request, "news_letter/create_news_letter.html", context={'form': form,
+                                                                           'template': pk,
+                                                                           'form_filter': form_filter})
 
 
 def send_news_letter(request, pk):
