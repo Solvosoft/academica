@@ -22,11 +22,9 @@
                     <div role="tabpanel" class="tab-pane active" id="general">
                                                     {% csrf_token %}
                             {{form.as_horizontal}}
-
-
                         <div class="form-group" style="text-align:center; margin-top:40px;">
                                 <button class="btn btn-success"
-                                        type="button" id="createnewsletter">Insertar</button>
+                                        type="button" id="createnewsletter">Guardar</button>
                             </div>
                     </div>
                       <div role="tabpanel" class="tab-pane" id="preview">
@@ -52,7 +50,7 @@
                         <h4 class="text-center">Filtrar remitentes</h4>
                         <div class="form-group" style="text-align:center;">
                             <form class="datafilter" id="formfilters" action="" method="post">
-                                {% csrf_token %}
+
                                 {{ form_filter.as_inline }}
 
                             </form>

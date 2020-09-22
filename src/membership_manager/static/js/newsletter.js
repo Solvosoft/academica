@@ -38,10 +38,15 @@ function manageNewsletter(url, previewurl){
                 parent.showPreview();
             }
         },
+        saveform: function(){
+            $('input[name="filters"]').val($("#formfilters").serialize());
+            $('#formcreatenewsletter').submit();
+        },
         initialize: function(){
             $('a[data-toggle="tab"]').on('shown.bs.tab', (e)=>( this.tabrouter(e, this)));
             $("#loadremitentes").on('click', this.loadEmails);
             $("#clearremitentes").on('click', this.clearEmails);
+            $("#createnewsletter").on('click', this.saveform);
         }
     }
 
