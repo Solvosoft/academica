@@ -281,7 +281,7 @@ class NewsLetterForm(CustomForm, forms.ModelForm):
         }
 
     class Media:
-        js = ['async_notifications/previewupdater.js']
+        js = ['js/newsletter.js']
 
 class FilterEmailsForm(CustomForm, forms.Form):
 

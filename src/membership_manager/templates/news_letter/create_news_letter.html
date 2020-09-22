@@ -8,8 +8,8 @@
 
       <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active"><a href="#general" aria-controls="general" role="tab" data-toggle="tab">Edición</a></li>
-            <li role="presentation"><a href="#preview" aria-controls="preview" role="tab" data-toggle="tab">Preview</a></li>
-            <li role="presentation"><a href="#remitentes" aria-controls="remitentes" role="tab" data-toggle="tab">Remitentes</a></li>
+            <li role="presentation"><a id="tabpreview" href="#preview" aria-controls="preview" role="tab" data-toggle="tab">Preview</a></li>
+            <li role="presentation"><a id="tabremitentes" href="#remitentes" aria-controls="remitentes" role="tab" data-toggle="tab">Remitentes</a></li>
      </ul>
 <form action="" method="post" id="formcreatenewsletter">
             <div class="x_panel">
@@ -33,7 +33,8 @@
 
                       </div>
                     <div role="tabpanel" class="tab-pane" id="remitentes">
-                        {{ emailForm.as_horizontal }}
+                        <button type="button" id="loadremitentes" class="btn btn-success"> Cargar correos </button>
+                        <button type="button" id="clearremitentes" class="btn btn-success"> Eliminar remitentes </button>
                     </div>
                   </div>
 
@@ -50,7 +51,7 @@
 
                         <h4 class="text-center">Filtrar remitentes</h4>
                         <div class="form-group" style="text-align:center;">
-                            <form id="formfilters" action="" method="post">
+                            <form class="datafilter" id="formfilters" action="" method="post">
                                 {% csrf_token %}
                                 {{ form_filter.as_inline }}
 
@@ -66,17 +67,10 @@
 {% endblock content %}
 
 {% block js %}
-
+{{form.media}}
 <script>
 (function(){
-    $("#id_message").css({'width': 407 });
-    $("#createnewsletter").on('click', function(){
-        $("#formcreatenewsletter").submit()
-    });
-    var url = "{% url 'updatenewscontext' '0' %}";
-    $("#id_templatecontext").attr('name', 'templatecontext');
-    $("#id_templatecontext").attr('data-url', url);
-
+    manageNewsletter("{% url 'preview_newsletter_emails' template %}");
 })(jQuery);
 </script>
 {% endblock %}
