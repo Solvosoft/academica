@@ -46,7 +46,7 @@ def create_news_letter(request, pk):
             )
             news_letter.save()
     else:
-        form = NewsLetterForm(pk=pk, initial={'template': pk, 'creator': request.user.pk})
+        form = NewsLetterForm(pk=pk, initial={'template': pk, 'message': template.message, 'creator': request.user.pk})
         form_filter = FilterEmailsForm()
 
 
