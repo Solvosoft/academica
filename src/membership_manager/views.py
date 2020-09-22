@@ -1,14 +1,16 @@
+import datetime
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from membership_core.models import Country, ServiceType
-
+from django.db.models.functions import Concat
+from django.db.models import Value
+from django.db.models import Q
+from django.views.generic import ListView
+from djgentelella.cruds.base import CRUDView
+from membership_core.models import Country, ServiceType, SystemCurrency,\
+    Country
 from membership_manager.dashboard import TopStats
 from membership_manager.models import Contact, Organization, Membership
-from djgentelella.cruds.base import CRUDView
-from django.views.generic import ListView
-from django.db.models import Q, Count
-import datetime
 
 
 def servicios_stats():
@@ -51,12 +53,18 @@ class MembershipListView(ListView):
         q = self.request.GET.get('q')
         if (q is not None):
             # need to implement other filters
-            queryset = Membership.objects.filter(
+            queryset = queryset.annotate(fullname_organization=Concat(
+                'organization__contact__first_name',
+                Value(' '), 'organization__contact__last_name'))
+            queryset = queryset.annotate(fullname_contact=Concat(
+                'contact__first_name',
+                Value(' '), 'contact__last_name'))
+            queryset = queryset.filter(
                 Q(contact__country__name__icontains=q) |
                 Q(organization__country__name__icontains=q) |
                 Q(organization__name__icontains=q) |
-                Q(contact__first_name__icontains=q) |
-                Q(contact__last_name__icontains=q)
+                Q(fullname_organization__icontains=q) |
+                Q(fullname_contact__icontains=q)
             )
         return queryset
 
@@ -65,6 +73,9 @@ class MembershipListView(ListView):
         context = super().get_context_data(**kwargs)
         context['q'] = self.request.GET.get('q', '')
         context['today'] = datetime.datetime.now
+        context['currency'] = SystemCurrency.objects.all()
+        context['states'] = Membership.STATES
+        context['countries'] = Country.objects.all()
         return context
 
 
@@ -75,13 +86,11 @@ class ContactListView(ListView):
     def get_queryset(self):
         queryset = Contact.objects.all()
         q = self.request.GET.get('q')
-        if (q is not None):
-            queryset = Contact.objects.filter(
-                Q(name__icontains=q) |
-                Q(email__icontains=q) |
-                Q(first_name__icontains=q) |
-                Q(last_name__icontains=q)
-            )
+        if(q is not None):
+            queryset = queryset.annotate(fullname=Concat(
+                'first_name', Value(' '), 'last_name'))
+            queryset = queryset.filter(
+                Q(email__icontains=q) | Q(fullname__icontains=q))
         return queryset
 
     def get_context_data(self, **kwargs):
