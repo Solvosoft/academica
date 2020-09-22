@@ -54,7 +54,7 @@ class MembershipListView(ListView):
         s = self.request.GET.get('s', None)
         c = self.request.GET.get('c', None)
         d = self.request.GET.get('d', None)
-        if (q is not None and q != ''):
+        if q is not None and q != '':
             # need to implement other filters
             queryset = queryset.annotate(fullname_organization=Concat(
                 'organization__contact__first_name',
@@ -67,24 +67,32 @@ class MembershipListView(ListView):
                 Q(fullname_organization__icontains=q) |
                 Q(fullname_contact__icontains=q)
             )
-        if(p is not None and p != ""):
+        if p is not None and p != "":
             queryset = queryset.filter(
                 Q(organization__country__pk=p))
-        if(s is not None and s != ""):
+        if s is not None and s != "":
             queryset = queryset.filter(
                 Q(state__exact=s)
             )
-        if(c is not None and c != ""):
+        if c is not None and c != "":
             queryset = queryset.filter(
                 Q(currency__currency__exact=c)
             )
-        if(d is not None and d != ""):
-            queryset = queryset.filter(
-                mem_inv__renewal_period__encobro=True,
-                mem_inv__renewal_period__active=True,
-                # pending to implement by date
-                # mem_inv__renewal_period__start_date__lte=datetime.datetime.now
-            )
+        if d is not None and d != "":
+            if d == "yes":
+                queryset = queryset.filter(
+                    mem_inv__renewal_period__encobro=True,
+                    mem_inv__renewal_period__active=True,
+                    # pending to implement by date
+                    # mem_inv__renewal_period__start_date__lte=datetime.datetime.now
+                )
+            elif d == "no":
+                queryset = queryset.exclude(
+                    mem_inv__renewal_period__encobro=True,
+                    mem_inv__renewal_period__active=True,
+                    # pending to implement by date
+                    # mem_inv__renewal_period__start_date__lte=datetime.datetime.now
+                )
         return queryset
 
     def get_context_data(self, **kwargs):
