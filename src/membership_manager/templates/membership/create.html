@@ -1,0 +1,66 @@
+{% extends 'gentelella/base.html' %}
+
+{% load static %}
+{% block extra_css %}
+    <link href="{% static 'css/membership.css' %}" rel="stylesheet">
+{% endblock extra_css %}
+
+{% block content %}
+    
+    <h1 style="text-align:center;">Membresías</h1>
+    {% if perms.membership_manager.view_membership %}
+        <div id="membership_form" class="row">
+            <div class="x_panel">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {{form.as_horizontal}}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-inline" style="text-align:right;">
+                                <button class="btn btn-secondary text-center" type="reset">Cancelar</button>
+                                <button class="btn btn-success text-center" type="submit">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="paginator_container">
+            {% if is_paginated %}
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        {% if q or p or c or s or d %}
+                            <li><a href="?page={{ page_obj.previous_page_number }}&q={{q}}&p={{p}}&c={{c}}&s={{s}}&d={{d}}">&laquo;</a></li>
+                        {% else %}
+                            <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                        {% endif%}
+                    {% else %}
+                        <li class="disabled"><span>&laquo;</span></li>
+                    {% endif %}
+                    {% for i in paginator.page_range %}
+                        {% if page_obj.number == i %}
+                            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                        {% else %}
+                            {% if q or p or c or s or d %}
+                                <li><a href="?page={{ i }}&q={{q}}&p={{p}}&c={{c}}&s={{s}}&d={{d}}">{{ i }}</a></li>
+                            {% else %}
+                                <li><a href="?page={{ i }}">{{ i }}</a></li>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        {% if q or p or c or s or d %}
+                            <li><a href="?page={{ page_obj.next_page_number }}&q={{q}}&p={{p}}&c={{c}}&s={{s}}&d={{d}}">&raquo;</a></li>
+                        {% else %}
+                            <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                        {% endif %}
+                    {% else %}
+                        <li class="disabled"><span>&raquo;</span></li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+        </div>
+    {% else %}
+        <h1>Usted no tiene suficientes permisos para ver Membresías</h1>
+    {% endif %}
+{% endblock content %}

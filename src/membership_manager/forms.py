@@ -1,13 +1,18 @@
 from ajax_select.fields import AutoCompleteSelectField
 from django import forms
-
 from membership_core.models import MembershipTemplate
 from membership_manager.models import Membership, Service, Organization
+from djgentelella.forms.forms import GTForm
+from djgentelella.widgets import core as widget
+from djgentelella.widgets.selects import AutocompleteSelect
+from djgentelella.groute import register_lookups
+from djgentelella.views.select2autocomplete import BaseSelect2View
 
 
 class TemplateWidget(forms.Select):
     class Media:
         js = ('js/membershipform.js',)
+
 
 class MembInvPaymentsForm(forms.Form):
     option = forms.ChoiceField(choices=(
@@ -80,3 +85,23 @@ class OrganizationForm(forms.ModelForm):
             "identification_type",
             "identification",
         ]
+
+
+class MembershipForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = Membership
+        fields = [
+            'organization', 'membership_type', 'contact',
+            'currency', 'renewal_period', 'apply_fees', 'state',
+            'fees'
+        ]
+
+        widgets = {
+            'organization': widget.Select,
+            'membership_type': widget.Select,
+            'contact': widget.Select,
+            'currency': widget.Select,
+            'renewal_period': widget.Select,
+            'apply_fees': widget.YesNoInput,
+            'state': widget.Select,
+        }

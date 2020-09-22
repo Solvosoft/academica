@@ -3,7 +3,7 @@ from membership_manager import views
 from membership_manager.news_letter import create_news_letter,\
         news_letter_list, send_news_letter, delete_news_letter
 from membership_manager.views import OrganizationView,\
-        MembershipListView, ContactListView
+        MembershipListView, ContactListView, create_membership
 from django.contrib.auth.decorators import login_required
 
 organization_view = OrganizationView()
@@ -16,6 +16,7 @@ urlpatterns = [
         'organizations/',
         login_required(MembershipListView.as_view()), name="organizations"),
     path('memberships/', MembershipListView.as_view(), name="memberships"),
+    path('memberships/create', create_membership, name="create_memberships"),
     path('newsletter/', news_letter_list, name="news_letter_list"),
     path(
         'newsletter/create/<int:pk>/',

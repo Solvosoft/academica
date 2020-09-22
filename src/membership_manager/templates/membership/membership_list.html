@@ -66,11 +66,11 @@
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-md">Nueva Membresía</button>
                     </div>
 
-                    <!--modal-->>
+                    <!--modal-->
                     <div class="modal fade bs-example-modal-md" tabindex="-1" role="dialog" aria-hidden="true">
                         <div class="modal-dialog modal-md">
                             <div class="modal-content">
-                                
+                                <form action="create" method="GET">
                                 <div class="modal-header">
                                     <h1 class="modal-title" id="myModalLabel">Crear un nueva membresía</h1>
                                     <button type="button" class="close" data-dismiss="modal">
@@ -80,7 +80,7 @@
                                 
                                 <div class="modal-body">
                                     <h4>Seleccione la plantilla a utilizar</h4>
-                                    <select id="mem_template" class="form-control">
+                                    <select name="mem_template" id="mem_template" class="form-control">
                                         <option value="">Sin plantilla</option>
                                         {% for temp in mem_template %}
                                             <option value="{{temp.pk}}">{{temp.name}}</option>
@@ -90,9 +90,9 @@
                                 
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                    <button type="button" class="btn btn-primary">Crear</button>
+                                    <button type="submit" class="btn btn-primary">Crear</button>
                                 </div>
-
+                                </form>
                             </div>
                         </div>
                     </div>

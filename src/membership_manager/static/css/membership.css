@@ -41,3 +41,8 @@
 .telegram_icon {
     color: #0088cc;
 }
+#membership_form{
+    width: 70%;
+    margin: 0 auto;
+    margin-top: 30px;
+}
