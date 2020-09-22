@@ -45,14 +45,14 @@
                                         {% endfor %}
                                     </select>
                                     <label class="control-label">Vencidas: </label>
-                                    Si:<input type="radio" class="flat" {% if d == "yes" %}checked {% endif %} name="d" value="yes" /> 
-                                    No:<input type="radio" class="flat" {% if d == "no" %}checked {% endif %} name="d" value="no" />
-                                    No filtrar:<input type="radio" class="flat" {% if d == "" %}checked {% endif %} name="d" value="" /> 
+                                    Si:<input type="radio" class="flat due_date" {% if d == "yes" %}checked {% endif %} name="d" value="yes" /> 
+                                    No:<input type="radio" class="flat due_date" {% if d == "no" %}checked {% endif %} name="d" value="no" />
+                                    No filtrar:<input type="radio" class="flat due_date" {% if d == "" %}checked {% endif %} name="d" value="" /> 
                                 </div>
                                 <div class="col-md-12">
                                     <div class="text-right">
                                         <!-- necesary to implement -->
-                                        <button type="reset" class="btn btn-secondary">Limpiar filtros</button>
+                                        <button id="reset" type="reset" class="btn btn-secondary">Limpiar filtros</button>
                                         <!-- endrequirement -->
                                         <button class="btn btn-success" type="submit">Búscar</button>
                                     </div>
@@ -194,6 +194,8 @@
 {% block js %}
     <script type="text/javascript">
         $(document).ready(function(){
+            const p = "{{p}}";
+            const d = "{{d}}";
             $('#countries').select2();
             $('#countries').val("{{p}}").change();
             $('#state').val("{{s}}").change();
@@ -201,6 +203,16 @@
             $('input.flat').iCheck({
                 checkboxClass: 'icheckbox_flat-green',
                 radioClass: 'iradio_flat-green'
+            });
+            $("#reset").click(function(){
+                $('#countries').val(p).change();
+                const d_opt = $('input.due_date');
+                d_opt.removeAttr('checked').iCheck('update');
+                d_opt.each(function(index){
+                    if($(this).val() === d){
+                        $(this).iCheck('check');
+                    }
+                });
             });
         });
     </script>
