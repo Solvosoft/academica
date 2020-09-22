@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-
+from django.conf.urls import url
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.urls import path, include, re_path
@@ -44,7 +44,7 @@ urlpatterns = djgentelellaurls + [
             serve,
             {'document_root': settings.MEDIA_ROOT,}
             ),
-    re_path(r'^markitup/preview/$', login_required(preview_newsletter), name="markitup_preview")
-
+    re_path(r'^markitup/preview/$', login_required(preview_newsletter), name="markitup_preview"),
+    url(r'^froala_editor/', include('froala_editor.urls')),
     ] + url_manager
 
