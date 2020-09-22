@@ -7,7 +7,8 @@ from django.db.models import Value
 from django.db.models import Q
 from django.views.generic import ListView
 from djgentelella.cruds.base import CRUDView
-from membership_core.models import Country, ServiceType
+from membership_core.models import Country, ServiceType, SystemCurrency,\
+    Country
 from membership_manager.dashboard import TopStats
 from membership_manager.models import Contact, Organization, Membership
 
@@ -72,6 +73,9 @@ class MembershipListView(ListView):
         context = super().get_context_data(**kwargs)
         context['q'] = self.request.GET.get('q', '')
         context['today'] = datetime.datetime.now
+        context['currency'] = SystemCurrency.objects.all()
+        context['states'] = Membership.STATES
+        context['countries'] = Country.objects.all()
         return context
 
 
