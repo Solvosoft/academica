@@ -1,5 +1,5 @@
 from async_notifications.interfaces import NewsLetterInterface
-from async_notifications.models import NewsLetterTemplate
+from async_notifications.models import NewsLetterTemplate, NewsLetter
 from async_notifications.settings import NEWSLETTER_WIDGET
 from django import forms
 from djgentelella.forms.forms import CustomForm
@@ -256,20 +256,8 @@ class NewsLetterTemplateForm(CustomForm, forms.Form):
                                                   required=True, label="Plantilla de boletín")
 
 
-
-
-
-class NewsLetterForm(CustomForm, forms.Form):
-
-    subject = forms.CharField(widget=genwidgets.TextInput, required=True, label="Asunto")
+class NewsLetterForm(CustomForm, forms.ModelForm):
     templatecontext = forms.ChoiceField(widget=genwidgets.Select, choices=[], label="Contexto")
-    message = forms.CharField(widget=NEWSLETTER_WIDGET, required=True, label="Mensaje")
-    recipient = forms.CharField(widget=forms.HiddenInput)
-    file = forms.FileField(widget=genwidgets.FileInput, label="Archivo", required=False)
-    extra_emails = forms.CharField(widget=EmailTaggingInput, label="Correos adicionales", required=False)
-    confirmation_send_extra_emails = forms.BooleanField(widget=genwidgets.YesNoInput,
-                                                        label="¿Enviar también a los correos adicionales?", required=False)
-
 
     def __init__(self, *args, **kwargs):
         pk = kwargs.pop('pk')
@@ -277,9 +265,23 @@ class NewsLetterForm(CustomForm, forms.Form):
 
         self.fields['templatecontext'].choices = get_context_news_letter(pk)
 
+    field_order = ['template', 'subject', 'templatecontext', 'message', 'recipient', 'file', 'creator', 'filters' ]
+
+    class Meta:
+        model = NewsLetter
+        exclude = ['cc', 'bcc']
+        widgets = {
+            'template': forms.HiddenInput,
+            'subject': genwidgets.TextInput,
+            'message': genwidgets.Textarea,
+            'recipient': EmailTaggingInput,
+            'creator': forms.HiddenInput,
+            'filters': forms.HiddenInput,
+            'file': genwidgets.FileInput,
+        }
+
     class Media:
         js = ['async_notifications/previewupdater.js']
-
 
 class FilterEmailsForm(CustomForm, forms.Form):
 
@@ -350,5 +352,7 @@ class SendDateForm(CustomForm, forms.Form):
             raise forms.ValidationError("La fecha y hora ingresada no debe ser inferior a la fecha y hora actual.")
 
 
+
 class EmailsNewsLetter(CustomForm, forms.Form):
+
     emails = forms.CharField(widget=EmailTaggingInput, label="Correos", required=False)
