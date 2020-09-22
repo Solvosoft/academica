@@ -53,6 +53,7 @@ class MembershipListView(ListView):
         p = self.request.GET.get('p', None)
         s = self.request.GET.get('s', None)
         c = self.request.GET.get('c', None)
+        d = self.request.GET.get('d', None)
         if (q is not None and q != ''):
             # need to implement other filters
             queryset = queryset.annotate(fullname_organization=Concat(
@@ -77,6 +78,13 @@ class MembershipListView(ListView):
             queryset = queryset.filter(
                 Q(currency__currency__exact=c)
             )
+        if(d is not None and d != ""):
+            queryset = queryset.filter(
+                mem_inv__renewal_period__encobro=True,
+                mem_inv__renewal_period__active=True,
+                # pending to implement by date
+                # mem_inv__renewal_period__start_date__lte=datetime.datetime.now
+            )
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -86,6 +94,7 @@ class MembershipListView(ListView):
         context['p'] = self.request.GET.get('p', '')
         context['s'] = self.request.GET.get('s', '')
         context['c'] = self.request.GET.get('c', '')
+        context['d'] = self.request.GET.get('d', '')
         context['today'] = datetime.datetime.now
         context['currency'] = SystemCurrency.objects.all()
         context['states'] = Membership.STATES

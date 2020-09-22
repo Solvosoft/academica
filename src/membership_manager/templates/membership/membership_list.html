@@ -45,9 +45,9 @@
                                         {% endfor %}
                                     </select>
                                     <label class="control-label">Vencidas: </label>
-                                    Si:<input type="radio" class="flat" name="due_date" id="yes" value="yes" /> 
-                                    No:<input type="radio" class="flat" name="due_date" id="no" value="no" />
-                                    No filtrar:<input type="radio" class="flat" name="due_date" id="nofiltrar" checked /> 
+                                    Si:<input type="radio" class="flat" {% if d == "yes" %}checked {% endif %} name="d" value="yes" /> 
+                                    No:<input type="radio" class="flat" {% if d == "no" %}checked {% endif %} name="d" value="no" />
+                                    No filtrar:<input type="radio" class="flat" {% if d == "" %}checked {% endif %} name="d" value="" /> 
                                 </div>
                                 <div class="col-md-12">
                                     <div class="text-right">
@@ -120,10 +120,10 @@
             {% if is_paginated %}
                 <ul class="pagination">
                     {% if page_obj.has_previous %}
-                        {% if q is None or q == '' %}
-                            <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                        {% if q or p or c or s or d %}
+                            <li><a href="?page={{ page_obj.previous_page_number }}&q={{q}}&p={{p}}&c={{c}}&s={{s}}&d={{d}}">&laquo;</a></li>
                         {% else %}
-                            <li><a href="?page={{ page_obj.previous_page_number }}&q={{q}}">&laquo;</a></li>
+                            <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
                         {% endif%}
                     {% else %}
                         <li class="disabled"><span>&laquo;</span></li>
@@ -132,18 +132,18 @@
                         {% if page_obj.number == i %}
                             <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
                         {% else %}
-                            {% if q is None or q == '' %}
-                                <li><a href="?page={{ i }}">{{ i }}</a></li>
+                            {% if q or p or c or s or d %}
+                                <li><a href="?page={{ i }}&q={{q}}&p={{p}}&c={{c}}&s={{s}}&d={{d}}">{{ i }}</a></li>
                             {% else %}
-                                <li><a href="?page={{ i }}&q={{q}}">{{ i }}</a></li>
+                                <li><a href="?page={{ i }}">{{ i }}</a></li>
                             {% endif %}
                         {% endif %}
                     {% endfor %}
                     {% if page_obj.has_next %}
-                        {% if q is None or q == '' %}
-                            <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                        {% if q or p or c or s or d %}
+                            <li><a href="?page={{ page_obj.next_page_number }}&q={{q}}&p={{p}}&c={{c}}&s={{s}}&d={{d}}">&raquo;</a></li>
                         {% else %}
-                            <li><a href="?page={{ page_obj.next_page_number }}&q={{q}}">&raquo;</a></li>
+                            <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
                         {% endif %}
                     {% else %}
                         <li class="disabled"><span>&raquo;</span></li>
