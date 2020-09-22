@@ -280,6 +280,7 @@ class NewsLetterForm(CustomForm, forms.Form):
     class Media:
         js = ['async_notifications/previewupdater.js']
 
+
 class FilterEmailsForm(CustomForm, forms.Form):
 
     MEMBERSHIP_STATES = (
@@ -349,7 +350,5 @@ class SendDateForm(CustomForm, forms.Form):
             raise forms.ValidationError("La fecha y hora ingresada no debe ser inferior a la fecha y hora actual.")
 
 
-
 class EmailsNewsLetter(CustomForm, forms.Form):
-
     emails = forms.CharField(widget=EmailTaggingInput, label="Correos", required=False)

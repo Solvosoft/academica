@@ -8,9 +8,10 @@
 
       <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active"><a href="#general" aria-controls="general" role="tab" data-toggle="tab">Edición</a></li>
+            <li role="presentation"><a href="#preview" aria-controls="preview" role="tab" data-toggle="tab">Preview</a></li>
             <li role="presentation"><a href="#remitentes" aria-controls="remitentes" role="tab" data-toggle="tab">Remitentes</a></li>
      </ul>
-
+<form action="" method="post" id="formcreatenewsletter">
             <div class="x_panel">
                 <div class="x_title">
                     <h1 class="text-center">Nuevo boletín</h1>
@@ -19,23 +20,26 @@
 
                   <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="general">
-                        <form action="" method="post" id="formcreatenewsletter">
-                            {% csrf_token %}
+                                                    {% csrf_token %}
                             {{form.as_horizontal}}
-                        </form>
+
 
                         <div class="form-group" style="text-align:center; margin-top:40px;">
                                 <button class="btn btn-success"
                                         type="button" id="createnewsletter">Insertar</button>
                             </div>
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="remitentes">
+                      <div role="tabpanel" class="tab-pane" id="preview">
 
+                      </div>
+                    <div role="tabpanel" class="tab-pane" id="remitentes">
+                        {{ emailForm.as_horizontal }}
                     </div>
                   </div>
 
                 </div>
             </div>
+</form>
         </div>
         <div class="col-md-4 col-xs-12">
             <div class="x_panel">
@@ -47,10 +51,10 @@
                         <h4 class="text-center">Filtrar remitentes</h4>
                         <div class="form-group" style="text-align:center;">
                             <form id="formfilters" action="" method="post">
-                            {% csrf_token %}
-                            {{ form_filter.as_inline }}
-                            <button id="emails" class="btn btn-primary" type="button">Ver remitentes</button>
-                                </form>
+                                {% csrf_token %}
+                                {{ form_filter.as_inline }}
+
+                            </form>
                         </div>
                 </div>
             </div>
@@ -58,42 +62,20 @@
         </div>
 
     </div>
-
-    <div id="modalremitentes" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Remitentes</h4>
-            </div>
-            <div class="modal-body">
-                {{ emailForm.as_horizontal }}
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 </div>
 {% endblock content %}
 
 {% block js %}
-{{ form.media }}
+
 <script>
 (function(){
     $("#id_message").css({'width': 407 });
     $("#createnewsletter").on('click', function(){
         $("#formcreatenewsletter").submit()
     });
-     var url = "{% url 'updatenewscontext' '0' %}";
+    var url = "{% url 'updatenewscontext' '0' %}";
     $("#id_templatecontext").attr('name', 'templatecontext');
     $("#id_templatecontext").attr('data-url', url);
-
-    $("#emails").on('click', function(){
-        $("#modalremitentes").modal()
-    });
 
 })(jQuery);
 </script>
