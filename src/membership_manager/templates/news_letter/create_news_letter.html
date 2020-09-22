@@ -30,7 +30,7 @@
                             </div>
                     </div>
                       <div role="tabpanel" class="tab-pane" id="preview">
-
+                        <iframe style="width: 100%; border: 0px solid #fff" ></iframe>
                       </div>
                     <div role="tabpanel" class="tab-pane" id="remitentes">
                         <button type="button" id="loadremitentes" class="btn btn-success"> Cargar correos </button>
@@ -70,7 +70,9 @@
 {{form.media}}
 <script>
 (function(){
-    manageNewsletter("{% url 'preview_newsletter_emails' template %}");
+    manageNewsletter("{% url 'preview_newsletter_emails' template %}",
+    "{% url 'markitup_preview' %}");
+
 })(jQuery);
 </script>
 {% endblock %}

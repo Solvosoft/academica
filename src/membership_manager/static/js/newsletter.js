@@ -1,8 +1,9 @@
 
-function manageNewsletter(url){
+function manageNewsletter(url, previewurl){
     obj = {
         url: url,
-        loadEmails: ()=>{
+        previewurl: previewurl,
+        loadEmails: function(){
              $.ajax({
               dataType: "json",
               url: url,
@@ -16,24 +17,32 @@ function manageNewsletter(url){
               }
               });
         },
-        clearEmails: ()=>{
+        clearEmails: function(){
             $('input[name="recipient"]').data('tagify').removeAllTags();
         },
-        showPreview: ()=>{
-            console.log("BINGO")
+        showPreview: function(){
+             $.ajax({
+              dataType: "html",
+              url: previewurl,
+              type: "POST",
+              headers: {'X-CSRFToken': getCookie('csrftoken') },
+              data: {'data': $('#id_message').val()},
+              success: function(data){
+                     $("#preview iframe").contents().find("body").html(data);
+
+              }
+              });
         },
-        tabrouter: function(e){
+        tabrouter: function(e, parent){
             if(e.target.id == 'tabpreview'){
-                this.showPreview();
+                parent.showPreview();
             }
         },
         initialize: function(){
-            $('a[data-toggle="tab"]').on('shown.bs.tab',  this.tabrouter );
-            $("#loadremitentes").on('click', this.loadEmails());
-            $("#clearremitentes").on('click', this.clearEmails());
+            $('a[data-toggle="tab"]').on('shown.bs.tab', (e)=>( this.tabrouter(e, this)));
+            $("#loadremitentes").on('click', this.loadEmails);
+            $("#clearremitentes").on('click', this.clearEmails);
         }
-
-
     }
 
     obj.initialize();
