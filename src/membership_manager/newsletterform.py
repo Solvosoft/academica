@@ -262,7 +262,7 @@ class NewsLetterTemplateForm(CustomForm, forms.Form):
 class NewsLetterForm(CustomForm, forms.Form):
 
     subject = forms.CharField(widget=genwidgets.TextInput, required=True, label="Asunto")
-    context = forms.ChoiceField(widget=genwidgets.Select, choices=[], label="Contexto")
+    templatecontext = forms.ChoiceField(widget=genwidgets.Select, choices=[], label="Contexto")
     message = forms.CharField(widget=NEWSLETTER_WIDGET, required=True, label="Mensaje")
     recipient = forms.CharField(widget=forms.HiddenInput)
     file = forms.FileField(widget=genwidgets.FileInput, label="Archivo", required=False)
@@ -275,7 +275,7 @@ class NewsLetterForm(CustomForm, forms.Form):
         pk = kwargs.pop('pk')
         super().__init__(*args, **kwargs)
 
-        self.fields['context'].choices = get_context_news_letter(pk)
+        self.fields['templatecontext'].choices = get_context_news_letter(pk)
 
     class Media:
         js = ['async_notifications/previewupdater.js']
@@ -348,3 +348,8 @@ class SendDateForm(CustomForm, forms.Form):
         else:
             raise forms.ValidationError("La fecha y hora ingresada no debe ser inferior a la fecha y hora actual.")
 
+
+
+class EmailsNewsLetter(CustomForm, forms.Form):
+
+    emails = forms.CharField(widget=EmailTaggingInput, label="Correos", required=False)

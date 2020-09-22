@@ -17,9 +17,7 @@
 
                             {{form.as_horizontal}}
 
-
                         </form>
-                        {% include 'gentelella/blocks/crud_list.html' with title="Programar envío" form=form_sent_date  object_list_gencrud=news_letter_task_list gencrud_form_url=url_news_letter_task gencrud_delete_url=url_news_letter_task %}
 
                         <div class="form-group" style="text-align:center; margin-top:40px;">
                                 <button class="btn btn-success"
@@ -42,8 +40,25 @@
             </div>
         </div>
     </div>
+
+    <div id="modalremitentes" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Remitentes</h4>
+            </div>
+            <div class="modal-body">
+                {{ emailForm.as_horizontal }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
 </div>
 
+</div>
 {% endblock content %}
 
 {% block js %}
@@ -53,8 +68,14 @@
     $("#id_message").css({'width': 407 });
     $("#createnewsletter").on('click', function(){
         $("#formcreatenewsletter").submit()
-     });
+    });
+     var url = "{% url 'updatenewscontext' '0' %}";
+    $("#id_templatecontext").attr('name', 'templatecontext');
+    $("#id_templatecontext").attr('data-url', url);
 
+    $("#emails").on('click', function(){
+        $("#modalremitentes").modal()
+    });
 
 })(jQuery);
 </script>

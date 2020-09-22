@@ -5,7 +5,9 @@ from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import UpdateView
 
-from membership_manager.newsletterform import NewsLetterTemplateForm, NewsLetterForm, FilterEmailsForm, SendDateForm
+from membership_manager.models import Membership
+from membership_manager.newsletterform import NewsLetterTemplateForm, NewsLetterForm, FilterEmailsForm, SendDateForm, \
+    EmailsNewsLetter
 
 
 def news_letter_list(request):
@@ -28,8 +30,11 @@ def news_letter_list(request):
                                                                          'lista_boletines': lista_boletines})
 def create_news_letter(request, pk):
     template = NewsLetterTemplate.objects.get(pk=pk)
-    url_news_letter_task = ""
-    news_letter_task_list = []
+    emails_contactos = Membership.objects.all().exclude(contact__email__isnull=True).values_list('contact__email', flat=True)
+    emails_organizaciones = Membership.objects.all().exclude(organization__email__isnull=True).values_list('organization__email', flat=True)
+    emails_list = list(emails_contactos) + list(emails_organizaciones)
+    print(", ".join(emails_list))
+    emailForm = EmailsNewsLetter(initial={'emails': ", ".join(emails_list)})
 
     if request.method == 'POST':
         form = NewsLetterForm(request.POST, pk=pk)
@@ -49,7 +54,10 @@ def create_news_letter(request, pk):
         form = NewsLetterForm(pk=pk)
         form_filter = FilterEmailsForm()
 
-    return render(request, "news_letter/create_news_letter.html", context={'form': form, 'form_filter': form_filter})
+
+
+    return render(request, "news_letter/create_news_letter.html", context={'form': form, 'form_filter': form_filter,
+                                                                           'emailForm': emailForm})
 
 
 def send_news_letter(request, pk):
