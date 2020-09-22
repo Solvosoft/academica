@@ -128,7 +128,8 @@ class Membership(models.Model):
 
     @property
     def last_renew(self):
-        renew = self.renews.filter(encobro=True, active=True).order_by('end_date', 'pk').last()
+        renew = self.renews.filter(encobro=True, active=True).order_by(
+            'end_date', 'pk').last()
         if renew:
             return renew.start_date
 
