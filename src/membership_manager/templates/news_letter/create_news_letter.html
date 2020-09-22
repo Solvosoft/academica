@@ -20,9 +20,12 @@
 
                   <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="general">
-                                                    {% csrf_token %}
-                            {{form.as_horizontal}}
+                            {% csrf_token %}
 
+                            {% include 'field.html' with field=form.subject  %}
+                            {% include 'field.html' with field=form.templatecontext  %}
+                            {% include 'field.html' with field=form.message  %}
+                            {% include 'field.html' with field=form.field  %}
 
                         <div class="form-group" style="text-align:center; margin-top:40px;">
                                 <button class="btn btn-success"
@@ -33,7 +36,7 @@
 
                       </div>
                     <div role="tabpanel" class="tab-pane" id="remitentes">
-                        {{ emailForm.as_horizontal }}
+                        {% include 'field.html' with field=form.recipient  %}
                     </div>
                   </div>
 
