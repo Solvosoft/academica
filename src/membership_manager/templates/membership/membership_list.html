@@ -11,17 +11,54 @@
     {% if perms.membership_manager.view_membership %}
         <div class="search_options">
             <div class="row">
-                <div class="col-md-6">
-                    <form method="GET">
-                        <div class="input-group">
-                            <input type="text" value="{{q}}" name="q" class="form-control" placeholder="Buscar por país, organización o contacto">
-                            <span class="input-group-btn">
-                                <button class="btn btn-success" type="submit">Go!</button>
-                            </span>
-                        </div>
-                    </form>
+                <div class="col-md-9">
+                    <div class="x_panel">
+                        <form method="GET">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="text" value="{{q}}" name="q" class="form-control" placeholder="Buscar por país, organización o contacto">
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group form-inline">
+                                        <label class="control-label">País: </label>
+                                        <select id="countries" name='p' class="form-control">
+                                            <option value="">No filtrar</option>
+                                            {% for p in countries %}
+                                                <option value="{{p.pk}}">{{p.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 form-inline">
+                                    <label class="control-label">Moneda: </label>
+                                    <select name='c' class="form-control">
+                                        <option value="">No filtrar</option>
+                                        {% for c in currency %}
+                                            <option value="{{c.name}}">{{c}}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label class="control-label">Estado: </label>
+                                    <select name='s' class="form-control">
+                                        <option value="">No filtrar</option>
+                                        {% for state, name in states %}
+                                            <option value="{{state}}">{{name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label class="control-label">Vencidas: </label>
+                                    Si:<input type="radio" class="flat" name="due_date" id="yes" value="yes" required /> 
+                                    No:<input type="radio" class="flat" name="due_date" id="no" value="no" />
+                                    No filtrar:<input type="radio" class="flat" name="due_date" id="nofiltrar" value="nofiltrar" checked required /> 
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="text-right">
+                                        <button class="btn btn-success" type="submit">Búscar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <div class="buttons">
                         <button class="btn btn-primary">Nueva Membresía</button>
                     </div>
@@ -58,6 +95,13 @@
                                 <div>Número de Facturas:{{membership.mem_inv.all.count}}</div>
                                 <div>
                                     Fecha de renovación: {{ membership.last_renew|date:"Y-m-d" }}
+                                </div>
+                                <div>Contactar: 
+                                    {% if membership.organization.telgroup.chat_id != "" %}
+                                        <a href="https://t.me/joingroup/{{ membership.organization.telgroup.chat_id }}"><span class="telegram_icon"><i class="fa fa-send" aria-hidden="true"></i></span></a>
+                                    {% endif %}
+
+                                    <a href="mailto:{{membership.email}}"><span class="mail"><i class="fa fa-envelope" aria-hidden="true"></i></span></a>
                                 </div>
                             </div>
                             <div class="clearfix"></div>
@@ -108,3 +152,14 @@
         <h1>Usted no tiene suficientes permisos para ver Membresías</h1>
     {% endif %}
 {% endblock content %}
+{% block js %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#countries').select2();
+            $('input.flat').iCheck({
+                checkboxClass: 'icheckbox_flat-green',
+                radioClass: 'iradio_flat-green'
+            });
+        });
+    </script>
+{% endblock js %}

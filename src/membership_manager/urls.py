@@ -9,7 +9,8 @@ organization_view = OrganizationView()
 urlpatterns = [
     path('home/', views.index, name="home"),
     path(
-        'contacts/', login_required(ContactListView.as_view()), name="contacts"),
+        'contacts/',
+        login_required(ContactListView.as_view()), name="contacts"),
     path(
         'organizations/',
         login_required(MembershipListView.as_view()), name="organizations"),

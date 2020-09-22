@@ -33,3 +33,11 @@
 .inactive_membership{
     opacity: 0.5 !important;
 }
+
+.inactive_contact{
+    opacity: 0.5 !important;
+}
+
+.telegram_icon {
+    color: #0088cc;
+}
