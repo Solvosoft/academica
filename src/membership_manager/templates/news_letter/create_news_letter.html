@@ -4,28 +4,46 @@
 
 <div class="container">
     <div class="row">
+        <div class='col-md-8 col-xs-12'>
 
-        <div class='col-md-10 col-md-offset-1 col-xs-12'>
+      <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#general" aria-controls="general" role="tab" data-toggle="tab">Edición</a></li>
+            <li role="presentation"><a href="#remitentes" aria-controls="remitentes" role="tab" data-toggle="tab">Remitentes</a></li>
+     </ul>
+
             <div class="x_panel">
                 <div class="x_title">
                     <h1 class="text-center">Nuevo boletín</h1>
                 </div>
                 <div class="x_content">
-                    <div class='col-md-8'>
+
+                  <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="general">
                         <form action="" method="post" id="formcreatenewsletter">
                             {% csrf_token %}
-
                             {{form.as_horizontal}}
-
                         </form>
 
                         <div class="form-group" style="text-align:center; margin-top:40px;">
                                 <button class="btn btn-success"
                                         type="button" id="createnewsletter">Insertar</button>
-
                             </div>
                     </div>
-                    <div class='col-md-4'>
+                    <div role="tabpanel" class="tab-pane" id="remitentes">
+
+                    </div>
+                  </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h1 class="text-center">Filtros</h1>
+                </div>
+                <div class="x_content">
+
                         <h4 class="text-center">Filtrar remitentes</h4>
                         <div class="form-group" style="text-align:center;">
                             <form id="formfilters" action="" method="post">
@@ -33,12 +51,12 @@
                             {{ form_filter.as_inline }}
                             <button id="emails" class="btn btn-primary" type="button">Ver remitentes</button>
                                 </form>
-
                         </div>
-                    </div>
                 </div>
             </div>
+
         </div>
+
     </div>
 
     <div id="modalremitentes" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
