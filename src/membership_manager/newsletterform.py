@@ -363,7 +363,7 @@ class TemplateBaseNewsLetterForm(CustomForm, forms.ModelForm):
 
     class Meta:
         model = NewsLetterTemplate
-        exclude = ['file_path']
+        fields = '__all__'
         widgets = {
             'title': genwidgets.TextInput,
             'name': genwidgets.TextInput,
