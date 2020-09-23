@@ -4,9 +4,6 @@ from membership_core.models import MembershipTemplate
 from membership_manager.models import Membership, Service, Organization
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as widget
-from djgentelella.widgets.selects import AutocompleteSelect
-from djgentelella.groute import register_lookups
-from djgentelella.views.select2autocomplete import BaseSelect2View
 
 
 class TemplateWidget(forms.Select):
