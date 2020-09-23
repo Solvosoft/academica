@@ -45,12 +45,15 @@
                                         {% endfor %}
                                     </select>
                                     <label class="control-label">Vencidas: </label>
-                                    Si:<input type="radio" class="flat" {% if d == "yes" %}checked {% endif %} name="d" value="yes" /> 
-                                    No:<input type="radio" class="flat" {% if d == "no" %}checked {% endif %} name="d" value="no" />
-                                    No filtrar:<input type="radio" class="flat" {% if d == "" %}checked {% endif %} name="d" value="" /> 
+                                    Si:<input type="radio" class="flat due_date" {% if d == "yes" %}checked {% endif %} name="d" value="yes" /> 
+                                    No:<input type="radio" class="flat due_date" {% if d == "no" %}checked {% endif %} name="d" value="no" />
+                                    No filtrar:<input type="radio" class="flat due_date" {% if d == "" %}checked {% endif %} name="d" value="" /> 
                                 </div>
                                 <div class="col-md-12">
                                     <div class="text-right">
+                                        <!-- necesary to implement -->
+                                        <button id="reset" type="reset" class="btn btn-secondary">Limpiar filtros</button>
+                                        <!-- endrequirement -->
                                         <button class="btn btn-success" type="submit">Búscar</button>
                                     </div>
                                 </div>
@@ -60,8 +63,41 @@
                 </div>
                 <div class="col-md-3">
                     <div class="buttons">
-                        <button class="btn btn-primary">Nueva Membresía</button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-md">Nueva Membresía</button>
                     </div>
+
+                    <!--modal-->
+                    <div class="modal fade bs-example-modal-md" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content">
+                                <form action="create" method="GET">
+                                <div class="modal-header">
+                                    <h1 class="modal-title" id="myModalLabel">Crear un nueva membresía</h1>
+                                    <button type="button" class="close" data-dismiss="modal">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                
+                                <div class="modal-body">
+                                    <h4>Seleccione la plantilla a utilizar</h4>
+                                    <select name="mem_template" id="mem_template" class="form-control">
+                                        <option value="">Sin plantilla</option>
+                                        {% for temp in mem_template %}
+                                            <option value="{{temp.pk}}">{{temp.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Crear</button>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!--endmodal-->
+
                 </div>
             </div>
         </div>
@@ -158,6 +194,8 @@
 {% block js %}
     <script type="text/javascript">
         $(document).ready(function(){
+            const p = "{{p}}";
+            const d = "{{d}}";
             $('#countries').select2();
             $('#countries').val("{{p}}").change();
             $('#state').val("{{s}}").change();
@@ -165,6 +203,16 @@
             $('input.flat').iCheck({
                 checkboxClass: 'icheckbox_flat-green',
                 radioClass: 'iradio_flat-green'
+            });
+            $("#reset").click(function(){
+                $('#countries').val(p).change();
+                const d_opt = $('input.due_date');
+                d_opt.removeAttr('checked').iCheck('update');
+                d_opt.each(function(index){
+                    if($(this).val() === d){
+                        $(this).iCheck('check');
+                    }
+                });
             });
         });
     </script>

@@ -7,9 +7,11 @@ from django.db.models import Value
 from django.db.models import Q
 from django.views.generic import ListView
 from djgentelella.cruds.base import CRUDView
-from membership_core.models import Country, ServiceType, SystemCurrency
+from membership_core.models import Country, ServiceType, SystemCurrency, \
+    MembershipTemplate
 from membership_manager.dashboard import TopStats
 from membership_manager.models import Contact, Organization, Membership
+from membership_manager.forms import MembershipForm
 
 
 def servicios_stats():
@@ -107,7 +109,14 @@ class MembershipListView(ListView):
         context['currency'] = SystemCurrency.objects.all()
         context['states'] = Membership.STATES
         context['countries'] = Country.objects.all()
+        context['mem_template'] = MembershipTemplate.objects.all()
         return context
+
+
+@login_required
+def create_membership(request):
+    context = {'form': MembershipForm()}
+    return render(request, 'membership/create.html', context=context)
 
 
 class ContactListView(ListView):

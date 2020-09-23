@@ -19,7 +19,8 @@ PAYMENT = (
 
 IDS_TYPE = (
     ('CIF', 'CIF'), ('RFC', 'RFC'),
-    ('RUT', 'RUT'), ('NIT', 'NIT'), ('CUIT', 'CUIT'), ('RTN', 'RTN'), ('ETC', 'ETC'),
+    ('RUT', 'RUT'), ('NIT', 'NIT'), ('CUIT', 'CUIT'), ('RTN', 'RTN'),
+    ('ETC', 'ETC'),
     ('cedula_juridica', 'Cédula Jurídica')
 )
 
@@ -39,7 +40,6 @@ class GeneralContactInfo(models.Model):
     payment_method = models.CharField(max_length=250, choices=PAYMENT,
                                       verbose_name="Método de pago", null=True, blank=True)
 
-
     @property
     def get_region(self):
         data = []
@@ -51,6 +51,7 @@ class GeneralContactInfo(models.Model):
 
     class Meta:
         abstract = True
+
 
 class Contact(GeneralContactInfo):
     first_name = models.CharField(max_length=250, verbose_name="Nombres")  # Nombres
@@ -157,7 +158,8 @@ class Membership(models.Model):
     class Meta:
         verbose_name = "Membresía"
         verbose_name_plural = "Membresías"
-        ordering = ('state','organization', )
+        ordering = ('state', 'organization', )
+
 
 class Service(models.Model):
     membership = models.ForeignKey(Membership, on_delete=models.CASCADE,
