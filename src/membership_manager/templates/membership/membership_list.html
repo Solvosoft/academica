@@ -80,7 +80,7 @@
                                 
                                 <div class="modal-body">
                                     <h4>Seleccione la plantilla a utilizar</h4>
-                                    <select name="mem_template" id="mem_template" class="form-control">
+                                    <select name="t" id="mem_template" class="form-control">
                                         <option value="">Sin plantilla</option>
                                         {% for temp in mem_template %}
                                             <option value="{{temp.pk}}">{{temp.name}}</option>

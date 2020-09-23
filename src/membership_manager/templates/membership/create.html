@@ -41,6 +41,16 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-md-3">
+                            <label class="col-form-label label-align" for="type_contact">Tipo de Contacto: <span class="required">*</span></label>
+                        </div>
+                        <div class="col-md-9">
+                            Organización<input type="radio" value="organization" class="flat contact_type" checked name="contact_type">
+                            Contacto<input type="radio" value="contact" class="flat contact_type" name="contact_type">
+                            Ambos<input type="radio" value="both" class="flat contact_type" name="contact_type">
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-12">{{ form.contact.errors }}</div>
                         <div class="col-md-3">
                             <label for="{{ form.contact.id_for_label }}">
@@ -190,7 +200,7 @@
     <script type="text/javascript">
         $(document).ready(function(){
             let isVisible = false;
-             $("input[type='checkbox']").val('off');
+            $("input[type='checkbox']").val('off');
             $('#id_fees').parent().parent().css('display','none');
             $("input[type='checkbox']").change(function() {
                 isVisible = !isVisible;
@@ -203,6 +213,34 @@
                 }
                 
             });
+            $("#id_annual_cost").val("{{t.annual_cost}}");
+            $("#id_currency").val("{{t.currency.currency}}");
+            $('.contact_type').iCheck({
+                checkboxClass: 'icheckbox_flat-green',
+                radioClass: 'iradio_flat-green'
+            });
+            $('.contact_type').on('ifChecked', function(){
+                const option = $(this).val();
+                console.log(option);
+                switch(option){
+                    case 'both':
+                        console.log(option);
+                        $('#id_contact').parent().parent().css('display','block');
+                        $('#id_organization').parent().parent().css('display','block');
+                        break;
+                    case 'organization':
+                        console.log(option);
+                        $('#id_organization').parent().parent().css('display','block');
+                        $('#id_contact').parent().parent().css('display','none');
+                        break;
+                    case 'contact':
+                        console.log(option);
+                        $('#id_contact').parent().parent().css('display','block');
+                        $('#id_organization').parent().parent().css('display','none');
+                        break;
+                }
+            });
+
         });
     </script>
 {% endblock js %}

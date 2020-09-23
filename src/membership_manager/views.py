@@ -110,7 +110,8 @@ class MembershipListView(ListView):
         context['currency'] = SystemCurrency.objects.all()
         context['states'] = Membership.STATES
         context['countries'] = Country.objects.all()
-        context['mem_template'] = MembershipTemplate.objects.all()
+        context['mem_template'] = MembershipTemplate.objects.filter(
+            state="active")
         return context
 
 
@@ -121,7 +122,15 @@ def create_membership(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Membresía agregada con exíto.')
-    context = {'form': MembershipForm()}
+    if request.method == 'GET':
+        m_template = {}
+        t = request.GET.get('t', None)
+        if t is not None and t != "":
+            m_template = MembershipTemplate.objects.get(pk=t)
+    context = {
+        'form': MembershipForm(),
+        't': m_template
+    }
     return render(request, 'membership/create.html', context=context)
 
 
