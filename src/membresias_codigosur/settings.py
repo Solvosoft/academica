@@ -54,8 +54,10 @@ INSTALLED_APPS = [
     'mptt',
     'rest_framework',
     'chunked_upload',
+    'api.apps.ApiConfig',
     'django_celery_results',
     'django_celery_beat',
+    'froala_editor',
 ]
 
 MIDDLEWARE = [
@@ -137,7 +139,7 @@ TIME_ZONE = 'America/Costa_Rica'
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
 

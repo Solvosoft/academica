@@ -1,13 +1,16 @@
 from async_notifications.interfaces import NewsLetterInterface
-from async_notifications.models import NewsLetterTemplate
+from async_notifications.models import NewsLetterTemplate, NewsLetter
 from async_notifications.settings import NEWSLETTER_WIDGET
 from django import forms
 from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as genwidgets
+from djgentelella.widgets.tagging import EmailTaggingInput
 
 from membership_core.models import SystemCurrency, ServiceType, Country
 from membership_manager.models import Organization, Membership, PAYMENT, IDS_TYPE, Invoice
 from membership_manager.utils import get_context_news_letter
+import datetime
+from froala_editor.widgets import FroalaEditor
 
 
 def get_countries_en_membresias():
@@ -255,26 +258,104 @@ class NewsLetterTemplateForm(CustomForm, forms.Form):
                                                   required=True, label="Plantilla de boletín")
 
 
-
-
-class NewsLetterForm(CustomForm, forms.Form):
-
-    subject = forms.CharField(widget=genwidgets.TextInput, required=True, label="Asunto")
-    context = forms.ChoiceField(widget=genwidgets.Select, choices=[], label="Contexto")
-    message = forms.CharField(widget=NEWSLETTER_WIDGET, required=True, label="Mensaje")
-    file = forms.FileField(widget=genwidgets.FileInput, label="Archivo")
-    extra_emails = forms.CharField(widget=genwidgets.Textarea, label="Correos adicionales", required=False)
-    confirmation_send_extra_emails = forms.BooleanField(widget=genwidgets.YesNoInput,
-                                                        label="¿Enviar también a los correos adicionales?", required=False)
-    create_datetime = forms.DateTimeField(widget=genwidgets.DateTimeInput, required=True, label="Fecha y hora de envío",
-                                      help_text="La fecha y hora ingresada no debe ser inferior a la fecha y hora actual.")
+class NewsLetterForm(CustomForm, forms.ModelForm):
+    templatecontext = forms.ChoiceField(widget=genwidgets.Select, choices=[], label="Contexto")
 
     def __init__(self, *args, **kwargs):
         pk = kwargs.pop('pk')
         super().__init__(*args, **kwargs)
 
-        self.fields['context'].choices = get_context_news_letter(pk)
+        self.fields['templatecontext'].choices = get_context_news_letter(pk)
+
+    field_order = ['template', 'subject', 'templatecontext', 'message', 'recipient', 'file', 'creator', 'filters' ]
+
+    class Meta:
+        model = NewsLetter
+        exclude = ['cc', 'bcc']
+        widgets = {
+            'template': forms.HiddenInput,
+            'subject': genwidgets.TextInput,
+            'message':  FroalaEditor,
+            'recipient': EmailTaggingInput,
+            'creator': forms.HiddenInput,
+            'filters': forms.HiddenInput,
+            'file': genwidgets.FileInput
+        }
 
     class Media:
+        js = ['js/newsletter.js']
 
-        js = ['async_notifications/previewupdater.js']
+class FilterEmailsForm(CustomForm, forms.Form):
+
+    MEMBERSHIP_STATES = (
+        (None, "Todas"),
+        ("active", "Activas"),
+        ("inactive", "Inactivas"),
+    )
+    MEMBERSHIP_TYPES = (("Personal", "Personal"),
+             ("Radial", "Radial"),
+             ("Organizacional", "Organizacional"),
+             ("Global", "Global"),
+             ("Honoraria", "Honoraria"),
+             ('Básica', 'Básica'))
+
+    PAYMENT_METHOD = (
+        ("Cash", "Efectivo"),
+        ("Bank transfer", "Transferencia bancaria"),
+        ("Paypal", "Paypal"),
+        ("Bitcoins", "Bitcoins"),
+        ('MoneyGram', 'MoneyGram'),
+        ('WesterUnion', 'WesterUnion'),
+        ('Transferencia Bancaria Argentina', 'Transferencia Bancaria Argentina')
+    )
+
+    APPLY_FEES = (
+        (None, "Todas"),
+        (True, "Con impuestos"),
+        (False, "Sin impuestos"),
+    )
+
+    INVOICES_CHOICES = (
+        (None, "Todas"),
+        ("pending", "Con facturas pendientes"),
+        ("paid", "Sin pendientes"),
+    )
+
+    SEARCH_IN_CHOICES = (
+        (None, "Ambos"),
+        ("contacto", "Contacto"),
+        ("organizacion", "Organizacion"),
+    )
+
+    apply_filters = forms.BooleanField(widget=genwidgets.YesNoInput, required=False, label="¿Desea aplicar filtros?")
+    state = forms.ChoiceField(widget=genwidgets.Select, choices=MEMBERSHIP_STATES, required=False, label="Estado")
+    country = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Country.objects.all(), required=False, label="País")
+    currency = forms.ModelChoiceField(widget=genwidgets.SelectMultiple, queryset=SystemCurrency.objects.all(), required=False, label="Moneda")
+    payment_method = forms.MultipleChoiceField(widget=genwidgets.SelectMultiple, choices=PAYMENT_METHOD, required=False, label="Método de pago")
+    apply_fees = forms.ChoiceField(widget=genwidgets.Select, choices=APPLY_FEES, required=False, label="Tarifas aplicadas")
+    invoices = forms.ChoiceField(widget=genwidgets.Select, choices=INVOICES_CHOICES, required=False, label="Facturas")
+    search_in = forms.ChoiceField(widget=genwidgets.Select, choices=SEARCH_IN_CHOICES, required=False, label="Búsqueda en")
+    service_type = forms.ModelChoiceField(widget=genwidgets.SelectMultiple, queryset=ServiceType.objects.all(), required=False, label="Tipo de servicio")
+    membership_type = forms.MultipleChoiceField(widget=genwidgets.SelectMultiple, choices=MEMBERSHIP_TYPES, required=False, label="Tipo de membresía")
+
+
+class SendDateForm(CustomForm, forms.Form):
+
+    send_date = forms.DateTimeField(widget=genwidgets.DateTimeInput, required=True, label="Fecha y hora de envío",
+                                          help_text="La fecha y hora ingresada no debe ser inferior a la fecha y hora actual.")
+
+    def clean(self):
+
+        cleaned_data = super(SendDateForm, self).clean()
+        current_date = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
+        send_date = cleaned_data.get("send_date").strftime("%d/%m/%Y, %H:%M:%S")
+        if send_date > current_date:
+            return cleaned_data
+        else:
+            raise forms.ValidationError("La fecha y hora ingresada no debe ser inferior a la fecha y hora actual.")
+
+
+
+class EmailsNewsLetter(CustomForm, forms.Form):
+
+    emails = forms.CharField(widget=EmailTaggingInput, label="Correos", required=False)
