@@ -327,6 +327,7 @@ class FilterEmailsForm(CustomForm, forms.Form):
         ("organizacion", "Organizacion"),
     )
 
+    apply_filters = forms.BooleanField(widget=genwidgets.YesNoInput, required=False, label="¿Desea aplicar filtros?")
     state = forms.ChoiceField(widget=genwidgets.Select, choices=MEMBERSHIP_STATES, required=False, label="Estado")
     country = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Country.objects.all(), required=False, label="País")
     currency = forms.ModelChoiceField(widget=genwidgets.SelectMultiple, queryset=SystemCurrency.objects.all(), required=False, label="Moneda")
