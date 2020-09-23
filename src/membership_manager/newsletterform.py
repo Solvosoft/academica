@@ -1,16 +1,17 @@
-from async_notifications.interfaces import NewsLetterInterface
-from async_notifications.models import NewsLetterTemplate, NewsLetter
-from async_notifications.settings import NEWSLETTER_WIDGET
+import datetime
+
 from django import forms
 from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.tagging import EmailTaggingInput
+from froala_editor.widgets import FroalaEditor
 
+from async_notifications.interfaces import NewsLetterInterface
+from async_notifications.models import NewsLetterTemplate, NewsLetter
+from async_notifications.utils import get_basemodels_dict
 from membership_core.models import SystemCurrency, ServiceType, Country
 from membership_manager.models import Organization, Membership, PAYMENT, IDS_TYPE, Invoice
 from membership_manager.utils import get_context_news_letter
-import datetime
-from froala_editor.widgets import FroalaEditor
 
 
 def get_countries_en_membresias():
@@ -259,25 +260,14 @@ class NewsLetterTemplateForm(CustomForm, forms.Form):
 
 
 class NewsLetterForm(CustomForm, forms.ModelForm):
-    templatecontext = forms.ChoiceField(widget=genwidgets.Select, choices=[], label="Contexto")
-
-    def __init__(self, *args, **kwargs):
-        pk = kwargs.pop('pk')
-        super().__init__(*args, **kwargs)
-
-        self.fields['templatecontext'].choices = get_context_news_letter(pk)
-
-    field_order = ['template', 'subject', 'templatecontext', 'message', 'recipient', 'file', 'creator', 'filters' ]
 
     class Meta:
         model = NewsLetter
-        exclude = ['cc', 'bcc']
+        exclude = ['cc', 'bcc', 'creator', 'template']
         widgets = {
-            'template': forms.HiddenInput,
             'subject': genwidgets.TextInput,
             'message':  FroalaEditor,
             'recipient': EmailTaggingInput,
-            'creator': forms.HiddenInput,
             'filters': forms.HiddenInput,
             'file': genwidgets.FileInput
         }
@@ -359,3 +349,23 @@ class SendDateForm(CustomForm, forms.Form):
 class EmailsNewsLetter(CustomForm, forms.Form):
 
     emails = forms.CharField(widget=EmailTaggingInput, label="Correos", required=False)
+
+
+class TemplateBaseNewsLetterForm(CustomForm, forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['model_base'] = forms.ChoiceField(
+            choices=get_basemodels_dict(),
+            widget=genwidgets.Select
+        )
+
+    class Meta:
+        model = NewsLetterTemplate
+        exclude = ['file_path']
+        widgets = {
+            'title': genwidgets.TextInput,
+            'name': genwidgets.TextInput,
+            'message':  FroalaEditor
+        }

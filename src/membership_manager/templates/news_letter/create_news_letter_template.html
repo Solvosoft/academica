@@ -1,0 +1,57 @@
+{% extends 'gentelella/base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class='col-md-8 col-md-offset-2 col-xs-12'>
+
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#general" aria-controls="general" role="tab" data-toggle="tab">Edición</a></li>
+                <li role="presentation"><a id="tabpreview" href="#preview" aria-controls="preview" role="tab" data-toggle="tab">Preview</a></li>
+            </ul>
+
+              <div class="x_panel">
+                <div class="x_title">
+                    <h1 class="text-center">Nueva plantilla base</h1>
+                </div>
+                <div class="x_content">
+
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="general">
+
+                        <div class="form-group" style="text-align:center;">
+                            <form action="" method="post" id="formcreatenewsletter">
+                                {% csrf_token %}
+                                {{ form.as_horizontal }}
+
+                                <div class="form-group" style="text-align:center; margin-top:40px;">
+                                <button class="btn btn-success"
+                                        type="submit">Guardar</button>
+                            </div>
+
+                            </form>
+                        </div>
+                        </div>
+
+                        <div role="tabpanel" class="tab-pane" id="preview">
+                        <iframe style="width: 100%; height: 600px; border: 0px solid #fff" ></iframe>
+                      </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+</div>
+{% endblock content %}
+
+{% block js %}
+{{form.media}}
+
+<script>
+          new FroalaEditor('#id_message',{"inlineMode": false, "imageUploadURL": "/froala_editor/image_upload/", "imageUploadParams": {"csrfmiddlewaretoken": getCookie("csrftoken")}, "fileUploadURL": "/froala_editor/file_upload/", "fileUploadParams": {"csrfmiddlewaretoken": getCookie("csrftoken")}})
+</script>
+{% endblock %}
