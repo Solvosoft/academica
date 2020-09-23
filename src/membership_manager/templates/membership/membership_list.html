@@ -15,39 +15,47 @@
                     <div class="x_panel">
                         <form method="GET">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-6 col-lg-6">
                                     <input type="text" value="{{q}}" name="q" class="form-control" placeholder="Buscar por organización o contacto">
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 col-lg-6">
                                     <div class="form-group form-inline">
-                                        <label class="control-label">País: </label>
-                                        <select id="countries" name='p' class="form-control">
-                                            <option value="">No filtrar</option>
-                                            {% for country in countries %}
-                                                <option value="{{country.pk}}">{{country.name}}</option>
-                                            {% endfor %}
-                                        </select>
+                                        <span class="form_control_group">
+                                            <label class="control-label">País: </label>
+                                            <select id="countries" name='p' class="form-control">
+                                                <option value="">No filtrar</option>
+                                                {% for country in countries %}
+                                                    <option value="{{country.pk}}">{{country.name}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </span>
                                     </div>
                                 </div>
-                                <div class="col-md-6 form-inline">
-                                    <label class="control-label">Moneda: </label>
-                                    <select id="currency" name='c' class="form-control">
-                                        <option value="">No filtrar</option>
-                                        {% for c in currency %}
-                                            <option value="{{c.currency}}">{{c.currency}}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <label class="control-label">Estado: </label>
-                                    <select id="state" name='s' class="form-control">
-                                        <option value="">No filtrar</option>
-                                        {% for state, name in states %}
-                                            <option value="{{state}}">{{name}}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <label class="control-label">Vencidas: </label>
-                                    Si:<input type="radio" class="flat due_date" {% if d == "yes" %}checked {% endif %} name="d" value="yes" /> 
-                                    No:<input type="radio" class="flat due_date" {% if d == "no" %}checked {% endif %} name="d" value="no" />
-                                    No filtrar:<input type="radio" class="flat due_date" {% if d == "" %}checked {% endif %} name="d" value="" /> 
+                                <div class="col-md-12 form-inline">
+                                    <span class="form_control_group">
+                                        <label class="control-label">Moneda: </label>
+                                        <select id="currency" name='c' class="form-control">
+                                            <option value="">No filtrar</option>
+                                            {% for c in currency %}
+                                                <option value="{{c.currency}}">{{c.currency}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </span>
+                                    <span class="form_control_group">
+                                        <label class="control-label">Estado: </label>
+                                        <select id="state" name='s' class="form-control">
+                                            <option value="">No filtrar</option>
+                                            {% for state, name in states %}
+                                                <option value="{{state}}">{{name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </span>
+                                    <span class="form_control_group">
+                                        <label class="control-label">Vencidas: </label>
+                                        Si:<input type="radio" class="flat due_date" {% if d == "yes" %}checked {% endif %} name="d" value="yes" /> 
+                                        No:<input type="radio" class="flat due_date" {% if d == "no" %}checked {% endif %} name="d" value="no" />
+                                        No filtrar:<input type="radio" class="flat due_date" {% if d == "" %}checked {% endif %} name="d" value="" /> 
+                                    </span>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="text-right">

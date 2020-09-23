@@ -50,3 +50,7 @@
 #membership_form .row{
     margin-top: 20px !important;
 }
+
+.form-inline > .form_control_group {
+    margin-right: 20px;
+}
