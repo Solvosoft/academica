@@ -2,6 +2,7 @@ import datetime
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from django.contrib import messages
 from django.db.models.functions import Concat
 from django.db.models import Value
 from django.db.models import Q
@@ -115,6 +116,11 @@ class MembershipListView(ListView):
 
 @login_required
 def create_membership(request):
+    if request.method == 'POST':
+        form = MembershipForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Membresía agregada con exíto.')
     context = {'form': MembershipForm()}
     return render(request, 'membership/create.html', context=context)
 

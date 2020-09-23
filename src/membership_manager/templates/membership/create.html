@@ -13,8 +13,130 @@
             <div class="x_panel">
                 <form action="" method="post">
                     {% csrf_token %}
-                    {{form.as_horizontal}}
                     <div class="row">
+                        <div class="col-md-12">
+                            {% if messages %}
+                                <ul class="messages">
+                                    {% for message in messages %}
+                                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            {{ form.non_field_errors }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">{{ form.membership_type.errors }}</div>
+                        <div class="col-md-3">
+                            <label for="{{ form.membership_type.id_for_label }}">
+                                {{form.membership_type.label_tag}}
+                            </label>
+                        </div>
+                        <div class="col-md-9">
+                            {{ form.membership_type }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">{{ form.contact.errors }}</div>
+                        <div class="col-md-3">
+                            <label for="{{ form.contact.id_for_label }}">
+                                {{form.contact.label_tag}}
+                            </label>
+                        </div>
+                        <div class="col-md-9">
+                            {{ form.contact }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">{{ form.organization.errors }}</div>
+                        <div class="col-md-3">
+                            <label for="{{ form.organization.id_for_label }}">
+                                {{form.organization.label_tag}}
+                            </label>
+                        </div>
+                        <div class="col-md-9">
+                            {{ form.organization }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">{{ form.annual_cost.errors }}</div>
+                        <div class="col-md-3">
+                            <label for="{{ form.annual_cost.id_for_label }}">
+                                {{form.annual_cost.label_tag}}
+                            </label>
+                        </div>
+                        <div class="col-md-9">
+                            {{ form.annual_cost }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12">{{ form.currency.errors }}</div>
+                        <div class="col-md-3">
+                            <label for="{{ form.currency.id_for_label }}">
+                                {{form.currency.label_tag}}
+                            </label>
+                        </div>
+                        <div class="col-md-9">
+                            {{ form.currency }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">{{ form.renewal_period.errors }}</div>
+                        <div class="col-md-3">
+                            <label for="{{ form.renewal_period.id_for_label }}">
+                                {{form.renewal_period.label_tag}}
+                            </label>
+                        </div>
+                        <div class="col-md-9">
+                            {{ form.renewal_period }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">{{ form.state.errors }}</div>
+                        <div class="col-md-3">
+                            <label for="{{ form.state.id_for_label }}">
+                                {{form.state.label_tag}}
+                            </label>
+                        </div>
+                        <div class="col-md-9">
+                            {{ form.state }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">{{ form.apply_fees.errors }}</div>
+                        <div class="col-md-3">
+                            <label for="{{ form.apply_fees.id_for_label }}">
+                                {{form.apply_fees.label_tag}}
+                            </label>
+                        </div>
+                        <div class="col-md-9">
+                            {{ form.apply_fees }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">{{ form.fees.errors }}</div>
+                        <div class="col-md-3">
+                            <label for="{{ form.fees.id_for_label }}">
+                                {{form.fees.label_tag}}
+                            </label>
+                        </div>
+                        <div class="col-md-9">
+                            {{ form.fees }}
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top:50px;">
                         <div class="col-md-12">
                             <div class="form-inline" style="text-align:right;">
                                 <button class="btn btn-secondary text-center" type="reset">Cancelar</button>
@@ -64,3 +186,23 @@
         <h1>Usted no tiene suficientes permisos para ver Membresías</h1>
     {% endif %}
 {% endblock content %}
+{% block js %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            let isVisible = false;
+             $("input[type='checkbox']").val('off');
+            $('#id_fees').parent().parent().css('display','none');
+            $("input[type='checkbox']").change(function() {
+                isVisible = !isVisible;
+                if(isVisible){
+                    $('#id_fees').parent().parent().css('display','block');
+                     $("input[type='checkbox']").val('on');
+                }else{
+                    $('#id_fees').parent().parent().css('display','none');
+                    $("input[type='checkbox']").val('off');
+                }
+                
+            });
+        });
+    </script>
+{% endblock js %}

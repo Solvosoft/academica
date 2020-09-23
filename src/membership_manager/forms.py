@@ -91,11 +91,10 @@ class MembershipForm(GTForm, forms.ModelForm):
     class Meta:
         model = Membership
         fields = [
-            'organization', 'membership_type', 'contact',
+            'organization', 'membership_type', 'contact', 'annual_cost',
             'currency', 'renewal_period', 'apply_fees', 'state',
             'fees'
         ]
-
         widgets = {
             'organization': widget.Select,
             'membership_type': widget.Select,
