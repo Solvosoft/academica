@@ -1,15 +1,19 @@
-from async_notifications.models import NewsLetter, NewsLetterTemplate, NewsLetterTask
-from async_notifications.tasks import task_send_newsletter
 from django.contrib import messages
+from django.contrib.auth.decorators import permission_required
+from django.http import QueryDict
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views.generic import UpdateView
 
+from async_notifications.models import NewsLetter, NewsLetterTemplate, NewsLetterTask
+from async_notifications.tasks import task_send_newsletter
 from membership_manager.models import Membership
 from membership_manager.newsletterform import NewsLetterTemplateForm, NewsLetterForm, FilterEmailsForm, SendDateForm, \
-    EmailsNewsLetter
+    TemplateBaseNewsLetterForm
 
 
+@permission_required('async_notifications.view_newsletter')
 def news_letter_list(request):
 
     if request.method == 'POST':
@@ -28,11 +32,16 @@ def news_letter_list(request):
     return render(request, "news_letter/news_letter_list.html", context={'form': form,
                                                                          'send_date_form': send_date_form,
                                                                          'lista_boletines': lista_boletines})
+
+@permission_required('async_notifications.add_newsletter')
 def create_news_letter(request, pk):
     template = get_object_or_404(NewsLetterTemplate, pk=pk)
+    emails_organization = Membership.objects.all().exclude(organization__email__isnull=True).values_list('organization__email', flat=True)
+    emails_contacts = Membership.objects.all().exclude(contact__email__isnull=True).values_list('contact__email', flat=True)
+    emails = list(emails_organization) + list(emails_contacts)
 
     if request.method == 'POST':
-        form = NewsLetterForm(request.POST, pk=pk, initial={'template': pk, 'creator': request.user.pk})
+        form = NewsLetterForm(request.POST)
         form_filter = FilterEmailsForm(request.POST)
 
         if form.is_valid():
@@ -42,13 +51,14 @@ def create_news_letter(request, pk):
                 message=form.cleaned_data['message'],
                 recipient=form.cleaned_data['recipient'],
                 creator=request.user,
-                file=form.cleaned_data['file']
+                file=form.cleaned_data['file'],
+                filters=form.cleaned_data['filters']
             )
             news_letter.save()
+            return redirect('news_letter_list')
     else:
-        form = NewsLetterForm(pk=pk, initial={'template': pk, 'message': template.message, 'creator': request.user.pk})
+        form = NewsLetterForm(initial={'message': template.message})
         form_filter = FilterEmailsForm()
-
 
 
     return render(request, "news_letter/create_news_letter.html", context={'form': form,
@@ -60,6 +70,7 @@ def send_news_letter(request, pk):
     task_send_newsletter.delay(pk)
     return redirect('news_letter_list')
 
+@permission_required('async_notifications.delete_newsletter')
 def delete_news_letter(request, pk):
     boletin = NewsLetter.objects.filter(pk=pk).first()
 
@@ -67,7 +78,7 @@ def delete_news_letter(request, pk):
         boletin.delete()
         return redirect('news_letter_list')
 
-
+@method_decorator(permission_required('async_notifications.change_newsletter'), name='dispatch')
 class EditNewsLetter(UpdateView):
     model = NewsLetter
     form_class = NewsLetterForm
@@ -77,18 +88,13 @@ class EditNewsLetter(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         news_letter = context['object']
-        news_letter_task_list = [{'pk': obj.pk, 'name': obj.send_date} for obj in news_letter.newslettertask_set.all()]
-        url_news_letter_task = reverse('api_news_letter_task', args=(news_letter.pk,))
-        form_sent_date = SendDateForm()
-        form_filter = FilterEmailsForm()
-        context.update({'form_filter': form_filter,
-                        'form_sent_date': form_sent_date,
-                        'news_letter_task_list': news_letter_task_list,
-                        'url_news_letter_task': url_news_letter_task
+        form_filter = FilterEmailsForm(QueryDict(news_letter.filters))
+        context.update({'form_filter': form_filter ,
+                        'template': news_letter.template.pk,
                         })
         return context
 
-
+@permission_required('async_notifications.create_newslettertask')
 def create_task(request, pk):
     boletin = NewsLetter.objects.filter(pk=pk).first()
 
@@ -110,10 +116,25 @@ def create_task(request, pk):
             return redirect('news_letter_list')
 
 
-
+@permission_required('async_notifications.delete_newslettertask')
 def delete_task(request, pk):
     task = NewsLetterTask.objects.filter(pk=pk).first()
 
     if task:
         task.delete()
         return redirect('news_letter_list')
+
+@permission_required('async_notifications.add_newslettertemplate')
+def create_news_letter_template(request):
+
+    if request.method == "POST":
+
+        form = TemplateBaseNewsLetterForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('news_letter_list')
+    else:
+        form = TemplateBaseNewsLetterForm()
+
+    return render(request, "news_letter/create_news_letter_template.html", context={'form': form})

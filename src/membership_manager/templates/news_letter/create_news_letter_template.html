@@ -1,0 +1,38 @@
+{% extends 'gentelella/base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class='col-md-8 col-md-offset-2 col-xs-12'>
+
+              <div class="x_panel">
+                <div class="x_title">
+                    <h1 class="text-center">Nueva plantilla base</h1>
+                </div>
+                <div class="x_content">
+
+                    <div class="form-group" style="text-align:center;">
+                        <form action="" method="post" id="formcreatenewsletter">
+                            {% csrf_token %}
+                            {{ form.as_horizontal }}
+
+                            <div class="form-group" style="text-align:center; margin-top:40px;">
+                                <button class="btn btn-success" type="submit">Guardar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block js %}
+{{form.media}}
+
+<script>
+          new FroalaEditor('#id_message',{"inlineMode": false, "imageUploadURL": "/froala_editor/image_upload/", "imageUploadParams": {"csrfmiddlewaretoken": getCookie("csrftoken")}, "fileUploadURL": "/froala_editor/file_upload/", "fileUploadParams": {"csrfmiddlewaretoken": getCookie("csrftoken")}})
+</script>
+{% endblock %}
