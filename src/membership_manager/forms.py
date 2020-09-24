@@ -4,6 +4,7 @@ from membership_core.models import MembershipTemplate
 from membership_manager.models import Membership, Service, Organization
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as widget
+from djgentelella.widgets.selects import AutocompleteSelect
 
 
 class TemplateWidget(forms.Select):
@@ -109,9 +110,9 @@ class MembershipForm(GTForm, forms.ModelForm):
             'apply_fees', 'fees'
         ]
         widgets = {
-            'organization': widget.Select,
+            'organization': AutocompleteSelect('organizationbasename'),
             'membership_type': widget.Select,
-            'contact': widget.Select,
+            'contact': AutocompleteSelect('contactbasename'),
             'currency': widget.Select,
             'annual_cost': widget.NumberInput,
             'renewal_period': widget.Select,
