@@ -105,8 +105,8 @@ class MembershipForm(GTForm, forms.ModelForm):
         model = Membership
         fields = [
             'membership_type', 'contact_type', 'organization', 'contact',
-            'annual_cost', 'currency', 'renewal_period', 'apply_fees',
-            'state', 'fees'
+            'annual_cost', 'currency', 'renewal_period', 'state',
+            'apply_fees', 'fees'
         ]
         widgets = {
             'organization': widget.Select,
