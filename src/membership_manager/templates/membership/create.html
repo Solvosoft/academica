@@ -25,41 +25,6 @@
                 </form>
             </div>
         </div>
-        <div class="paginator_container">
-            {% if is_paginated %}
-                <ul class="pagination">
-                    {% if page_obj.has_previous %}
-                        {% if q or p or c or s or d %}
-                            <li><a href="?page={{ page_obj.previous_page_number }}&q={{q}}&p={{p}}&c={{c}}&s={{s}}&d={{d}}">&laquo;</a></li>
-                        {% else %}
-                            <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
-                        {% endif%}
-                    {% else %}
-                        <li class="disabled"><span>&laquo;</span></li>
-                    {% endif %}
-                    {% for i in paginator.page_range %}
-                        {% if page_obj.number == i %}
-                            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-                        {% else %}
-                            {% if q or p or c or s or d %}
-                                <li><a href="?page={{ i }}&q={{q}}&p={{p}}&c={{c}}&s={{s}}&d={{d}}">{{ i }}</a></li>
-                            {% else %}
-                                <li><a href="?page={{ i }}">{{ i }}</a></li>
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %}
-                    {% if page_obj.has_next %}
-                        {% if q or p or c or s or d %}
-                            <li><a href="?page={{ page_obj.next_page_number }}&q={{q}}&p={{p}}&c={{c}}&s={{s}}&d={{d}}">&raquo;</a></li>
-                        {% else %}
-                            <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-                        {% endif %}
-                    {% else %}
-                        <li class="disabled"><span>&raquo;</span></li>
-                    {% endif %}
-                </ul>
-            {% endif %}
-        </div>
     {% else %}
         <h1>Usted no tiene suficientes permisos para ver Membresías</h1>
     {% endif %}
@@ -68,10 +33,21 @@
     <script type="text/javascript">
         $(document).ready(function(){
             let isVisible = false;
-            const template = "{{t}}";
-            $('#id_membership_type').val(template).change();
+            
+            //Set membership_type from template
+            const membership_type = "{{t.name}}";
+            $('#id_membership_type').val(membership_type).change();
+            
+            //Set renewal_period from template
+            const renewal_period = "{{t.renewal_period.pk}}";
+            $('#id_renewal_period').val(renewal_period).change();
+            
+            //Set initial fees field to display none
             $("input[type='checkbox']").val('off');
             $('#id_fees').parent().parent().css('display','none');
+            
+
+            //Trigger to display fees field when apply_fees change
             $("input[type='checkbox']").change(function() {
                 isVisible = !isVisible;
                 if(isVisible){
@@ -83,12 +59,18 @@
                 }
                 
             });
+
+            //Set annual cost from template
             $("#id_annual_cost").val("{{t.annual_cost}}");
-            $("#id_currency").val("{{t.currency.currency}}");
-            $('.contact_type').iCheck({
-                checkboxClass: 'icheckbox_flat-green',
-                radioClass: 'iradio_flat-green'
-            });
+            
+            //Set Currency from template
+            const currency = "{{t.currency.pk}}"
+            $("#id_currency").val(currency).change();
+
+            /**
+                Set trigger to display contact, organization or both depending
+                on the contact_type value selected 
+            **/
             $('input[name="contact_type"]').on('ifChecked', function(){
                 const option = $(this).val();
                 switch(option){
@@ -109,8 +91,12 @@
                         break;
                 }
             });
+
+            //Hide contact when form is loaded
             $('#id_contact').parent().parent().css('display','none');
-            $('input.flat').iCheck({
+
+            //Apply radioflat style from iCheck
+            $('input[name="contact_type"]').iCheck({
                 checkboxClass: 'icheckbox_flat-green',
                 radioClass: 'iradio_flat-green'
             });
