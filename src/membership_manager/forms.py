@@ -85,18 +85,35 @@ class OrganizationForm(forms.ModelForm):
 
 
 class MembershipForm(GTForm, forms.ModelForm):
+    ORGANIZATION = 'organization'
+    CONTACT = 'contact'
+    BOTH = "both"
+    CHOICES = (
+        (ORGANIZATION, 'Organización'),
+        (CONTACT, 'Contacto'),
+        (BOTH, 'Ambos'),
+    )
+    contact_type = forms.ChoiceField(
+        choices=CHOICES, widget=widget.RadioSelect, label="Tipo de Contacto")
+
+    def __init__(self, *args, **kwargs):
+        super(MembershipForm, self).__init__(*args, **kwargs)
+        # assign a (computed, I assume) default value to the choice field
+        self.initial['contact_type'] = self.ORGANIZATION
+
     class Meta:
         model = Membership
         fields = [
-            'organization', 'membership_type', 'contact', 'annual_cost',
-            'currency', 'renewal_period', 'apply_fees', 'state',
-            'fees'
+            'membership_type', 'contact_type', 'organization', 'contact',
+            'annual_cost', 'currency', 'renewal_period', 'apply_fees',
+            'state', 'fees'
         ]
         widgets = {
             'organization': widget.Select,
             'membership_type': widget.Select,
             'contact': widget.Select,
             'currency': widget.Select,
+            'annual_cost': widget.NumberInput,
             'renewal_period': widget.Select,
             'apply_fees': widget.YesNoInput,
             'state': widget.Select,
