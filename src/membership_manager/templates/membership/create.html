@@ -75,25 +75,31 @@
                 const option = $(this).val();
                 switch(option){
                     case 'both':
-                        console.log(option);
                         $('#id_contact').parent().parent().css('display','block');
+                        $('#id_contact').attr('required',true);
                         $('#id_organization').parent().parent().css('display','block');
+                        $('#id_organization').attr('required',true);
                         break;
                     case 'organization':
-                        console.log(option);
                         $('#id_organization').parent().parent().css('display','block');
+                        $('#id_organization').attr('required',true);
                         $('#id_contact').parent().parent().css('display','none');
+                        $('#id_contact').val('').change().attr('required',false);
                         break;
                     case 'contact':
-                        console.log(option);
                         $('#id_contact').parent().parent().css('display','block');
+                        $('#id_contact').attr('required',true);
                         $('#id_organization').parent().parent().css('display','none');
+                        $('#id_organization').val('').change().attr('required',false);
                         break;
                 }
             });
 
             //Hide contact when form is loaded
             $('#id_contact').parent().parent().css('display','none');
+
+            //set organizatio as required field initial
+            $('#id_organization').attr('required',true);
 
             //Apply radioflat style from iCheck
             $('input[name="contact_type"]').iCheck({

@@ -117,18 +117,21 @@ class MembershipListView(ListView):
 
 @login_required
 def create_membership(request):
+    m_template = {}
+    t = request.GET.get('t', None)
     if request.method == 'POST':
         form = MembershipForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Membresía agregada con exíto.')
+            messages.success(request, 'Membresía guardada con exíto!')
+        else:
+            messages.warning(request, "Faltan datos por ingresar")
     if request.method == 'GET':
-        m_template = {}
-        t = request.GET.get('t', None)
         if t is not None and t != "":
             m_template = MembershipTemplate.objects.get(pk=t)
+            form = MembershipForm()
     context = {
-        'form': MembershipForm(),
+        'form': form,
         't': m_template
     }
     return render(request, 'membership/create.html', context=context)

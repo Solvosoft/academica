@@ -1,5 +1,6 @@
 from ajax_select.fields import AutoCompleteSelectField
 from django import forms
+from django.core.exceptions import ValidationError
 from membership_core.models import MembershipTemplate
 from membership_manager.models import Membership, Service, Organization
 from djgentelella.forms.forms import GTForm
@@ -118,4 +119,34 @@ class MembershipForm(GTForm, forms.ModelForm):
             'renewal_period': widget.Select,
             'apply_fees': widget.YesNoInput,
             'state': widget.Select,
+            'fees': widget.NumberInput
         }
+
+    def clean_organization(self):
+        contact_type = self.cleaned_data.get("contact_type", None)
+        organization = self.cleaned_data.get("organization", None)
+        if contact_type == MembershipForm.BOTH:
+            if organization == "" or organization is None:
+                raise ValidationError("Olvido seleccionar una 'organización'")
+        elif contact_type == MembershipForm.ORGANIZATION:
+            if organization == "" or organization is None:
+                raise ValidationError("Olvido seleccionar una 'organización'")
+        return organization
+
+    def clean_contact(self):
+        contact_type = self.cleaned_data.get("contact_type", None)
+        contact = self.cleaned_data.get("contact", None)
+        if contact_type == MembershipForm.BOTH:
+            if contact == "" or contact is None:
+                raise ValidationError("Olvido seleccionar un 'contacto'")
+        elif contact_type == MembershipForm.CONTACT:
+            if contact == "" or contact is None:
+                raise ValidationError("Olvido seleccionar un 'contacto'")
+        return contact
+
+    def clean_fees(self):
+        apply_fees = self.cleaned_data.get("apply_fees", None)
+        fees = self.cleaned_data.get("fees", None)
+        if apply_fees == 'off':
+            fees = 0
+        return fees
