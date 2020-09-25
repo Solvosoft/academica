@@ -1,0 +1,43 @@
+{% extends 'gentelella/base.html' %}
+
+{% load static %}
+{% block extra_css %}
+    <link href="{% static 'css/membership.css' %}" rel="stylesheet">
+{% endblock extra_css %}
+
+{% block content %}
+    
+    <h1 style="text-align:center;">Agregar Servicios</h1>
+    {% if perms.membership_manager.view_membership %}
+        <div id="membership_form" class="row">
+            <div class="x_panel">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {{form.as_horizontal}}
+                    <div class="row" style="margin-top:50px;">
+                        <div class="col-md-12">
+                            <div class="form-inline" style="text-align:right;">
+                                <button class="btn btn-secondary text-center" type="reset">Cancelar</button>
+                                <button class="btn btn-success text-center" type="submit">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% else %}
+        <h1>Usted no tiene suficientes permisos para ver Membresías</h1>
+    {% endif %}
+{% endblock content %}
+{% block js %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            
+            //Set membership from get method
+            const pk = "{{pk}}";
+            $('#id_membership').val(pk).change();
+            $('#id_membership').select2({'disabled':'readonly'});
+            
+        });
+    </script>
+{% endblock js %}

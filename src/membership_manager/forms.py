@@ -150,3 +150,16 @@ class MembershipForm(GTForm, forms.ModelForm):
         if apply_fees == 'off':
             fees = 0
         return fees
+
+
+class MembershipServicesForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = Service
+        fields = ['membership', 'servicetype', 'description', 'observations']
+
+        widgets = {
+            'servicetype': AutocompleteSelect('servicetypebasename'),
+            'description': widget.TextInput,
+            'observations': widget.Textarea,
+            'membership': widget.Select
+        }

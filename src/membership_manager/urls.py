@@ -1,8 +1,10 @@
 from django.urls import path
 from membership_manager import views
-from membership_manager.news_letter import create_news_letter, news_letter_list, send_news_letter, delete_news_letter,\
+from membership_manager.news_letter import create_news_letter,\
+    news_letter_list, send_news_letter, delete_news_letter,\
     EditNewsLetter, create_task, delete_task, create_news_letter_template
-from membership_manager.views import OrganizationView, MembershipListView, ContactListView, create_membership
+from membership_manager.views import OrganizationView, MembershipListView,\
+    ContactListView, create_membership, add_services
 
 from django.contrib.auth.decorators import login_required
 
@@ -16,6 +18,9 @@ urlpatterns = [
         'organizations/',
         login_required(MembershipListView.as_view()), name="organizations"),
     path('memberships/', MembershipListView.as_view(), name="memberships"),
+    path(
+        'membership/add_services/<int:pk>/', 
+        add_services, name="add_membership_services"),
     path('memberships/create', create_membership, name="create_memberships"),
     path('newsletter/', news_letter_list, name="news_letter_list"),
     path('newsletter/create/<int:pk>/', create_news_letter, name="create_news_letter"),

@@ -1,4 +1,5 @@
 import datetime
+from django.shortcuts import redirect
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -12,7 +13,7 @@ from membership_core.models import Country, ServiceType, SystemCurrency, \
     MembershipTemplate
 from membership_manager.dashboard import TopStats
 from membership_manager.models import Contact, Organization, Membership
-from membership_manager.forms import MembershipForm
+from membership_manager.forms import MembershipForm, MembershipServicesForm
 
 
 def servicios_stats():
@@ -122,8 +123,9 @@ def create_membership(request):
     if request.method == 'POST':
         form = MembershipForm(request.POST)
         if form.is_valid():
-            form.save()
+            inst = form.save()
             messages.success(request, 'Membresía guardada con exíto!')
+            return redirect('add_membership_services', pk=inst.pk)
         else:
             messages.warning(request, "Faltan datos por ingresar")
     if request.method == 'GET':
@@ -135,6 +137,17 @@ def create_membership(request):
         't': m_template
     }
     return render(request, 'membership/create.html', context=context)
+
+
+@login_required
+def add_services(request, pk):
+    form = MembershipServicesForm()
+    context = {
+        'pk': pk,
+        'form': form
+    }
+    return render(
+        request, 'membership/membership_services.html', context=context)
 
 
 class ContactListView(ListView):
