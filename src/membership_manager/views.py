@@ -8,6 +8,7 @@ from django.db.models.functions import Concat
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
+from django.utils.timezone import now
 from django.views.generic import ListView
 from djgentelella.cruds.base import CRUDView
 
@@ -54,44 +55,46 @@ class MembershipListView(ListView):
     template_name = "membership/membership_list.html"
     paginate_by = 30
     success_url = reverse_lazy('memberships')
+    model = Membership
 
     def get_queryset(self):
+        queryset = super().get_queryset()
+        self.form = FilterEmailsForm(self.request.GET, initial={'apply_filters': True})
+        self.form.is_valid()
+
         filters = {}
 
-        queryset = Membership.objects.all()
-        q = self.request.GET.get('q', None)
-        p = self.request.GET.get('p', None)
-        s = self.request.GET.get('s', None)
-        c = self.request.GET.get('c', None)
-        d = self.request.GET.get('d', None)
-        if q is not None and q != '':
-            # need to implement other filters
-            queryset = queryset.annotate(fullname_organization=Concat(
-                'organization__contact__first_name',
-                Value(' '), 'organization__contact__last_name'))
-            queryset = queryset.annotate(fullname_contact=Concat(
-                'contact__first_name',
-                Value(' '), 'contact__last_name'))
-            queryset = queryset.filter(
-                Q(organization__name__icontains=q) |
-                Q(fullname_organization__icontains=q) |
-                Q(fullname_contact__icontains=q)
-            )
+        if self.form.cleaned_data['state']:
+            filters['state'] = self.form.cleaned_data['state']
 
-        return queryset
+        if self.form.cleaned_data['country']:
+            queryset = queryset.filter(Q(organization__country__in=self.form.cleaned_data['country'])|Q(
+                contact__country__in=self.form.cleaned_data['country']))
+
+        if self.form.cleaned_data['currency']:
+            filters['currency__in'] = self.form.cleaned_data['currency']
+
+        if self.form.cleaned_data['payment_method']:
+            filters['payment_method__in'] = self.form.cleaned_data['payment_method']
+
+        if self.form.cleaned_data['membership_type']:
+            filters['membership_type__in'] = self.form.cleaned_data['membership_type']
+
+        if self.form.cleaned_data['service_type']:
+            filters['service__servicetype__in'] = self.form.cleaned_data['service_type']
+
+        if self.form.cleaned_data['invoices']:
+            filters['mem_inv__status'] = self.form.cleaned_data['invoices']
+
+        return queryset.filter(**filters)
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        context['q'] = self.request.GET.get('q', '')
-        context['p'] = self.request.GET.get('p', '')
-        context['s'] = self.request.GET.get('s', '')
-        context['c'] = self.request.GET.get('c', '')
-        context['d'] = self.request.GET.get('d', '')
-        context['today'] = datetime.datetime.now
-        context['form_filters'] = FilterEmailsForm(initial={'apply_filters': True})
-        context['mem_template'] = MembershipTemplate.objects.filter(
-            state="active")
+
+        context['today'] = now()
+        context['form_filters'] = self.form
+        context['mem_template'] = MembershipTemplate.objects.filter(state="active")
         return context
 
 

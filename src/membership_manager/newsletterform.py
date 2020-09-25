@@ -1,7 +1,7 @@
 import datetime
 
 from django import forms
-from djgentelella.forms.forms import CustomForm
+from djgentelella.forms.forms import CustomForm, GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.tagging import EmailTaggingInput
 from froala_editor.widgets import FroalaEditor
@@ -253,13 +253,13 @@ class InvoiceManager(NewsLetterInterface):
                 pks_used.append(key)
 
 
-class NewsLetterTemplateForm(CustomForm, forms.Form):
+class NewsLetterTemplateForm(GTForm, forms.Form):
 
     news_letter_template = forms.ModelChoiceField(widget=genwidgets.Select, queryset=NewsLetterTemplate.objects.all(),
                                                   required=True, label="Plantilla de boletín")
 
 
-class NewsLetterForm(CustomForm, forms.ModelForm):
+class NewsLetterForm(GTForm, forms.ModelForm):
 
     class Meta:
         model = NewsLetter
@@ -275,7 +275,8 @@ class NewsLetterForm(CustomForm, forms.ModelForm):
     class Media:
         js = ['js/newsletter.js']
 
-class FilterEmailsForm(CustomForm, forms.Form):
+
+class FilterEmailsForm(GTForm, forms.Form):
 
     MEMBERSHIP_STATES = (
         (None, "Todas"),
@@ -320,12 +321,12 @@ class FilterEmailsForm(CustomForm, forms.Form):
     apply_filters = forms.BooleanField(widget=genwidgets.YesNoInput, required=False, label="¿Desea aplicar filtros?")
     state = forms.ChoiceField(widget=genwidgets.Select, choices=MEMBERSHIP_STATES, required=False, label="Estado")
     country = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Country.objects.all(), required=False, label="País")
-    currency = forms.ModelChoiceField(widget=genwidgets.SelectMultiple, queryset=SystemCurrency.objects.all(), required=False, label="Moneda")
+    currency = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=SystemCurrency.objects.all(), required=False, label="Moneda")
     payment_method = forms.MultipleChoiceField(widget=genwidgets.SelectMultiple, choices=PAYMENT_METHOD, required=False, label="Método de pago")
     apply_fees = forms.ChoiceField(widget=genwidgets.Select, choices=APPLY_FEES, required=False, label="Tarifas aplicadas")
     invoices = forms.ChoiceField(widget=genwidgets.Select, choices=INVOICES_CHOICES, required=False, label="Facturas")
     search_in = forms.ChoiceField(widget=genwidgets.Select, choices=SEARCH_IN_CHOICES, required=False, label="Búsqueda en")
-    service_type = forms.ModelChoiceField(widget=genwidgets.SelectMultiple, queryset=ServiceType.objects.all(), required=False, label="Tipo de servicio")
+    service_type = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=ServiceType.objects.all(), required=False, label="Tipo de servicio")
     membership_type = forms.MultipleChoiceField(widget=genwidgets.SelectMultiple, choices=MEMBERSHIP_TYPES, required=False, label="Tipo de membresía")
 
 
