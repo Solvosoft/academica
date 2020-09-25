@@ -1,7 +1,7 @@
 import datetime
 from django.shortcuts import redirect
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.urls import reverse
 from django.contrib import messages
 from django.db.models.functions import Concat
@@ -12,7 +12,8 @@ from djgentelella.cruds.base import CRUDView
 from membership_core.models import Country, ServiceType, SystemCurrency, \
     MembershipTemplate
 from membership_manager.dashboard import TopStats
-from membership_manager.models import Contact, Organization, Membership
+from membership_manager.models import Contact, Organization, Membership,\
+    Service
 from membership_manager.forms import MembershipForm, MembershipServicesForm
 
 
@@ -142,9 +143,16 @@ def create_membership(request):
 @login_required
 def add_services(request, pk):
     form = MembershipServicesForm()
+    if request.POST:
+        form = form = MembershipServicesForm(request.POST)
+        if form.is_valid():
+            messages.success(request, 'Servicio Guardado con exíto')
+            form.save()
+    services = Service.objects.filter(membership__pk=pk)
     context = {
         'pk': pk,
-        'form': form
+        'form': form,
+        'services': services
     }
     return render(
         request, 'membership/membership_services.html', context=context)
@@ -169,3 +177,12 @@ class ContactListView(ListView):
         context = super().get_context_data(**kwargs)
         context['q'] = self.request.GET.get('q', '')
         return context
+
+
+@permission_required('async_notifications.delete_newsletter')
+def delete_membership_service(request, pk):
+    boletin = NewsLetter.objects.filter(pk=pk).first()
+
+    if boletin:
+        boletin.delete()
+        return redirect('news_letter_list')

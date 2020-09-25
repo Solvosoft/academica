@@ -24,6 +24,26 @@
                     </div>
                 </form>
             </div>
+            <div class="x_panel">
+                {% if services %}
+                    <table class='table'>
+                        <tr>
+                            <th>Tipo de Servicio</th>
+                            <th>Descripción</th>
+                            <th>Observaciones</th>
+                            <th>Acciones</th>
+                        </tr>
+                        {% for service in services %}
+                            <tr>
+                                <td>{{service.servicetype.name}}</td>
+                                <td>{{service.description}}</td>
+                                <td>{{service.observations}}</td>
+                                <td><a class="btn btn-sm" data-url="{% url 'delete_membership_service' pk=service.membership.pk %}" onclick="deleteelement(this)"><i class="fa fa-trash fa-2x"></i></a></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+            </div>
         </div>
     {% else %}
         <h1>Usted no tiene suficientes permisos para ver Membresías</h1>
@@ -36,7 +56,7 @@
             //Set membership from get method
             const pk = "{{pk}}";
             $('#id_membership').val(pk).change();
-            $('#id_membership').select2({'disabled':'readonly'});
+            $('#id_membership').select2({'readonly':'true'});
             
         });
     </script>
