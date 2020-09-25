@@ -1,6 +1,7 @@
 import datetime
+from django.shortcuts import redirect
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.urls import reverse
 from django.contrib import messages
 from django.db.models.functions import Concat
@@ -11,8 +12,10 @@ from djgentelella.cruds.base import CRUDView
 from membership_core.models import Country, ServiceType, SystemCurrency, \
     MembershipTemplate
 from membership_manager.dashboard import TopStats
-from membership_manager.models import Contact, Organization, Membership
-from membership_manager.forms import MembershipForm
+from membership_manager.models import Contact, Organization, Membership,\
+    Service
+from membership_manager.forms import MembershipForm, MembershipServicesForm
+from .news_letter import NewsLetter
 
 
 def servicios_stats():
@@ -117,21 +120,43 @@ class MembershipListView(ListView):
 
 @login_required
 def create_membership(request):
+    m_template = {}
+    t = request.GET.get('t', None)
     if request.method == 'POST':
         form = MembershipForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Membresía agregada con exíto.')
+            inst = form.save()
+            messages.success(request, 'Membresía guardada con exíto!')
+            return redirect('add_membership_services', pk=inst.pk)
+        else:
+            messages.warning(request, "Faltan datos por ingresar")
     if request.method == 'GET':
-        m_template = {}
-        t = request.GET.get('t', None)
         if t is not None and t != "":
             m_template = MembershipTemplate.objects.get(pk=t)
+            form = MembershipForm()
     context = {
-        'form': MembershipForm(),
+        'form': form,
         't': m_template
     }
     return render(request, 'membership/create.html', context=context)
+
+
+@login_required
+def add_services(request, pk):
+    form = MembershipServicesForm()
+    if request.POST:
+        form = form = MembershipServicesForm(request.POST)
+        if form.is_valid():
+            messages.success(request, 'Servicio Guardado con exíto')
+            form.save()
+    services = Service.objects.filter(membership__pk=pk)
+    context = {
+        'pk': pk,
+        'form': form,
+        'services': services
+    }
+    return render(
+        request, 'membership/membership_services.html', context=context)
 
 
 class ContactListView(ListView):
@@ -153,3 +178,11 @@ class ContactListView(ListView):
         context = super().get_context_data(**kwargs)
         context['q'] = self.request.GET.get('q', '')
         return context
+
+
+@permission_required('async_notifications.delete_newsletter')
+def delete_membership_service(request, pk):
+    boletin = NewsLetter.objects.filter(pk=pk).first()
+    if boletin:
+        boletin.delete()
+        return redirect('news_letter_list')

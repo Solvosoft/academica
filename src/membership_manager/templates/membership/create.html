@@ -7,145 +7,13 @@
 
 {% block content %}
     
-    <h1 style="text-align:center;">Membresías</h1>
+    <h1 style="text-align:center;">Nueva Membresía</h1>
     {% if perms.membership_manager.view_membership %}
         <div id="membership_form" class="row">
             <div class="x_panel">
                 <form action="" method="post">
                     {% csrf_token %}
-                    <div class="row">
-                        <div class="col-md-12">
-                            {% if messages %}
-                                <ul class="messages">
-                                    {% for message in messages %}
-                                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            {{ form.non_field_errors }}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">{{ form.membership_type.errors }}</div>
-                        <div class="col-md-3">
-                            <label for="{{ form.membership_type.id_for_label }}">
-                                {{form.membership_type.label_tag}}
-                            </label>
-                        </div>
-                        <div class="col-md-9">
-                            {{ form.membership_type }}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label class="col-form-label label-align" for="type_contact">Tipo de Contacto: <span class="required">*</span></label>
-                        </div>
-                        <div class="col-md-9">
-                            Organización<input type="radio" value="organization" class="flat contact_type" checked name="contact_type">
-                            Contacto<input type="radio" value="contact" class="flat contact_type" name="contact_type">
-                            Ambos<input type="radio" value="both" class="flat contact_type" name="contact_type">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">{{ form.contact.errors }}</div>
-                        <div class="col-md-3">
-                            <label for="{{ form.contact.id_for_label }}">
-                                {{form.contact.label_tag}}
-                            </label>
-                        </div>
-                        <div class="col-md-9">
-                            {{ form.contact }}
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">{{ form.organization.errors }}</div>
-                        <div class="col-md-3">
-                            <label for="{{ form.organization.id_for_label }}">
-                                {{form.organization.label_tag}}
-                            </label>
-                        </div>
-                        <div class="col-md-9">
-                            {{ form.organization }}
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">{{ form.annual_cost.errors }}</div>
-                        <div class="col-md-3">
-                            <label for="{{ form.annual_cost.id_for_label }}">
-                                {{form.annual_cost.label_tag}}
-                            </label>
-                        </div>
-                        <div class="col-md-9">
-                            {{ form.annual_cost }}
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-12">{{ form.currency.errors }}</div>
-                        <div class="col-md-3">
-                            <label for="{{ form.currency.id_for_label }}">
-                                {{form.currency.label_tag}}
-                            </label>
-                        </div>
-                        <div class="col-md-9">
-                            {{ form.currency }}
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">{{ form.renewal_period.errors }}</div>
-                        <div class="col-md-3">
-                            <label for="{{ form.renewal_period.id_for_label }}">
-                                {{form.renewal_period.label_tag}}
-                            </label>
-                        </div>
-                        <div class="col-md-9">
-                            {{ form.renewal_period }}
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">{{ form.state.errors }}</div>
-                        <div class="col-md-3">
-                            <label for="{{ form.state.id_for_label }}">
-                                {{form.state.label_tag}}
-                            </label>
-                        </div>
-                        <div class="col-md-9">
-                            {{ form.state }}
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">{{ form.apply_fees.errors }}</div>
-                        <div class="col-md-3">
-                            <label for="{{ form.apply_fees.id_for_label }}">
-                                {{form.apply_fees.label_tag}}
-                            </label>
-                        </div>
-                        <div class="col-md-9">
-                            {{ form.apply_fees }}
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">{{ form.fees.errors }}</div>
-                        <div class="col-md-3">
-                            <label for="{{ form.fees.id_for_label }}">
-                                {{form.fees.label_tag}}
-                            </label>
-                        </div>
-                        <div class="col-md-9">
-                            {{ form.fees }}
-                        </div>
-                    </div>
-
+                    {{form.as_horizontal}}
                     <div class="row" style="margin-top:50px;">
                         <div class="col-md-12">
                             <div class="form-inline" style="text-align:right;">
@@ -157,41 +25,6 @@
                 </form>
             </div>
         </div>
-        <div class="paginator_container">
-            {% if is_paginated %}
-                <ul class="pagination">
-                    {% if page_obj.has_previous %}
-                        {% if q or p or c or s or d %}
-                            <li><a href="?page={{ page_obj.previous_page_number }}&q={{q}}&p={{p}}&c={{c}}&s={{s}}&d={{d}}">&laquo;</a></li>
-                        {% else %}
-                            <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
-                        {% endif%}
-                    {% else %}
-                        <li class="disabled"><span>&laquo;</span></li>
-                    {% endif %}
-                    {% for i in paginator.page_range %}
-                        {% if page_obj.number == i %}
-                            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-                        {% else %}
-                            {% if q or p or c or s or d %}
-                                <li><a href="?page={{ i }}&q={{q}}&p={{p}}&c={{c}}&s={{s}}&d={{d}}">{{ i }}</a></li>
-                            {% else %}
-                                <li><a href="?page={{ i }}">{{ i }}</a></li>
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %}
-                    {% if page_obj.has_next %}
-                        {% if q or p or c or s or d %}
-                            <li><a href="?page={{ page_obj.next_page_number }}&q={{q}}&p={{p}}&c={{c}}&s={{s}}&d={{d}}">&raquo;</a></li>
-                        {% else %}
-                            <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-                        {% endif %}
-                    {% else %}
-                        <li class="disabled"><span>&raquo;</span></li>
-                    {% endif %}
-                </ul>
-            {% endif %}
-        </div>
     {% else %}
         <h1>Usted no tiene suficientes permisos para ver Membresías</h1>
     {% endif %}
@@ -200,8 +33,21 @@
     <script type="text/javascript">
         $(document).ready(function(){
             let isVisible = false;
+            
+            //Set membership_type from template
+            const membership_type = "{{t.name}}";
+            $('#id_membership_type').val(membership_type).change();
+            
+            //Set renewal_period from template
+            const renewal_period = "{{t.renewal_period.pk}}";
+            $('#id_renewal_period').val(renewal_period).change();
+            
+            //Set initial fees field to display none
             $("input[type='checkbox']").val('off');
             $('#id_fees').parent().parent().css('display','none');
+            
+
+            //Trigger to display fees field when apply_fees change
             $("input[type='checkbox']").change(function() {
                 isVisible = !isVisible;
                 if(isVisible){
@@ -213,34 +59,53 @@
                 }
                 
             });
+
+            //Set annual cost from template
             $("#id_annual_cost").val("{{t.annual_cost}}");
-            $("#id_currency").val("{{t.currency.currency}}");
-            $('.contact_type').iCheck({
-                checkboxClass: 'icheckbox_flat-green',
-                radioClass: 'iradio_flat-green'
-            });
-            $('.contact_type').on('ifChecked', function(){
+            
+            //Set Currency from template
+            const currency = "{{t.currency.pk}}"
+            $("#id_currency").val(currency).change();
+
+            /**
+                Set trigger to display contact, organization or both depending
+                on the contact_type value selected 
+            **/
+            $('input[name="contact_type"]').on('ifChecked', function(){
                 const option = $(this).val();
-                console.log(option);
                 switch(option){
                     case 'both':
-                        console.log(option);
                         $('#id_contact').parent().parent().css('display','block');
+                        $('#id_contact').attr('required',true);
                         $('#id_organization').parent().parent().css('display','block');
+                        $('#id_organization').attr('required',true);
                         break;
                     case 'organization':
-                        console.log(option);
                         $('#id_organization').parent().parent().css('display','block');
+                        $('#id_organization').attr('required',true);
                         $('#id_contact').parent().parent().css('display','none');
+                        $('#id_contact').val('').change().attr('required',false);
                         break;
                     case 'contact':
-                        console.log(option);
                         $('#id_contact').parent().parent().css('display','block');
+                        $('#id_contact').attr('required',true);
                         $('#id_organization').parent().parent().css('display','none');
+                        $('#id_organization').val('').change().attr('required',false);
                         break;
                 }
             });
+
+            //Hide contact when form is loaded
             $('#id_contact').parent().parent().css('display','none');
+
+            //set organizatio as required field initial
+            $('#id_organization').attr('required',true);
+
+            //Apply radioflat style from iCheck
+            $('input[name="contact_type"]').iCheck({
+                checkboxClass: 'icheckbox_flat-green',
+                radioClass: 'iradio_flat-green'
+            });
         });
     </script>
 {% endblock js %}
