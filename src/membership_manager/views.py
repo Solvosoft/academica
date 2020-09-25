@@ -15,6 +15,7 @@ from membership_manager.dashboard import TopStats
 from membership_manager.models import Contact, Organization, Membership,\
     Service
 from membership_manager.forms import MembershipForm, MembershipServicesForm
+from .news_letter import NewsLetter
 
 
 def servicios_stats():
@@ -182,7 +183,6 @@ class ContactListView(ListView):
 @permission_required('async_notifications.delete_newsletter')
 def delete_membership_service(request, pk):
     boletin = NewsLetter.objects.filter(pk=pk).first()
-
     if boletin:
         boletin.delete()
         return redirect('news_letter_list')
