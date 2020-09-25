@@ -4,9 +4,6 @@ from membership_core.models import MembershipTemplate
 from membership_manager.models import Membership, Service, Organization
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as widget
-from djgentelella.widgets.selects import AutocompleteSelect
-from djgentelella.groute import register_lookups
-from djgentelella.views.select2autocomplete import BaseSelect2View
 
 
 class TemplateWidget(forms.Select):
@@ -91,11 +88,10 @@ class MembershipForm(GTForm, forms.ModelForm):
     class Meta:
         model = Membership
         fields = [
-            'organization', 'membership_type', 'contact',
+            'organization', 'membership_type', 'contact', 'annual_cost',
             'currency', 'renewal_period', 'apply_fees', 'state',
             'fees'
         ]
-
         widgets = {
             'organization': widget.Select,
             'membership_type': widget.Select,
