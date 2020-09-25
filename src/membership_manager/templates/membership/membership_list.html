@@ -7,73 +7,58 @@
 
 {% block content %}
     
-    <h2>Membresías</h2>
+    <h1 class="text-center">Membresías</h1>
     {% if perms.membership_manager.view_membership %}
         <div class="search_options">
             <div class="row">
                 <div class="col-md-9">
                     <div class="x_panel">
-                        <form method="GET">
-                            <div class="row">
-                                <div class="col-md-6 col-lg-6">
+                        <form action="" method="GET">
+                            {% csrf_token %}
+                            <div class="row" style="margin-bottom: 2%;">
+                                <div class="col-md-6">
                                     <input type="text" value="{{q}}" name="q" class="form-control" placeholder="Buscar por organización o contacto">
                                 </div>
-                                <div class="col-md-6 col-lg-6">
-                                    <div class="form-group form-inline">
-                                        <span class="form_control_group">
-                                            <label class="control-label">País: </label>
-                                            <select id="countries" name='p' class="form-control">
-                                                <option value="">No filtrar</option>
-                                                {% for country in countries %}
-                                                    <option value="{{country.pk}}">{{country.name}}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </span>
-                                    </div>
+                                <div class="col-md-6">
+                                    {% include 'field.html' with field=form_filters.country  %}
                                 </div>
-                                <div class="col-md-12 form-inline">
-                                    <span class="form_control_group">
-                                        <label class="control-label">Moneda: </label>
-                                        <select id="currency" name='c' class="form-control">
-                                            <option value="">No filtrar</option>
-                                            {% for c in currency %}
-                                                <option value="{{c.currency}}">{{c.currency}}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </span>
-                                    <span class="form_control_group">
-                                        <label class="control-label">Estado: </label>
-                                        <select id="state" name='s' class="form-control">
-                                            <option value="">No filtrar</option>
-                                            {% for state, name in states %}
-                                                <option value="{{state}}">{{name}}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </span>
-                                    <span class="form_control_group">
-                                        <label class="control-label">Vencidas: </label>
-                                        Si:<input type="radio" class="flat due_date" {% if d == "yes" %}checked {% endif %} name="d" value="yes" /> 
-                                        No:<input type="radio" class="flat due_date" {% if d == "no" %}checked {% endif %} name="d" value="no" />
-                                        No filtrar:<input type="radio" class="flat due_date" {% if d == "" %}checked {% endif %} name="d" value="" /> 
-                                    </span>
+                            </div>
+                            <div class="row" style="margin-bottom: 2%;">
+                                <div class="col-md-6">
+                                    {% include 'field.html' with field=form_filters.membership_type  %}
                                 </div>
-                                <div class="col-md-12">
-                                    <div class="text-right">
-                                        <!-- necesary to implement -->
-                                        <button id="reset" type="reset" class="btn btn-secondary">Limpiar filtros</button>
-                                        <!-- endrequirement -->
-                                        <button class="btn btn-success" type="submit">Búscar</button>
-                                    </div>
+                                <div class="col-md-6">
+                                    {% include 'field.html' with field=form_filters.service_type  %}
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2%;">
+                                <div class="col-md-4">
+                                    {% include 'field.html' with field=form_filters.currency  %}
+                                </div>
+                                <div class="col-md-4">
+                                    {% include 'field.html' with field=form_filters.state  %}
+                                </div>
+                                <div class="col-md-4">
+                                    {% include 'field.html' with field=form_filters.invoices  %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="text-right">
+                                    <!-- necesary to implement -->
+                                    <button id="reset" type="reset" class="btn btn-secondary">Limpiar filtros</button>
+                                    <!-- endrequirement -->
+                                    <button class="btn btn-success" type="submit">Buscar</button>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="buttons">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-md">Nueva Membresía</button>
-                    </div>
-
+                    <div class="buttons" style="text-align:right;">
+                        <button type="button" class="btn btn-success" data-target=".bs-example-modal-md">Nuevo boletín</button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-md">Nueva membresía</button>
+                     </div>
+                </div>
                     <!--modal-->
                     <div class="modal fade bs-example-modal-md" tabindex="-1" role="dialog" aria-hidden="true">
                         <div class="modal-dialog modal-md">
@@ -105,9 +90,7 @@
                         </div>
                     </div>
                     <!--endmodal-->
-
                 </div>
-            </div>
         </div>
         <div class="row membership_cards">
             {% for membership in object_list %}
@@ -204,7 +187,6 @@
         $(document).ready(function(){
             const p = "{{p}}";
             const d = "{{d}}";
-            $('#countries').select2();
             $('#countries').val("{{p}}").change();
             $('#state').val("{{s}}").change();
             $('#currency').val("{{c}}").change();

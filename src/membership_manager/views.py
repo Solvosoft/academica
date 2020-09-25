@@ -1,20 +1,21 @@
 import datetime
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required, permission_required
+from django.db.models import Q
+from django.db.models import Value
+from django.db.models.functions import Concat
 from django.shortcuts import redirect
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required, permission_required
-from django.urls import reverse
-from django.contrib import messages
-from django.db.models.functions import Concat
-from django.db.models import Value
-from django.db.models import Q
+from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView
 from djgentelella.cruds.base import CRUDView
-from membership_core.models import Country, ServiceType, SystemCurrency, \
-    MembershipTemplate
+
+from membership_core.models import Country, ServiceType, MembershipTemplate
 from membership_manager.dashboard import TopStats
-from membership_manager.models import Contact, Organization, Membership,\
-    Service
 from membership_manager.forms import MembershipForm, MembershipServicesForm
+from membership_manager.models import Contact, Organization, Membership, Service
+from membership_manager.newsletterform import FilterEmailsForm
 from .news_letter import NewsLetter
 
 
@@ -51,9 +52,12 @@ class OrganizationView(CRUDView):
 
 class MembershipListView(ListView):
     template_name = "membership/membership_list.html"
-    paginate_by = 10
+    paginate_by = 30
+    success_url = reverse_lazy('memberships')
 
     def get_queryset(self):
+        filters = {}
+
         queryset = Membership.objects.all()
         q = self.request.GET.get('q', None)
         p = self.request.GET.get('p', None)
@@ -73,32 +77,7 @@ class MembershipListView(ListView):
                 Q(fullname_organization__icontains=q) |
                 Q(fullname_contact__icontains=q)
             )
-        if p is not None and p != "":
-            queryset = queryset.filter(
-                Q(organization__country__pk=p))
-        if s is not None and s != "":
-            queryset = queryset.filter(
-                Q(state__exact=s)
-            )
-        if c is not None and c != "":
-            queryset = queryset.filter(
-                Q(currency__currency__exact=c)
-            )
-        if d is not None and d != "":
-            if d == "yes":
-                queryset = queryset.filter(
-                    mem_inv__renewal_period__encobro=True,
-                    mem_inv__renewal_period__active=True,
-                    # pending to implement by date
-                    # mem_inv__renewal_period__start_date__lte=datetime.datetime.now
-                )
-            elif d == "no":
-                queryset = queryset.exclude(
-                    mem_inv__renewal_period__encobro=True,
-                    mem_inv__renewal_period__active=True,
-                    # pending to implement by date
-                    # mem_inv__renewal_period__start_date__lte=datetime.datetime.now
-                )
+
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -110,9 +89,7 @@ class MembershipListView(ListView):
         context['c'] = self.request.GET.get('c', '')
         context['d'] = self.request.GET.get('d', '')
         context['today'] = datetime.datetime.now
-        context['currency'] = SystemCurrency.objects.all()
-        context['states'] = Membership.STATES
-        context['countries'] = Country.objects.all()
+        context['form_filters'] = FilterEmailsForm(initial={'apply_filters': True})
         context['mem_template'] = MembershipTemplate.objects.filter(
             state="active")
         return context
@@ -166,7 +143,7 @@ class ContactListView(ListView):
     def get_queryset(self):
         queryset = Contact.objects.all()
         q = self.request.GET.get('q')
-        if(q is not None):
+        if (q is not None):
             queryset = queryset.annotate(fullname=Concat(
                 'first_name', Value(' '), 'last_name'))
             queryset = queryset.filter(
