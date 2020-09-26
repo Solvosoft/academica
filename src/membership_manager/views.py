@@ -1,5 +1,3 @@
-import datetime
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q
@@ -9,14 +7,17 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.utils.timezone import now
+from django.forms import modelformset_factory
 from django.views.generic import ListView
 from djgentelella.cruds.base import CRUDView
-
 from membership_core.models import Country, ServiceType, MembershipTemplate
 from membership_manager.dashboard import TopStats
-from membership_manager.forms import MembershipForm, MembershipServicesForm
-from membership_manager.models import Contact, Organization, Membership, Service
+from membership_manager.forms import MembershipForm, MembershipServicesForm,\
+    MembershipServiceForm
 from membership_manager.newsletterform import FilterEmailsForm
+from membership_manager.models import Contact, Organization, Membership,\
+    Service
+from djgentelella.forms.forms import GTBaseModelFormSet
 from .news_letter import NewsLetter
 
 
@@ -103,11 +104,25 @@ class MembershipListView(ListView):
 def create_membership(request):
     m_template = {}
     t = request.GET.get('t', None)
+    formset = modelformset_factory(
+        Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
+        can_delete=True)
+    valid = True
     if request.method == 'POST':
         form = MembershipForm(request.POST)
         if form.is_valid():
             inst = form.save()
             messages.success(request, 'Membresía guardada con exíto!')
+            fset = formset(
+                request.POST, queryset=Service.objects.filter(
+                    membership__pk=inst.pk), prefix='ser')
+        valid = fset.is_valid()
+        if valid:
+            fset.save(commit=False)
+            for f in formset:
+                f.membership = inst.pk
+                f.save()
+            messages.success(request, "Formset saved successfully")
             return redirect('add_membership_services', pk=inst.pk)
         else:
             messages.warning(request, "Faltan datos por ingresar")
