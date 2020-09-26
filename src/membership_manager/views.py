@@ -12,8 +12,7 @@ from django.views.generic import ListView
 from djgentelella.cruds.base import CRUDView
 from membership_core.models import Country, ServiceType, MembershipTemplate
 from membership_manager.dashboard import TopStats
-from membership_manager.forms import MembershipForm, MembershipServicesForm,\
-    MembershipServiceForm
+from membership_manager.forms import MembershipForm, MembershipServiceForm
 from membership_manager.newsletterform import FilterEmailsForm
 from membership_manager.models import Contact, Organization, Membership,\
     Service
@@ -106,7 +105,7 @@ def create_membership(request):
     t = request.GET.get('t', None)
     formset = modelformset_factory(
         Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
-        can_delete=True)
+        can_delete=True, extra=1)
     valid = True
     if request.method == 'POST':
         form = MembershipForm(request.POST)
@@ -114,34 +113,37 @@ def create_membership(request):
             inst = form.save()
             messages.success(request, 'Membresía guardada con exíto!')
             fset = formset(
-                request.POST, queryset=Service.objects.filter(
-                    membership__pk=inst.pk), prefix='ser')
+                request.POST, queryset=None, prefix='ser')
         valid = fset.is_valid()
         if valid:
             fset.save(commit=False)
-            for f in formset:
-                f.membership = inst.pk
+            for f in fset:
+                f.instance.membership = inst
                 f.save()
             messages.success(request, "Formset saved successfully")
-            return redirect('add_membership_services', pk=inst.pk)
+            return redirect('memberships')
         else:
             messages.warning(request, "Faltan datos por ingresar")
     if request.method == 'GET':
         if t is not None and t != "":
             m_template = MembershipTemplate.objects.get(pk=t)
             form = MembershipForm()
+            fset = formset(
+                queryset=Service.objects.filter(membership__pk=t),
+                prefix='ser')
     context = {
         'form': form,
-        't': m_template
+        't': m_template,
+        'formset': fset
     }
     return render(request, 'membership/create.html', context=context)
 
 
 @login_required
 def add_services(request, pk):
-    form = MembershipServicesForm()
+    form = MembershipServiceForm()
     if request.POST:
-        form = form = MembershipServicesForm(request.POST)
+        form = form = MembershipServiceForm(request.POST)
         if form.is_valid():
             messages.success(request, 'Servicio Guardado con exíto')
             form.save()

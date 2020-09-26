@@ -10,20 +10,11 @@
     <h1 style="text-align:center;">Nueva Membresía</h1>
     {% if perms.membership_manager.view_membership %}
         <div id="membership_form" class="row">
+            <form method="post">
             <div class="col-md-8">
                 <div class="x_panel">
-                    <form method="post">
-                        {% csrf_token %}
-                        {{form.as_horizontal}}
-                        <div class="row" style="margin-top:50px;">
-                            <div class="col-md-12">
-                                <div class="form-inline" style="text-align:right;">
-                                    <button class="btn btn-secondary text-center" type="reset">Cancelar</button>
-                                    <button class="btn btn-success text-center" type="submit">Guardar</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+                    {% csrf_token %}
+                    {{form.as_horizontal}}
                 </div>
             </div>
             <div class="col-md-4">
@@ -46,9 +37,22 @@
                         </div>
                         {% endspaceless %}
                     </div>
-                    <button type="button" class="btn btn-success formsetadd" >Add </button>
+                    <div class="text-right">
+                        <button type="button" class="btn btn-primary formsetadd" >Nuevo Servicio</button>
+                    </div>
                 </div>
             </div>
+            <div class="col-md-12">
+                <div class="row" style="margin-top:50px;">
+                    <div class="col-md-12">
+                        <div class="form-inline" style="text-align:center;">
+                            <button class="btn btn-secondary text-center" type="reset">Cancelar</button>
+                            <button class="btn btn-success text-center" type="submit">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </form>
         </div>
     {% else %}
         <h1>Usted no tiene suficientes permisos para ver Membresías</h1>
@@ -131,6 +135,17 @@
                 checkboxClass: 'icheckbox_flat-green',
                 radioClass: 'iradio_flat-green'
             });
+
+            $('.formset').on('click', '.btncollapse', function() {
+                if($(this).parent().parent().parent().next().is(':visible')){
+                    $(this).parent().parent().parent().next().hide();   
+                }else{
+                    $(this).parent().parent().parent().next().show()
+                }
+            });
+            $('.formsetadd').click(function(){
+                $('.x_content').hide().last().show();
+            })
         });
     </script>
 {% endblock js %}

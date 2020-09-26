@@ -152,23 +152,10 @@ class MembershipForm(GTForm, forms.ModelForm):
         return fees
 
 
-class MembershipServicesForm(GTForm, forms.ModelForm):
-    class Meta:
-        model = Service
-        fields = ['membership', 'servicetype', 'description', 'observations']
-
-        widgets = {
-            'servicetype': AutocompleteSelect('servicetypebasename'),
-            'description': widget.TextInput,
-            'observations': widget.Textarea,
-            'membership': widget.Select
-        }
-
-
 class MembershipServiceForm(GTForm, forms.ModelForm):
     class Meta:
         model = Service
-        fields = ['membership', 'servicetype', 'description', 'observations']
+        fields = ['servicetype', 'description', 'observations']
 
         widgets = {
             'servicetype': AutocompleteSelect('servicetypebasename'),
