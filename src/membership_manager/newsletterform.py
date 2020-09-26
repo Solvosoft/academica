@@ -3,6 +3,7 @@ import datetime
 from django import forms
 from djgentelella.forms.forms import CustomForm, GTForm
 from djgentelella.widgets import core as genwidgets
+from djgentelella.widgets.selects import AutocompleteSelectMultiple
 from djgentelella.widgets.tagging import EmailTaggingInput
 from froala_editor.widgets import FroalaEditor
 
@@ -317,7 +318,10 @@ class FilterEmailsForm(GTForm, forms.Form):
         ("contacto", "Contacto"),
         ("organizacion", "Organizacion"),
     )
-
+    name = forms.ModelMultipleChoiceField(queryset=Membership.objects.all(),  required=False,
+                                          widget=AutocompleteSelectMultiple('orgcontact'),
+                                                            label='Nombre',
+                                                            help_text="Buscar por organización o contacto" )
     apply_filters = forms.BooleanField(widget=genwidgets.YesNoInput, required=False, label="¿Desea aplicar filtros?")
     state = forms.ChoiceField(widget=genwidgets.Select, choices=MEMBERSHIP_STATES, required=False, label="Estado")
     country = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Country.objects.all(), required=False, label="País")

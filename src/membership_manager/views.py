@@ -63,7 +63,8 @@ class MembershipListView(ListView):
         self.form.is_valid()
 
         filters = {}
-
+        if self.form.cleaned_data['name']:
+            queryset = self.form.cleaned_data['name']
         if self.form.cleaned_data['state']:
             filters['state'] = self.form.cleaned_data['state']
 
@@ -146,7 +147,7 @@ class ContactListView(ListView):
     def get_queryset(self):
         queryset = Contact.objects.all()
         q = self.request.GET.get('q')
-        if (q is not None):
+        if q is not None:
             queryset = queryset.annotate(fullname=Concat(
                 'first_name', Value(' '), 'last_name'))
             queryset = queryset.filter(
