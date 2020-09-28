@@ -63,10 +63,6 @@
         $(document).ready(function(){
             let isVisible = false;
             
-            //Set membership_type from template
-            const membership_type = "{{t.name}}";
-            $('#id_membership_type').val(membership_type).change();
-            
             //Set renewal_period from template
             const renewal_period = "{{t.renewal_period.pk}}";
             $('#id_renewal_period').val(renewal_period).change();
@@ -136,6 +132,7 @@
                 radioClass: 'iradio_flat-green'
             });
 
+            //set trigger to collapse the formset content
             $('.formset').on('click', '.btncollapse', function() {
                 if($(this).parent().parent().parent().next().is(':visible')){
                     $(this).parent().parent().parent().next().hide();   
@@ -143,9 +140,13 @@
                     $(this).parent().parent().parent().next().show()
                 }
             });
+            
+            //set trigger to collapse all formset to display the new one.
             $('.formsetadd').click(function(){
                 $('.x_content').hide().last().show();
-            })
+            });
+
+            $('.x_content').last().show(); 
         });
     </script>
 {% endblock js %}

@@ -53,6 +53,7 @@
 .form-inline > .form_control_group {
     margin-right: 20px;
 }
+
 #membership_form .formset.row{
     margin-top:0 !important;
 }
@@ -61,4 +62,8 @@
     border: 1px solid #E6E9ED;
     padding: 10px;
     margin-bottom: 20px;
+}
+
+.formset .x_content{
+    display: none;
 }

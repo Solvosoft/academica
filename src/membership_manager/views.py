@@ -10,9 +10,11 @@ from django.utils.timezone import now
 from django.forms import modelformset_factory
 from django.views.generic import ListView
 from djgentelella.cruds.base import CRUDView
-from membership_core.models import Country, ServiceType, MembershipTemplate
+from membership_core.models import Country, ServiceType, MembershipTemplate,\
+    ServiceMT
 from membership_manager.dashboard import TopStats
-from membership_manager.forms import MembershipForm, MembershipServiceForm
+from membership_manager.forms import MembershipForm, MembershipServiceForm,\
+    ServiceForm
 from membership_manager.newsletterform import FilterEmailsForm
 from membership_manager.models import Contact, Organization, Membership,\
     Service
@@ -106,31 +108,33 @@ def create_membership(request):
     formset = modelformset_factory(
         Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
         can_delete=True, extra=1)
-    valid = True
     if request.method == 'POST':
         form = MembershipForm(request.POST)
         if form.is_valid():
             inst = form.save()
             messages.success(request, 'Membresía guardada con exíto!')
-            fset = formset(
-                request.POST, queryset=None, prefix='ser')
-        valid = fset.is_valid()
-        if valid:
-            fset.save(commit=False)
-            for f in fset:
-                f.instance.membership = inst
-                f.save()
+            fset = formset(request.POST, prefix="mts")
+            instances = fset.save(commit=False)
+            for i in instances:
+                i.membership.pk = inst.pk
+                if i.is_valid():
+                    fset.save()
+                    messages.success(request, "saved "+i.__dict__)
+                else:
+                    messages.success(request, i.__dict__)
             messages.success(request, "Formset saved successfully")
             return redirect('memberships')
         else:
-            messages.warning(request, "Faltan datos por ingresar")
+            messages.success(request, "Formset is not valid")
     if request.method == 'GET':
+        form = MembershipForm()
         if t is not None and t != "":
             m_template = MembershipTemplate.objects.get(pk=t)
-            form = MembershipForm()
             fset = formset(
-                queryset=Service.objects.filter(membership__pk=t),
-                prefix='ser')
+                None, queryset=ServiceMT.objects.filter(membership__pk=t),
+                prefix='mts')
+        else:
+            fset = formset(queryset=ServiceMT.objects.none(), prefix='mts')
     context = {
         'form': form,
         't': m_template,
