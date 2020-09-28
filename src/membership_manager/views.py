@@ -141,24 +141,6 @@ def create_membership(request):
     return render(request, 'membership/create.html', context=context)
 
 
-@login_required
-def add_services(request, pk):
-    form = MembershipServiceForm()
-    if request.POST:
-        form = form = MembershipServiceForm(request.POST)
-        if form.is_valid():
-            messages.success(request, 'Servicio Guardado con exíto')
-            form.save()
-    services = Service.objects.filter(membership__pk=pk)
-    context = {
-        'pk': pk,
-        'form': form,
-        'services': services
-    }
-    return render(
-        request, 'membership/membership_services.html', context=context)
-
-
 class ContactListView(ListView):
     template_name = "contact/contact_list.html"
     paginate_by = 10
