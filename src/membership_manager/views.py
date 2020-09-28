@@ -110,34 +110,29 @@ def create_membership(request):
         can_delete=True, extra=1)
     if request.method == 'POST':
         form = MembershipForm(request.POST)
-        if form.is_valid():
-            inst = form.save()
-            messages.success(request, 'Membresía guardada con exíto!')
-            fset = formset(request.POST, prefix="mts")
+        fset = formset(request.POST, prefix="mts")
+        if fset.is_valid():
+            instm = form.save()
             instances = fset.save(commit=False)
-            for i in instances:
-                i.membership.pk = inst.pk
-                if i.is_valid():
-                    fset.save()
-                    messages.success(request, "saved "+i.__dict__)
-                else:
-                    messages.success(request, i.__dict__)
-            messages.success(request, "Formset saved successfully")
+            for instance in instances.new_objects:
+                instance.membership = instm
+                instance.save()
+            messages.success(request, "Membresía guardada con exíto")
             return redirect('memberships')
         else:
-            messages.success(request, "Formset is not valid")
+            messages.error(request, "Formset is not valid")
     if request.method == 'GET':
-        form = MembershipForm()
         if t is not None and t != "":
-            m_template = MembershipTemplate.objects.get(pk=t)
+            m_template = MembershipTemplate.objects.get(pk=t).__dict__
+            form = MembershipForm(initial=m_template)
             fset = formset(
                 None, queryset=ServiceMT.objects.filter(membership__pk=t),
                 prefix='mts')
         else:
+            form = MembershipForm()
             fset = formset(queryset=ServiceMT.objects.none(), prefix='mts')
     context = {
         'form': form,
-        't': m_template,
         'formset': fset
     }
     return render(request, 'membership/create.html', context=context)

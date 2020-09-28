@@ -63,10 +63,6 @@
         $(document).ready(function(){
             let isVisible = false;
             
-            //Set renewal_period from template
-            const renewal_period = "{{t.renewal_period.pk}}";
-            $('#id_renewal_period').val(renewal_period).change();
-            
             //Set initial fees field to display none
             $("input[type='checkbox']").val('off');
             $('#id_fees').parent().parent().css('display','none');
@@ -84,13 +80,6 @@
                 }
                 
             });
-
-            //Set annual cost from template
-            $("#id_annual_cost").val("{{t.annual_cost}}");
-            
-            //Set Currency from template
-            const currency = "{{t.currency.pk}}"
-            $("#id_currency").val(currency).change();
 
             /**
                 Set trigger to display contact, organization or both depending

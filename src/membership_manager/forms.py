@@ -101,7 +101,12 @@ class MembershipForm(GTForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(MembershipForm, self).__init__(*args, **kwargs)
         # assign a (computed, I assume) default value to the choice field
+        print(kwargs)
         self.initial['contact_type'] = self.ORGANIZATION
+        self.fields['annual_cost'].initial = kwargs['initial']['annual_cost']
+        self.fields['currency'].initial = kwargs['initial']['currency_id']
+        self.fields['renewal_period'].initial =\
+            kwargs['initial']['renewal_period_id']
 
     class Meta:
         model = Membership
@@ -161,5 +166,4 @@ class MembershipServiceForm(GTForm, forms.ModelForm):
             'servicetype': AutocompleteSelect('servicetypebasename'),
             'description': widget.TextInput,
             'observations': widget.Textarea,
-            'membership': widget.Select
         }
