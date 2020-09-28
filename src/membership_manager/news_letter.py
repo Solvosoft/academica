@@ -36,9 +36,6 @@ def news_letter_list(request):
 @permission_required('async_notifications.add_newsletter')
 def create_news_letter(request, pk):
     template = get_object_or_404(NewsLetterTemplate, pk=pk)
-    emails_organization = Membership.objects.all().exclude(organization__email__isnull=True).values_list('organization__email', flat=True)
-    emails_contacts = Membership.objects.all().exclude(contact__email__isnull=True).values_list('contact__email', flat=True)
-    emails = list(emails_organization) + list(emails_contacts)
 
     if request.method == 'POST':
         form = NewsLetterForm(request.POST)

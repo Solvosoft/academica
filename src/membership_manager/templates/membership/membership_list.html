@@ -6,14 +6,22 @@
 {% endblock extra_css %}
 
 {% block content %}
-    
     <h1 class="text-center">Membresías</h1>
     {% if perms.membership_manager.view_membership %}
         <div class="search_options">
             <div class="row">
                 <div class="col-md-9">
                     <div class="x_panel">
-                        <form action="" method="GET">
+
+                        <form method="GET" id="formfilters">
+
+
+                            <div style="display: none;">
+                            {{ form_filters.apply_filters }}
+                            {{ form_filters.search_in }}
+                            {{ form_filters.payment_method }}
+                            {{ form_filters.apply_fees }}
+                            </div>
 
                             <div class="row" style="margin-bottom: 2%;">
                                 <div class="col-md-6">
@@ -48,15 +56,38 @@
                                     <!-- necesary to implement -->
                                     <button id="reset" type="reset" class="btn btn-secondary">Limpiar filtros</button>
                                     <!-- endrequirement -->
-                                    <button class="btn btn-success" type="submit">Buscar</button>
+                                    <button class="btn btn-success" type="button" data-url="{% url 'memberships' %}" onclick="memberships(this)">Buscar</button>
                                 </div>
                             </div>
-                        </form>
+
+
+                            <div id="modalnewslettertemplate" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Seleccione la plantilla base de boletín</h4>
+                </div>
+
+                <div class="modal-body">
+                    {% include 'field.html' with field=form_template.news_letter_template  %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                    <button class="btn btn-success" type="button" data-url="{% url 'create_news_letter_membership' %}" onclick="newsletter_membership(this)">Seleccionar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+                            </form>
+
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="buttons" style="text-align:right;">
-                        <button type="button" class="btn btn-success" data-target=".bs-example-modal-md">Nuevo boletín</button>
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalnewslettertemplate">Nuevo boletín</button>
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-md">Nueva membresía</button>
                      </div>
                 </div>
@@ -182,6 +213,7 @@
     {% else %}
         <h1>Usted no tiene suficientes permisos para ver Membresías</h1>
     {% endif %}
+
 {% endblock content %}
 {% block js %}
     <script type="text/javascript">
@@ -207,4 +239,15 @@
             });
         });
     </script>
+<script>
+    function newsletter_membership(element){
+        $("#formfilters").attr("action", $(element).data('url'));
+        $("#formfilters").submit();
+    }
+
+    function memberships(element){
+        $("#formfilters").attr("action", $(element).data('url'));
+        $("#formfilters").submit();
+    }
+</script>
 {% endblock js %}
