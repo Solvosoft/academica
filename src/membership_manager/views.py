@@ -111,7 +111,7 @@ def create_membership(request):
     if request.method == 'POST':
         form = MembershipForm(request.POST)
         fset = formset(request.POST, prefix="mts")
-        if fset.is_valid():
+        if form.is_valid() and fset.is_valid():
             instm = form.save()
             instances = fset.save(commit=False)
             for instance in instances.new_objects:
