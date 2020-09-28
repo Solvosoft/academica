@@ -97,7 +97,8 @@ class MembershipListView(ListView):
 
         context['today'] = now()
         context['form_filters'] = self.form
-        context['mem_template'] = MembershipTemplate.objects.filter(state="active")
+        context['mem_template'] = \
+            MembershipTemplate.objects.filter(state="active")
         return context
 
 
@@ -120,7 +121,9 @@ def create_membership(request):
             messages.success(request, "Membresía guardada con exíto")
             return redirect('memberships')
         else:
-            messages.error(request, "Formset is not valid")
+            messages.error(
+                request,
+                "Error al intentar guardar los servicios asociados")
     if request.method == 'GET':
         if t is not None and t != "":
             m_template = MembershipTemplate.objects.get(pk=t).__dict__
