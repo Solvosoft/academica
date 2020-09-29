@@ -179,6 +179,13 @@ def create_membership(request, pk=None):
     return render(request, 'membership/create.html', context=context)
 
 
+def delete_memberships(request, pk):
+    membership = Membership.objects.filter(pk=pk).first()
+    if membership:
+        membership.delete()
+        return redirect('memberships')
+
+
 class ContactListView(ListView):
     template_name = "contact/contact_list.html"
     paginate_by = 10

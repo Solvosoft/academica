@@ -58,6 +58,7 @@
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-md">Nueva membresía</button>
                      </div>
                 </div>
+                <div>
                     <!--modal new membership-->
                     <div class="modal fade bs-example-modal-md" tabindex="-1" role="dialog" aria-hidden="true">
                         <div class="modal-dialog modal-md">
@@ -89,6 +90,22 @@
                         </div>
                     </div>
                     <!--endmodal-->
+                    
+                    <!-- modal delete membership-->
+                    <div id="modaldeletetask" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">¿Está segura que desea eliminar este elemento?</h4>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                                <a class="btn btn-danger" id="deletetask">Eliminar</a>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
         </div>
         <div class="row membership_cards">
@@ -103,7 +120,7 @@
                             </h2>
                             <ul class="nav navbar-right panel_toolbox">
                                 <li><a href="{% url 'edit_memberships' pk=membership.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
-                                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                                <li><a data-url="{% url 'delete_memberships' pk=membership.pk %}" onclick="deleteelement(this)"><i class="fa fa-close"></i></a></li>
                             </ul>
                             <div class="clearfix"></div>
                         </div>
@@ -205,5 +222,10 @@
                 });
             });
         });
+        function deleteelement(element){
+            $("#deletetask").attr("href", $(element).data('url'));
+            $("#modaldeletetask").modal();
+            return false
+        }
     </script>
 {% endblock js %}
