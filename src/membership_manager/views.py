@@ -103,15 +103,20 @@ class MembershipListView(ListView):
 
 
 @login_required
-def create_membership(request):
+def create_membership(request, pk=None):
     m_template = {}
     t = request.GET.get('t', None)
     formset = modelformset_factory(
         Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
-        can_delete=True, extra=1)
+        can_delete=True, extra=1, can_order=True)
     if request.method == 'POST':
-        form = MembershipForm(request.POST)
-        fset = formset(request.POST, queryset=Service.objects.none(), prefix="mts")
+        if pk is not None:
+            instance = Membership.objects.get(pk=pk)
+            form = MembershipForm(request.POST, instance=instance)
+            fset = formset(request.POST, queryset=Service.objects.filter(membership__pk=pk), prefix="mts")
+        else:
+            form = MembershipForm(request.POST)
+            fset = formset(request.POST, queryset=Service.objects.none(), prefix="mts")
         if form.is_valid() and fset.is_valid():
             instm = form.save()
             instances = fset.save(commit=False)
@@ -125,27 +130,38 @@ def create_membership(request):
                 request,
                 "Error al intentar guardar los servicios asociados")
     if request.method == 'GET':
-        if t is not None and t != "":
-            m_template = MembershipTemplate.objects.get(pk=t).__dict__
-            form = MembershipForm(initial=m_template)
-            servicesmt = ServiceMT.objects.filter(membership__pk=t)
-            templateinitial = []
-            for services in servicesmt:
-                for service in servicesmt:
-                    templateinitial.append({
-                        'servicetype': service.servicetype,
-                        'description': service.description,
-                        'observations': service.observations
-                    })
+        if pk is not None:
             formset = modelformset_factory(
                 Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
-                can_delete=True, extra=servicesmt.count())
-            fset = formset(
-                queryset=Service.objects.none(), initial=templateinitial,
-                prefix='mts')
+                can_delete=True, extra=0, can_order=True)
+            memberhsip = Membership.objects.get(pk=pk)
+            form = MembershipForm(initial=memberhsip.__dict__)
+            fset = formset(queryset=Service.objects.filter(membership__pk=pk), prefix='mts')
         else:
-            form = MembershipForm()
-            fset = formset(queryset=Service.objects.none(), prefix='mts')
+            if t is not None and t != "":
+                m_template = MembershipTemplate.objects.get(pk=t).__dict__
+                form = MembershipForm(initial=m_template)
+                servicesmt = ServiceMT.objects.filter(membership__pk=t)
+                templateinitial = []
+                for services in servicesmt:
+                    for service in servicesmt:
+                        templateinitial.append({
+                            'servicetype': service.servicetype,
+                            'description': service.description,
+                            'observations': service.observations
+                        })
+                extra = servicesmt.count()
+                if servicesmt.count() == 0 :
+                    extra=1
+                formset = modelformset_factory(
+                    Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
+                    can_delete=True, extra=extra)
+                fset = formset(
+                    queryset=Service.objects.none(), initial=templateinitial,
+                    prefix='mts')
+            else:
+                form = MembershipForm()
+                fset = formset(queryset=Service.objects.none(), prefix='mts')
     context = {
         'form': form,
         'formset': fset

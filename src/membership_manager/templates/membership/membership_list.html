@@ -104,6 +104,7 @@
                                 <b>{{membership.membership_type}}</b>
                             </h2>
                             <ul class="nav navbar-right panel_toolbox">
+                                <li><a href="{% url 'edit_memberships' pk=membership.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
                                 <li><a class="close-link"><i class="fa fa-close"></i></a></li>
                             </ul>
                             <div class="clearfix"></div>
