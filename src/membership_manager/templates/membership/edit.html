@@ -1,0 +1,146 @@
+{% extends 'gentelella/base.html' %}
+
+{% load static %}
+{% block extra_css %}
+    <link href="{% static 'css/membership.css' %}" rel="stylesheet">
+{% endblock extra_css %}
+
+{% block content %}
+    
+    <h1 style="text-align:center;">Nueva Membresía</h1>
+    {% if perms.membership_manager.view_membership %}
+        <div id="membership_form" class="row">
+            <form method="post">
+            <div class="col-md-8">
+                <div class="x_panel">
+                    {% csrf_token %}
+                    {{form.as_horizontal}}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row formset">
+                    <div class="col-xs-12 col-sm-12 col-md-12 formlist">
+                        {% for form in formset %}
+                            {% include 'formset_form.html' %}
+                        {% endfor %}
+                    </div>
+                    <div class="hidden formsetcontrol"
+                        data-delete="{% if formset.can_delete %}1{% else %}0{% endif %}"
+                        data-order="{% if formset.can_order %}1{% else %}0{% endif %}"
+                        data-validate-min="{% if formset.validate_min %}1{% else %}0{% endif %}"
+                        data-validate-max="{% if formset.validate_max %}1{% else %}0{% endif %}"
+                        data-extra="{{formset.extra}}"  data-prefix="{{formset.prefix}}">
+                        {{ formset.management_form }}
+                        {% spaceless %}
+                        <div class="hidden formsettemplate">
+                            <!-- {% include 'formset_form.html' with form=formset.empty_form %} -->
+                        </div>
+                        {% endspaceless %}
+                    </div>
+                    <div class="text-right">
+                        <button type="button" class="btn btn-primary formsetadd" >Nuevo Servicio</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row" style="margin-top:50px;">
+                    <div class="col-md-12">
+                        <div class="form-inline" style="text-align:center;">
+                            <button class="btn btn-secondary text-center" type="reset">Cancelar</button>
+                            <button class="btn btn-success text-center" type="submit">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </form>
+        </div>
+    {% else %}
+        <h1>Usted no tiene suficientes permisos para ver Membresías</h1>
+    {% endif %}
+{% endblock content %}
+{% block js %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            let isVisible = false;
+            if($("#id_apply_fees").is(":checked")) isVisible=true;
+            if(isVisible==true){
+                $('#id_fees').parent().parent().css('display','block');
+            }else{
+                $('#id_apply_fees').removeAttr('checked');
+                $('#id_fees').parent().parent().css('display','none');
+            }
+            
+            //Button add organization
+            btnNewOrg = "<div class='text-right' style='margin-top:5px'>"+
+                "<a href='/organizations' onclick='window.open(this.href,&quot;&quot;,"+
+                " &quot;resizable=yes,width=600,height=800&quot;); return false;'"+
+                " style='font-size:2em'><i class='fa fa-plus-square'></i></a></div>";   
+            $('#id_organization').parent().append(btnNewOrg);
+            
+            //Button add contact
+            bntNewContact = "<div class='text-right' style='margin-top:5px'>"+
+                "<a href='/contacts' onclick='window.open(this.href,&quot;&quot;,"+
+                " &quot;resizable=yes,width=600,height=800&quot;); return false;'"+
+                " style='font-size:2em'><i class='fa fa-plus-square'></i></a></div>"; 
+            $('#id_contact').parent().append(bntNewContact);
+
+            //Trigger to display fees field when apply_fees change
+            $("#id_apply_fees").change(function() {
+                if($(this).is(":checked")){
+                    $('#id_fees').parent().parent().css('display','block');
+                    $('#id_apply_fees').attr('checked','checked');
+                }else{
+                    $('#id_fees').parent().parent().css('display','none');
+                    $('#id_apply_fees').removeAttr('checked');
+                }
+                
+            });
+
+            /**
+                Set trigger to display contact, organization or both depending
+                on the contact_type value selected 
+            **/
+            $('#id_contact').parent().parent().css('display','none');
+            $('#id_contact').val('').change().attr('required',false);
+            $('input[name="contact_type"]').on('ifChecked', function(){
+                const option = $(this).val();
+                switch(option){
+                    case 'both':
+                        $('#id_contact').parent().parent().css('display','block');
+                        $('#id_contact').attr('required',true);
+                        $('#id_organization').parent().parent().css('display','block');
+                        $('#id_organization').attr('required',true);
+                        break;
+                    case 'organization':
+                        $('#id_organization').parent().parent().css('display','block');
+                        $('#id_organization').attr('required',true);
+                        $('#id_contact').parent().parent().css('display','none');
+                        $('#id_contact').val('').change().attr('required',false);
+                        break;
+                    case 'contact':
+                        $('#id_contact').parent().parent().css('display','block');
+                        $('#id_contact').attr('required',true);
+                        $('#id_organization').parent().parent().css('display','none');
+                        $('#id_organization').val('').change().attr('required',false);
+                        break;
+                }
+            });         
+
+            //set trigger to collapse the formset content
+            $('.formset').on('click', '.btncollapse', function() {
+                if($(this).parent().parent().parent().next().is(':visible')){
+                    $(this).parent().parent().parent().next().hide();   
+                }else{
+                    $(this).parent().parent().parent().next().show()
+                }
+            });
+            
+            //set trigger to collapse all formset to display the new one.
+            $('.formsetadd').click(function(){
+                $('.x_content').hide().last().show();
+            });
+
+            $('.x_content').last().show(); 
+        });
+    </script>
+{% endblock js %}

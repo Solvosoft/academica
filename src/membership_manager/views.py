@@ -131,12 +131,22 @@ def create_membership(request, pk=None):
                 "Error al intentar guardar los servicios asociados")
     if request.method == 'GET':
         if pk is not None:
+            memberhsip = Membership.objects.get(pk=pk)
+            extra = memberhsip.service_set.all().count()
+            if extra == 0:
+                extra = 1
+            else:
+                extra = 0
             formset = modelformset_factory(
                 Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
-                can_delete=True, extra=0, can_order=True)
-            memberhsip = Membership.objects.get(pk=pk)
+                can_delete=True, extra=extra, can_order=True)
             form = MembershipForm(initial=memberhsip.__dict__)
             fset = formset(queryset=Service.objects.filter(membership__pk=pk), prefix='mts')
+            context = {
+                'form': form,
+                'formset': fset
+            }
+            return render(request, 'membership/edit.html', context=context)
         else:
             if t is not None and t != "":
                 m_template = MembershipTemplate.objects.get(pk=t).__dict__
@@ -151,8 +161,8 @@ def create_membership(request, pk=None):
                             'observations': service.observations
                         })
                 extra = servicesmt.count()
-                if servicesmt.count() == 0 :
-                    extra=1
+                if servicesmt.count() == 0:
+                    extra = 1
                 formset = modelformset_factory(
                     Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
                     can_delete=True, extra=extra)

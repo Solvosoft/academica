@@ -105,6 +105,7 @@ class MembershipForm(GTForm, forms.ModelForm):
         if 'initial' in kwargs:
             self.fields['annual_cost'].initial = kwargs['initial']['annual_cost']
             self.fields['currency'].initial = kwargs['initial']['currency_id']
+            self.fields['apply_fees'].initial = kwargs['initial']['apply_fees']
             self.fields['renewal_period'].initial =\
                 kwargs['initial']['renewal_period_id']
             if 'contact_id' in kwargs['initial']:
