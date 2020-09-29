@@ -203,6 +203,7 @@ def email_template(request, pk):
                 return redirect('create_email_notification', pk=0, membership=pk)
 
 
+@permission_required('async_notifications.add_emailnotification')
 def create_email_notification(request, pk, membership):
 
     membresia = get_object_or_404(Membership, pk=membership)
@@ -225,6 +226,7 @@ def create_email_notification(request, pk, membership):
             emailnotification.save()
             obj = EmailNotification.objects.all().last()
             send_email(obj.pk)
+            messages.success(request, 'Notificación de correo electrónico generada exitosamente.')
             return redirect('memberships')
     else:
 
