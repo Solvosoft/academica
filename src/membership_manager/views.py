@@ -213,9 +213,19 @@ def create_email_notification(request, pk, membership):
         form = EmailNotificationForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            emailnotification = EmailNotification(
+                subject = form.cleaned_data['subject'],
+                message = form.cleaned_data['message'],
+                bcc = str(", ".join(form.cleaned_data['bcc'].values_list('email', flat=True))),
+                cc = str(", ".join(form.cleaned_data['cc'].values_list('email', flat=True))),
+                user = request.user,
+                recipient = form.cleaned_data['recipient'],
+                file = form.cleaned_data['file']
+            )
+            emailnotification.save()
             obj = EmailNotification.objects.all().last()
             send_email(obj.pk)
+            return redirect('memberships')
     else:
 
         if membresia.organization:
