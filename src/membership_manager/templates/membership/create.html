@@ -102,9 +102,31 @@
                 Set trigger to display contact, organization or both depending
                 on the contact_type value selected 
             **/
-            
-
-            
+            $('#id_contact').parent().parent().css('display','none');
+            $('#id_contact').val('').change().attr('required',false);
+            $('input[name="contact_type"]').on('ifChecked', function(){
+                const option = $(this).val();
+                switch(option){
+                    case 'both':
+                        $('#id_contact').parent().parent().css('display','block');
+                        $('#id_contact').attr('required',true);
+                        $('#id_organization').parent().parent().css('display','block');
+                        $('#id_organization').attr('required',true);
+                        break;
+                    case 'organization':
+                        $('#id_organization').parent().parent().css('display','block');
+                        $('#id_organization').attr('required',true);
+                        $('#id_contact').parent().parent().css('display','none');
+                        $('#id_contact').val('').change().attr('required',false);
+                        break;
+                    case 'contact':
+                        $('#id_contact').parent().parent().css('display','block');
+                        $('#id_contact').attr('required',true);
+                        $('#id_organization').parent().parent().css('display','none');
+                        $('#id_organization').val('').change().attr('required',false);
+                        break;
+                }
+            });         
 
             //set trigger to collapse the formset content
             $('.formset').on('click', '.btncollapse', function() {
