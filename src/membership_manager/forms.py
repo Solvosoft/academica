@@ -167,3 +167,7 @@ class MembershipServiceForm(GTForm, forms.ModelForm):
             'description': widget.TextInput,
             'observations': widget.Textarea,
         }
+
+        def __init__(self, *args, **kwargs):
+            super(MembershipServiceForm, self).__init__(*args, **kwargs)
+            # assign a (computed, I assume) default value to the choice field

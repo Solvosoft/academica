@@ -111,11 +111,11 @@ def create_membership(request):
         can_delete=True, extra=1)
     if request.method == 'POST':
         form = MembershipForm(request.POST)
-        fset = formset(request.POST, prefix="mts")
+        fset = formset(request.POST, queryset=Service.objects.none(), prefix="mts")
         if form.is_valid() and fset.is_valid():
             instm = form.save()
             instances = fset.save(commit=False)
-            for instance in instances.new_objects:
+            for instance in instances:
                 instance.membership = instm
                 instance.save()
             messages.success(request, "Membresía guardada con exíto")
@@ -128,12 +128,24 @@ def create_membership(request):
         if t is not None and t != "":
             m_template = MembershipTemplate.objects.get(pk=t).__dict__
             form = MembershipForm(initial=m_template)
+            servicesmt = ServiceMT.objects.filter(membership__pk=t)
+            templateinitial = []
+            for services in servicesmt:
+                for service in servicesmt:
+                    templateinitial.append({
+                        'servicetype': service.servicetype,
+                        'description': service.description,
+                        'observations': service.observations
+                    })
+            formset = modelformset_factory(
+                Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
+                can_delete=True, extra=servicesmt.count())
             fset = formset(
-                None, queryset=ServiceMT.objects.filter(membership__pk=t),
+                queryset=Service.objects.none(), initial=templateinitial,
                 prefix='mts')
         else:
             form = MembershipForm()
-            fset = formset(queryset=ServiceMT.objects.none(), prefix='mts')
+            fset = formset(queryset=Service.objects.none(), prefix='mts')
     context = {
         'form': form,
         'formset': fset
