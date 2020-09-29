@@ -60,8 +60,25 @@
 {% endblock content %}
 {% block js %}
     <script type="text/javascript">
+        function newOrg(){
+
+        }
         $(document).ready(function(){
             let isVisible = false;
+            
+            //Button add organization
+            btnNewOrg = "<div class='text-right' style='margin-top:5px'>"+
+                "<a href='/organizations' onclick='window.open(this.href,&quot;&quot;,"+
+                " &quot;resizable=yes,width=600,height=800&quot;); return false;'"+
+                " style='font-size:2em'><i class='fa fa-plus-square'></i></a></div>";   
+            $('#id_organization').parent().append(btnNewOrg);
+            
+            //Button add contact
+            bntNewContact = "<div class='text-right' style='margin-top:5px'>"+
+                "<a href='/contacts' onclick='window.open(this.href,&quot;&quot;,"+
+                " &quot;resizable=yes,width=600,height=800&quot;); return false;'"+
+                " style='font-size:2em'><i class='fa fa-plus-square'></i></a></div>"; 
+            $('#id_contact').parent().append(bntNewContact);
             
             //Set initial fees field to display none
             $("input[type='checkbox']").val('off');
@@ -114,12 +131,6 @@
 
             //set organizatio as required field initial
             $('#id_organization').attr('required',true);
-
-            //Apply radioflat style from iCheck
-            $('input[name="contact_type"]').iCheck({
-                checkboxClass: 'icheckbox_flat-green',
-                radioClass: 'iradio_flat-green'
-            });
 
             //set trigger to collapse the formset content
             $('.formset').on('click', '.btncollapse', function() {

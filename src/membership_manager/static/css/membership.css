@@ -67,3 +67,7 @@
 .formset .x_content{
     display: none;
 }
+
+.margin_xs{
+    margin-bottom: 10px;
+}
