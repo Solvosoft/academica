@@ -12,12 +12,14 @@ from django.utils.timezone import now
 from django.views.generic import ListView
 from djgentelella.cruds.base import CRUDView
 
-from async_notifications.models import NewsLetterTemplate
+from async_notifications.models import NewsLetterTemplate, EmailTemplate, EmailNotification
+from async_notifications.tasks import send_email
 from membership_core.models import Country, ServiceType, MembershipTemplate
 from membership_manager.dashboard import TopStats
 from membership_manager.forms import MembershipForm, MembershipServicesForm
 from membership_manager.models import Contact, Organization, Membership, Service
-from membership_manager.newsletterform import FilterEmailsForm, NewsLetterForm, NewsLetterTemplateForm
+from membership_manager.newsletterform import FilterEmailsForm, NewsLetterForm, NewsLetterTemplateForm, \
+    EmailTemplateForm, EmailNotificationForm
 from .news_letter import NewsLetter
 
 
@@ -96,7 +98,8 @@ class MembershipListView(ListView):
 
         context['today'] = now()
         context['form_filters'] = self.form
-        context['form_template'] = NewsLetterTemplateForm()
+        context['form_template_newsletter'] = NewsLetterTemplateForm()
+        context['form_template_email'] = EmailTemplateForm()
         context['mem_template'] = MembershipTemplate.objects.filter(state="active")
         return context
 
@@ -184,3 +187,48 @@ def create_news_letter_membership(request):
     return render(request, "news_letter/create_news_letter.html", context={'form': form,
                                                                            'template': template.pk,
                                                                            'form_filter': form_filter})
+
+
+def email_template(request, pk):
+
+    if request.method == 'POST':
+        form = EmailTemplateForm(request.POST)
+
+        if form.is_valid():
+            template = form.cleaned_data['email_template']
+
+            if template:
+                return redirect('create_email_notification', pk=template.pk, membership=pk)
+            else:
+                return redirect('create_email_notification', pk=0, membership=pk)
+
+
+def create_email_notification(request, pk, membership):
+
+    membresia = get_object_or_404(Membership, pk=membership)
+    emails = []
+
+    if request.method == "POST":
+
+        form = EmailNotificationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            obj = EmailNotification.objects.all().last()
+            send_email(obj.pk)
+    else:
+
+        if membresia.organization:
+            emails.append(membresia.organization.email)
+        if membresia.contact:
+            emails.append(membresia.contact.email)
+
+        if pk == 0:
+            form = EmailNotificationForm(initial={'recipient': ", ".join(emails)})
+        else:
+            template = get_object_or_404(EmailTemplate, pk=pk)
+            form = EmailNotificationForm(initial={'message': template.message,
+                                                  'recipient': ", ".join(emails)})
+
+    return render(request, "membership/create_email_notification.html", context={'form': form,
+                                                                                 'template': pk})

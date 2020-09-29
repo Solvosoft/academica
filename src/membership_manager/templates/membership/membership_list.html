@@ -15,7 +15,6 @@
 
                         <form method="GET" id="formfilters">
 
-
                             <div style="display: none;">
                             {{ form_filters.apply_filters }}
                             {{ form_filters.search_in }}
@@ -62,26 +61,26 @@
 
 
                             <div id="modalnewslettertemplate" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Seleccione la plantilla base de boletín</h4>
-                </div>
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title">Seleccione la plantilla base de boletín</h4>
+                                        </div>
 
-                <div class="modal-body">
-                    {% include 'field.html' with field=form_template.news_letter_template  %}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                    <button class="btn btn-success" type="button" data-url="{% url 'create_news_letter_membership' %}" onclick="newsletter_membership(this)">Seleccionar</button>
-                </div>
+                                        <div class="modal-body">
+                                            {% include 'field.html' with field=form_template_newsletter.news_letter_template  %}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                                            <button class="btn btn-success" type="button" data-url="{% url 'create_news_letter_membership' %}" onclick="newsletter_membership(this)">Seleccionar</button>
+                                        </div>
 
-            </div>
-        </div>
-    </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                            </form>
+                        </form>
 
                     </div>
                 </div>
@@ -151,7 +150,7 @@
                                         Inactiva
                                     {% endif %}
                                 </div>
-                                <div>Número de Facturas:{{membership.mem_inv.all.count}}</div>
+                                <div>Número de facturas:{{membership.mem_inv.all.count}}</div>
                                 <div>
                                     Fecha de renovación: {{ membership.last_renew|date:"Y-m-d" }}
                                 </div>
@@ -163,7 +162,7 @@
                                         <a href="https://t.me/joingroup/{{ membership.organization.telgroup.chat_id }}"><span class="telegram_icon"><i class="fa fa-send" aria-hidden="true"></i></span></a>
                                     {% endif %}
 
-                                    <a href="mailto:{{membership.email}}"><span class="mail"><i class="fa fa-envelope" aria-hidden="true"></i></span></a>
+                                    <a type="button" data-url="{% url 'email_template' pk=membership.pk %}" onclick="email_membership(this)"><span class="mail"><i class="fa fa-envelope" aria-hidden="true"></i></span></a>
                                 </div>
                             </div>
                             <div class="clearfix"></div>
@@ -214,6 +213,28 @@
         <h1>Usted no tiene suficientes permisos para ver Membresías</h1>
     {% endif %}
 
+<div id="modalemailtemplate" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Seleccione la plantilla base de correo.</h4>
+            </div>
+            <form method="post" id="emailform">
+            <div class="modal-body">
+                {% csrf_token %}
+                {{ form_template_email.as_horizontal }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                <button class="btn btn-success" type="submit">Continuar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {% endblock content %}
 {% block js %}
     <script type="text/javascript">
@@ -249,5 +270,19 @@
         $("#formfilters").attr("action", $(element).data('url'));
         $("#formfilters").submit();
     }
+
+    function email_membership(element){
+        $("#emailform").attr("action", $(element).data('url'));
+        $("#modalemailtemplate").modal();
+    }
+
+    $(window).load(function() {
+      $('.select2-container').width('100%');
+    });
+
+    (function(){
+
+     $("#id_email_template option:contains('---------')").text('Sin plantilla');
+     })(jQuery);
 </script>
 {% endblock js %}
