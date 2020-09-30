@@ -125,6 +125,12 @@
                 }
             });         
 
+            //Set trigger to update title
+            $('.formset').on('blur', 'input[name$="description"]', function() {
+                title = $(this).val();
+               $(this).parent().parent().parent().parent().find('.x_title h2').html(title);
+            });
+
             //set trigger to collapse the formset content
             $('.formset').on('click', '.btncollapse', function() {
                 if($(this).parent().parent().parent().next().is(':visible')){
