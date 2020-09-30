@@ -23,12 +23,11 @@
                             {% csrf_token %}
 
                             {% include 'field.html' with field=form.subject  %}
-                            {% include 'field.html' with field=form.bcc  %}
-                            {% include 'field.html' with field=form.cc  %}
                             {% include 'field.html' with field=form.recipient  %}
                             {% include 'field.html' with field=form.message  %}
                             {% include 'field.html' with field=form.file  %}
-                            {{ form.filters }}
+                            {% include 'field.html' with field=form.bcc  %}
+                            {% include 'field.html' with field=form.cc  %}
 
                         <div class="form-group" style="text-align:center; margin-top:40px;">
                                 <button class="btn btn-success"

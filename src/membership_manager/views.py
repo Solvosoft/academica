@@ -97,7 +97,7 @@ class MembershipListView(ListView):
         context = super().get_context_data(**kwargs)
 
         context['today'] = now()
-        context['form_filters'] = self.form
+        context['form_filters'] = FilterEmailsForm(self.request.GET)
         context['form_template_newsletter'] = NewsLetterTemplateForm()
         context['form_template_email'] = EmailTemplateForm()
         context['mem_template'] = MembershipTemplate.objects.filter(state="active")
@@ -239,7 +239,8 @@ def create_email_notification(request, pk, membership):
             form = EmailNotificationForm(initial={'recipient': ", ".join(emails)})
         else:
             template = get_object_or_404(EmailTemplate, pk=pk)
-            form = EmailNotificationForm(initial={'message': template.message,
+            form = EmailNotificationForm(initial={'subject':template.subject,
+                                                  'message': template.message,
                                                   'recipient': ", ".join(emails)})
 
     return render(request, "membership/create_email_notification.html", context={'form': form,
