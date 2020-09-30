@@ -4,7 +4,7 @@ from membership_manager.news_letter import create_news_letter, news_letter_list,
     EditNewsLetter, create_task, delete_task, create_news_letter_template
 from membership_manager.views import OrganizationView, MembershipListView,\
     ContactListView, create_membership, delete_membership_service,\
-    delete_memberships
+    delete_memberships, edit_membership
 
 from django.contrib.auth.decorators import login_required
 
@@ -18,7 +18,7 @@ urlpatterns = [
         'membership/delete_service/<int:pk>/', delete_membership_service,
         name="delete_membership_service"),
     path('memberships/create', create_membership, name="create_memberships"),
-    path('memberships/edit/<int:pk>', create_membership, name="edit_memberships"),
+    path('memberships/edit/<int:pk>', edit_membership, name="edit_memberships"),
     path('memberships/delete/<int:pk>/', delete_memberships, name="delete_memberships"),
     path('newsletter/', news_letter_list, name="news_letter_list"),
     path('newsletter/create/<int:pk>/', create_news_letter, name="create_news_letter"),
