@@ -1,5 +1,3 @@
-import datetime
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q
@@ -9,14 +7,18 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.utils.timezone import now
+from django.forms import modelformset_factory
 from django.views.generic import ListView
 from djgentelella.cruds.base import CRUDView
-
-from membership_core.models import Country, ServiceType, MembershipTemplate
+from membership_core.models import Country, ServiceType, MembershipTemplate,\
+    ServiceMT
 from membership_manager.dashboard import TopStats
-from membership_manager.forms import MembershipForm, MembershipServicesForm
-from membership_manager.models import Contact, Organization, Membership, Service
+from membership_manager.forms import MembershipForm, MembershipServiceForm,\
+    ServiceForm
 from membership_manager.newsletterform import FilterEmailsForm
+from membership_manager.models import Contact, Organization, Membership,\
+    Service
+from djgentelella.forms.forms import GTBaseModelFormSet
 from .news_letter import NewsLetter
 
 
@@ -95,49 +97,146 @@ class MembershipListView(ListView):
 
         context['today'] = now()
         context['form_filters'] = self.form
-        context['mem_template'] = MembershipTemplate.objects.filter(state="active")
+        context['mem_template'] = \
+            MembershipTemplate.objects.filter(state="active")
         return context
+
+
+@login_required
+def edit_membership(request, pk=None):
+    formset = modelformset_factory(
+        Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
+        can_delete=True, extra=1, can_order=True)
+
+    # We will save or update
+    if request.method == 'POST':
+        # If there is a pk we will update
+        if pk is not None:
+            instance = Membership.objects.get(pk=pk)
+            form = MembershipForm(request.POST, instance=instance)
+            fset = formset(request.POST, queryset=Service.objects.filter(
+                membership__pk=pk), prefix="mts")
+
+            # We save or update the form and the formset
+            if form.is_valid() and fset.is_valid():
+                instm = form.save()
+                instances = fset.save(commit=False)
+                for delinst in fset.deleted_objects:
+                    delinst.delete()
+                for instance in instances:
+                    instance.membership = instm
+                    instance.save()
+                messages.success(request, "Membresía guardada con exíto")
+                return redirect('memberships')
+
+        # if there are errors we return the error messages
+        else:
+            messages.error(
+                request,
+                "Error al intentar guardar los servicios asociados")
+
+    # We will list data or show new form
+    if request.method == 'GET':
+
+        # if pk we need list related data
+        if pk is not None:
+            memberhsip = Membership.objects.get(pk=pk)
+            extra = memberhsip.service_set.all().count()
+            if extra == 0:
+                extra = 1
+            else:
+                extra = 0
+            formset = modelformset_factory(
+                Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
+                can_delete=True, extra=extra, can_order=True)
+            form = MembershipForm(initial=memberhsip.__dict__)
+            fset = formset(queryset=Service.objects.filter(membership__pk=pk), prefix='mts')
+            context = {
+                'form': form,
+                'formset': fset
+            }
+            return render(request, 'membership/edit.html', context=context)
+
+        else:
+            messages.error("No fue posible cargar la membresía")
+    return redirect("memberships")
 
 
 @login_required
 def create_membership(request):
     m_template = {}
     t = request.GET.get('t', None)
+    formset = modelformset_factory(
+        Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
+        can_delete=True, extra=1, can_order=True)
+
+    # We will save or update
     if request.method == 'POST':
+
+        # create a new object membership
         form = MembershipForm(request.POST)
-        if form.is_valid():
-            inst = form.save()
-            messages.success(request, 'Membresía guardada con exíto!')
-            return redirect('add_membership_services', pk=inst.pk)
+        fset = formset(
+            request.POST, queryset=Service.objects.none(), prefix="mts")
+
+        # We save the form and the formset
+        if form.is_valid() and fset.is_valid():
+            instm = form.save()
+            instances = fset.save(commit=False)
+            for instance in instances:
+                instance.membership = instm
+                instance.save()
+            messages.success(request, "Membresía guardada con exíto")
+            return redirect('memberships')
+
+        # if there are errors we return the error messages
         else:
-            messages.warning(request, "Faltan datos por ingresar")
+            messages.error(
+                request,
+                "Error al intentar guardar los servicios asociados")
+
+    # We will list data or show new form
     if request.method == 'GET':
+
+        # if there is a template load initial data
         if t is not None and t != "":
-            m_template = MembershipTemplate.objects.get(pk=t)
+            m_template = MembershipTemplate.objects.get(pk=t).__dict__
+            form = MembershipForm(initial=m_template)
+            servicesmt = ServiceMT.objects.filter(membership__pk=t)
+            templateinitial = []
+            for services in servicesmt:
+                for service in servicesmt:
+                    templateinitial.append({
+                        'servicetype': service.servicetype,
+                        'description': service.description,
+                        'observations': service.observations
+                    })
+            extra = servicesmt.count()
+            if servicesmt.count() == 0:
+                extra = 1
+            formset = modelformset_factory(
+                Service, form=MembershipServiceForm,
+                formset=GTBaseModelFormSet,
+                can_delete=True, extra=extra)
+            fset = formset(
+                queryset=Service.objects.none(), initial=templateinitial,
+                prefix='mts')
+
+        # load the data without initial information
+        else:
             form = MembershipForm()
+            fset = formset(queryset=Service.objects.none(), prefix='mts')
     context = {
         'form': form,
-        't': m_template
+        'formset': fset
     }
     return render(request, 'membership/create.html', context=context)
 
 
-@login_required
-def add_services(request, pk):
-    form = MembershipServicesForm()
-    if request.POST:
-        form = form = MembershipServicesForm(request.POST)
-        if form.is_valid():
-            messages.success(request, 'Servicio Guardado con exíto')
-            form.save()
-    services = Service.objects.filter(membership__pk=pk)
-    context = {
-        'pk': pk,
-        'form': form,
-        'services': services
-    }
-    return render(
-        request, 'membership/membership_services.html', context=context)
+def delete_memberships(request, pk):
+    membership = Membership.objects.filter(pk=pk).first()
+    if membership:
+        membership.delete()
+        return redirect('memberships')
 
 
 class ContactListView(ListView):

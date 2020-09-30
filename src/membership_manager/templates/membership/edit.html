@@ -62,6 +62,13 @@
     <script type="text/javascript">
         $(document).ready(function(){
             let isVisible = false;
+            if($("#id_apply_fees").is(":checked")) isVisible=true;
+            if(isVisible==true){
+                $('#id_fees').parent().parent().css('display','block');
+            }else{
+                $('#id_apply_fees').removeAttr('checked');
+                $('#id_fees').parent().parent().css('display','none');
+            }
             
             //Button add organization
             btnNewOrg = "<div class='text-right' style='margin-top:5px'>"+
@@ -76,21 +83,15 @@
                 " &quot;resizable=yes,width=600,height=800&quot;); return false;'"+
                 " style='font-size:2em'><i class='fa fa-plus-square'></i></a></div>"; 
             $('#id_contact').parent().append(bntNewContact);
-            
-            //Set initial fees field to display none
-            $("input[type='checkbox']").val('off');
-            $('#id_fees').parent().parent().css('display','none');
-            
 
             //Trigger to display fees field when apply_fees change
-            $("input[type='checkbox']").change(function() {
-                isVisible = !isVisible;
-                if(isVisible){
+            $("#id_apply_fees").change(function() {
+                if($(this).is(":checked")){
                     $('#id_fees').parent().parent().css('display','block');
-                     $("input[type='checkbox']").val('on');
+                    $('#id_apply_fees').attr('checked','checked');
                 }else{
                     $('#id_fees').parent().parent().css('display','none');
-                    $("input[type='checkbox']").val('off');
+                    $('#id_apply_fees').removeAttr('checked');
                 }
                 
             });
@@ -125,7 +126,7 @@
                 }
             });         
 
-            //Set trigger to update title
+            //set trigger to update title
             $('.formset').on('blur', 'input[name$="description"]', function() {
                 title = $(this).val();
                $(this).parent().parent().parent().parent().find('.x_title h2').html(title);

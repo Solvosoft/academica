@@ -14,7 +14,6 @@
                 <div class="col-md-9">
                     <div class="x_panel">
                         <form action="" method="GET">
-
                             <div class="row" style="margin-bottom: 2%;">
                                 <div class="col-md-6">
                                     {% include 'field.html' with field=form_filters.name  %}
@@ -45,9 +44,7 @@
                             </div>
                             <div class="row">
                                 <div class="text-right">
-                                    <!-- necesary to implement -->
-                                    <button id="reset" type="reset" class="btn btn-secondary">Limpiar filtros</button>
-                                    <!-- endrequirement -->
+                                    <a href="" class="btn btn-dark">Limpiar filtros</a>
                                     <button class="btn btn-success" type="submit">Buscar</button>
                                 </div>
                             </div>
@@ -60,7 +57,8 @@
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-md">Nueva membresía</button>
                      </div>
                 </div>
-                    <!--modal-->
+                <div>
+                    <!--modal new membership-->
                     <div class="modal fade bs-example-modal-md" tabindex="-1" role="dialog" aria-hidden="true">
                         <div class="modal-dialog modal-md">
                             <div class="modal-content">
@@ -91,7 +89,23 @@
                         </div>
                     </div>
                     <!--endmodal-->
+                    
+                    <!-- modal delete membership-->
+                    <div id="modaldeletetask" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">¿Está segura que desea eliminar este elemento?</h4>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                                <a class="btn btn-danger" id="deletetask">Eliminar</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
         </div>
         <div class="row membership_cards">
             {% for membership in object_list %}
@@ -104,7 +118,8 @@
                                 <b>{{membership.membership_type}}</b>
                             </h2>
                             <ul class="nav navbar-right panel_toolbox">
-                                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                                <li><a href="{% url 'edit_memberships' pk=membership.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
+                                <li><a data-url="{% url 'delete_memberships' pk=membership.pk %}" onclick="deleteelement(this)"><i class="fa fa-close"></i></a></li>
                             </ul>
                             <div class="clearfix"></div>
                         </div>
@@ -206,5 +221,10 @@
                 });
             });
         });
+        function deleteelement(element){
+            $("#deletetask").attr("href", $(element).data('url'));
+            $("#modaldeletetask").modal();
+            return false
+        }
     </script>
 {% endblock js %}
