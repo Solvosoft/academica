@@ -109,14 +109,21 @@ def create_membership(request, pk=None):
     formset = modelformset_factory(
         Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
         can_delete=True, extra=1, can_order=True)
+    
+    # We will save or update
     if request.method == 'POST':
+        # If there is a pk we will update
         if pk is not None:
             instance = Membership.objects.get(pk=pk)
             form = MembershipForm(request.POST, instance=instance)
             fset = formset(request.POST, queryset=Service.objects.filter(membership__pk=pk), prefix="mts")
+
+        # if ther is not pk we create a new object membership
         else:
             form = MembershipForm(request.POST)
             fset = formset(request.POST, queryset=Service.objects.none(), prefix="mts")
+
+        # We save or update the form and the formset
         if form.is_valid() and fset.is_valid():
             instm = form.save()
             instances = fset.save(commit=False)
@@ -125,11 +132,17 @@ def create_membership(request, pk=None):
                 instance.save()
             messages.success(request, "Membresía guardada con exíto")
             return redirect('memberships')
+
+        # if there are errors we return the error messages
         else:
             messages.error(
                 request,
                 "Error al intentar guardar los servicios asociados")
+
+    # We will list data or show new form
     if request.method == 'GET':
+
+        # if pk we need list related data
         if pk is not None:
             memberhsip = Membership.objects.get(pk=pk)
             extra = memberhsip.service_set.all().count()
@@ -147,7 +160,11 @@ def create_membership(request, pk=None):
                 'formset': fset
             }
             return render(request, 'membership/edit.html', context=context)
+
+        # we will show new form to create new membership
         else:
+
+            # check if there is a template to load initial data
             if t is not None and t != "":
                 m_template = MembershipTemplate.objects.get(pk=t).__dict__
                 form = MembershipForm(initial=m_template)
@@ -169,6 +186,8 @@ def create_membership(request, pk=None):
                 fset = formset(
                     queryset=Service.objects.none(), initial=templateinitial,
                     prefix='mts')
+
+            # we load the data without initial information
             else:
                 form = MembershipForm()
                 fset = formset(queryset=Service.objects.none(), prefix='mts')
