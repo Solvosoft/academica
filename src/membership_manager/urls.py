@@ -1,12 +1,13 @@
+from django.contrib.auth.decorators import login_required
 from django.urls import path
+
 from membership_manager import views
 from membership_manager.news_letter import create_news_letter, news_letter_list, send_news_letter, delete_news_letter, \
     EditNewsLetter, create_task, delete_task, create_news_letter_template
-from membership_manager.views import OrganizationView, MembershipListView,\
-    ContactListView, create_membership, delete_membership_service,\
-    delete_memberships, edit_membership
-
-from django.contrib.auth.decorators import login_required
+from membership_manager.views import OrganizationView, MembershipListView, \
+    ContactListView, create_membership, delete_membership_service, create_news_letter_membership, \
+    create_email_notification, email_template
+from membership_manager.views import delete_memberships, edit_membership
 
 organization_view = OrganizationView()
 urlpatterns = [
@@ -28,4 +29,7 @@ urlpatterns = [
     path('task/create/<int:pk>/', create_task, name="create_task"),
     path('task/delete/<int:pk>/', delete_task, name="delete_task"),
     path('newslettertemplate/create/', create_news_letter_template, name="create_news_letter_template"),
+    path('newslettermembership/create/', create_news_letter_membership, name="create_news_letter_membership"),
+    path('emailnotification/create/<int:pk>/<int:membership>/', create_email_notification, name="create_email_notification"),
+    path('emailtemplate/<int:pk>/', email_template, name="email_template"),
 ]

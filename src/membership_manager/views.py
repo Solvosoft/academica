@@ -3,22 +3,25 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q
 from django.db.models import Value
 from django.db.models.functions import Concat
-from django.shortcuts import redirect
+from django.forms import modelformset_factory
+from django.shortcuts import redirect, get_object_or_404
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.utils.timezone import now
-from django.forms import modelformset_factory
 from django.views.generic import ListView
 from djgentelella.cruds.base import CRUDView
-from membership_core.models import Country, ServiceType, MembershipTemplate,\
-    ServiceMT
-from membership_manager.dashboard import TopStats
-from membership_manager.forms import MembershipForm, MembershipServiceForm,\
-    ServiceForm
-from membership_manager.newsletterform import FilterEmailsForm
-from membership_manager.models import Contact, Organization, Membership,\
-    Service
 from djgentelella.forms.forms import GTBaseModelFormSet
+
+from async_notifications.models import NewsLetterTemplate, EmailTemplate, EmailNotification
+from async_notifications.tasks import send_email
+from membership_core.models import Country, ServiceType, MembershipTemplate
+from membership_core.models import ServiceMT
+from membership_manager.dashboard import TopStats
+from membership_manager.forms import MembershipForm
+from membership_manager.forms import MembershipServiceForm
+from membership_manager.models import Contact, Organization, Membership, Service
+from membership_manager.newsletterform import FilterEmailsForm, NewsLetterForm, NewsLetterTemplateForm, \
+    EmailTemplateForm, EmailNotificationForm
 from .news_letter import NewsLetter
 
 
@@ -96,9 +99,10 @@ class MembershipListView(ListView):
         context = super().get_context_data(**kwargs)
 
         context['today'] = now()
-        context['form_filters'] = self.form
-        context['mem_template'] = \
-            MembershipTemplate.objects.filter(state="active")
+        context['form_filters'] = FilterEmailsForm(self.request.GET)
+        context['form_template_newsletter'] = NewsLetterTemplateForm()
+        context['form_template_email'] = EmailTemplateForm()
+        context['mem_template'] = MembershipTemplate.objects.filter(state="active")
         return context
 
 
@@ -266,3 +270,76 @@ def delete_membership_service(request, pk):
     if boletin:
         boletin.delete()
         return redirect('news_letter_list')
+
+
+@permission_required('async_notifications.add_newsletter')
+def create_news_letter_membership(request):
+
+    templateform = NewsLetterTemplateForm(request.GET)
+    templateform.is_valid()
+    template = get_object_or_404(NewsLetterTemplate, pk=templateform.cleaned_data['news_letter_template'].pk)
+    form_filter = FilterEmailsForm(request.GET)
+    form_filter.is_valid()
+    form = NewsLetterForm(initial={'message': template.message})
+
+    return render(request, "news_letter/create_news_letter.html", context={'form': form,
+                                                                           'template': template.pk,
+                                                                           'form_filter': form_filter})
+
+
+def email_template(request, pk):
+
+    if request.method == 'POST':
+        form = EmailTemplateForm(request.POST)
+
+        if form.is_valid():
+            template = form.cleaned_data['email_template']
+
+            if template:
+                return redirect('create_email_notification', pk=template.pk, membership=pk)
+            else:
+                return redirect('create_email_notification', pk=0, membership=pk)
+
+
+@permission_required('async_notifications.add_emailnotification')
+def create_email_notification(request, pk, membership):
+
+    membresia = get_object_or_404(Membership, pk=membership)
+    emails = []
+
+    if request.method == "POST":
+
+        form = EmailNotificationForm(request.POST)
+
+        if form.is_valid():
+            emailnotification = EmailNotification(
+                subject = form.cleaned_data['subject'],
+                message = form.cleaned_data['message'],
+                bcc = str(", ".join(form.cleaned_data['bcc'].values_list('email', flat=True))),
+                cc = str(", ".join(form.cleaned_data['cc'].values_list('email', flat=True))),
+                user = request.user,
+                recipient = form.cleaned_data['recipient'],
+                file = form.cleaned_data['file']
+            )
+            emailnotification.save()
+            obj = EmailNotification.objects.all().last()
+            send_email(obj.pk)
+            messages.success(request, 'Notificación de correo electrónico generada exitosamente.')
+            return redirect('memberships')
+    else:
+
+        if membresia.organization:
+            emails.append(membresia.organization.email)
+        if membresia.contact:
+            emails.append(membresia.contact.email)
+
+        if pk == 0:
+            form = EmailNotificationForm(initial={'recipient': ", ".join(emails)})
+        else:
+            template = get_object_or_404(EmailTemplate, pk=pk)
+            form = EmailNotificationForm(initial={'subject':template.subject,
+                                                  'message': template.message,
+                                                  'recipient': ", ".join(emails)})
+
+    return render(request, "membership/create_email_notification.html", context={'form': form,
+                                                                                 'template': pk})

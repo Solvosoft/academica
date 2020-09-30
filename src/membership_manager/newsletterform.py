@@ -8,10 +8,11 @@ from djgentelella.widgets.tagging import EmailTaggingInput
 from froala_editor.widgets import FroalaEditor
 
 from async_notifications.interfaces import NewsLetterInterface
-from async_notifications.models import NewsLetterTemplate, NewsLetter
+from async_notifications.models import NewsLetterTemplate, NewsLetter, EmailTemplate, EmailNotification
 from async_notifications.utils import get_basemodels_dict
+from async_notifications.widgets import EmailLookup
 from membership_core.models import SystemCurrency, ServiceType, Country
-from membership_manager.models import Organization, Membership, PAYMENT, IDS_TYPE, Invoice
+from membership_manager.models import Organization, Membership, PAYMENT, IDS_TYPE, Invoice, Contact
 from membership_manager.utils import get_context_news_letter
 
 
@@ -318,11 +319,11 @@ class FilterEmailsForm(GTForm, forms.Form):
         ("contacto", "Contacto"),
         ("organizacion", "Organizacion"),
     )
+    apply_filters = forms.BooleanField(widget=genwidgets.YesNoInput, required=False, label="¿Desea aplicar filtros?")
     name = forms.ModelMultipleChoiceField(queryset=Membership.objects.all(),  required=False,
                                           widget=AutocompleteSelectMultiple('orgcontact'),
                                                             label='Nombre',
                                                             help_text="Buscar por organización o contacto" )
-    apply_filters = forms.BooleanField(widget=genwidgets.YesNoInput, required=False, label="¿Desea aplicar filtros?")
     state = forms.ChoiceField(widget=genwidgets.Select, choices=MEMBERSHIP_STATES, required=False, label="Estado")
     country = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Country.objects.all(), required=False, label="País")
     currency = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=SystemCurrency.objects.all(), required=False, label="Moneda")
@@ -374,3 +375,28 @@ class TemplateBaseNewsLetterForm(CustomForm, forms.ModelForm):
             'name': genwidgets.TextInput,
             'message':  FroalaEditor
         }
+
+
+class EmailTemplateForm(GTForm, forms.Form):
+
+    email_template = forms.ModelChoiceField(widget=genwidgets.Select, queryset=EmailTemplate.objects.all(),
+                                                  required=False, label="Plantilla de correo")
+
+class EmailNotificationForm(GTForm, forms.ModelForm):
+
+    bcc = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Contact.objects.all(), label='Copia oculta a carbón', required=False)
+    cc = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Contact.objects.all(), label='CC copia a carbón', required=False)
+
+    class Meta:
+        model = EmailNotification
+        exclude = ['user', 'enqueued', 'sent', 'problems']
+        widgets = {
+            'subject': genwidgets.TextInput,
+            'message':  FroalaEditor,
+            'recipient': EmailTaggingInput,
+            'filters': forms.HiddenInput,
+            'file': genwidgets.FileInput
+        }
+
+    class Media:
+        js = ['js/newsletter.js']
