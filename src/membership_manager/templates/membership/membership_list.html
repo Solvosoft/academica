@@ -248,8 +248,8 @@
                 checkboxClass: 'icheckbox_flat-green',
                 radioClass: 'iradio_flat-green'
             });
-            $("#reset").click(function(){
-                $('#countries').val(p).change();
+        $("#reset").click(function(){
+            $('#countries').val(p).change();
                 const d_opt = $('input.due_date');
                 d_opt.removeAttr('checked').iCheck('update');
                 d_opt.each(function(index){
@@ -259,6 +259,8 @@
                 });
             });
         });
+
+
     </script>
 <script>
     function newsletter_membership(element){
