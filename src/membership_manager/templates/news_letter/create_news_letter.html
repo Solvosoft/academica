@@ -11,7 +11,7 @@
             <li role="presentation"><a id="tabpreview" href="#preview" aria-controls="preview" role="tab" data-toggle="tab">Preview</a></li>
             <li role="presentation"><a id="tabremitentes" href="#remitentes" aria-controls="remitentes" role="tab" data-toggle="tab">Remitentes</a></li>
      </ul>
-<form action="" method="post" id="formcreatenewsletter">
+<form action="{% url 'create_news_letter' pk=template %}" method="post" id="formcreatenewsletter">
             <div class="x_panel">
                 <div class="x_title">
                     <h1 class="text-center">Nuevo boletín</h1>
