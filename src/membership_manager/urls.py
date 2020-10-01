@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.urls import path
 
 from membership_manager.reports.view import reports, add_reporttype_view, download_graph, show_report, list_report, \
@@ -16,7 +16,8 @@ urlpatterns = [
     path('home/', views.index, name="home"),
     path('contacts/', login_required(ContactListView.as_view()), name="contacts"),
     path('organizations/', login_required(MembershipListView.as_view()), name="organizations"),
-    path('memberships/', MembershipListView.as_view(), name="memberships"),
+    path('memberships/', permission_required(
+        'membership.can_view')(MembershipListView.as_view()), name="memberships"),
     path(
         'membership/delete_service/<int:pk>/', delete_membership_service,
         name="delete_membership_service"),

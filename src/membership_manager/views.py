@@ -240,6 +240,7 @@ def delete_memberships(request, pk):
     membership = Membership.objects.filter(pk=pk).first()
     if membership:
         membership.delete()
+        messages.success(request, "Membresía eliminada con exíto")
         return redirect('memberships')
 
 
