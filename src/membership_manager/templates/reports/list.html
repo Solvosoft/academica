@@ -10,7 +10,7 @@
         <div class="x_panel">
             <div class="x_title">
 
-                <h2 class="text-center">{{obj.nombre|title|wordwrap:25|linebreaks}}</h2>
+                <h2 class="text-center">{{obj.name|title|wordwrap:25|linebreaks}}</h2>
 
                 <ul class="nav navbar-right panel_toolbox">
                     <li>
@@ -21,7 +21,7 @@
             </div>
             <div class="x_content paginate-elems" data-prefix="pag{{obj.pk}}">
                 <ul  class="list-group paginate-content">
-              {% for report in obj.reporte_set.all %}
+              {% for report in obj.report_set.all %}
                     <a href="{% url 'report_detail' report.pk %}" class="list-group-item" data-toggle="tooltip" data-placement="bottom" title="{{report}}">  {{report|truncatechars:39 }}</a>
                 {% endfor %}
 
@@ -50,7 +50,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js">
 </script>
-<script src="{% static 'imd/js/pagination.js' %}"> </script>
+<script src="{% static 'js/pagination.js' %}"> </script>
 <script>
 $(".paginate-elems").gentellelapaginate();
 $(function () {

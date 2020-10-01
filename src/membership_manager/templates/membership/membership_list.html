@@ -1,6 +1,7 @@
 {% extends 'gentelella/base.html' %}
 
 {% load static %}
+{% load membership_code %}
 {% block extra_css %}
     <link href="{% static 'css/membership.css' %}" rel="stylesheet">
 {% endblock extra_css %}
@@ -71,56 +72,63 @@
             <div class="col-md-3">
                 <div class="buttons" style="text-align:right;">
                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalnewslettertemplate">Nuevo boletín</button>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-md">Nueva membresía</button>
+                    {% if perms.membership_manager.add_membership %}
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-md">Nueva membresía</button>
+                    {% endif %}
                     </div>
             </div>
             <div>
-                <!--modal new membership-->
-                <div class="modal fade bs-example-modal-md" tabindex="-1" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog modal-md">
+                {% if perms.membership_manager.add_membership %}
+                    <!--modal new membership-->
+                    <div class="modal fade bs-example-modal-md" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content">
+                                <form action="create" method="GET">
+                                <div class="modal-header">
+                                    <h1 class="modal-title" id="myModalLabel">Crear un nueva membresía</h1>
+                                    <button type="button" class="close" data-dismiss="modal">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                
+                                <div class="modal-body">
+                                    <h4>Seleccione la plantilla a utilizar</h4>
+                                    <select name="t" id="mem_template" class="form-control">
+                                        <option value="">Sin plantilla</option>
+                                        {% for temp in mem_template %}
+                                            <option value="{{temp.pk}}">{{temp.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Crear</button>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!--endmodal-->
+                {% endif %}
+
+                {% if perms.membership_manager.delete_membership %}
+                    <!-- modal delete membership-->
+                    <div id="modaldeletemembership" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                            <form action="create" method="GET">
                             <div class="modal-header">
-                                <h1 class="modal-title" id="myModalLabel">Crear un nueva membresía</h1>
-                                <button type="button" class="close" data-dismiss="modal">
-                                    <span aria-hidden="true">×</span>
-                                </button>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">¿Está segura que desea eliminar este elemento?</h4>
                             </div>
-                            
-                            <div class="modal-body">
-                                <h4>Seleccione la plantilla a utilizar</h4>
-                                <select name="t" id="mem_template" class="form-control">
-                                    <option value="">Sin plantilla</option>
-                                    {% for temp in mem_template %}
-                                        <option value="{{temp.pk}}">{{temp.name}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Crear</button>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                                <a class="btn btn-danger" id="deletemembership">Eliminar</a>
                             </div>
-                            </form>
                         </div>
                     </div>
-                </div>
-                <!--endmodal-->
-                
-                <!-- modal delete membership-->
-                <div id="modaldeletetask" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">¿Está segura que desea eliminar este elemento?</h4>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                            <a class="btn btn-danger" id="deletetask">Eliminar</a>
-                        </div>
-                    </div>
-                </div>
+                    <!--end modal delete-->
+                {% endif %}
             </div>
         </div>
     </div>
@@ -135,8 +143,12 @@
                             <b>{{membership.membership_type}}</b>
                         </h2>
                         <ul class="nav navbar-right panel_toolbox">
-                            <li><a href="{% url 'edit_memberships' pk=membership.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
-                            <li><a data-url="{% url 'delete_memberships' pk=membership.pk %}" onclick="deleteelement(this)"><i class="fa fa-close"></i></a></li>
+                            {% if perms.membership_manager.change_membership %}
+                                <li><a href="{% url 'edit_memberships' pk=membership.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
+                            {% endif %}
+                            {% if perms.membership_manager.delete_membership %}
+                                <li><a data-url="{% url 'delete_memberships' pk=membership.pk %}" onclick="deleteelement(this)"><i class="fa fa-close"></i></a></li>
+                            {% endif %}
                         </ul>
                         <div class="clearfix"></div>
                     </div>
@@ -179,12 +191,8 @@
     <div class="paginator_container">
         {% if is_paginated %}
             <ul class="pagination">
-                {% if page_obj.has_previous %}
-                    {% if q or p or c or s or d %}
-                        <li><a href="?page={{ page_obj.previous_page_number }}&q={{q}}&p={{p}}&c={{c}}&s={{s}}&d={{d}}">&laquo;</a></li>
-                    {% else %}
-                        <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
-                    {% endif%}
+                {% if paginator.has_previous %}
+                    <li><a href="?{% url_replace request 'page' paginator.previous_page_number %}">&laquo;</a></li>
                 {% else %}
                     <li class="disabled"><span>&laquo;</span></li>
                 {% endif %}
@@ -192,25 +200,18 @@
                     {% if page_obj.number == i %}
                         <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
                     {% else %}
-                        {% if q or p or c or s or d %}
-                            <li><a href="?page={{ i }}&q={{q}}&p={{p}}&c={{c}}&s={{s}}&d={{d}}">{{ i }}</a></li>
-                        {% else %}
-                            <li><a href="?page={{ i }}">{{ i }}</a></li>
-                        {% endif %}
+                        <li><a href="?{% url_replace request 'page' i %}">{{ i }}</a></li>
                     {% endif %}
                 {% endfor %}
-                {% if page_obj.has_next %}
-                    {% if q or p or c or s or d %}
-                        <li><a href="?page={{ page_obj.next_page_number }}&q={{q}}&p={{p}}&c={{c}}&s={{s}}&d={{d}}">&raquo;</a></li>
-                    {% else %}
-                        <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-                    {% endif %}
+                {% if paginator.has_next %}
+                    <li><a href="?{% url_replace request 'page' paginator.next_page_number %}">&raquo;</a></li>
                 {% else %}
                     <li class="disabled"><span>&raquo;</span></li>
                 {% endif %}
             </ul>
         {% endif %}
     </div>
+</div>
 <div id="modalemailtemplate" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
 
     <div class="modal-dialog" role="document">
@@ -237,32 +238,14 @@
 {% block js %}
     <script type="text/javascript">
         $(document).ready(function(){
-            const p = "{{p}}";
-            const d = "{{d}}";
-            $('#countries').val("{{p}}").change();
-            $('#state').val("{{s}}").change();
-            $('#currency').val("{{c}}").change();
-            $('input.flat').iCheck({
-                checkboxClass: 'icheckbox_flat-green',
-                radioClass: 'iradio_flat-green'
-            });
-        $("#reset").click(function(){
-            $('#countries').val(p).change();
-                const d_opt = $('input.due_date');
-                d_opt.removeAttr('checked').iCheck('update');
-                d_opt.each(function(index){
-                    if($(this).val() === d){
-                        $(this).iCheck('check');
-                    }
-                });
-            });
+            {% if perms.membership_manager.delete_membership %}
+                function deleteelement(element){
+                    $("#deletemembership").attr("href", $(element).data('url'));
+                    $("#modaldeletemembership").modal();
+                    return false
+                }
+            {% endif %}
         });
-        function deleteelement(element){
-            $("#deletetask").attr("href", $(element).data('url'));
-            $("#modaldeletetask").modal();
-            return false
-        }
-
     </script>
 <script>
     function newsletter_membership(element){

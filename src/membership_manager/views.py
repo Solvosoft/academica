@@ -106,7 +106,7 @@ class MembershipListView(ListView):
         return context
 
 
-@login_required
+@permission_required('membership_manager.change_membership')
 def edit_membership(request, pk=None):
     formset = modelformset_factory(
         Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
@@ -166,7 +166,7 @@ def edit_membership(request, pk=None):
     return redirect("memberships")
 
 
-@login_required
+@permission_required('membership_manager.add_membership')
 def create_membership(request):
     m_template = {}
     t = request.GET.get('t', None)
@@ -236,6 +236,7 @@ def create_membership(request):
     return render(request, 'membership/create.html', context=context)
 
 
+@permission_required('membership_manager.delete_membership')
 def delete_memberships(request, pk):
     membership = Membership.objects.filter(pk=pk).first()
     if membership:

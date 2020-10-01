@@ -18,7 +18,7 @@ urlpatterns = [
         'membership_manager.view_contact')(ContactListView.as_view()), name="contacts"),
     path('organizations/', login_required(MembershipListView.as_view()), name="organizations"),
     path('memberships/', permission_required(
-        'membership.can_view')(MembershipListView.as_view()), name="memberships"),
+        'membership_manager.view_membership')(MembershipListView.as_view()), name="memberships"),
     path(
         'membership/delete_service/<int:pk>/', delete_membership_service,
         name="delete_membership_service"),
@@ -38,8 +38,8 @@ urlpatterns = [
     path('emailtemplate/<int:pk>/', email_template, name="email_template"),
     path('reports/', reports, name="reports"),
     path('reports/<int:pk>/', show_report, name='report_detail'),
-    path('reports/<str:key>/', filters_extra, name="extra_filters"),
     path('reports/list/', list_report, name="report_list"),
+    path('reports/<str:key>/', filters_extra, name="extra_filters"),
     path('reporttype/add', add_reporttype_view, name='add_reporttype'),
     path('reports/graph_download/', download_graph, name="download_graph"),
 

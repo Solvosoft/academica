@@ -10,10 +10,10 @@ from membership_manager.forms import ReportForm, CreateReportTypeForm
 from membership_manager.models import Report, ReportType
 from membership_manager.reports.registro import REPORTES_DISPONIBLES, REPORTES_TITULOS
 
-
+@permission_required('membership_manager.add_report')
 def reports(request):
     context = {
-        'tipo_reporte': ''
+        'report_type': ''
     }
     mostrar_boton = False
 
@@ -27,6 +27,7 @@ def reports(request):
 
             key = form.cleaned_data['report_type']
             context['report_type']=REPORTES_TITULOS[key]
+
             if key in REPORTES_DISPONIBLES:
 
                 grafico = REPORTES_DISPONIBLES[key](request, form)
@@ -40,13 +41,13 @@ def reports(request):
                         if form.do_save:
                             report = form.save()
                             midata = dict([(x, list(y.values_list(flat=True)) if not isinstance(y, list) else list(map(lambda x: int(x), y))) for x, y in form_extra.cleaned_data.items()])
-                            info_filtros = dict([(form_extra.fields[x].label, list(y.values_list("descripcion", flat=True)) if not isinstance(y, list) else y) for x, y in form_extra.cleaned_data.items()])
+                            info_filtros = dict([(form_extra.fields[x].label, list(y.values_list("name", flat=True)) if not isinstance(y, list) else y) for x, y in form_extra.cleaned_data.items()])
                             report.extra_form = midata
                             report.info_filtros = info_filtros
                             report.usuaria = user
                             report.save()
                             messages.success(request, "Reporte guardado satisfactoriamente")
-                            return redirect('reportes')
+                            return redirect('reports')
 
                         grafico.form_filter = form_extra
 
@@ -63,7 +64,7 @@ def reports(request):
                         report.usuaria = user
                         report.save()
                         messages.success(request, "Reporte guardado satisfactoriamente")
-                        return redirect('reportes')
+                        return redirect('reports')
 
                     context['form_extra'] = ""
                     context['tiene_filtros'] = 0
@@ -83,32 +84,27 @@ def reports(request):
 
 
 @login_required
+@permission_required('membership_manager.view_report')
 def show_report(request, pk):
     report = get_object_or_404(Report, pk=pk)
     context={'tiene_resultados': True, 'report': report}
     clear_cache = request.GET.get('nocache', 'n')
     mostrar_boton = False
-    es_admin = False
-    tipo_reporte = ""
-    form_extra = None
 
-    if request.user.has_perm('imd.es_idm_administradora'):
-        es_admin = True
-
-    if clear_cache == 's' or report.cache_tabla is None or report.cache_grafico is None:
+    if clear_cache == 's' or report.cache_table is None or report.cache_grafic is None:
         data = {
-            'pais': report.pais.all(),
-            'fecha_inicial': report.fecha_inicial,
-            'fecha_final' : report.fecha_final,
-            'tipo_reporte': report.tipo_reporte,
-            'grafico':   report.grafico,
-            'usuaria': report.usuaria,
-            'tipo_dato': report.tipo_dato
+            'country': report.country.all(),
+            'start_date': report.start_date,
+            'end_date' : report.end_date,
+            'report_type': report.report_type,
+            'grafic':   report.grafic,
+            'user': report.user,
+            'data_type': report.data_type
         }
-        form = ReportForm(data, user=request.user,  initial={'grafico': report.grafico, 'es_guardado': 0})
+        form = ReportForm(data, user=request.user,  initial={'grafic': report.grafic, 'is_saved': 0})
         form.is_valid()
 
-        grafico = REPORTES_DISPONIBLES[report.tipo_reporte](request, form)
+        grafico = REPORTES_DISPONIBLES[report.report_type](request, form)
         class_form_filter = grafico.get_extra_forms()
 
         if class_form_filter:
@@ -117,25 +113,25 @@ def show_report(request, pk):
             if form_extra.is_valid():
                 grafico.form_filter = form_extra
 
-        report.cache_tabla = grafico.view_render_table()
-        report.cache_grafico = grafico.view_render_graphics()
+        report.cache_table = grafico.view_render_table()
+        report.cache_grafic = grafico.view_render_graphics()
         report.save()
 
-    if "chart-container" in report.cache_grafico:
+    if "chart-container" in report.cache_grafic:
         mostrar_boton = True
 
-    context['info'] = report.info_filtros
-    context['reporte_tabla'] = report.cache_tabla
-    context['reporte_grafico'] = report.cache_grafico
+    context['info'] = report.info_filters
+    context['reporte_tabla'] = report.cache_table
+    context['reporte_grafico'] = report.cache_grafic
     context['boton_descarga_grafico'] = mostrar_boton
-    context['admin'] = es_admin
-    context['tipo_reporte'] = REPORTES_TITULOS[report.tipo_reporte]
+    context['tipo_reporte'] = REPORTES_TITULOS[report.report_type]
 
 
     return render(request, 'reports/details.html', context=context)
 
 
 @login_required
+@permission_required('membership_manager.view_report')
 def list_report(request):
 
     context = {
@@ -146,6 +142,8 @@ def list_report(request):
 
 
 def filters_extra(request, key):
+
+    print(key)
 
     if key in REPORTES_DISPONIBLES:
 
@@ -172,7 +170,7 @@ def download_graph(request):
     response.write(b64decode(request.POST['imgdata']))
     return response
 
-
+@permission_required('membership_manager.add_reporttype')
 def add_reporttype_view(request):
     if request.method == 'POST':
         form =CreateReportTypeForm(request.POST)
