@@ -71,13 +71,13 @@
             <div class="col-md-3">
                 <div class="buttons" style="text-align:right;">
                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalnewslettertemplate">Nuevo boletín</button>
-                    {% if perms.membership_manager.new_membership %}
+                    {% if perms.membership_manager.add_membership %}
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-md">Nueva membresía</button>
                     {% endif %}
                     </div>
             </div>
             <div>
-                {% if perms.membership_manager.create_membership %}
+                {% if perms.membership_manager.add_membership %}
                     <!--modal new membership-->
                     <div class="modal fade bs-example-modal-md" tabindex="-1" role="dialog" aria-hidden="true">
                         <div class="modal-dialog modal-md">
