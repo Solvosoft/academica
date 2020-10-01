@@ -166,7 +166,7 @@ def edit_membership(request, pk=None):
     return redirect("memberships")
 
 
-@login_required
+@permission_required('membership_manager.create_membership')
 def create_membership(request):
     m_template = {}
     t = request.GET.get('t', None)

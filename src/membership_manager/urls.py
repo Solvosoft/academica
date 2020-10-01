@@ -15,7 +15,7 @@ urlpatterns = [
     path('contacts/', login_required(ContactListView.as_view()), name="contacts"),
     path('organizations/', login_required(MembershipListView.as_view()), name="organizations"),
     path('memberships/', permission_required(
-        'membership.can_view')(MembershipListView.as_view()), name="memberships"),
+        'membership_manager.view_membership')(MembershipListView.as_view()), name="memberships"),
     path(
         'membership/delete_service/<int:pk>/', delete_membership_service,
         name="delete_membership_service"),

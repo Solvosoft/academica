@@ -71,42 +71,45 @@
             <div class="col-md-3">
                 <div class="buttons" style="text-align:right;">
                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalnewslettertemplate">Nuevo boletín</button>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-md">Nueva membresía</button>
+                    {% if perms.membership_manager.new_membership %}
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-md">Nueva membresía</button>
+                    {% endif %}
                     </div>
             </div>
             <div>
-                <!--modal new membership-->
-                <div class="modal fade bs-example-modal-md" tabindex="-1" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog modal-md">
-                        <div class="modal-content">
-                            <form action="create" method="GET">
-                            <div class="modal-header">
-                                <h1 class="modal-title" id="myModalLabel">Crear un nueva membresía</h1>
-                                <button type="button" class="close" data-dismiss="modal">
-                                    <span aria-hidden="true">×</span>
-                                </button>
+                {% if perms.membership_manager.create_membership %}
+                    <!--modal new membership-->
+                    <div class="modal fade bs-example-modal-md" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content">
+                                <form action="create" method="GET">
+                                <div class="modal-header">
+                                    <h1 class="modal-title" id="myModalLabel">Crear un nueva membresía</h1>
+                                    <button type="button" class="close" data-dismiss="modal">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                
+                                <div class="modal-body">
+                                    <h4>Seleccione la plantilla a utilizar</h4>
+                                    <select name="t" id="mem_template" class="form-control">
+                                        <option value="">Sin plantilla</option>
+                                        {% for temp in mem_template %}
+                                            <option value="{{temp.pk}}">{{temp.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Crear</button>
+                                </div>
+                                </form>
                             </div>
-                            
-                            <div class="modal-body">
-                                <h4>Seleccione la plantilla a utilizar</h4>
-                                <select name="t" id="mem_template" class="form-control">
-                                    <option value="">Sin plantilla</option>
-                                    {% for temp in mem_template %}
-                                        <option value="{{temp.pk}}">{{temp.name}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Crear</button>
-                            </div>
-                            </form>
                         </div>
                     </div>
-                </div>
-                <!--endmodal-->
-                
+                    <!--endmodal-->
+                {% endif %}
                 <!-- modal delete membership-->
                 <div id="modaldeletetask" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
                     <div class="modal-dialog" role="document">
