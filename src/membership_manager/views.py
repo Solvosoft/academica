@@ -247,7 +247,7 @@ def delete_memberships(request, pk):
 
 class ContactListView(ListView):
     template_name = "contact/contact_list.html"
-    paginate_by = 10
+    paginate_by = 30
 
     def get_queryset(self):
         self.form = ContactSearchForm(self.request.GET, initial={'apply_filters': True})
