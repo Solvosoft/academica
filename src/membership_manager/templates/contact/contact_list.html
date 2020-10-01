@@ -8,102 +8,98 @@
 {% block content %}
     
     <h2>Contactos</h2>
-    {% if perms.membership_manager.view_contact %}
-        <div class="search_options">
-            <div class="row">
-                <div class="col-md-6">
-                    <form method="GET">
-                        <div class="input-group">
-                            <input type="text" value="{{q}}" name="q" class="form-control" placeholder="Buscar por nombres, apellidos o correo">
-                            <span class="input-group-btn">
-                                <button class="btn btn-success" type="submit">Go!</button>
-                            </span>
-                        </div>
-                    </form>
-                </div>
-                <div class="col-md-6">
-                    <div class="buttons">
-                        <button class="btn btn-primary">Nuevo Contacto</button>
+    <div class="search_options">
+        <div class="row">
+            <div class="col-md-6">
+                <form method="GET">
+                    <div class="input-group">
+                        <input type="text" value="{{q}}" name="q" class="form-control" placeholder="Buscar por nombres, apellidos o correo">
+                        <span class="input-group-btn">
+                            <button class="btn btn-success" type="submit">Go!</button>
+                        </span>
                     </div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <div class="buttons">
+                    <button class="btn btn-primary">Nuevo Contacto</button>
                 </div>
             </div>
         </div>
-        <div class="row contact_cards">
-            {% for contact in object_list %}
-                <div class="col-md-3 widget widget_tally_box">
-                    <div class="x_panel fixed_height_390 {% if not contact.active %}inactive_contact{%endif%}">
-                        <div class="x_title">
-                            <h2>
-                                <span class="{{ contact.country.flag }}"></span>
-                            </h2>
-                            <ul class="nav navbar-right panel_toolbox">
-                                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
-                            </ul>
-                            <div class="clearfix"></div>
+    </div>
+    <div class="row contact_cards">
+        {% for contact in object_list %}
+            <div class="col-md-3 widget widget_tally_box">
+                <div class="x_panel fixed_height_390 {% if not contact.active %}inactive_contact{%endif%}">
+                    <div class="x_title">
+                        <h2>
+                            <span class="{{ contact.country.flag }}"></span>
+                        </h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <h4><b>Nombre: {{contact.first_name|title}} {{contact.last_name|title}}</b></h4>
+                        <div style="text-align: left; margin-bottom: 15px;">
+                            <h4>Información:</h4>
                         </div>
-                        <div class="x_content">
-                            <h4><b>Nombre: {{contact.first_name|title}} {{contact.last_name|title}}</b></h4>
-                            <div style="text-align: left; margin-bottom: 15px;">
-                                <h4>Información:</h4>
-                            </div>
-                            <div>Correo: {{contact.email}}</div>
-                            {% if contact.phone %}
-                                <div>Teléfono: {{contact.phone}}</div>
-                            {% else %}
-                                <div>Teléfono: No registrado</div>
-                            {% endif %}
-                            {% if contact.cellphone is None %}
-                                <div>Celular: {{contact.cellphone}}</div>
-                            {%else%}
-                                <div>Celular: No registrado</div>
-                            {% endif %}
-                            <div>Activo: {% if contact.active%}Si{%else%}No{% endif %}</div>
-                            <div>Moneda: {{contact.currency}}</div>
-                            <div>Método de pago: {{contact.payment_method}}</div>
-                            <div class="clearfix"></div>
-                        </div>
-                        <div class="x_footer">
-                        </div>
+                        <div>Correo: {{contact.email}}</div>
+                        {% if contact.phone %}
+                            <div>Teléfono: {{contact.phone}}</div>
+                        {% else %}
+                            <div>Teléfono: No registrado</div>
+                        {% endif %}
+                        {% if contact.cellphone is None %}
+                            <div>Celular: {{contact.cellphone}}</div>
+                        {%else%}
+                            <div>Celular: No registrado</div>
+                        {% endif %}
+                        <div>Activo: {% if contact.active%}Si{%else%}No{% endif %}</div>
+                        <div>Moneda: {{contact.currency}}</div>
+                        <div>Método de pago: {{contact.payment_method}}</div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_footer">
                     </div>
                 </div>
-            {% endfor %}
-        </div>
-        <div class="paginator_container">
-            {% if is_paginated %}
-                <ul class="pagination">
-                    {% if page_obj.has_previous %}
-                        {% if q is None or q == '' %}
-                            <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
-                        {% else %}
-                            <li><a href="?page={{ page_obj.previous_page_number }}&q={{q}}">&laquo;</a></li>
-                        {% endif%}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="paginator_container">
+        {% if is_paginated %}
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    {% if q is None or q == '' %}
+                        <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
                     {% else %}
-                        <li class="disabled"><span>&laquo;</span></li>
-                    {% endif %}
-                    {% for i in paginator.page_range %}
-                        {% if page_obj.number == i %}
-                            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-                        {% else %}
-                            {% if q is None or q == '' %}
-                                <li><a href="?page={{ i }}">{{ i }}</a></li>
-                            {% else %}
-                                <li><a href="?page={{ i }}&q={{q}}">{{ i }}</a></li>
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %}
-                    {% if page_obj.has_next %}
-                        {% if q is None or q == '' %}
-                            <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-                        {% else %}
-                            <li><a href="?page={{ page_obj.next_page_number }}&q={{q}}">&raquo;</a></li>
-                        {% endif %}
+                        <li><a href="?page={{ page_obj.previous_page_number }}&q={{q}}">&laquo;</a></li>
+                    {% endif%}
+                {% else %}
+                    <li class="disabled"><span>&laquo;</span></li>
+                {% endif %}
+                {% for i in paginator.page_range %}
+                    {% if page_obj.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
                     {% else %}
-                        <li class="disabled"><span>&raquo;</span></li>
+                        {% if q is None or q == '' %}
+                            <li><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% else %}
+                            <li><a href="?page={{ i }}&q={{q}}">{{ i }}</a></li>
+                        {% endif %}
                     {% endif %}
-                </ul>
-            {% endif %}
-        </div>
-    {% else %}
-        <h1>Usted no tiene suficientes permisos para ver Contactos</h1>
-    {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    {% if q is None or q == '' %}
+                        <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                    {% else %}
+                        <li><a href="?page={{ page_obj.next_page_number }}&q={{q}}">&raquo;</a></li>
+                    {% endif %}
+                {% else %}
+                    <li class="disabled"><span>&raquo;</span></li>
+                {% endif %}
+            </ul>
+        {% endif %}
+    </div>
 {% endblock content %}
