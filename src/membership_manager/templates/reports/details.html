@@ -1,4 +1,4 @@
-{% extends 'base_site.html' %}
+{% extends 'gentelella/base.html' %}
 {% load static %}
 {% load gtsettings %}
 {% block pre_head %}
@@ -32,7 +32,7 @@
 <div class="hidden">
     <form id="graphform" action="{% url 'download_graph' %}" method="POST" target="_blank">
         <input type="hidden" name="imgdata" />
-        <input type="hidden" name="title" value="{{tipo_reporte}}">
+        <input type="hidden" name="title" value="{{report_type}}">
         {% csrf_token %}
     </form>
     <canvas id="destcanvas"></canvas>
@@ -48,17 +48,10 @@
 
                     <li>{{formConsolidar}}</li>
 
-                    {% if report.consolidado %}
-                        {% if admin %}
-                        <li style="margin-left: 1.4em"><a href="?nocache=s" ><i class="fa fa-refresh green" aria-hidden="true"></i></a></li>
-                        {% endif %}
-                    {% else %}
-                        <li style="margin-left: 1.4em"><a href="?nocache=s" ><i class="fa fa-refresh green" aria-hidden="true"></i></a></li>
-                    {% endif %}
+                    <li style="margin-left: 1.4em"><a href="?nocache=s" ><i class="fa fa-refresh green" aria-hidden="true"></i></a></li>
 
-                    {% if admin %}
                     <li style="margin-left: 2em"><a data-toggle="modal" data-target="#reportsavemodal"><i class="fa fa-trash-o red delete" aria-hidden="true"></i></a></li>
-                    {% endif %}
+
 
                   </ul>
                 <div class="clearfix"></div>
@@ -127,7 +120,7 @@
 
 <script>
 (function(){
-    var caption = "{{ report.nombre }}";
+    var caption = "{{ report.name }}";
     var note='{{report.get_tipo_reporte_display}}';
     $("#tablareporte").DataTable({
         "language": {
@@ -151,8 +144,6 @@
             }
         ]
      });
-     $('label[for="id_consolidado"]').text("Reporte Consolidado: ");
-     $("#id_consolidado").prop({disabled: true});
 })(jQuery);
 </script>
 <script>
@@ -203,5 +194,5 @@ $('#export_graph_png').on('click', function(){
     });
 })
 </script>
-<script src=" {% static 'imd/js/delete_report.js' %}"> </script>
+<script src=" {% static 'js/delete_report.js' %}"> </script>
 {% endblock %}
