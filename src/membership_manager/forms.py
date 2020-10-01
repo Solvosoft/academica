@@ -4,10 +4,10 @@ from django.core.exceptions import ValidationError
 from django.urls import reverse
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as widget
-from djgentelella.widgets.selects import AutocompleteSelect
+from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 
 from membership_core.models import MembershipTemplate, Country
-from membership_manager.models import Membership, Service, Organization, Report, ReportType
+from membership_manager.models import Membership, Service, Organization, Report, ReportType, Contact
 from membership_manager.reports.registro import REPORTES_TITULOS
 
 
@@ -229,3 +229,12 @@ class CreateReportTypeForm(GTForm, forms.ModelForm):
             'name': forms.TextInput
         }
 
+
+class ContactSearchForm(GTForm, forms.ModelForm):
+    contact = forms.ModelMultipleChoiceField(
+        queryset=Contact.objects.all(), widget=widget.SelectMultiple,
+        required=False, label="Contacto")
+
+    class Meta:
+        model = Contact
+        fields = ['contact']

@@ -10,17 +10,20 @@
     <h2>Contactos</h2>
     <div class="search_options">
         <div class="row">
-            <div class="col-md-6">
-                <form method="GET">
-                    <div class="input-group">
-                        <input type="text" value="{{q}}" name="q" class="form-control" placeholder="Buscar por nombres, apellidos o correo">
-                        <span class="input-group-btn">
-                            <button class="btn btn-success" type="submit">Go!</button>
-                        </span>
+            <div class="col-md-9">
+                <div class="x_panel">
+                    <form method="GET">
+                    <div>
+                        {{ formsearch.as_horizontal }}
                     </div>
-                </form>
+                    <div style="text-align:right;">
+                        <a href="{% url 'contacts' %}" class="btn btn-dark">Limpiar filtros</a>
+                        <button class="btn btn-success" type="submit">Buscar</button>
+                    </div>
+                    </form>
+                </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <div class="buttons">
                     <button class="btn btn-primary">Nuevo Contacto</button>
                 </div>

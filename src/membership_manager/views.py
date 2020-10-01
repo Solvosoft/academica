@@ -18,7 +18,7 @@ from membership_core.models import Country, ServiceType, MembershipTemplate
 from membership_core.models import ServiceMT
 from membership_manager.dashboard import TopStats
 from membership_manager.forms import MembershipForm
-from membership_manager.forms import MembershipServiceForm
+from membership_manager.forms import MembershipServiceForm, ContactSearchForm
 from membership_manager.models import Contact, Organization, Membership, Service
 from membership_manager.newsletterform import FilterEmailsForm, NewsLetterForm, NewsLetterTemplateForm, \
     EmailTemplateForm, EmailNotificationForm
@@ -249,19 +249,18 @@ class ContactListView(ListView):
     paginate_by = 10
 
     def get_queryset(self):
+        self.form = ContactSearchForm(self.request.GET, initial={'apply_filters': True})
+        self.form.is_valid()
         queryset = Contact.objects.all()
-        q = self.request.GET.get('q')
-        if q is not None:
-            queryset = queryset.annotate(fullname=Concat(
-                'first_name', Value(' '), 'last_name'))
+        if self.form.cleaned_data['contact']:
             queryset = queryset.filter(
-                Q(email__icontains=q) | Q(fullname__icontains=q))
+                Q(pk__in=self.form.cleaned_data['contact']))
         return queryset
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        context['q'] = self.request.GET.get('q', '')
+        context['formsearch'] = ContactSearchForm(self.request.GET)
         return context
 
 
