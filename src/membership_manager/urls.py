@@ -2,6 +2,8 @@ from django.urls import path
 from membership_manager import views
 from membership_manager.news_letter import create_news_letter, news_letter_list, send_news_letter, delete_news_letter, \
     EditNewsLetter, create_task, delete_task, create_news_letter_template
+from membership_manager.reports.view import reports, add_reporttype_view, download_graph, show_report, list_report, \
+    filters_extra
 from membership_manager.views import OrganizationView, MembershipListView,\
     ContactListView, create_membership, add_services, delete_membership_service
 
@@ -28,4 +30,11 @@ urlpatterns = [
     path('task/create/<int:pk>/', create_task, name="create_task"),
     path('task/delete/<int:pk>/', delete_task, name="delete_task"),
     path('newslettertemplate/create/', create_news_letter_template, name="create_news_letter_template"),
+    path('reports/', reports, name="reports"),
+    path('reports/<int:pk>/', show_report, name='report_detail'),
+    path('reports/<str:key>/', filters_extra, name="extra_filters"),
+    path('reports/list/', list_report, name="report_list"),
+    path('reporttype/add', add_reporttype_view, name='add_reporttype'),
+    path('reports/graph_download/', download_graph, name="download_graph"),
+
 ]

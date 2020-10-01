@@ -1,11 +1,14 @@
 from ajax_select.fields import AutoCompleteSelectField
 from django import forms
 from django.core.exceptions import ValidationError
-from membership_core.models import MembershipTemplate
-from membership_manager.models import Membership, Service, Organization
-from djgentelella.forms.forms import GTForm
+from membership_core.models import MembershipTemplate, Country
+from membership_manager.models import Membership, Service, Organization, Report, ReportType
+from djgentelella.forms.forms import GTForm, CustomForm
 from djgentelella.widgets import core as widget
 from djgentelella.widgets.selects import AutocompleteSelect
+from django.urls import reverse
+
+from membership_manager.reports.registro import REPORTES_TITULOS
 
 
 class TemplateWidget(forms.Select):
@@ -162,4 +165,58 @@ class MembershipServicesForm(GTForm, forms.ModelForm):
             'description': widget.TextInput,
             'observations': widget.Textarea,
             'membership': widget.Select
+        }
+
+
+class ReportForm(GTForm, forms.ModelForm):
+    name = forms.CharField(widget=widget.TextInput, required=False, label="Nombre")
+    category = forms.ModelChoiceField(queryset=ReportType.objects.all(),
+                                       required=False,
+                                       widget=widget.SelectWithAdd(attrs={'add_url': "#"}), label="Categoría")
+    country = forms.ModelMultipleChoiceField(queryset=Country.objects.all(), widget=widget.SelectMultiple, required=False, label="País")
+    start_date = forms.DateField(widget=widget.DateInput, required=False, label="Fecha inicial")
+    end_date = forms.DateField(widget=widget.DateInput, required=False, label="Fecha final")
+    report_type = forms.ChoiceField(widget=widget.Select, required=True, label="Tipo de reporte")
+    grafic = forms.ChoiceField(widget=widget.RadioSelect, choices=(
+        ('bar', 'Barras'),
+        ('line', 'Lineas'),
+        ('pie', 'Circular'),
+        ('doughnut', 'Dona')
+    ), label="Tipo de gráfico")
+
+    is_saved = forms.IntegerField(widget=forms.HiddenInput)
+
+    def get_is_saved(self, value):
+        dev = 0
+        if value == '1':
+            dev = 1
+        return dev
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        self.do_save = 0
+        if 'is_saved' in kwargs:
+            self.do_save = self.get_is_saved(kwargs.pop('is_saved'))
+        super().__init__(*args, **kwargs)
+
+        self.fields["report_type"].choices = REPORTES_TITULOS.items()
+        if self.do_save:
+            self.fields["name"].required = True
+            self.fields["category"].required = True
+        self.fields['category'].widget.attrs['add_url'] = reverse('add_reporttype')
+
+
+    class Meta:
+        model = Report
+        fields = ['name','category',  'country', 'report_type', 'end_date', 'start_date', 'grafic',
+                  'data_type']
+        widgets = {'data_type': widget.RadioSelect}
+
+
+class CreateReportTypeForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = ReportType
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput
         }
