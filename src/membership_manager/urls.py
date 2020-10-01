@@ -14,7 +14,8 @@ from .news_letter import news_letter_list, create_news_letter, send_news_letter,
 organization_view = OrganizationView()
 urlpatterns = [
     path('home/', views.index, name="home"),
-    path('contacts/', login_required(ContactListView.as_view()), name="contacts"),
+    path('contacts/', permission_required(
+        'membership_manager.view_contact')(ContactListView.as_view()), name="contacts"),
     path('organizations/', login_required(MembershipListView.as_view()), name="organizations"),
     path('memberships/', permission_required(
         'membership.can_view')(MembershipListView.as_view()), name="memberships"),
