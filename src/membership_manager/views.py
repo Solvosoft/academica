@@ -236,6 +236,7 @@ def create_membership(request):
     return render(request, 'membership/create.html', context=context)
 
 
+@permission_required('membership_manager.delete_membership')
 def delete_memberships(request, pk):
     membership = Membership.objects.filter(pk=pk).first()
     if membership:
