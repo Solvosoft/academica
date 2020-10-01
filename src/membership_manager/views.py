@@ -64,7 +64,7 @@ class MembershipListView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        self.form = FilterEmailsForm(self.request.GET, initial={'apply_filters': True})
+        self.form = FilterEmailsForm(self.request.GET)
         self.form.is_valid()
 
         filters = {}
@@ -256,6 +256,9 @@ class ContactListView(ListView):
         if self.form.cleaned_data['contact']:
             queryset = queryset.filter(
                 Q(pk__in=self.form.cleaned_data['contact']))
+        if self.form.cleaned_data['countries']:
+            queryset = queryset.filter(
+                Q(country__pk__in=self.form.cleaned_data['countries']))
         return queryset
 
     def get_context_data(self, **kwargs):

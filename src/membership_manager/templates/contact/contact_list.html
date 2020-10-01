@@ -13,9 +13,17 @@
             <div class="col-md-9">
                 <div class="x_panel">
                     <form method="GET">
-                    <div>
-                        {{ formsearch.as_horizontal }}
+                    <div class="row">
+                        <div class="col-md-1">{{formsearch.contact.label}}: </div>
+                        <div class="col-md-5">
+                            {{formsearch.contact}}
+                        </div>
+                        <div class="col-md-1">{{formsearch.countries.label}}: </div>
+                        <div class="col-md-5">
+                            {{formsearch.countries}}
+                        </div>
                     </div>
+                    <br/>
                     <div style="text-align:right;">
                         <a href="{% url 'contacts' %}" class="btn btn-dark">Limpiar filtros</a>
                         <button class="btn btn-success" type="submit">Buscar</button>

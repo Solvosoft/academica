@@ -234,7 +234,10 @@ class ContactSearchForm(GTForm, forms.ModelForm):
     contact = forms.ModelMultipleChoiceField(
         queryset=Contact.objects.all(), widget=widget.SelectMultiple,
         required=False, label="Contacto")
+    countries = forms.ModelMultipleChoiceField(
+        queryset=Country.objects.all(), widget=widget.SelectMultiple,
+        required=False, label="País")
 
     class Meta:
         model = Contact
-        fields = ['contact']
+        fields = ['contact', 'countries']
