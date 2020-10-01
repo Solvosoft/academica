@@ -106,7 +106,7 @@ class MembershipListView(ListView):
         return context
 
 
-@login_required
+@permission_required('membership_manager.change_membership')
 def edit_membership(request, pk=None):
     formset = modelformset_factory(
         Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
