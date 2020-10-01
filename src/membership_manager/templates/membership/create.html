@@ -6,11 +6,9 @@
 {% endblock extra_css %}
 
 {% block content %}
-    
     <h1 style="text-align:center;">Nueva Membresía</h1>
-    {% if perms.membership_manager.view_membership %}
-        <div id="membership_form" class="row">
-            <form method="post">
+    <div id="membership_form" class="row">
+        <form method="post">
             <div class="col-md-8">
                 <div class="x_panel">
                     {% csrf_token %}
@@ -52,11 +50,8 @@
                     </div>
                 </div>
             </div>
-            </form>
-        </div>
-    {% else %}
-        <h1>Usted no tiene suficientes permisos para ver Membresías</h1>
-    {% endif %}
+        </form>
+    </div>
 {% endblock content %}
 {% block js %}
     <script type="text/javascript">
