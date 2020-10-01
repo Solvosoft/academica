@@ -2,6 +2,7 @@ import textwrap
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import JSONField
 from django.utils.safestring import mark_safe
 
 from membership_core.models import SystemCurrency, RenewalPeriod,\
@@ -317,3 +318,33 @@ class Attention(models.Model):
             self.end_date
         )
 
+
+class ReportType(models.Model):
+    name = models.CharField(max_length=400)
+
+    def __str__(self):
+        return self.name
+
+
+class Report(models.Model):
+
+    DATA_TYPE = [('numerical', "Numérico"), ('percentaje', 'Porcentual')]
+
+    category = models.ForeignKey(ReportType, on_delete=models.CASCADE, verbose_name="Categoría")
+    name = models.CharField(max_length=400, verbose_name="Nombre")
+    country = models.ManyToManyField(Country, verbose_name="País", blank=True)
+    report_type = models.CharField(max_length=200, verbose_name="Tipo de reporte")
+    end_date = models.DateField(null=True, blank=True, verbose_name="Fecha final")
+    start_date  = models.DateField(null=True, blank=True, verbose_name="Fecha inicial")
+    grafic = models.CharField(max_length=50, verbose_name="Tipo de gráfico")
+    extra_form = JSONField(null=True, blank=True)
+    info_filters = JSONField(null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
+    data_type = models.CharField(max_length=50, choices=DATA_TYPE, default=DATA_TYPE[0], verbose_name="Tipo de dato")
+
+    cache_table = models.TextField(null=True, blank=True)
+    cache_grafic = models.TextField(null=True, blank=True)
+
+
+    def __str__(self):
+        return self.name
