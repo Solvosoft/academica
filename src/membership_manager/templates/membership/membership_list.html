@@ -238,34 +238,14 @@
 {% block js %}
     <script type="text/javascript">
         $(document).ready(function(){
-            const p = "{{p}}";
-            const d = "{{d}}";
-            $('#countries').val("{{p}}").change();
-            $('#state').val("{{s}}").change();
-            $('#currency').val("{{c}}").change();
-            $('input.flat').iCheck({
-                checkboxClass: 'icheckbox_flat-green',
-                radioClass: 'iradio_flat-green'
-            });
-        $("#reset").click(function(){
-            $('#countries').val(p).change();
-                const d_opt = $('input.due_date');
-                d_opt.removeAttr('checked').iCheck('update');
-                d_opt.each(function(index){
-                    if($(this).val() === d){
-                        $(this).iCheck('check');
-                    }
-                });
-            });
+            {% if perms.membership_manager.delete_membership %}
+                function deleteelement(element){
+                    $("#deletemembership").attr("href", $(element).data('url'));
+                    $("#modaldeletemembership").modal();
+                    return false
+                }
+            {% endif %}
         });
-        {% if perms.membership_manager.delete_membership %}
-            function deleteelement(element){
-                $("#deletemembership").attr("href", $(element).data('url'));
-                $("#modaldeletemembership").modal();
-                return false
-            }
-        {% endif %}
-
     </script>
 <script>
     function newsletter_membership(element){
