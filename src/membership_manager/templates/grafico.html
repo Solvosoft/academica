@@ -1,0 +1,33 @@
+{% load static %}
+
+<script src="{% static 'js/Chart.js' %}"></script>
+<div class="chart-container"
+     {% if graphsize == 'big' %}
+        style="position: relative; height:1200px; width:1800px"
+    {% elif graphsize == 'middle' %}
+     style="position: relative; height:600px; width:1200px"
+    {% else %}
+     style="position: relative; width: 457px; height: 228px;"
+    {%endif%}
+>
+<canvas id='grafico'  ></canvas>
+</div>
+{% if list %}
+
+<div class="col-md-12 col-sm-12 col-xs-12">
+
+    <ul class="to_do">
+        {% for element in list %}
+        <li>
+            <p>{{ element }}</p>
+        </li>
+         {% endfor %}
+    </ul>
+</div>
+
+{% endif %}
+
+<script>
+    var ctx = document.getElementById('grafico').getContext('2d');
+    var myChart = new Chart(ctx, {{ json|safe }} );
+</script>

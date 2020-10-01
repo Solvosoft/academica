@@ -1,0 +1,31 @@
+<div class="table-responsive">
+<table id="tablareporte" class="table table-striped table-bordered" style="width:100%">
+     <thead>
+
+     <tr>
+         {% for titulo in titulos %}
+         <th data-toggle="tooltip" data-placement="top" title="{{titulo}}">{{titulo|truncatechars:50}}</th>
+         {% endfor %}
+
+     </tr>
+     </thead>
+     <tbody>
+
+     {% if tabla_contenido %}
+
+      {{tabla_contenido|safe}}
+
+      {% else %}
+
+     {% for registro in registros %}
+     <tr>
+      {% for elemento in registro %}
+     <td>{{elemento}}</td>
+     {% endfor %}
+     </tr>
+     {% endfor %}
+     {% endif %}
+
+     </tbody>
+ </table>
+</div>
