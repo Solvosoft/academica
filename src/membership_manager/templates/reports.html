@@ -1,0 +1,222 @@
+{% extends 'gentelella/base.html' %}
+{% load static %}
+{% load gtsettings %}
+{% block pre_head %}
+    {% define_true "use_datatables" as use_datatables %}
+{% endblock %}
+{% block content %}
+<div class="hidden">
+<form id="graphform" action="{% url 'download_graph' %}" method="POST" target="_blank">
+    <input type="hidden" name="imgdata" />
+    <input type="hidden" name="title" value="{{report_type}}">
+    {% csrf_token %}
+</form>
+    <canvas id="destcanvas"></canvas>
+</div>
+
+<div class="row">
+    <div class='col-md-10 col-md-offset-1 col-xs-12'>
+        <div class="x_panel">
+            <div class="x_title">
+
+                <h2 class="text-center">Generar Reporte</h2>
+
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-down"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+
+                {% include 'reports/build_form.html' %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if tiene_resultados %}
+<div class="container x_panel">
+  <h2 class="text-center">Resultados de la consulta</h2>
+
+<div class="x_content">
+<div id="exTab2" class="container">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#1" data-toggle="tab">Tabla</a>
+        </li>
+        <li>
+            <a href="#2" data-toggle="tab">Gráfico</a>
+        </li>
+    </ul>
+
+    <div class="tab-content ">
+        <div class="tab-pane active" id="1">
+            <h4 class="text-center">{{report_type}}</h4>
+
+            {{ reporte_tabla | safe }} </div>
+        <div class="tab-pane" id="2" style="overflow-x:scroll;">
+            <h2 class="text-center">Atención</h2>
+            <h2 class="text-center text-danger">Si la consulta tiene muchos resultados es posible que el gráfico no se aprecie bien.</h2>
+            {% if boton_descarga_grafico %}
+            <a class="btn btn-success text-center" id="export_graph_png" type="button">Descargar</a>
+            {% endif %}
+            {{ reporte_grafico | safe  }} </div>
+    </div>
+</div></div>
+</div>
+
+{% endif %}
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+
+{% if tiene_resultados %}
+
+<script src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js" ></script>
+<script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.flash.min.js" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js" ></script>
+<script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js" ></script>
+<script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js" ></script>
+
+
+<script>
+(function(){
+    var caption = "{{report_type}}";
+    var note='Resultado del reporte';
+    $("#tablareporte").DataTable({
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+         },
+         dom: 'Bfrtip',
+        "order": [],
+        buttons: [
+            'copy',
+            {extend: 'csv',
+                messageTop: caption,
+                messageBot: note
+            }, {
+                extend: 'excel',
+                messageTop: caption,
+                messageBot: note
+            }, {
+                extend: 'pdf',
+                messageTop: caption,
+                messageBot: note
+            }
+        ]
+     });
+})(jQuery);
+</script>
+
+{% endif %}
+<style>
+    .select2-container{
+        width: 100%!important;
+    }
+</style>
+<script>
+$(function () {
+$('[data-toggle="tooltip"]').tooltip()
+
+function get_li_text(){
+    var lis = [];
+     $(".to_do li").each(function(x,y){
+           var text = $(y).text().trim();
+           var t = text.match(/.{1,130}(\s|$)/g)
+           for(var z=0; z<t.length; z++){
+            lis.push(t[z])
+           }
+
+     });
+    return lis;
+}
+
+$('#export_graph_png').on('click', function(){
+        var lidata = get_li_text();
+
+        var tmp_canvas = document.getElementById('grafico');
+        var ctx = tmp_canvas.getContext('2d');
+        var dcanvas = document.getElementById('destcanvas');
+        var dcanvascontext = dcanvas.getContext('2d');
+        dcanvas.width = tmp_canvas.width + 10;
+        dcanvas.height = tmp_canvas.height + (lidata.length+1)*30;
+        dcanvascontext.drawImage(tmp_canvas, 0, 0);
+
+        dcanvascontext.font = "16px Arial";
+
+        for(var z=0; z<lidata.length; z++){
+            var h = tmp_canvas.height+5+ z*30;
+            dcanvascontext.fillText(lidata[z], 30, h);
+        }
+
+        dcanvascontext.globalCompositeOperation = "destination-over";
+        dcanvascontext.fillStyle = "#fff";
+        dcanvascontext.fillRect(0, 0, dcanvas.width, dcanvas.height);
+
+        var dataURL = dcanvas.toDataURL("image/png");
+        var newurl =  dataURL.replace(/^data:image\/[^;]/, '').replace('ng;base64,', '' );
+
+        $('input[name="imgdata"]').val(newurl);
+        $("#graphform").submit();
+
+    });
+})
+</script>
+<script>
+    $('#reportsavemodal').on('show.bs.modal', function (event) {
+        $("#id_category").attr('required', 'true');
+        $("#id_name").attr('required', 'true');
+        $("#id_is_saved").val('1');
+    });
+    $('#reportsavemodal').on('hidden.bs.modal', function (event) {
+        $("#id_category").removeAttr('required' );
+        $("#id_name").removeAttr('required' );
+        $("#id_is_saved").val('0');
+    });
+</script>
+<script>
+(function(){
+
+    var tiene_filtros = Boolean({{tiene_filtros}});
+
+    $( window ).on('load', function() {
+
+        if(tiene_filtros){
+            $('#reporte').addClass('col-sm-8').removeClass('col-sm-12');
+            $('#content_filters_extra').show();
+        }else{
+            $('#content_filters_extra').hide();
+        }
+
+    });
+
+})(jQuery);
+</script>
+<script src=" {% static 'js/filters_reports.js' %}"> </script>
+<style>
+.dt-button {
+    margin-top: 10px;
+    background: #26B99A;
+    color: #fff;
+    border: 1px solid #169F85;
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+}
+</style>
+{% endblock %}

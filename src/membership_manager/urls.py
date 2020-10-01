@@ -1,13 +1,15 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.urls import path
 
-from membership_manager import views
-from membership_manager.news_letter import create_news_letter, news_letter_list, send_news_letter, delete_news_letter, \
-    EditNewsLetter, create_task, delete_task, create_news_letter_template
-from membership_manager.views import OrganizationView, MembershipListView, \
-    ContactListView, create_membership, delete_membership_service, create_news_letter_membership, \
+from membership_manager.reports.view import reports, add_reporttype_view, download_graph, show_report, list_report, \
+    filters_extra
+from membership_manager.views import OrganizationView, ContactListView, MembershipListView, delete_membership_service, \
+    create_membership, edit_membership, delete_memberships
+from membership_manager.views import create_news_letter_membership, \
     create_email_notification, email_template
-from membership_manager.views import delete_memberships, edit_membership
+from . import views
+from .news_letter import news_letter_list, create_news_letter, send_news_letter, delete_news_letter, EditNewsLetter, \
+    delete_task, create_news_letter_template, create_task
 
 organization_view = OrganizationView()
 urlpatterns = [
@@ -33,4 +35,11 @@ urlpatterns = [
     path('newslettermembership/create/', create_news_letter_membership, name="create_news_letter_membership"),
     path('emailnotification/create/<int:pk>/<int:membership>/', create_email_notification, name="create_email_notification"),
     path('emailtemplate/<int:pk>/', email_template, name="email_template"),
+    path('reports/', reports, name="reports"),
+    path('reports/<int:pk>/', show_report, name='report_detail'),
+    path('reports/<str:key>/', filters_extra, name="extra_filters"),
+    path('reports/list/', list_report, name="report_list"),
+    path('reporttype/add', add_reporttype_view, name='add_reporttype'),
+    path('reports/graph_download/', download_graph, name="download_graph"),
+
 ]
