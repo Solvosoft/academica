@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.decorators import method_decorator
 from django.db.models import Q
 from django.forms import modelformset_factory
 from django.shortcuts import redirect, get_object_or_404
@@ -7,7 +8,6 @@ from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.utils.timezone import now
 from django.views.generic import ListView
-from djgentelella.cruds.base import CRUDView
 from djgentelella.forms.forms import GTBaseModelFormSet
 
 from async_notifications.models import NewsLetterTemplate, EmailTemplate, EmailNotification
@@ -49,9 +49,14 @@ def index(request):
     return render(request, 'membership/home.html', context=context)
 
 
+@method_decorator(permission_required('membership_manager.view_organization'), name='dispatch')
 class OrganizationListView(ListView):
     template_name = "organization/organization_list.html"
     paginate_by = 30
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(OrganizationListView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
         self.form = OrganizationSearchForm(self.request.GET)
@@ -147,11 +152,16 @@ def delete_organization(request, pk):
         return redirect('organizations')
 
 
+@method_decorator(permission_required('membership_manager.view_membership'), name='dispatch')
 class MembershipListView(ListView):
     template_name = "membership/membership_list.html"
     paginate_by = 30
     success_url = reverse_lazy('memberships')
     model = Membership
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(MembershipListView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -336,9 +346,14 @@ def delete_memberships(request, pk):
         return redirect('memberships')
 
 
+@method_decorator(permission_required('membership_manager.view_contact'), name='dispatch')
 class ContactListView(ListView):
     template_name = "contact/contact_list.html"
     paginate_by = 30
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(ContactListView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
         self.form = ContactSearchForm(self.request.GET, initial={'apply_filters': True})

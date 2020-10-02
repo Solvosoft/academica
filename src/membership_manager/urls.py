@@ -15,18 +15,15 @@ from .news_letter import news_letter_list, create_news_letter, send_news_letter,
 
 urlpatterns = [
     path('home/', views.index, name="home"),
-    path('contacts/', permission_required(
-        'membership_manager.view_contact')(ContactListView.as_view()), name="contacts"),
+    path('contacts/', ContactListView.as_view(), name="contacts"),
     path('contacts/create', create_contacts, name="create_contacts"),
     path('contacts/edit/<int:pk>', edit_contacts, name="edit_contacts"),
     path('contacts/delete/<int:pk>/', delete_contacts, name="delete_contacts"),
-    path('organizations/', permission_required(
-        'membership_manager.view_organization')(OrganizationListView.as_view()), name="organizations"),
+    path('organizations/', OrganizationListView.as_view(), name="organizations"),
     path('organizations/create', create_organization, name="create_organizations"),
     path('organizations/edit/<int:pk>', edit_organization, name="edit_organizations"),
     path('organizations/delete/<int:pk>/', delete_organization, name="delete_organizations"),
-    path('memberships/', permission_required(
-        'membership_manager.view_membership')(MembershipListView.as_view()), name="memberships"),
+    path('memberships/', MembershipListView.as_view(), name="memberships"),
     path(
         'membership/delete_service/<int:pk>/', delete_membership_service,
         name="delete_membership_service"),
