@@ -327,6 +327,15 @@ def edit_contacts(request, pk=None):
     return render(request, 'contact/edit.html', context=context)
 
 
+@permission_required('membership_manager.delete_contact')
+def delete_contacts(request, pk):
+    contact = Contact.objects.filter(pk=pk)
+    if contact:
+        contact.delete()
+        messages.success(request, "Contacto eliminado con exíto")
+        return redirect('contacts')
+
+
 @permission_required('async_notifications.delete_newsletter')
 def delete_membership_service(request, pk):
     boletin = NewsLetter.objects.filter(pk=pk).first()

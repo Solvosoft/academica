@@ -40,6 +40,24 @@
             </div>
         </div>
     </div>
+    {% if perms.membership_manager.delete_contact %}
+        <!-- modal delete contact -->
+        <div id="modaldeletecontact" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">¿Está segura que desea eliminar este contacto?</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                        <a class="btn btn-danger" id="deletecontact">Eliminar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end delete modal-->
+    {% endif %}
     <div class="row contact_cards">
         {% for contact in object_list %}
             <div class="col-md-3 widget widget_tally_box">
@@ -52,7 +70,9 @@
                             {% if perms.membership_manager.change_contact %}
                                 <li><a href="{% url 'edit_contacts' pk=contact.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
                             {% endif %}
-                            <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                            {% if perms.membership_manager.delete_contact %}
+                                <li><a data-url="{% url 'delete_contacts' pk=contact.pk %}" onclick="deletecontact(this)"><i class="fa fa-close"></i></a></li>
+                            {% endif %}
                         </ul>
                         <div class="clearfix"></div>
                     </div>
@@ -107,3 +127,16 @@
         {% endif %}
     </div>
 {% endblock content %}
+{% block js %}
+    <script type="text/javascript">
+        {% if perms.membership_manager.delete_contact %}
+            function deletecontact(element){
+                $(function(){
+                    $("#deletecontact").attr("href", $(element).data('url'));
+                    $("#modaldeletecontact").modal();
+                });
+                return false
+            }
+        {% endif %}
+    </script>
+{% endblock js%}
