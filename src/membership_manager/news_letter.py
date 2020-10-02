@@ -15,7 +15,6 @@ from membership_manager.newsletterform import NewsLetterTemplateForm, NewsLetter
 
 @permission_required('async_notifications.view_newsletter')
 def news_letter_list(request):
-
     if request.method == 'POST':
         form = NewsLetterTemplateForm(request.POST)
 
@@ -33,12 +32,10 @@ def news_letter_list(request):
                                                                          'send_date_form': send_date_form,
                                                                          'lista_boletines': lista_boletines})
 
+
 @permission_required('async_notifications.add_newsletter')
 def create_news_letter(request, pk):
     template = get_object_or_404(NewsLetterTemplate, pk=pk)
-    emails_organization = Membership.objects.all().exclude(organization__email__isnull=True).values_list('organization__email', flat=True)
-    emails_contacts = Membership.objects.all().exclude(contact__email__isnull=True).values_list('contact__email', flat=True)
-    emails = list(emails_organization) + list(emails_contacts)
 
     if request.method == 'POST':
         form = NewsLetterForm(request.POST)
@@ -60,7 +57,6 @@ def create_news_letter(request, pk):
         form = NewsLetterForm(initial={'message': template.message})
         form_filter = FilterEmailsForm()
 
-
     return render(request, "news_letter/create_news_letter.html", context={'form': form,
                                                                            'template': pk,
                                                                            'form_filter': form_filter})
@@ -70,6 +66,7 @@ def send_news_letter(request, pk):
     task_send_newsletter.delay(pk)
     return redirect('news_letter_list')
 
+
 @permission_required('async_notifications.delete_newsletter')
 def delete_news_letter(request, pk):
     boletin = NewsLetter.objects.filter(pk=pk).first()
@@ -77,6 +74,7 @@ def delete_news_letter(request, pk):
     if boletin:
         boletin.delete()
         return redirect('news_letter_list')
+
 
 @method_decorator(permission_required('async_notifications.change_newsletter'), name='dispatch')
 class EditNewsLetter(UpdateView):
@@ -89,10 +87,11 @@ class EditNewsLetter(UpdateView):
         context = super().get_context_data(**kwargs)
         news_letter = context['object']
         form_filter = FilterEmailsForm(QueryDict(news_letter.filters))
-        context.update({'form_filter': form_filter ,
+        context.update({'form_filter': form_filter,
                         'template': news_letter.template.pk,
                         })
         return context
+
 
 @permission_required('async_notifications.create_newslettertask')
 def create_task(request, pk):
@@ -124,9 +123,9 @@ def delete_task(request, pk):
         task.delete()
         return redirect('news_letter_list')
 
+
 @permission_required('async_notifications.add_newslettertemplate')
 def create_news_letter_template(request):
-
     if request.method == "POST":
 
         form = TemplateBaseNewsLetterForm(request.POST)

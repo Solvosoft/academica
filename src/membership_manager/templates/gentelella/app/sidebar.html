@@ -9,19 +9,20 @@
     <div class="main_menu_side hidden-print main_menu" id="sidebar-menu">
         <div class="menu_section">
             <ul class="nav side-menu">
-                <li>
-                    <a>
-                        <i class="fa fa-users"></i>Contactos
-                        <span class="fa fa-chevron-down"></span>
-                    </a>
-                    <ul class="nav child_menu">
-                        <li>
-                            <a href="{% url 'contacts' %}">Lista de Contactos</a>
-                        </li>
-                    </ul>
-                    <!-- /.nav-second-level -->
-                </li>
-
+                {% if perms.membership_manager.view_contact %}
+                    <li>
+                        <a>
+                            <i class="fa fa-users"></i>Contactos
+                            <span class="fa fa-chevron-down"></span>
+                        </a>
+                        <ul class="nav child_menu">
+                            <li>
+                                <a href="{% url 'contacts' %}">Lista de Contactos</a>
+                            </li>
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
+                {% endif %}
                 <li>
                     <a>
                         <i class="fa fa-building"></i>
@@ -34,26 +35,26 @@
                         </li>
                     </ul>
                 </li>
-                
-                <li>
-                    <a>
-                        <i class="fa fa-list-alt"></i>
-                        Membresías
-                        <span class="fa fa-chevron-down"></span>
-                    </a>
-                    <ul class="nav child_menu">
-                        <li>
-                            <a href="{% url 'memberships' %}">Lista de Membresías</a>
-                        </li>
-                        <li>
-                            <a href="#">Servicios</a>
-                        </li>
-                        <li>
-                            <a href="#">Renovaciones</a>
-                        </li>
-                    </ul>
-                </li>
-
+                {% if perms.membership_manager.view_membership %}
+                    <li>
+                        <a>
+                            <i class="fa fa-list-alt"></i>
+                            Membresías
+                            <span class="fa fa-chevron-down"></span>
+                        </a>
+                        <ul class="nav child_menu">
+                            <li>
+                                <a href="{% url 'memberships' %}">Lista de Membresías</a>
+                            </li>
+                            <li>
+                                <a href="#">Servicios</a>
+                            </li>
+                            <li>
+                                <a href="#">Renovaciones</a>
+                            </li>
+                        </ul>
+                    </li>
+                {% endif %}
                 <li>
                     <a>
                         <i class="fa fa-credit-card"></i>

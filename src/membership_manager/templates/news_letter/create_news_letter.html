@@ -11,7 +11,7 @@
             <li role="presentation"><a id="tabpreview" href="#preview" aria-controls="preview" role="tab" data-toggle="tab">Preview</a></li>
             <li role="presentation"><a id="tabremitentes" href="#remitentes" aria-controls="remitentes" role="tab" data-toggle="tab">Remitentes</a></li>
      </ul>
-<form action="" method="post" id="formcreatenewsletter">
+<form action="{% url 'create_news_letter' pk=template %}" method="post" id="formcreatenewsletter">
             <div class="x_panel">
                 <div class="x_title">
                     <h1 class="text-center">Nuevo boletín</h1>
@@ -78,6 +78,7 @@ function deshabilitar_filtros(){
 
     if($("#id_apply_filters")[0].checked){
         $('#id_state').removeAttr('disabled');
+        $('#id_name').removeAttr('disabled');
         $('#id_country').removeAttr('disabled');
         $('#id_currency').removeAttr('disabled');
         $('#id_payment_method').removeAttr('disabled');
@@ -88,6 +89,7 @@ function deshabilitar_filtros(){
         $('#id_membership_type').removeAttr('disabled');
     }else{
         $('#id_state').attr('disabled', 'disabled');
+        $('#id_name').attr('disabled', 'disabled');
         $('#id_country').attr('disabled', 'disabled');
         $('#id_currency').attr('disabled', 'disabled');
         $('#id_payment_method').attr('disabled', 'disabled');
