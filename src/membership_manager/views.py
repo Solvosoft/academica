@@ -16,7 +16,7 @@ from membership_core.models import Country, ServiceType, MembershipTemplate
 from membership_core.models import ServiceMT
 from membership_manager.dashboard import TopStats
 from membership_manager.forms import MembershipServiceForm, ContactSearchForm, MembershipForm, ContactAddForm,\
-    OrganizationSearchForm, OrganizationAddForm
+    OrganizationSearchForm, OrganizationAddForm, MembershipTemplateForm
 from membership_manager.models import Contact, Organization, Membership, Service
 from membership_manager.newsletterform import FilterEmailsForm, NewsLetterForm, NewsLetterTemplateForm, \
     EmailTemplateForm, EmailNotificationForm
@@ -203,7 +203,7 @@ class MembershipListView(ListView):
         context['form_filters'] = FilterEmailsForm(self.request.GET)
         context['form_template_newsletter'] = NewsLetterTemplateForm()
         context['form_template_email'] = EmailTemplateForm()
-        context['mem_template'] = MembershipTemplate.objects.filter(state="active")
+        context['mem_template'] = MembershipTemplateForm()
         return context
 
 
@@ -270,7 +270,7 @@ def edit_membership(request, pk=None):
 @permission_required('membership_manager.add_membership')
 def create_membership(request):
     m_template = {}
-    t = request.GET.get('t', None)
+    template = request.GET.get('template', None)
     formset = modelformset_factory(
         Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
         can_delete=True, extra=1, can_order=True)
@@ -303,10 +303,10 @@ def create_membership(request):
     if request.method == 'GET':
 
         # if there is a template load initial data
-        if t is not None and t != "":
-            m_template = MembershipTemplate.objects.get(pk=t).__dict__
+        if template is not None and template != "":
+            m_template = MembershipTemplate.objects.get(pk=template).__dict__
             form = MembershipForm(initial=m_template)
-            servicesmt = ServiceMT.objects.filter(membership__pk=t)
+            servicesmt = ServiceMT.objects.filter(membership__pk=template)
             templateinitial = []
             for services in servicesmt:
                 for service in servicesmt:

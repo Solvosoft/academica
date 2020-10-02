@@ -338,3 +338,13 @@ class OrganizationAddForm(GTForm, forms.ModelForm):
                 self.fields['country'].initial = kwargs['initial']['country_id']
             if 'contact_id' in kwargs['initial']:
                 self.fields['contact'].initial = kwargs['initial']['contact_id']
+
+
+class MembershipTemplateForm(GTForm, forms.ModelForm):
+    template = forms.ModelMultipleChoiceField(
+        queryset=MembershipTemplate.objects.all(), widget=widget.Select,
+        required=False, label="Template")
+
+    class Meta:
+        model = MembershipTemplate
+        fields = ['template']

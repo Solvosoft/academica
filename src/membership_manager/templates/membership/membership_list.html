@@ -93,12 +93,7 @@
                                 
                                 <div class="modal-body">
                                     <h4>Seleccione la plantilla a utilizar</h4>
-                                    <select name="t" id="mem_template" class="form-control">
-                                        <option value="">Sin plantilla</option>
-                                        {% for temp in mem_template %}
-                                            <option value="{{temp.pk}}">{{temp.name}}</option>
-                                        {% endfor %}
-                                    </select>
+                                    {{ mem_template }}
                                 </div>
                                 
                                 <div class="modal-footer">
@@ -244,6 +239,10 @@
                     $("#modaldeletemembership").modal();
                     return false
                 }
+            {% endif %}
+            {% if perms.membership_manager.add_membership %}
+                $("#id_template").prepend(new Option("Sin template", ""));
+                $("#id_template").val("");
             {% endif %}
         });
     </script>
