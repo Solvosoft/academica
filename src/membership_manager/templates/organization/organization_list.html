@@ -7,7 +7,7 @@
 
 {% block content %}
     
-    <h2>Organizaciones</h2>
+    <h1>Organizaciones</h1>
     <div class="search_options">
         <div class="row">
             <div class="col-md-9">
@@ -34,7 +34,7 @@
             <div class="col-md-3">
                 <div class="buttons">
                     {% if perms.membership_manager.add_organization %}
-                        <a href="{% url 'create_organizations' %}" class="btn btn-primary">Nuevo Contacto</a>
+                        <a href="{% url 'create_organizations' %}" class="btn btn-primary">Nueva Organización</a>
                     {% endif %}
                 </div>
             </div>
@@ -59,42 +59,42 @@
         <!-- end delete modal-->
     {% endif %}
     <div class="row contact_cards">
-        {% for contact in object_list %}
+        {% for organization in object_list %}
             <div class="col-md-3 widget widget_tally_box">
-                <div class="x_panel fixed_height_390 {% if not contact.active %}inactive_contact{%endif%}">
+                <div class="x_panel fixed_height_390 {% if not organization.active %}inactive_contact{%endif%}">
                     <div class="x_title">
                         <h2>
-                            <span class="{{ contact.country.flag }}"></span>
+                            <span class="{{ organization.country.flag }}"></span>
                         </h2>
                         <ul class="nav navbar-right panel_toolbox">
                             {% if perms.membership_manager.change_organization %}
-                                <li><a href="{% url 'edit_organizations' pk=contact.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
+                                <li><a href="{% url 'edit_organizations' pk=organization.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
                             {% endif %}
                             {% if perms.membership_manager.delete_organization %}
-                                <li><a data-url="{% url 'delete_organizations' pk=contact.pk %}" onclick="deleteorganization(this)"><i class="fa fa-close"></i></a></li>
+                                <li><a data-url="{% url 'delete_organizations' pk=organization.pk %}" onclick="deleteorganization(this)"><i class="fa fa-close"></i></a></li>
                             {% endif %}
                         </ul>
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
-                        <h4><b>Nombre: {{contact.name|title}}</b></h4>
+                        <h4><b>Nombre: {{organization.name|title}}</b></h4>
                         <div style="text-align: left; margin-bottom: 15px;">
                             <h4>Información:</h4>
                         </div>
-                        <div>Correo: {{contact.email}}</div>
-                        {% if contact.phone %}
-                            <div>Teléfono: {{contact.phone}}</div>
+                        <div>Correo: {{organization.email}}</div>
+                        {% if organization.phone %}
+                            <div>Teléfono: {{organization.phone}}</div>
                         {% else %}
                             <div>Teléfono: No registrado</div>
                         {% endif %}
-                        {% if contact.cellphone is None %}
-                            <div>Celular: {{contact.cellphone}}</div>
+                        {% if organization.cellphone is None %}
+                            <div>Celular: {{organization.cellphone}}</div>
                         {%else%}
                             <div>Celular: No registrado</div>
                         {% endif %}
-                        <div>Activo: {% if contact.active%}Si{%else%}No{% endif %}</div>
-                        <div>Moneda: {{contact.currency}}</div>
-                        <div>Método de pago: {{contact.payment_method}}</div>
+                        <div>Activo: {% if organization.active%}Si{%else%}No{% endif %}</div>
+                        <div>Moneda: {{organization.currency}}</div>
+                        <div>Método de pago: {{organization.payment_method}}</div>
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_footer">

@@ -20,7 +20,6 @@ urlpatterns = [
     path('contacts/create', create_contacts, name="create_contacts"),
     path('contacts/edit/<int:pk>', edit_contacts, name="edit_contacts"),
     path('contacts/delete/<int:pk>/', delete_contacts, name="delete_contacts"),
-    path('organizations/', login_required(MembershipListView.as_view()), name="organizations"),
     path('organizations/', permission_required(
         'membership_manager.view_organization')(OrganizationListView.as_view()), name="organizations"),
     path('organizations/create', create_organization, name="create_organizations"),
