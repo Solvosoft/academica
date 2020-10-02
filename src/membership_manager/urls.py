@@ -3,21 +3,29 @@ from django.urls import path
 
 from membership_manager.reports.view import reports, add_reporttype_view, download_graph, show_report, list_report, \
     filters_extra
-from membership_manager.views import OrganizationView, ContactListView, MembershipListView, delete_membership_service, \
-    create_membership, edit_membership, delete_memberships, create_contacts
+from membership_manager.views import ContactListView, MembershipListView, delete_membership_service, \
+    create_membership, edit_membership, delete_memberships, create_contacts, OrganizationListView, \
+    create_organization, edit_organization, delete_organization
 from membership_manager.views import create_news_letter_membership, \
     create_email_notification, email_template
+from membership_manager.views import edit_contacts, delete_contacts
 from . import views
 from .news_letter import news_letter_list, create_news_letter, send_news_letter, delete_news_letter, EditNewsLetter, \
     delete_task, create_news_letter_template, create_task
 
-organization_view = OrganizationView()
 urlpatterns = [
     path('home/', views.index, name="home"),
     path('contacts/', permission_required(
         'membership_manager.view_contact')(ContactListView.as_view()), name="contacts"),
     path('contacts/create', create_contacts, name="create_contacts"),
+    path('contacts/edit/<int:pk>', edit_contacts, name="edit_contacts"),
+    path('contacts/delete/<int:pk>/', delete_contacts, name="delete_contacts"),
     path('organizations/', login_required(MembershipListView.as_view()), name="organizations"),
+    path('organizations/', permission_required(
+        'membership_manager.view_organization')(OrganizationListView.as_view()), name="organizations"),
+    path('organizations/create', create_organization, name="create_organizations"),
+    path('organizations/edit/<int:pk>', edit_organization, name="edit_organizations"),
+    path('organizations/delete/<int:pk>/', delete_organization, name="delete_organizations"),
     path('memberships/', permission_required(
         'membership_manager.view_membership')(MembershipListView.as_view()), name="memberships"),
     path(

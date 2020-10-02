@@ -281,3 +281,60 @@ class ContactAddForm(GTForm, forms.ModelForm):
             'currency': AutocompleteSelect('currencybasename'),
             'payment_method': widget.Select
         }
+
+    def __init__(self, *args, **kwargs):
+        super(ContactAddForm, self).__init__(*args, **kwargs)
+        if 'initial' in kwargs:
+            if 'country_id' in kwargs['initial']:
+                self.fields['country'].initial = kwargs['initial']['country_id']
+
+
+class OrganizationSearchForm(GTForm, forms.ModelForm):
+    organization = forms.ModelMultipleChoiceField(
+        queryset=Organization.objects.all(), widget=widget.SelectMultiple,
+        required=False, label="Organización")
+    countries = forms.ModelMultipleChoiceField(
+        queryset=Country.objects.all(), widget=widget.SelectMultiple,
+        required=False, label="País")
+
+    class Meta:
+        model = Organization
+        fields = ['organization', 'countries']
+
+
+class OrganizationAddForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = Organization
+        fields = [
+            'name', 'initials', 'contact', 'identification_type',
+            'identification', 'email', 'cellphone',
+            'phone', 'address', 'country', 'city', 'province',
+            'postal_code', 'active', 'currency', 'payment_method',
+        ]
+        widgets = {
+            'name': genwidgets.TextInput,
+            'initials': genwidgets.Input,
+            'contact': AutocompleteSelect('contactbasename'),
+            'identification_type': genwidgets.Select,
+            'identification': genwidgets.TextInput,
+            'email': genwidgets.EmailInput,
+            'cellphone': genwidgets.PhoneNumberMaskInput,
+            'phone': genwidgets.PhoneNumberMaskInput,
+            'address': genwidgets.TextInput,
+            'country': AutocompleteSelect('countrybasename'),
+            'city': genwidgets.Input,
+            'province': genwidgets.Input,
+            'postal_code': genwidgets.Input,
+            'active': genwidgets.YesNoInput,
+            'currency': AutocompleteSelect('currencybasename'),
+            'payment_method': widget.Select
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(OrganizationAddForm, self).__init__(*args, **kwargs)
+        # assign a (computed, I assume) default value to the choice field
+        if 'initial' in kwargs:
+            if 'country_id' in kwargs['initial']:
+                self.fields['country'].initial = kwargs['initial']['country_id']
+            if 'contact_id' in kwargs['initial']:
+                self.fields['contact'].initial = kwargs['initial']['contact_id']
