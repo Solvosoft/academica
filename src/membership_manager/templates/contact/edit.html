@@ -1,0 +1,30 @@
+{% extends 'gentelella/base.html' %}
+
+{% load static %}
+{% block extra_css %}
+    <link href="{% static 'css/membership.css' %}" rel="stylesheet">
+{% endblock extra_css %}
+
+{% block content %}
+    <h1 style="text-align:center;">Editar Contacto</h1>
+    <div id="membership_form" class="row">
+        <form method="post">
+            <div class="col-md-12">
+                <div class="x_panel">
+                    {% csrf_token %}
+                    {{form.as_horizontal}}
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row" style="margin-top:50px;">
+                    <div class="col-md-12">
+                        <div class="form-inline" style="text-align:right;">
+                            <button class="btn btn-secondary" type="reset">Cancelar</button>
+                            <button class="btn btn-success" type="submit">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

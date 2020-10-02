@@ -281,3 +281,9 @@ class ContactAddForm(GTForm, forms.ModelForm):
             'currency': AutocompleteSelect('currencybasename'),
             'payment_method': widget.Select
         }
+
+    def __init__(self, *args, **kwargs):
+        super(ContactAddForm, self).__init__(*args, **kwargs)
+        if 'initial' in kwargs:
+            if 'country_id' in kwargs['initial']:
+                self.fields['country'].initial = kwargs['initial']['country_id']

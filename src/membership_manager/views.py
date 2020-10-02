@@ -296,6 +296,37 @@ def create_contacts(request):
     return render(request, 'contact/create.html', context=context)
 
 
+@permission_required('membership_manager.change_contact')
+def edit_contacts(request, pk=None):
+
+    # We will update
+    if request.method == 'POST':
+        # If there is a pk we will update
+        if pk is not None:
+            instance = Contact.objects.get(pk=pk)
+            form = ContactAddForm(request.POST, instance=instance)
+
+            # We update the form and the formset
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Contacto guardado con exíto")
+                return redirect('contacts')
+            # if there are errors we return the error messages
+            else:
+                messages.error(
+                    request,
+                    "Error al actualizar el contacto")
+
+    # We display a new form
+    if request.method == 'GET':
+        contact = Contact.objects.get(pk=pk)
+        form = ContactAddForm(initial=contact.__dict__)
+    context = {
+        'form': form,
+    }
+    return render(request, 'contact/edit.html', context=context)
+
+
 @permission_required('async_notifications.delete_newsletter')
 def delete_membership_service(request, pk):
     boletin = NewsLetter.objects.filter(pk=pk).first()

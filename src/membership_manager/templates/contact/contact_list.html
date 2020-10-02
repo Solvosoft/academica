@@ -49,6 +49,9 @@
                             <span class="{{ contact.country.flag }}"></span>
                         </h2>
                         <ul class="nav navbar-right panel_toolbox">
+                            {% if perms.membership_manager.change_contact %}
+                                <li><a href="{% url 'edit_contacts' pk=contact.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
+                            {% endif %}
                             <li><a class="close-link"><i class="fa fa-close"></i></a></li>
                         </ul>
                         <div class="clearfix"></div>
