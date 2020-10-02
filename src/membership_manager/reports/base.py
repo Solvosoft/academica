@@ -120,8 +120,9 @@ class BaseDataBuilder:
     def get_base_query(self):
         queryset = Membership.objects.filter(**self.filtros)
         if countries:
-            queryset = queryset.filter(Q(organization__country__in=countries)|Q(
-                contact__country__in=countries))
+            contact = queryset.filter(organization=None, contact__country__in=countries)
+            organization = queryset.filter(organization__country__in=countries)
+            queryset = (organization | contact)
 
         return queryset
 

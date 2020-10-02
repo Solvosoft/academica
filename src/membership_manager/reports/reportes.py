@@ -13,6 +13,7 @@ from membership_manager.reports.base import InterfazReportes, BaseDataBuilder, c
 class Reporte_Factura_Pagada_Moneda(InterfazReportes, BaseDataBuilder):
 
     """
+        Conteo de las facturas pagadas por monedas.
     """
 
     def __init__(self, request, form):
@@ -89,6 +90,7 @@ class Reporte_Factura_Pagada_Moneda(InterfazReportes, BaseDataBuilder):
 class Reporte_Membresia_Pais(InterfazReportes, BaseDataBuilder):
 
     """
+        Conteo de las membresias activas por pais.
     """
 
     def __init__(self, request, form):
@@ -103,7 +105,7 @@ class Reporte_Membresia_Pais(InterfazReportes, BaseDataBuilder):
         }
         self.titulo = ['Paises', 'Membresías']
         self._cached = False
-        self.queryset = self.get_base_query()
+        self.queryset = self.get_base_query().distinct()
 
     def get_x_axis(self):
         return countries if countries else Country.objects.all()
@@ -112,14 +114,18 @@ class Reporte_Membresia_Pais(InterfazReportes, BaseDataBuilder):
         if self._cached:
             return
 
-        self.total = self.queryset.count
+        self.total = self.queryset.count()
+        organization = self.queryset.exclude(organization=None)
+        contactos = self.queryset.filter(organization=None)
 
         for country in self.get_x_axis():
 
-            cantidad = self.queryset.filter(Q(organization__country=country)|Q(
-                contact__country=country)).count()
-            self.data['datasets'][1]['dataset_labels'].append(country)
-            self.lista_registros.append([country, cantidad])
+            cantidad_orga = organization.filter(organization__country=country).count()
+            cantidad_contacto = contactos.filter(contact__country=country).count()
+            cantidad = cantidad_orga + cantidad_contacto
+
+            self.data['datasets'][1]['dataset_labels'].append(country.name)
+            self.lista_registros.append([country.name, cantidad])
 
             if self.tipo_dato == "percentaje":
                 cantidad = round(cantidad * 100 / self.total, 4) if self.total > 0 else 0.0
@@ -152,6 +158,7 @@ class Reporte_Membresia_Pais(InterfazReportes, BaseDataBuilder):
 class Reporte_Membresia_Moneda(InterfazReportes, BaseDataBuilder):
 
     """
+        Conteo de las membresias por monedas.
     """
 
     def __init__(self, request, form):
@@ -228,6 +235,7 @@ class Reporte_Membresia_Moneda(InterfazReportes, BaseDataBuilder):
 class Reporte_Membresia_Servicios(InterfazReportes, BaseDataBuilder):
 
     """
+        Conteo de las membresias por servicios.
     """
 
     def __init__(self, request, form):
