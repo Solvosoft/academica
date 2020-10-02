@@ -4,12 +4,13 @@ from django.core.exceptions import ValidationError
 from django.urls import reverse
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as widget
-from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
+from djgentelella.widgets.selects import AutocompleteSelect
 
 from membership_core.models import MembershipTemplate, Country
-from membership_manager.models import Membership, Service, Organization, Report, ReportType, Contact
+from membership_manager.models import Membership, Service, Organization,\
+    Report, ReportType, Contact
 from membership_manager.reports.registro import REPORTES_TITULOS
-
+from djgentelella.widgets import core as genwidgets
 
 class TemplateWidget(forms.Select):
     class Media:
@@ -241,3 +242,28 @@ class ContactSearchForm(GTForm, forms.ModelForm):
     class Meta:
         model = Contact
         fields = ['contact', 'countries']
+
+
+class ContactAddForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = Contact
+        fields = [
+            'first_name', 'last_name', 'email', 'cellphone',
+            'phone', 'address', 'country', 'city', 'province',
+            'postal_code', 'active', 'currency', 'payment_method',
+        ]
+        widgets = {
+            'first_name': genwidgets.TextInput,
+            'last_name': genwidgets.TextInput,
+            'email': genwidgets.EmailInput,
+            'cellphone': genwidgets.PhoneNumberMaskInput,
+            'phone': genwidgets.PhoneNumberMaskInput,
+            'address': genwidgets.TextInput,
+            'country': AutocompleteSelect('countrybasename'),
+            'city': genwidgets.Input,
+            'province': genwidgets.Input,
+            'postal_code': genwidgets.Input,
+            'active': genwidgets.YesNoInput,
+            'currency': AutocompleteSelect('currencybasename'),
+            'payment_method': widget.Select
+        }

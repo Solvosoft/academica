@@ -1,8 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q
-from django.db.models import Value
-from django.db.models.functions import Concat
 from django.forms import modelformset_factory
 from django.shortcuts import redirect, get_object_or_404
 from django.shortcuts import render
@@ -17,8 +15,7 @@ from async_notifications.tasks import send_email
 from membership_core.models import Country, ServiceType, MembershipTemplate
 from membership_core.models import ServiceMT
 from membership_manager.dashboard import TopStats
-from membership_manager.forms import MembershipForm
-from membership_manager.forms import MembershipServiceForm, ContactSearchForm
+from membership_manager.forms import MembershipServiceForm, ContactSearchForm, MembershipForm, ContactAddForm
 from membership_manager.models import Contact, Organization, Membership, Service
 from membership_manager.newsletterform import FilterEmailsForm, NewsLetterForm, NewsLetterTemplateForm, \
     EmailTemplateForm, EmailNotificationForm
@@ -266,6 +263,37 @@ class ContactListView(ListView):
         context = super().get_context_data(**kwargs)
         context['formsearch'] = ContactSearchForm(self.request.GET)
         return context
+
+
+@permission_required('membership_manager.add_contact')
+def create_contacts(request):
+
+    # We create a new contact
+    if request.method == 'POST':
+
+        # create a new contact object
+        form = ContactAddForm(request.POST)
+
+        # We save the form and the formset
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Contacto guardado con exíto")
+            return redirect('contacts')
+
+        # if there are errors we return the error messages
+        else:
+            messages.error(
+                request,
+                "Error al intentar guardar el contacto")
+
+    # We display new contact form
+    if request.method == 'GET':
+        form = ContactAddForm()
+
+    context = {
+        'form': form
+    }
+    return render(request, 'contact/create.html', context=context)
 
 
 @permission_required('async_notifications.delete_newsletter')
