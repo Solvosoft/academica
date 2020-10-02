@@ -33,16 +33,16 @@
             </div>
             <div class="col-md-3">
                 <div class="buttons">
-                    {% if perms.membership_manager.add_contact %}
-                        <a href="{% url 'create_contacts' %}" class="btn btn-primary">Nuevo Contacto</a>
+                    {% if perms.membership_manager.add_organization %}
+                        <a href="{% url 'create_organizations' %}" class="btn btn-primary">Nuevo Contacto</a>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
-    {% if perms.membership_manager.delete_contact %}
-        <!-- modal delete contact -->
-        <div id="modaldeletecontact" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+    {% if perms.membership_manager.delete_organization %}
+        <!-- modal delete organization -->
+        <div id="modaldeleteorganization" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -51,7 +51,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                        <a class="btn btn-danger" id="deletecontact">Eliminar</a>
+                        <a class="btn btn-danger" id="deleteorganization">Eliminar</a>
                     </div>
                 </div>
             </div>
@@ -67,17 +67,17 @@
                             <span class="{{ contact.country.flag }}"></span>
                         </h2>
                         <ul class="nav navbar-right panel_toolbox">
-                            {% if perms.membership_manager.change_contact %}
-                                <li><a href="{% url 'edit_memberships' pk=contact.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
+                            {% if perms.membership_manager.change_organization %}
+                                <li><a href="{% url 'edit_organizations' pk=contact.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
                             {% endif %}
-                            {% if perms.membership_manager.delete_contact %}
-                                <li><a data-url="{% url 'delete_memberships' pk=contact.pk %}" onclick="deletecontact(this)"><i class="fa fa-close"></i></a></li>
+                            {% if perms.membership_manager.delete_organization %}
+                                <li><a data-url="{% url 'delete_organizations' pk=contact.pk %}" onclick="deleteorganization(this)"><i class="fa fa-close"></i></a></li>
                             {% endif %}
                         </ul>
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
-                        <h4><b>Nombre: {{contact.first_name|title}} {{contact.last_name|title}}</b></h4>
+                        <h4><b>Nombre: {{contact.name|title}}</b></h4>
                         <div style="text-align: left; margin-bottom: 15px;">
                             <h4>Información:</h4>
                         </div>
@@ -129,11 +129,11 @@
 {% endblock content %}
 {% block js %}
     <script type="text/javascript">
-        {% if perms.membership_manager.delete_contact %}
+        {% if perms.membership_manager.delete_organization %}
             function deletecontact(element){
                 $(function(){
-                    $("#deletecontact").attr("href", $(element).data('url'));
-                    $("#modaldeletecontact").modal();
+                    $("#deleteorganization").attr("href", $(element).data('url'));
+                    $("#modaldeleteorganization").modal();
                 });
                 return false
             }

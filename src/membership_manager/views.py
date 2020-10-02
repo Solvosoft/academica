@@ -16,7 +16,7 @@ from membership_core.models import Country, ServiceType, MembershipTemplate
 from membership_core.models import ServiceMT
 from membership_manager.dashboard import TopStats
 from membership_manager.forms import MembershipServiceForm, ContactSearchForm, MembershipForm, ContactAddForm,\
-    OrganizationSearchForm
+    OrganizationSearchForm, OrganizationAddForm
 from membership_manager.models import Contact, Organization, Membership, Service
 from membership_manager.newsletterform import FilterEmailsForm, NewsLetterForm, NewsLetterTemplateForm, \
     EmailTemplateForm, EmailNotificationForm
@@ -72,36 +72,79 @@ class OrganizationListView(ListView):
         return context
 
 
-@permission_required('membership_manager.change_organization')
-def edit_organizations(request):
+@permission_required('membership_manager.add_organization')
+def create_organization(request):
 
-    # We create a new contact
+    # We create a new organization
     if request.method == 'POST':
 
-        # create a new contact object
-        form = ContactAddForm(request.POST)
+        # create a new organization object
+        form = OrganizationAddForm(request.POST)
 
-        # We save the form and the formset
+        # We save the form
         if form.is_valid():
             form.save()
             messages.success(request, "Organización guardada con exíto")
-            return redirect('contacts')
+            return redirect('organizations')
 
         # if there are errors we return the error messages
         else:
             messages.error(
                 request,
-                "Error al intentar guardar la organiación")
+                "Error al intentar guardar la organización")
 
     # We display new contact form
     if request.method == 'GET':
-        form = ContactAddForm()
+
+        form = OrganizationAddForm()
 
     context = {
         'form': form
     }
-    return render(request, 'contact/edit.html', context=context)
+    return render(request, 'organization/create.html', context=context)
 
+
+@permission_required('membership_manager.change_organization')
+def edit_organization(request, pk=None):
+
+    # We create a new contact
+    if request.method == 'POST':
+        if pk is not None:
+            # create a new organization object
+            organization = Organization.objects.get(pk=pk)
+            form = OrganizationAddForm(request.POST, instance=organization)
+
+            # We save the form
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Organización guardada con exíto")
+                return redirect('organizations')
+
+            # if there are errors we return the error messages
+            else:
+                messages.error(
+                    request,
+                    "Error al intentar guardar la organiación")
+
+    # We display new organization form
+    if request.method == 'GET':
+        if pk is not None:
+            organization = Organization.objects.get(pk=pk)
+            form = OrganizationAddForm(initial=organization.__dict__)
+
+    context = {
+        'form': form
+    }
+    return render(request, 'organization/edit.html', context=context)
+
+
+@permission_required('membership_manager.delete_organization')
+def delete_organization(request, pk):
+    organization = Organization.objects.filter(pk=pk).first()
+    if organization:
+        organization.delete()
+        messages.success(request, "Organización eliminada con exíto")
+        return redirect('organizations')
 
 
 class MembershipListView(ListView):
