@@ -197,23 +197,36 @@ class ReportForm(GTForm, forms.ModelForm):
         self.do_save = 0
         if 'is_saved' in kwargs:
             self.do_save = self.get_is_saved(kwargs.pop('is_saved'))
-        super().__init__(*args, **kwargs)
+        super(ReportForm, self).__init__(*args, **kwargs)
 
         self.fields["report_type"].choices = REPORTES_TITULOS.items()
+
+        if user.has_perm('membership_manager.add_reporttype'):
+            self.fields['category'].widget.attrs['add_url'] = reverse('add_reporttype')
+
+        else:
+            self.fields['category'] = forms.ModelChoiceField(queryset=ReportType.objects.all(),
+                                              required=False,
+                                              widget=widget.Select, label="Categoría")
+
         if self.do_save:
             self.fields["name"].required = True
             self.fields["category"].required = True
-        self.fields['category'].widget.attrs['add_url'] = reverse('add_reporttype')
-
 
     class Meta:
         model = Report
-        fields = ['name','category',  'country', 'report_type', 'end_date', 'start_date', 'grafic',
+        fields = ['name', 'category', 'country', 'report_type', 'end_date', 'start_date', 'grafic',
                   'data_type']
         widgets = {'data_type': widget.RadioSelect}
 
 
 class CreateReportTypeForm(GTForm, forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['name'].label = "Nombre"
+
+
     class Meta:
         model = ReportType
         fields = ['name']

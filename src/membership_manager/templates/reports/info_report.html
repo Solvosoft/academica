@@ -10,7 +10,7 @@
         <label>Reporte creado por:</label>
     </div>
     <div class="col-sm-10">
-        {% if report.usuaria %} {{report.usuaria.get_full_name}} {% else %} Sin especificar {% endif %}
+        {% if report.user.get_full_name %} {{report.user.get_full_name}} {% else %} Sin especificar {% endif %}
     </div>
 </div>
 
@@ -25,13 +25,13 @@
         <label>País:</label>
     </div>
     <div class="col-sm-10">
-        {% if report.pais.all.count == 0 %}
-        <p>Todos los paises</p>
-        {% else %}
-        {% for pais in report.pais.all %}
-        <p>* {{pais.nombre}}</p>
+        {% for country in report.country.all %}
+        <p>* {{country.name}}</p>
+        {% empty %}
+
+            <p>Todos los paises</p>
+
         {% endfor %}
-        {% endif %}
     </div>
 </div>
 
@@ -40,7 +40,7 @@
         <label>Fecha inicial:</label>
     </div>
     <div class="col-sm-10">
-        {% if report.fecha_inicial %} {{report.fecha_inicial}} {% else %} Sin especificar {% endif %}
+        {% if report.start_date %} {{report.start_date}} {% else %} Sin especificar {% endif %}
     </div>
 </div>
 
@@ -49,7 +49,7 @@
         <label>Fecha final:</label>
     </div>
     <div class="col-sm-10">
-        {% if report.fecha_final %} {{report.fecha_final}} {% else %} Sin especificar {% endif %}
+        {% if report.end_date %} {{report.end_date}} {% else %} Sin especificar {% endif %}
     </div>
 </div>
 

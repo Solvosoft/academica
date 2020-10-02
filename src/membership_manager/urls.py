@@ -33,8 +33,9 @@ urlpatterns = [
     path('reports/', reports, name="reports"),
     path('reports/<int:pk>/', show_report, name='report_detail'),
     path('reports/list/', list_report, name="report_list"),
+    path('reports/graph_download/', download_graph, name="download_graph"),
     path('reports/<str:key>/', filters_extra, name="extra_filters"),
     path('reporttype/add', add_reporttype_view, name='add_reporttype'),
-    path('reports/graph_download/', download_graph, name="download_graph"),
+
 
 ]

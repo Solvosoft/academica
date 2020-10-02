@@ -6,8 +6,9 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 
+from membership_core.models import ServiceType
 from membership_manager.forms import ReportForm, CreateReportTypeForm
-from membership_manager.models import Report, ReportType
+from membership_manager.models import Report, ReportType, Service
 from membership_manager.reports.registro import REPORTES_DISPONIBLES, REPORTES_TITULOS
 
 @permission_required('membership_manager.add_report')
@@ -39,12 +40,27 @@ def reports(request):
                     if form_extra.is_valid():
 
                         if form.do_save:
+                            info_filtros = []
                             report = form.save()
                             midata = dict([(x, list(y.values_list(flat=True)) if not isinstance(y, list) else list(map(lambda x: int(x), y))) for x, y in form_extra.cleaned_data.items()])
-                            info_filtros = dict([(form_extra.fields[x].label, list(y.values_list("name", flat=True)) if not isinstance(y, list) else y) for x, y in form_extra.cleaned_data.items()])
+
+                            info = "currency"
+
+                            for x, y in form_extra.cleaned_data.items():
+
+                                if not isinstance(y, list):
+
+                                    if isinstance(y.first(), ServiceType):
+
+                                        info = "name"
+
+                                    info_filtros.append((form_extra.fields[x].label, list(y.values_list(info, flat=True))))
+                                else:
+                                    info_filtros.append((form_extra.fields[x].label, y))
+
                             report.extra_form = midata
-                            report.info_filtros = info_filtros
-                            report.usuaria = user
+                            report.info_filters = dict(info_filtros)
+                            report.user = user
                             report.save()
                             messages.success(request, "Reporte guardado satisfactoriamente")
                             return redirect('reports')
@@ -83,7 +99,6 @@ def reports(request):
     return render(request, 'reports.html', context=context)
 
 
-@login_required
 @permission_required('membership_manager.view_report')
 def show_report(request, pk):
     report = get_object_or_404(Report, pk=pk)
@@ -130,7 +145,6 @@ def show_report(request, pk):
     return render(request, 'reports/details.html', context=context)
 
 
-@login_required
 @permission_required('membership_manager.view_report')
 def list_report(request):
 
@@ -142,8 +156,6 @@ def list_report(request):
 
 
 def filters_extra(request, key):
-
-    print(key)
 
     if key in REPORTES_DISPONIBLES:
 
@@ -184,6 +196,8 @@ def add_reporttype_view(request):
                                     context={
                                         'form': form
                                     })})
+
+
     form = CreateReportTypeForm()
     data = {
         'ok':  True,
@@ -193,4 +207,5 @@ def add_reporttype_view(request):
                                         'form': form
                                     })
     }
+
     return JsonResponse(data)
