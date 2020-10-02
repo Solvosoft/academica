@@ -57,7 +57,6 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'django_celery_results',
     'django_celery_beat',
-    'froala_editor',
 ]
 
 MIDDLEWARE = [

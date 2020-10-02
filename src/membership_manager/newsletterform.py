@@ -2,7 +2,7 @@ import datetime
 
 from django import forms
 from djgentelella.forms.forms import CustomForm, GTForm
-from djgentelella.widgets import core as genwidgets
+from djgentelella.widgets import core as genwidgets, wysiwyg
 from djgentelella.widgets.selects import AutocompleteSelectMultiple
 from djgentelella.widgets.tagging import EmailTaggingInput
 from froala_editor.widgets import FroalaEditor
@@ -10,10 +10,8 @@ from froala_editor.widgets import FroalaEditor
 from async_notifications.interfaces import NewsLetterInterface
 from async_notifications.models import NewsLetterTemplate, NewsLetter, EmailTemplate, EmailNotification
 from async_notifications.utils import get_basemodels_dict
-from async_notifications.widgets import EmailLookup
 from membership_core.models import SystemCurrency, ServiceType, Country
 from membership_manager.models import Organization, Membership, PAYMENT, IDS_TYPE, Invoice, Contact
-from membership_manager.utils import get_context_news_letter
 
 
 def get_countries_en_membresias():
@@ -268,7 +266,7 @@ class NewsLetterForm(GTForm, forms.ModelForm):
         exclude = ['cc', 'bcc', 'creator', 'template']
         widgets = {
             'subject': genwidgets.TextInput,
-            'message':  FroalaEditor,
+            'message':  wysiwyg.TextareaWysiwyg,
             'recipient': EmailTaggingInput,
             'filters': forms.HiddenInput,
             'file': genwidgets.FileInput
@@ -373,7 +371,7 @@ class TemplateBaseNewsLetterForm(CustomForm, forms.ModelForm):
         widgets = {
             'title': genwidgets.TextInput,
             'name': genwidgets.TextInput,
-            'message':  FroalaEditor
+            'message':  wysiwyg.TextareaWysiwyg
         }
 
 

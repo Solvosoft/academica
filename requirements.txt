@@ -13,4 +13,3 @@ markdown==3.2.2
 psycopg2-binary
 djgentelella==0.0.7
 djangorestframework==3.11.0
-django-froala-editor==3.2.2
