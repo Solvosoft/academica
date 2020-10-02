@@ -1,0 +1,142 @@
+{% extends 'gentelella/base.html' %}
+{% load membership_code %}
+{% load static %}
+{% block extra_css %}
+    <link href="{% static 'css/membership.css' %}" rel="stylesheet">
+{% endblock extra_css %}
+
+{% block content %}
+    
+    <h2>Organizaciones</h2>
+    <div class="search_options">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="x_panel">
+                    <form method="GET">
+                    <div class="row">
+                        <div class="col-md-1">{{formsearch.organization.label}}: </div>
+                        <div class="col-md-5">
+                            {{formsearch.organization}}
+                        </div>
+                        <div class="col-md-1">{{formsearch.countries.label}}: </div>
+                        <div class="col-md-5">
+                            {{formsearch.countries}}
+                        </div>
+                    </div>
+                    <br/>
+                    <div style="text-align:right;">
+                        <a href="{% url 'contacts' %}" class="btn btn-dark">Limpiar filtros</a>
+                        <button class="btn btn-success" type="submit">Buscar</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="buttons">
+                    {% if perms.membership_manager.add_organization %}
+                        <a href="{% url 'create_organizations' %}" class="btn btn-primary">Nuevo Contacto</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if perms.membership_manager.delete_organization %}
+        <!-- modal delete organization -->
+        <div id="modaldeleteorganization" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">¿Está segura que desea eliminar este contacto?</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                        <a class="btn btn-danger" id="deleteorganization">Eliminar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end delete modal-->
+    {% endif %}
+    <div class="row contact_cards">
+        {% for contact in object_list %}
+            <div class="col-md-3 widget widget_tally_box">
+                <div class="x_panel fixed_height_390 {% if not contact.active %}inactive_contact{%endif%}">
+                    <div class="x_title">
+                        <h2>
+                            <span class="{{ contact.country.flag }}"></span>
+                        </h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            {% if perms.membership_manager.change_organization %}
+                                <li><a href="{% url 'edit_organizations' pk=contact.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
+                            {% endif %}
+                            {% if perms.membership_manager.delete_organization %}
+                                <li><a data-url="{% url 'delete_organizations' pk=contact.pk %}" onclick="deleteorganization(this)"><i class="fa fa-close"></i></a></li>
+                            {% endif %}
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <h4><b>Nombre: {{contact.name|title}}</b></h4>
+                        <div style="text-align: left; margin-bottom: 15px;">
+                            <h4>Información:</h4>
+                        </div>
+                        <div>Correo: {{contact.email}}</div>
+                        {% if contact.phone %}
+                            <div>Teléfono: {{contact.phone}}</div>
+                        {% else %}
+                            <div>Teléfono: No registrado</div>
+                        {% endif %}
+                        {% if contact.cellphone is None %}
+                            <div>Celular: {{contact.cellphone}}</div>
+                        {%else%}
+                            <div>Celular: No registrado</div>
+                        {% endif %}
+                        <div>Activo: {% if contact.active%}Si{%else%}No{% endif %}</div>
+                        <div>Moneda: {{contact.currency}}</div>
+                        <div>Método de pago: {{contact.payment_method}}</div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_footer">
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="paginator_container">
+        {% if is_paginated %}
+            <ul class="pagination">
+                {% if paginator.has_previous %}
+                    <li><a href="?{% url_replace request 'page' paginator.previous_page_number %}">&laquo;</a></li>
+                {% else %}
+                    <li class="disabled"><span>&laquo;</span></li>
+                {% endif %}
+                {% for i in paginator.page_range %}
+                    {% if page_obj.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                    {% else %}
+                        <li><a href="?{% url_replace request 'page' i %}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if paginator.has_next %}
+                    <li><a href="?{% url_replace request 'page' paginator.next_page_number %}">&raquo;</a></li>
+                {% else %}
+                    <li class="disabled"><span>&raquo;</span></li>
+                {% endif %}
+            </ul>
+        {% endif %}
+    </div>
+{% endblock content %}
+{% block js %}
+    <script type="text/javascript">
+        {% if perms.membership_manager.delete_organization %}
+            function deletecontact(element){
+                $(function(){
+                    $("#deleteorganization").attr("href", $(element).data('url'));
+                    $("#modaldeleteorganization").modal();
+                });
+                return false
+            }
+        {% endif %}
+    </script>
+{% endblock js%}

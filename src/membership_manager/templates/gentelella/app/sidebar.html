@@ -23,18 +23,20 @@
                         <!-- /.nav-second-level -->
                     </li>
                 {% endif %}
-                <li>
-                    <a>
-                        <i class="fa fa-building"></i>
-                        Organizaciones
-                        <span class="fa fa-chevron-down"></span>
-                    </a>
-                    <ul class="nav child_menu">
-                        <li>
-                            <a href="{% url 'organizations' %}">Lista de Organizaciones</a>
-                        </li>
-                    </ul>
-                </li>
+                {% if perms.membership_manager.view_organization %}
+                    <li>
+                        <a>
+                            <i class="fa fa-building"></i>
+                            Organizaciones
+                            <span class="fa fa-chevron-down"></span>
+                        </a>
+                        <ul class="nav child_menu">
+                            <li>
+                                <a href="{% url 'organizations' %}">Lista de Organizaciones</a>
+                            </li>
+                        </ul>
+                    </li>
+                {% endif %}
                 {% if perms.membership_manager.view_membership %}
                     <li>
                         <a>
