@@ -281,3 +281,16 @@ class ContactAddForm(GTForm, forms.ModelForm):
             'currency': AutocompleteSelect('currencybasename'),
             'payment_method': widget.Select
         }
+
+
+class OrganizationSearchForm(GTForm, forms.ModelForm):
+    organization = forms.ModelMultipleChoiceField(
+        queryset=Organization.objects.all(), widget=widget.SelectMultiple,
+        required=False, label="Organización")
+    countries = forms.ModelMultipleChoiceField(
+        queryset=Country.objects.all(), widget=widget.SelectMultiple,
+        required=False, label="País")
+
+    class Meta:
+        model = Organization
+        fields = ['organization', 'countries']
