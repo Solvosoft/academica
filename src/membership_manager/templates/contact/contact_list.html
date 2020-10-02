@@ -33,7 +33,9 @@
             </div>
             <div class="col-md-3">
                 <div class="buttons">
-                    <a href="{% url 'create_contacts' %}" class="btn btn-primary">Nuevo Contacto</a>
+                    {% if perms.membership_manager.add_contact %}
+                        <a href="{% url 'create_contacts' %}" class="btn btn-primary">Nuevo Contacto</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
