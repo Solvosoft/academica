@@ -68,10 +68,10 @@
                         </h2>
                         <ul class="nav navbar-right panel_toolbox">
                             {% if perms.membership_manager.change_contact %}
-                                <li><a href="{% url 'edit_contacts' pk=contact.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
+                                <li><a href="{% url 'edit_memberships' pk=contact.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
                             {% endif %}
                             {% if perms.membership_manager.delete_contact %}
-                                <li><a data-url="{% url 'delete_contacts' pk=contact.pk %}" onclick="deletecontact(this)"><i class="fa fa-close"></i></a></li>
+                                <li><a data-url="{% url 'delete_memberships' pk=contact.pk %}" onclick="deletecontact(this)"><i class="fa fa-close"></i></a></li>
                             {% endif %}
                         </ul>
                         <div class="clearfix"></div>
