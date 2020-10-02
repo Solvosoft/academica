@@ -114,7 +114,7 @@ class MembershipForm(GTForm, forms.ModelForm):
                 self.fields['apply_fees'].initial = kwargs['initial']['apply_fees']
             if 'contact_id' in kwargs['initial']:
                 self.fields['contact'].initial = kwargs['initial']['contact_id']
-            if 'contact_id' in kwargs['initial']:
+            if 'organization_id' in kwargs['initial']:
                 self.fields['organization'].initial = kwargs['initial']['organization_id']
 
     class Meta:
