@@ -2,7 +2,7 @@ from django.db.models import Q, Value
 from django.db.models.functions import Concat
 from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View
-from membership_core.models import ServiceType
+from membership_core.models import ServiceType, Country, SystemCurrency
 from membership_manager.models import Organization, Contact, Membership
 
 
@@ -26,7 +26,6 @@ class ContactGModelLookup(BaseSelect2View):
         return queryset
 
 
-
 @register_lookups(prefix="servicetype", basename="servicetypebasename")
 class ServiceTypeGModelLookup(BaseSelect2View):
     model = ServiceType
@@ -46,3 +45,15 @@ class ContactGModelLookup(BaseSelect2View):
                                     contact__first_name__icontains=q)|Q(
                                     contact__last_name__icontains=q))
         return queryset
+
+
+@register_lookups(prefix="country", basename="countrybasename")
+class CountryGModelLookup(BaseSelect2View):
+    model = Country
+    fields = ['name']
+
+
+@register_lookups(prefix="currency", basename="currencybasename")
+class CurrencyGModelLookup(BaseSelect2View):
+    model = SystemCurrency
+    fields = ['currency']

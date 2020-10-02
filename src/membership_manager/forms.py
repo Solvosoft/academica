@@ -7,9 +7,10 @@ from djgentelella.widgets import core as widget
 from djgentelella.widgets.selects import AutocompleteSelect
 
 from membership_core.models import MembershipTemplate, Country
-from membership_manager.models import Membership, Service, Organization, Report, ReportType
+from membership_manager.models import Membership, Service, Organization,\
+    Report, ReportType, Contact
 from membership_manager.reports.registro import REPORTES_TITULOS
-
+from djgentelella.widgets import core as genwidgets
 
 class TemplateWidget(forms.Select):
     class Media:
@@ -243,3 +244,40 @@ class CreateReportTypeForm(GTForm, forms.ModelForm):
             'name': forms.TextInput
         }
 
+
+class ContactSearchForm(GTForm, forms.ModelForm):
+    contact = forms.ModelMultipleChoiceField(
+        queryset=Contact.objects.all(), widget=widget.SelectMultiple,
+        required=False, label="Contacto")
+    countries = forms.ModelMultipleChoiceField(
+        queryset=Country.objects.all(), widget=widget.SelectMultiple,
+        required=False, label="País")
+
+    class Meta:
+        model = Contact
+        fields = ['contact', 'countries']
+
+
+class ContactAddForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = Contact
+        fields = [
+            'first_name', 'last_name', 'email', 'cellphone',
+            'phone', 'address', 'country', 'city', 'province',
+            'postal_code', 'active', 'currency', 'payment_method',
+        ]
+        widgets = {
+            'first_name': genwidgets.TextInput,
+            'last_name': genwidgets.TextInput,
+            'email': genwidgets.EmailInput,
+            'cellphone': genwidgets.PhoneNumberMaskInput,
+            'phone': genwidgets.PhoneNumberMaskInput,
+            'address': genwidgets.TextInput,
+            'country': AutocompleteSelect('countrybasename'),
+            'city': genwidgets.Input,
+            'province': genwidgets.Input,
+            'postal_code': genwidgets.Input,
+            'active': genwidgets.YesNoInput,
+            'currency': AutocompleteSelect('currencybasename'),
+            'payment_method': widget.Select
+        }

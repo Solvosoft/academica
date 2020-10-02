@@ -1,8 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q
-from django.db.models import Value
-from django.db.models.functions import Concat
 from django.forms import modelformset_factory
 from django.shortcuts import redirect, get_object_or_404
 from django.shortcuts import render
@@ -17,8 +15,7 @@ from async_notifications.tasks import send_email
 from membership_core.models import Country, ServiceType, MembershipTemplate
 from membership_core.models import ServiceMT
 from membership_manager.dashboard import TopStats
-from membership_manager.forms import MembershipForm
-from membership_manager.forms import MembershipServiceForm
+from membership_manager.forms import MembershipServiceForm, ContactSearchForm, MembershipForm, ContactAddForm
 from membership_manager.models import Contact, Organization, Membership, Service
 from membership_manager.newsletterform import FilterEmailsForm, NewsLetterForm, NewsLetterTemplateForm, \
     EmailTemplateForm, EmailNotificationForm
@@ -64,7 +61,7 @@ class MembershipListView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        self.form = FilterEmailsForm(self.request.GET, initial={'apply_filters': True})
+        self.form = FilterEmailsForm(self.request.GET)
         self.form.is_valid()
 
         filters = {}
@@ -247,23 +244,56 @@ def delete_memberships(request, pk):
 
 class ContactListView(ListView):
     template_name = "contact/contact_list.html"
-    paginate_by = 10
+    paginate_by = 30
 
     def get_queryset(self):
+        self.form = ContactSearchForm(self.request.GET, initial={'apply_filters': True})
+        self.form.is_valid()
         queryset = Contact.objects.all()
-        q = self.request.GET.get('q')
-        if q is not None:
-            queryset = queryset.annotate(fullname=Concat(
-                'first_name', Value(' '), 'last_name'))
+        if self.form.cleaned_data['contact']:
             queryset = queryset.filter(
-                Q(email__icontains=q) | Q(fullname__icontains=q))
+                Q(pk__in=self.form.cleaned_data['contact']))
+        if self.form.cleaned_data['countries']:
+            queryset = queryset.filter(
+                Q(country__pk__in=self.form.cleaned_data['countries']))
         return queryset
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        context['q'] = self.request.GET.get('q', '')
+        context['formsearch'] = ContactSearchForm(self.request.GET)
         return context
+
+
+@permission_required('membership_manager.add_contact')
+def create_contacts(request):
+
+    # We create a new contact
+    if request.method == 'POST':
+
+        # create a new contact object
+        form = ContactAddForm(request.POST)
+
+        # We save the form and the formset
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Contacto guardado con exíto")
+            return redirect('contacts')
+
+        # if there are errors we return the error messages
+        else:
+            messages.error(
+                request,
+                "Error al intentar guardar el contacto")
+
+    # We display new contact form
+    if request.method == 'GET':
+        form = ContactAddForm()
+
+    context = {
+        'form': form
+    }
+    return render(request, 'contact/create.html', context=context)
 
 
 @permission_required('async_notifications.delete_newsletter')

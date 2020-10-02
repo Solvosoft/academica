@@ -1,5 +1,5 @@
 {% extends 'gentelella/base.html' %}
-
+{% load membership_code %}
 {% load static %}
 {% block extra_css %}
     <link href="{% static 'css/membership.css' %}" rel="stylesheet">
@@ -10,19 +10,30 @@
     <h2>Contactos</h2>
     <div class="search_options">
         <div class="row">
-            <div class="col-md-6">
-                <form method="GET">
-                    <div class="input-group">
-                        <input type="text" value="{{q}}" name="q" class="form-control" placeholder="Buscar por nombres, apellidos o correo">
-                        <span class="input-group-btn">
-                            <button class="btn btn-success" type="submit">Go!</button>
-                        </span>
+            <div class="col-md-9">
+                <div class="x_panel">
+                    <form method="GET">
+                    <div class="row">
+                        <div class="col-md-1">{{formsearch.contact.label}}: </div>
+                        <div class="col-md-5">
+                            {{formsearch.contact}}
+                        </div>
+                        <div class="col-md-1">{{formsearch.countries.label}}: </div>
+                        <div class="col-md-5">
+                            {{formsearch.countries}}
+                        </div>
                     </div>
-                </form>
+                    <br/>
+                    <div style="text-align:right;">
+                        <a href="{% url 'contacts' %}" class="btn btn-dark">Limpiar filtros</a>
+                        <button class="btn btn-success" type="submit">Buscar</button>
+                    </div>
+                    </form>
+                </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <div class="buttons">
-                    <button class="btn btn-primary">Nuevo Contacto</button>
+                    <a href="{% url 'create_contacts' %}" class="btn btn-primary">Nuevo Contacto</a>
                 </div>
             </div>
         </div>
@@ -70,12 +81,8 @@
     <div class="paginator_container">
         {% if is_paginated %}
             <ul class="pagination">
-                {% if page_obj.has_previous %}
-                    {% if q is None or q == '' %}
-                        <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
-                    {% else %}
-                        <li><a href="?page={{ page_obj.previous_page_number }}&q={{q}}">&laquo;</a></li>
-                    {% endif%}
+                {% if paginator.has_previous %}
+                    <li><a href="?{% url_replace request 'page' paginator.previous_page_number %}">&laquo;</a></li>
                 {% else %}
                     <li class="disabled"><span>&laquo;</span></li>
                 {% endif %}
@@ -83,19 +90,11 @@
                     {% if page_obj.number == i %}
                         <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
                     {% else %}
-                        {% if q is None or q == '' %}
-                            <li><a href="?page={{ i }}">{{ i }}</a></li>
-                        {% else %}
-                            <li><a href="?page={{ i }}&q={{q}}">{{ i }}</a></li>
-                        {% endif %}
+                        <li><a href="?{% url_replace request 'page' i %}">{{ i }}</a></li>
                     {% endif %}
                 {% endfor %}
-                {% if page_obj.has_next %}
-                    {% if q is None or q == '' %}
-                        <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-                    {% else %}
-                        <li><a href="?page={{ page_obj.next_page_number }}&q={{q}}">&raquo;</a></li>
-                    {% endif %}
+                {% if paginator.has_next %}
+                    <li><a href="?{% url_replace request 'page' paginator.next_page_number %}">&raquo;</a></li>
                 {% else %}
                     <li class="disabled"><span>&raquo;</span></li>
                 {% endif %}
