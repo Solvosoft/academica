@@ -4,7 +4,7 @@ from django.urls import path
 from membership_manager.reports.view import reports, add_reporttype_view, download_graph, show_report, list_report, \
     filters_extra
 from membership_manager.views import ContactListView, MembershipListView, delete_membership_service, \
-    create_membership, edit_membership, delete_memberships, create_contacts
+    create_membership, edit_membership, delete_memberships, create_contacts, OrganizationListView
 from membership_manager.views import create_news_letter_membership, \
     create_email_notification, email_template
 from . import views
@@ -16,7 +16,8 @@ urlpatterns = [
     path('contacts/', permission_required(
         'membership_manager.view_contact')(ContactListView.as_view()), name="contacts"),
     path('contacts/create', create_contacts, name="create_contacts"),
-    path('organizations/', login_required(MembershipListView.as_view()), name="organizations"),
+    path('organizations/', permission_required(
+        'membership_manager.view_organization')(OrganizationListView.as_view()), name="organizations"),
     path('memberships/', permission_required(
         'membership_manager.view_membership')(MembershipListView.as_view()), name="memberships"),
     path(
