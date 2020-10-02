@@ -15,7 +15,8 @@ from async_notifications.tasks import send_email
 from membership_core.models import Country, ServiceType, MembershipTemplate
 from membership_core.models import ServiceMT
 from membership_manager.dashboard import TopStats
-from membership_manager.forms import MembershipServiceForm, ContactSearchForm, MembershipForm, ContactAddForm
+from membership_manager.forms import MembershipServiceForm, ContactSearchForm, MembershipForm, ContactAddForm,\
+    OrganizationSearchForm
 from membership_manager.models import Contact, Organization, Membership, Service
 from membership_manager.newsletterform import FilterEmailsForm, NewsLetterForm, NewsLetterTemplateForm, \
     EmailTemplateForm, EmailNotificationForm
@@ -48,9 +49,59 @@ def index(request):
     return render(request, 'membership/home.html', context=context)
 
 
-class OrganizationView(CRUDView):
-    model = Organization
-    template_name_base = "membership/djgentelella/cruds"
+class OrganizationListView(ListView):
+    template_name = "organization/organization_list.html"
+    paginate_by = 30
+
+    def get_queryset(self):
+        self.form = OrganizationSearchForm(self.request.GET)
+        self.form.is_valid()
+        queryset = Organization.objects.all()
+        if self.form.cleaned_data['organization']:
+            queryset = queryset.filter(
+                Q(pk__in=self.form.cleaned_data['organization']))
+        if self.form.cleaned_data['countries']:
+            queryset = queryset.filter(
+                Q(country__pk__in=self.form.cleaned_data['countries']))
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        context['formsearch'] = OrganizationSearchForm(self.request.GET)
+        return context
+
+
+@permission_required('membership_manager.change_organization')
+def edit_organizations(request):
+
+    # We create a new contact
+    if request.method == 'POST':
+
+        # create a new contact object
+        form = ContactAddForm(request.POST)
+
+        # We save the form and the formset
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Organización guardada con exíto")
+            return redirect('contacts')
+
+        # if there are errors we return the error messages
+        else:
+            messages.error(
+                request,
+                "Error al intentar guardar la organiación")
+
+    # We display new contact form
+    if request.method == 'GET':
+        form = ContactAddForm()
+
+    context = {
+        'form': form
+    }
+    return render(request, 'contact/edit.html', context=context)
+
 
 
 class MembershipListView(ListView):
