@@ -54,29 +54,12 @@ class GeneralContactInfo(models.Model):
         abstract = True
 
 
-class Contact(GeneralContactInfo):
-    first_name = models.CharField(max_length=250, verbose_name="Nombres")  # Nombres
-    last_name = models.CharField(max_length=250, verbose_name="Apellidos")  # Apellidos
-
-    def __str__(self):
-        return f"{self.first_name} {self.last_name}"
-
-    @property
-    def name(self):
-        name = self.first_name
-        if self.last_name:
-            name = ' '+self.last_name
-        return name
-
-    class Meta:
-        verbose_name = "Contacto"
-        verbose_name_plural = "Contactos"
-
 class Organization(GeneralContactInfo):
 
     name = models.CharField(max_length=300, verbose_name="Nombre")  # Nombre de la Organización
     initials = models.CharField(max_length=50, verbose_name="Sigla", null=True, blank=True)  # SIGLA
-    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Contacto")
+    type = models.BooleanField(default=False)  # Será falso si es organizacion, true si es contacto
+    contacts = models.ManyToManyField('self', blank=True, verbose_name="Contactos")
     identification_type = models.CharField(max_length=50, null=True, blank=True, choices=IDS_TYPE, verbose_name="Tipo de identificación")
     identification  = models.CharField(max_length=50, null=True, blank=True,verbose_name="Número de Identificación")
 
@@ -106,9 +89,6 @@ class Membership(models.Model):
              ('Básica', 'Básica'))
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
     membership_type = models.CharField(max_length=50, choices=TYPES, verbose_name="Tipo de membresía")
-    contact = models.ForeignKey(
-        Contact, null=True, blank=True,
-        on_delete=models.SET_NULL, verbose_name="Contacto")
     organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
     annual_cost = models.FloatField(verbose_name="Costo")
     currency = models.ForeignKey(SystemCurrency, on_delete=models.SET_DEFAULT, default=4, verbose_name="Moneda")
@@ -126,8 +106,6 @@ class Membership(models.Model):
     def name(self):
         if self.organization and self.organization.name:
             return self.organization.name
-        if self.contact and self.contact.name:
-            return self.contact.name
         return "Membresia sin nombre"
 
     @property
@@ -142,8 +120,6 @@ class Membership(models.Model):
         country = None
         if self.organization:
             country = self.organization.country
-        if country is None:
-            country = self.contact.country
         return country
 
     @property
@@ -151,8 +127,6 @@ class Membership(models.Model):
         email = None
         if self.organization:
             email = self.organization.email
-        if email is None:
-            email = self.contact.email
         return email
 
     def __str__(self):
