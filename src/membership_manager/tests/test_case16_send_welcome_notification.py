@@ -3,7 +3,7 @@ from django.utils.timezone import now
 from django.test import TestCase
 from django_countries.fields import Country
 from membership_core.models import SystemCurrency, RenewalPeriod
-from membership_manager.models import Membership, Contact, Organization
+from membership_manager.models import Membership, Organization
 
 class SendWelcomeNotificationTestCase(TestCase):
 
@@ -37,9 +37,8 @@ class SendWelcomeNotificationTestCase(TestCase):
                 organization=self.organization1
             )
 
-            self.contact1 = Contact.objects.create(
-                first_name="contact"+str(self.count),
-                last_name="contact"+str(self.count),
+            self.contact1 = Organization.objects.create(
+                name="contact"+str(self.count),
                 email="contact"+str(self.count)+"@gmail.com",
                 country=Country(code='MX'),
                 active=self.combination_state_list[self.count-1][1],
@@ -52,7 +51,7 @@ class SendWelcomeNotificationTestCase(TestCase):
                 currency=SystemCurrency.objects.first(),
                 state=self.combination_state_list[self.count-1][0],
                 renewal_period=RenewalPeriod.objects.first(),
-                contact=self.contact1
+                organization=self.contact1
             )
 
             self.count+=1

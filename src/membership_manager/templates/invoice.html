@@ -342,8 +342,6 @@
                     <td class="line_col32" style =" width: 75%;text-align: left; padding-left: 10px;">
                          {% if invoice.membership.organization %}
                             {{ invoice.membership.organization.country }}
-                        {% else %}
-                            {{ invoice.membership.contact.country }}
                         {% endif %}
                     </td>
                   </tr>
@@ -352,8 +350,6 @@
                     <td class="line_col42" style =" width: 75%;text-align: left; padding-left: 10px;">
                         {% if invoice.membership.organization %}
                             {{ invoice.membership.organization.get_region }}
-                        {% else %}
-                            {{ invoice.membership.contact.get_region }}
                         {% endif %}
                     </td>
                   </tr>

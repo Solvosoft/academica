@@ -4,7 +4,7 @@ from django.utils.timezone import now
 from django.test import TestCase
 from django_countries.fields import Country
 from membership_core.models import SystemCurrency, RenewalPeriod
-from membership_manager.models import Membership, Contact, Organization, MembershipRenew, Invoice
+from membership_manager.models import Membership, Organization, MembershipRenew, Invoice
 
 
 class MembershipDeactivatingTestCase(TestCase):
