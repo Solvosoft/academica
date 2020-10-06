@@ -23,3 +23,4 @@ South==1.0.2
 virtualenv==15.0.3
 webencodings==0.5
 xhtml2pdf==0.0.6
+psycopg2==2.7.4
