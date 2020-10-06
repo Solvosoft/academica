@@ -2,7 +2,7 @@ django==1.11
 django-allauth==0.26.1
 django-bootstrap3==7.0.1
 django-ckeditor==5.2.2
-django-paypal==0.3.2
+django-paypal==1.0.0
 django-simple-email-confirmation
 django-simple-math-captcha==1.0.7
 djangoajax==2.3.6
