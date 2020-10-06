@@ -92,9 +92,7 @@ class InvoiceAdmin(admin.ModelAdmin):
 
     list_filter = ('membership', 'status')
 
-    search_fields = ('membership__contact__first_name',
-                     'membership__contact__last_name',
-                     'membership__organization__name', 'membership__organization__initials', 'code')
+    search_fields = ('membership__organization__name', 'membership__organization__initials', 'code')
     list_display = ('code', 'membership_name', 'expiration_date',
                     'amount', 'currency', 'status', 'payment_date', 'download')
     list_editable = ()

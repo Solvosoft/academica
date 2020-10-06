@@ -100,10 +100,10 @@ class ContactAdmin(admin.ModelAdmin):
                <a href="{}" class="grp-button grp-button-state-inactive" target="_blank">Agregar</a>
             """,
             reverse("admin:membership_manager_membership_changelist") +
-            "?contact=" + str(obj.pk),
+            "?organization=" + str(obj.pk),
             obj.membership_set.filter(state="active").count(),
             reverse("admin:membership_manager_membership_add") +
-            "?contact=" + str(obj.pk) + "&membership_type=Personal&currency=" +
+            "?organization=" + str(obj.pk) + "&membership_type=Personal&currency=" +
             str(obj.currency.pk)
         )
 
@@ -185,7 +185,7 @@ class MemberShipAdmin(AjaxSelectAdmin, admin.ModelAdmin):
     actions = [membership_payments_history, send_email_to_owner, send_welcome_email,
               send_email_vencimiento, export_csv_fields, rebuild_encobro_renews]
     list_filter = (OrganizationFilter, InvoiceNextExpirationFilter,  InvoiceRenewalNotificationFilter, MembershipPaisFilter)
-    search_fields = ('contact__first_name', 'contact__last_name', 'organization__name',
+    search_fields = ('organization__name',
                      'organization__initials')
     list_display = ('name', 'show_amount', 'countryspect', 'state', 'invoices', 'next_pay' )
     readonly_fields = ['exchange_rates', 'invoices', 'next_pay', 'name', 'countryspect']
@@ -194,7 +194,7 @@ class MemberShipAdmin(AjaxSelectAdmin, admin.ModelAdmin):
     form_class = MembershipAddForm
     fields = ['name',
               'membership_template',
-              'membership_type', 'contact', 'organization',
+              'membership_type', 'organization',
               'annual_cost', 'currency',
               ('apply_fees', 'fees'),
               'exchange_rates',
@@ -234,8 +234,6 @@ class MemberShipAdmin(AjaxSelectAdmin, admin.ModelAdmin):
             country = ''
             if obj.organization:
                 country = str(obj.organization.country)
-            elif obj.contact:
-                country = str(obj.contact.country)
 
             dev = '<p style="letter-spacing:2px;" >'
             dev += "%s <br> %s <br> %s" % (country, obj.get_membership_type_display(),
@@ -367,8 +365,7 @@ class OrganizationAdmin(AjaxSelectAdmin, admin.ModelAdmin):
     def contact_information(self, obj):
         if obj:
             contacto,email, cel, identification = '','','',''
-            if obj.contact:
-                contacto = str(obj.contact)
+
             if obj.email:
                 email = '<a href="%s" target="_blank">%s</a>'%(
                 reverse("admin:async_notifications_emailnotification_add") + '?recipient='+obj.email,
@@ -388,8 +385,8 @@ class OrganizationAdmin(AjaxSelectAdmin, admin.ModelAdmin):
 
     def memberships(self, obj):
         contact = ''
-        if obj.contact_id:
-            contact = "&contact=" + str(obj.contact_id)
+        if obj.type:
+            contact = "&contact=" + str(obj.pk)
         return format_html(
             """<a href="{}" class="grp-button grp-button-state-inactive"  >{}</a> - 
                <a href="{}" class="grp-button grp-button-state-inactive" target="_blank">Agregar</a>
@@ -452,7 +449,6 @@ class ActivityReportAdmin(admin.ModelAdmin):
 admin.site.register(models.ActivityReport, ActivityReportAdmin)
 admin.site.register(models.Invoice, InvoiceAdmin)
 admin.site.register(models.Organization, OrganizationAdmin)
-admin.site.register(models.Contact, ContactAdmin)
 admin.site.register(models.Membership, MemberShipAdmin)
 
 register_model('membership_manager.membershib', models.Membership, prefix='membresia.')

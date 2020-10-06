@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from membership_core.models import Country
-from membership_manager.models import Organization, Membership, Contact
+from membership_manager.models import Organization, Membership
 from membership_manager.utils import get_membership_next_expired, get_membership_start_expired
 
 
@@ -45,7 +45,7 @@ class PaisFilter(admin.SimpleListFilter):
 
 
 class ContactPaisFilter(PaisFilter):
-    model = Contact
+    model = Organization
 
 class MembershipPaisFilter(PaisFilter):
     def get_country(self, code, name):
@@ -64,7 +64,7 @@ class MembershipPaisFilter(PaisFilter):
     def queryset(self, request, queryset):
         value = self.value()
         if value and value != 'all':
-            return queryset.filter(Q( contact__country=value)|Q(organization__country=value))
+            return queryset.filter(organization__country=value)
         return queryset
 
 class FormFilter(admin.ListFilter):

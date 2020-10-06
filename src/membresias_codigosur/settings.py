@@ -182,12 +182,11 @@ CACHES = {
     }
 }
 
-ASYNC_NOTIFICATION_USER='membership_manager.Contact'
-ASYNC_NOTIFICATION_USER_LOOKUP_FIELDS= {'order_by': 'first_name',
-     'display': 'first_name',
+ASYNC_NOTIFICATION_USER='membership_manager.Organization'
+ASYNC_NOTIFICATION_USER_LOOKUP_FIELDS= {'order_by': 'name',
+     'display': 'name',
      'filter': ['email__icontains',
-                'first_name__icontains',
-                'last_name__icontains'],
+                'name__icontains'],
      'group_lookup': 'groups__name'}
 
 
