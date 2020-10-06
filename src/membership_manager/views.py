@@ -17,7 +17,7 @@ from membership_core.models import ServiceMT
 from membership_manager.dashboard import TopStats
 from membership_manager.forms import MembershipServiceForm, ContactSearchForm, MembershipForm, ContactAddForm,\
     OrganizationSearchForm, OrganizationAddForm, MembershipTemplateForm
-from membership_manager.models import Contact, Organization, Membership, Service
+from membership_manager.models import Organization, Membership, Service
 from membership_manager.newsletterform import FilterEmailsForm, NewsLetterForm, NewsLetterTemplateForm, \
     EmailTemplateForm, EmailNotificationForm
 from .news_letter import NewsLetter
@@ -30,10 +30,7 @@ def servicios_stats():
 
 def country_stats():
     for country in Country.objects.all().order_by('name'):
-        total = Membership.objects.filter(
-            Q(organization__country=country) | Q(contact__country=country),
-            state='active'
-        ).distinct().count()
+        total = Membership.objects.filter(organization__country=country, state='active').distinct().count()
         if total:
             yield (country.flag, country.name, total)
 
@@ -175,8 +172,7 @@ class MembershipListView(ListView):
             filters['state'] = self.form.cleaned_data['state']
 
         if self.form.cleaned_data['country']:
-            queryset = queryset.filter(Q(organization__country__in=self.form.cleaned_data['country'])|Q(
-                contact__country__in=self.form.cleaned_data['country']))
+            queryset = queryset.filter(organization__country__in=self.form.cleaned_data['country'])
 
         if self.form.cleaned_data['currency']:
             filters['currency__in'] = self.form.cleaned_data['currency']
@@ -358,7 +354,7 @@ class ContactListView(ListView):
     def get_queryset(self):
         self.form = ContactSearchForm(self.request.GET, initial={'apply_filters': True})
         self.form.is_valid()
-        queryset = Contact.objects.all()
+        queryset = Organization.objects.filter(type=True)
         if self.form.cleaned_data['contact']:
             queryset = queryset.filter(
                 Q(pk__in=self.form.cleaned_data['contact']))
@@ -412,7 +408,7 @@ def edit_contacts(request, pk=None):
     if request.method == 'POST':
         # If there is a pk we will update
         if pk is not None:
-            instance = Contact.objects.get(pk=pk)
+            instance = Organization.objects.get(pk=pk)
             form = ContactAddForm(request.POST, instance=instance)
 
             # We update the form and the formset
@@ -428,7 +424,7 @@ def edit_contacts(request, pk=None):
 
     # We display a new form
     if request.method == 'GET':
-        contact = Contact.objects.get(pk=pk)
+        contact = Organization.objects.get(pk=pk)
         form = ContactAddForm(initial=contact.__dict__)
     context = {
         'form': form,
@@ -438,7 +434,7 @@ def edit_contacts(request, pk=None):
 
 @permission_required('membership_manager.delete_contact')
 def delete_contacts(request, pk):
-    contact = Contact.objects.filter(pk=pk)
+    contact = Organization.objects.filter(pk=pk)
     if contact:
         contact.delete()
         messages.success(request, "Contacto eliminado con exíto")

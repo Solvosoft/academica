@@ -34,7 +34,6 @@ class Command(BaseCommand):
                 #print(linea)
                 mem = Membership.objects.create(
                     membership_type = "Organizacional",
-                    contact = None,
                     organization = org,
                     name =linea[3],
                     annual_cost = float(linea[4]),

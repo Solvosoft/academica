@@ -1,9 +1,9 @@
-from django.db.models import Q, Value
-from django.db.models.functions import Concat
+from django.db.models import Q
 from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View
+
 from membership_core.models import ServiceType, Country, SystemCurrency
-from membership_manager.models import Organization, Contact, Membership
+from membership_manager.models import Organization, Membership
 
 
 @register_lookups(prefix="organization", basename="organizationbasename")
@@ -14,15 +14,13 @@ class OrganizationGModelLookup(BaseSelect2View):
 
 @register_lookups(prefix="contact", basename="contactbasename")
 class ContactGModelLookup(BaseSelect2View):
-    model = Contact
-    fields = ['fullname']
+    model = Organization
+    fields = ['name']
 
     def filter_queryset(self, queryset):
         q = self.request.GET.get('term', '')
         self.selected = self.query_get('selected', '')
-        queryset = queryset.annotate(fullname=Concat(
-            'first_name', Value(' '), 'last_name'))
-        queryset = queryset.filter(Q(fullname__icontains=q))
+        queryset = queryset.filter(Q(name__icontains=q), type=True)
         return queryset
 
 
@@ -41,9 +39,7 @@ class ContactGModelLookup(BaseSelect2View):
         q = self.request.GET.get('term', '')
         self.selected = self.query_get('selected', '')
         queryset = queryset.filter(Q(organization__name__icontains=q)|Q(
-                                    organization__initials__icontains=q)|Q(
-                                    contact__first_name__icontains=q)|Q(
-                                    contact__last_name__icontains=q))
+                                    organization__initials__icontains=q))
         return queryset
 
 

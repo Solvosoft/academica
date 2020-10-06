@@ -8,7 +8,7 @@ from djgentelella.widgets.selects import AutocompleteSelect
 
 from membership_core.models import MembershipTemplate, Country
 from membership_manager.models import Membership, Service, Organization,\
-    Report, ReportType, Contact
+    Report, ReportType
 from membership_manager.reports.registro import REPORTES_TITULOS
 from djgentelella.widgets import core as genwidgets
 
@@ -96,7 +96,6 @@ class MembershipForm(GTForm, forms.ModelForm):
     BOTH = "both"
     CHOICES = (
         (ORGANIZATION, 'Organización'),
-        (CONTACT, 'Contacto'),
         (BOTH, 'Ambos'),
     )
     contact_type = forms.ChoiceField(
@@ -120,14 +119,13 @@ class MembershipForm(GTForm, forms.ModelForm):
     class Meta:
         model = Membership
         fields = [
-            'membership_type', 'contact_type', 'organization', 'contact',
+            'membership_type', 'contact_type', 'organization',
             'annual_cost', 'currency', 'renewal_period', 'state',
             'apply_fees', 'fees'
         ]
         widgets = {
             'organization': AutocompleteSelect('organizationbasename'),
             'membership_type': widget.Select,
-            'contact': AutocompleteSelect('contactbasename'),
             'currency': widget.Select,
             'annual_cost': widget.NumberInput,
             'renewal_period': widget.Select,
@@ -146,17 +144,6 @@ class MembershipForm(GTForm, forms.ModelForm):
             if organization == "" or organization is None:
                 raise ValidationError("Olvido seleccionar una 'organización'")
         return organization
-
-    def clean_contact(self):
-        contact_type = self.cleaned_data.get("contact_type", None)
-        contact = self.cleaned_data.get("contact", None)
-        if contact_type == MembershipForm.BOTH:
-            if contact == "" or contact is None:
-                raise ValidationError("Olvido seleccionar un 'contacto'")
-        elif contact_type == MembershipForm.CONTACT:
-            if contact == "" or contact is None:
-                raise ValidationError("Olvido seleccionar un 'contacto'")
-        return contact
 
     def clean_fees(self):
         apply_fees = self.cleaned_data.get("apply_fees", None)
@@ -247,22 +234,22 @@ class CreateReportTypeForm(GTForm, forms.ModelForm):
 
 class ContactSearchForm(GTForm, forms.ModelForm):
     contact = forms.ModelMultipleChoiceField(
-        queryset=Contact.objects.all(), widget=widget.SelectMultiple,
+        queryset=Organization.objects.filter(type=True), widget=widget.SelectMultiple,
         required=False, label="Contacto")
     countries = forms.ModelMultipleChoiceField(
         queryset=Country.objects.all(), widget=widget.SelectMultiple,
         required=False, label="País")
 
     class Meta:
-        model = Contact
+        model = Organization
         fields = ['contact', 'countries']
 
 
 class ContactAddForm(GTForm, forms.ModelForm):
     class Meta:
-        model = Contact
+        model = Organization
         fields = [
-            'first_name', 'last_name', 'email', 'cellphone',
+            'name', 'email', 'cellphone',
             'phone', 'address', 'country', 'city', 'province',
             'postal_code', 'active', 'currency', 'payment_method',
         ]
@@ -306,7 +293,7 @@ class OrganizationAddForm(GTForm, forms.ModelForm):
     class Meta:
         model = Organization
         fields = [
-            'name', 'initials', 'contact', 'identification_type',
+            'name', 'initials', 'identification_type',
             'identification', 'email', 'cellphone',
             'phone', 'address', 'country', 'city', 'province',
             'postal_code', 'active', 'currency', 'payment_method',
@@ -314,7 +301,6 @@ class OrganizationAddForm(GTForm, forms.ModelForm):
         widgets = {
             'name': genwidgets.TextInput,
             'initials': genwidgets.Input,
-            'contact': AutocompleteSelect('contactbasename'),
             'identification_type': genwidgets.Select,
             'identification': genwidgets.TextInput,
             'email': genwidgets.EmailInput,

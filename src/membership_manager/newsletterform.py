@@ -11,7 +11,7 @@ from async_notifications.interfaces import NewsLetterInterface
 from async_notifications.models import NewsLetterTemplate, NewsLetter, EmailTemplate, EmailNotification
 from async_notifications.utils import get_basemodels_dict
 from membership_core.models import SystemCurrency, ServiceType, Country
-from membership_manager.models import Organization, Membership, PAYMENT, IDS_TYPE, Invoice, Contact
+from membership_manager.models import Organization, Membership, PAYMENT, IDS_TYPE, Invoice
 
 
 def get_countries_en_membresias():
@@ -92,8 +92,6 @@ class MembershipManager(NewsLetterInterface):
             busqueda='0'
         if busqueda == '0' or busqueda == '2':
             mails += list(self.queryset.exclude(organization__email__isnull=True).values_list('organization__email', flat=True))
-        if busqueda == '0' or busqueda == '1':
-            mails += list(self.queryset.exclude(contact__email__isnull=True).values_list('contact__email', flat=True))
         return list(set(mails)-self.excludedata)
 
 
@@ -105,8 +103,6 @@ class MembershipManager(NewsLetterInterface):
             busqueda='0'
         if busqueda == '0' or busqueda == '2':
             mails += list(self.queryset.exclude(organization__email__isnull=True).values_list('organization__email', 'pk'))
-        if busqueda == '0' or busqueda == '1':
-            mails += list(self.queryset.exclude(contact__email__isnull=True).values_list('contact__email', 'pk'))
         for item in mails:
             pk, email = item[1], item[0]
             key = str(pk)+"_"+email
@@ -231,8 +227,6 @@ class InvoiceManager(NewsLetterInterface):
             busqueda='0'
         if busqueda == '0' or busqueda == '2':
             mails += list(self.queryset.exclude(membership__organization__email__isnull=True).values_list('membership__organization__email', flat=True))
-        if busqueda == '0' or busqueda == '1':
-            mails += list(self.queryset.exclude(membership__contact__email__isnull=True).values_list('membership__contact__email', flat=True))
         return list(set(mails)-self.excludedata)
 
     def get_emails_instance(self):
@@ -243,8 +237,6 @@ class InvoiceManager(NewsLetterInterface):
             busqueda = '0'
         if busqueda == '0' or busqueda == '2':
             mails += list(self.queryset.exclude(membership__organization__email__isnull=True).values_list('membership__organization__email', 'id'))
-        if busqueda == '0' or busqueda == '1':
-            mails += list(self.queryset.exclude(membership__contact__email__isnull=True).values_list('membership__contact__email', 'id'))
         for item in mails:
             pk, email = item[1], item[0]
             key = str(pk) + "_" + email
@@ -382,8 +374,8 @@ class EmailTemplateForm(GTForm, forms.Form):
 
 class EmailNotificationForm(GTForm, forms.ModelForm):
 
-    bcc = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Contact.objects.all(), label='Copia oculta a carbón', required=False)
-    cc = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Contact.objects.all(), label='CC copia a carbón', required=False)
+    bcc = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Organization.objects.filter(type=True), label='Copia oculta a carbón', required=False)
+    cc = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Organization.objects.filter(type=True), label='CC copia a carbón', required=False)
 
     class Meta:
         model = EmailNotification
