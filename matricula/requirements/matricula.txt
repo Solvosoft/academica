@@ -1,4 +1,4 @@
-django==1.10
+django==1.11
 django-allauth==0.26.1
 django-bootstrap3==7.0.1
 django-ckeditor==5.0.2
@@ -23,4 +23,4 @@ South==1.0.2
 virtualenv==15.0.3
 webencodings==0.5
 xhtml2pdf==0.0.6
-psycopg2==2.7.4
+psycopg2-binary==2.7.4
