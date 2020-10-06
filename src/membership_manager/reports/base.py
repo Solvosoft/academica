@@ -3,9 +3,6 @@ from django.db.models import Count, Q
 from membership_manager.models import Membership
 from membership_manager.reports.chart_builder import ChartBuilder
 
-
-countries = None
-
 class InterfazReportes():
 
     def __init__(self, request, form):
@@ -22,8 +19,6 @@ class InterfazReportes():
         self.lista_registros = []
         self.mostrar_descarga_grafico = True
 
-        global countries
-
         self.data = {
             'labels': [],
             'datasets': ["",
@@ -33,7 +28,7 @@ class InterfazReportes():
 
         if form is not None:
 
-            countries = self.form.cleaned_data['country']
+            self.countries = self.form.cleaned_data['country']
             self.tipo_grafico = self.form.cleaned_data['grafic'] or 'bar'
             self.tipo_dato = self.form.cleaned_data['data_type'] or 'numerical'
 
@@ -42,6 +37,9 @@ class InterfazReportes():
 
             if self.form.cleaned_data['end_date']:
                 self.filtros['creation_date__lte'] = self.form.cleaned_data['end_date']
+
+            if self.form.cleaned_data['country']:
+                self.filtros['organization__country__in'] = self.form.cleaned_data['country']
 
         else:
             self.paises = None
@@ -119,11 +117,6 @@ class BaseDataBuilder:
 
     def get_base_query(self):
         queryset = Membership.objects.filter(**self.filtros)
-        if countries:
-            contact = queryset.filter(organization=None, contact__country__in=countries)
-            organization = queryset.filter(organization__country__in=countries)
-            queryset = (organization | contact)
-
         return queryset
 
     def get_x_title(self, value):

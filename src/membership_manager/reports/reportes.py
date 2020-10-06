@@ -7,7 +7,7 @@ from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as genwidgets
 
 from membership_core.models import SystemCurrency, Country, ServiceType
-from membership_manager.reports.base import InterfazReportes, BaseDataBuilder, countries
+from membership_manager.reports.base import InterfazReportes, BaseDataBuilder
 
 
 class Reporte_Factura_Pagada_Moneda(InterfazReportes, BaseDataBuilder):
@@ -105,24 +105,19 @@ class Reporte_Membresia_Pais(InterfazReportes, BaseDataBuilder):
         }
         self.titulo = ['Paises', 'Membresías']
         self._cached = False
-        self.queryset = self.get_base_query().distinct()
+        self.queryset = self.get_base_query()
 
     def get_x_axis(self):
-        return countries if countries else Country.objects.all()
+        return self.countries if self.countries else Country.objects.all()
 
     def get_data(self):
         if self._cached:
             return
 
         self.total = self.queryset.count()
-        organization = self.queryset.exclude(organization=None)
-        contactos = self.queryset.filter(organization=None)
 
         for country in self.get_x_axis():
-
-            cantidad_orga = organization.filter(organization__country=country).count()
-            cantidad_contacto = contactos.filter(contact__country=country).count()
-            cantidad = cantidad_orga + cantidad_contacto
+            cantidad = self.queryset.filter(organization__country=country).count()
 
             self.data['datasets'][1]['dataset_labels'].append(country.name)
             self.lista_registros.append([country.name, cantidad])
