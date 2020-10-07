@@ -101,6 +101,17 @@ function deshabilitar_filtros(){
     }
 }
 
+function search_in_change(){
+    var option = $('#id_search_in option:selected').val();
+    if (option == "contacto"){
+        $('label[for="id_name"]').text("Nombre del contacto");
+    }else if(option == "organizacion"){
+        $('label[for="id_name"]').text("Nombre de la organización");
+    }else{
+        $('label[for="id_name"]').text("Nombre de la organización o contacto");
+    }
+}
+
 
 (function(){
     manageNewsletter("{% url 'preview_newsletter_emails' template %}",
@@ -111,6 +122,16 @@ function deshabilitar_filtros(){
     });
 
     deshabilitar_filtros();
+
+    $('#id_name').on('relautocompletedata', function(event, dev){
+        var option = $('#id_search_in option:selected').val();
+        dev['tipo'] =  option;
+    })
+
+    $('#id_search_in').on('change', function(){
+    search_in_change();
+    })
+    search_in_change();
 
 })(jQuery);
 </script>

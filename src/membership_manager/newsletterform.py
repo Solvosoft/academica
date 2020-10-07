@@ -307,15 +307,14 @@ class FilterEmailsForm(GTForm, forms.Form):
     SEARCH_IN_CHOICES = (
         (None, "Ambos"),
         ("contacto", "Contacto"),
-        ("organizacion", "Organizacion"),
+        ("organizacion", "Organización"),
     )
     apply_filters = forms.BooleanField(widget=genwidgets.YesNoInput, required=False, label="¿Desea aplicar filtros?")
     search_in = forms.ChoiceField(widget=genwidgets.Select, choices=SEARCH_IN_CHOICES, required=False,
                                   label="Búsqueda en")
     name = forms.ModelMultipleChoiceField(queryset=Membership.objects.all(),  required=False,
                                           widget=AutocompleteSelectMultiple('orgcontact'),
-                                                            label='Nombre',
-                                                            help_text="Buscar por organización o contacto" )
+                                                            label='Nombre de la organización o contacto')
     state = forms.ChoiceField(widget=genwidgets.Select, choices=MEMBERSHIP_STATES, required=False, label="Estado")
     country = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Country.objects.all(), required=False, label="País")
     currency = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=SystemCurrency.objects.all(), required=False, label="Moneda")

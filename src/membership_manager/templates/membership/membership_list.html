@@ -10,7 +10,7 @@
     <h1 class="text-center">Membresías</h1>
     <div class="search_options">
         <div class="row">
-            <div class="col-md-9">
+            <div class="col-md-10">
                 <div class="x_panel">
                     <form action="{% url 'memberships' %}" method="GET" id="formfilters">
                         <div class="row" style="margin-bottom: 2%;">
@@ -69,7 +69,7 @@
 
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="buttons" style="text-align:right;">
                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalnewslettertemplate">Nuevo boletín</button>
                     {% if perms.membership_manager.add_membership %}
