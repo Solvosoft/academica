@@ -1,4 +1,4 @@
-django==1.11
+django==2.2
 django-allauth==0.26.1
 django-bootstrap3==7.0.1
 django-ckeditor==5.2.2
