@@ -5,7 +5,7 @@ Created on 18/5/2015
 @author: luisza
 '''
 from __future__ import unicode_literals
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
 menu_sort = False

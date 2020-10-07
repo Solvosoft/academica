@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from matricula.forms import StudentCreateForm
 from matricula.models import Student, Enroll
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.conf import settings
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _

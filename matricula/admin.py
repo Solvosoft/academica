@@ -5,7 +5,7 @@ from matricula.models import Student, Course, Group, Enroll, Period, Category, \
     MenuItem, Page, MultilingualContent, MenuTranslations
 from django.utils.translation import ugettext_lazy as _
 from django.conf.urls import url
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.html import format_html
 from matricula.admins import BaseGroup
 from django_ajax.decorators import ajax

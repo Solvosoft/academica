@@ -10,7 +10,7 @@ from django_ajax.decorators import ajax
 from django.shortcuts import get_object_or_404, render, redirect
 from matricula.models import Group, Enroll
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.db import IntegrityError, transaction
