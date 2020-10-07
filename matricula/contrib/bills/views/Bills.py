@@ -12,7 +12,6 @@ from matricula.contrib.bills.models import Bill, Colon_Exchange
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from locale import currency
 
 
 def get_amount(bill):
@@ -33,19 +32,22 @@ def get_my_bills(request):
     for bill in not_paid:
         amount, currency = get_amount(bill)
         not_paid_forms.append(
-            {'obj': bill,
-             'form': PayPalPaymentsForm(initial={
+            {
+                'obj': bill,
+                'form': PayPalPaymentsForm(initial={
                     "business": settings.PAYPAL_RECEIVER_EMAIL,
                     "amount": "%.2f" % (amount),
                     "currency_code": currency,
                     "item_name": bill.short_description,
                     "invoice": str(bill.pk),
-                    "notify_url": settings.MY_PAYPAL_HOST + reverse('paypal-ipn'),
+                    "notify_url":
+                        settings.MY_PAYPAL_HOST + reverse('paypal-ipn'),
                     "return_url": settings.MY_PAYPAL_HOST + reverse('bills'),
-                    "cancel_return": settings.MY_PAYPAL_HOST + reverse('bills'),
-                    })
-             }
+                    "cancel_return":
+                        settings.MY_PAYPAL_HOST + reverse('bills'),
+                })
+            }
         )
 
-    return render(request, 'bills.html', {'paid': paid,
-                                   'not_paid': not_paid_forms})
+    return render(
+        request, 'bills.html', {'paid': paid, 'not_paid': not_paid_forms})

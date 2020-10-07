@@ -5,10 +5,10 @@ Created on 7/4/2015
 '''
 
 from django.conf.urls import url, include
-from matricula.contrib.bills.views.Bills import *
-from . import signals
+from matricula.contrib.bills.views.Bills import get_my_bills
 
 
-urlpatterns = [ url('^bills/$', get_my_bills, name="bills"),
-                url(r'^paybills/paypal/', include('paypal.standard.ipn.urls')),
-        ]
+urlpatterns = [
+    url('^bills/$', get_my_bills, name="bills"),
+    url(r'^paybills/paypal/', include('paypal.standard.ipn.urls')),
+]

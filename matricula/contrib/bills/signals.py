@@ -17,20 +17,23 @@ from django.conf import settings
 def create_bill(sender, **kwargs):
     instance = kwargs['instance']
     if not instance.bill_created and instance.enroll_finished\
-    and instance.group.cost > 0:
+            and instance.group.cost > 0:
         instance.bill_created = True
-        Bill.objects.create(short_description=_("Enroll in %s") % (instance.group),
-                            description=render_to_string('invoice.html',
-                                    { 'student': instance.student,
-                                      'enroll': smart_text(instance.group),
-                                      'date': instance.enroll_date.strftime("%Y-%m-%d %H:%M"),
-                                      'group': instance.group,
-                                    }
-                                                        ),
-                            amount=instance.group.cost,
-                            student=instance.student,
-                            currency=instance.group.currency,
-                            )
+        Bill.objects.create(
+            short_description=_("Enroll in %s") % (instance.group),
+            description=render_to_string(
+                'invoice.html',
+                {
+                    'student': instance.student,
+                    'enroll': smart_text(instance.group),
+                    'date': instance.enroll_date.strftime("%Y-%m-%d %H:%M"),
+                    'group': instance.group,
+                }
+            ),
+            amount=instance.group.cost,
+            student=instance.student,
+            currency=instance.group.currency,
+        )
         instance.save()
 
 
@@ -44,7 +47,7 @@ def paypal_bill_paid(sender, **kwargs):
             bill.transaction_id = ipn_obj.txn_id
             bill.save()
             ok = True
-        except Exception as e:
+        except Exception:
             ok = False
             # FIXME do something here
         if ok:
@@ -56,5 +59,6 @@ def paypal_bill_paid(sender, **kwargs):
                       html_message=invoice,
                       fail_silently=False
                       )
+
 
 valid_ipn_received.connect(paypal_bill_paid)
