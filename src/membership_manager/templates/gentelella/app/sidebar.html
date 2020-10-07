@@ -9,7 +9,7 @@
     <div class="main_menu_side hidden-print main_menu" id="sidebar-menu">
         <div class="menu_section">
             <ul class="nav side-menu">
-                {% if perms.membership_manager.view_contact %}
+                {% if perms.membership_manager.view_organization %}
                     <li>
                         <a>
                             <i class="fa fa-users"></i>Contactos
@@ -17,7 +17,7 @@
                         </a>
                         <ul class="nav child_menu">
                             <li>
-                                <a href="{% url 'contacts' %}">Lista de Contactos</a>
+                                <a href="{% url 'contacts' %}">Lista de contactos</a>
                             </li>
                         </ul>
                         <!-- /.nav-second-level -->
@@ -32,7 +32,7 @@
                         </a>
                         <ul class="nav child_menu">
                             <li>
-                                <a href="{% url 'organizations' %}">Lista de Organizaciones</a>
+                                <a href="{% url 'organizations' %}">Lista de organizaciones</a>
                             </li>
                         </ul>
                     </li>
@@ -46,7 +46,7 @@
                         </a>
                         <ul class="nav child_menu">
                             <li>
-                                <a href="{% url 'memberships' %}">Lista de Membresías</a>
+                                <a href="{% url 'memberships' %}">Lista de membresías</a>
                             </li>
                             <li>
                                 <a href="#">Servicios</a>
@@ -65,10 +65,12 @@
                     </a>
                     <ul class="nav child_menu">
                         <li>
-                            <a href="#">Lista de Facturas</a>
+                            <a href="#">Lista de facturas</a>
                         </li>
                     </ul>
                 </li>
+
+                {% if perms.membership_manager.view_newsletter %}
 
                 <li>
                     <a>
@@ -82,6 +84,9 @@
                         </li>
                     </ul>
                 </li>
+
+                {% endif %}
+                {% if perms.membership_manager.view_report %}
 
                 <li>
                     <a>
@@ -98,6 +103,7 @@
                         </li>
                     </ul>
                 </li>
+                 {% endif %}
             </ul>
         </div>
     </div>
