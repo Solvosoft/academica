@@ -1,7 +1,7 @@
 django==2.2
-django-allauth==0.26.1
+django-allauth==0.42.0
 django-bootstrap3==7.0.1
-django-ckeditor==5.2.2
+django-ckeditor==6.0.0
 django-paypal==1.0.0
 django-simple-email-confirmation
 django-simple-math-captcha==1.0.7
@@ -18,8 +18,7 @@ reportlab==3.3.0
 requests==2.11.0
 requests-oauthlib==0.6.2
 six==1.10.0
-South==1.0.2
 virtualenv==15.0.3
-webencodings==0.5
+webencodings==0.5.1
 xhtml2pdf==0.2.4
 psycopg2==2.8.6
