@@ -14,13 +14,11 @@
                 <div class="x_panel">
                     <form method="GET">
                     <div class="row">
-                        <div class="col-md-1">{{formsearch.organization.label}}: </div>
-                        <div class="col-md-5">
-                            {{formsearch.organization}}
+                        <div class="col-md-6">
+                            {% include 'field.html' with field=formsearch.organization  %}
                         </div>
-                        <div class="col-md-1">{{formsearch.countries.label}}: </div>
-                        <div class="col-md-5">
-                            {{formsearch.countries}}
+                        <div class="col-md-6">
+                            {% include 'field.html' with field=formsearch.countries  %}
                         </div>
                     </div>
                     <br/>
@@ -34,7 +32,7 @@
             <div class="col-md-3">
                 <div class="buttons">
                     {% if perms.membership_manager.add_organization %}
-                        <a href="{% url 'create_organizations' %}" class="btn btn-primary">Nueva Organización</a>
+                        <a href="{% url 'create_organizations' %}" class="btn btn-primary">Nueva organización</a>
                     {% endif %}
                 </div>
             </div>
