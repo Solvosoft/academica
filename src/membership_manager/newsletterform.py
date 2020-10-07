@@ -310,6 +310,8 @@ class FilterEmailsForm(GTForm, forms.Form):
         ("organizacion", "Organizacion"),
     )
     apply_filters = forms.BooleanField(widget=genwidgets.YesNoInput, required=False, label="¿Desea aplicar filtros?")
+    search_in = forms.ChoiceField(widget=genwidgets.Select, choices=SEARCH_IN_CHOICES, required=False,
+                                  label="Búsqueda en")
     name = forms.ModelMultipleChoiceField(queryset=Membership.objects.all(),  required=False,
                                           widget=AutocompleteSelectMultiple('orgcontact'),
                                                             label='Nombre',
@@ -320,7 +322,6 @@ class FilterEmailsForm(GTForm, forms.Form):
     payment_method = forms.MultipleChoiceField(widget=genwidgets.SelectMultiple, choices=PAYMENT_METHOD, required=False, label="Método de pago")
     apply_fees = forms.ChoiceField(widget=genwidgets.Select, choices=APPLY_FEES, required=False, label="Tarifas aplicadas")
     invoices = forms.ChoiceField(widget=genwidgets.Select, choices=INVOICES_CHOICES, required=False, label="Facturas")
-    search_in = forms.ChoiceField(widget=genwidgets.Select, choices=SEARCH_IN_CHOICES, required=False, label="Búsqueda en")
     service_type = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=ServiceType.objects.all(), required=False, label="Tipo de servicio")
     membership_type = forms.MultipleChoiceField(widget=genwidgets.SelectMultiple, choices=MEMBERSHIP_TYPES, required=False, label="Tipo de membresía")
 

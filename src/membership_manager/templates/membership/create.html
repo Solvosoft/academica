@@ -90,36 +90,6 @@
                 
             });
 
-            /**
-                Set trigger to display contact, organization or both depending
-                on the contact_type value selected 
-            **/
-            $('#id_contact').parent().parent().css('display','none');
-            $('#id_contact').val('').change().attr('required',false);
-            $('input[name="contact_type"]').on('ifChecked', function(){
-                const option = $(this).val();
-                switch(option){
-                    case 'both':
-                        $('#id_contact').parent().parent().css('display','block');
-                        $('#id_contact').attr('required',true);
-                        $('#id_organization').parent().parent().css('display','block');
-                        $('#id_organization').attr('required',true);
-                        break;
-                    case 'organization':
-                        $('#id_organization').parent().parent().css('display','block');
-                        $('#id_organization').attr('required',true);
-                        $('#id_contact').parent().parent().css('display','none');
-                        $('#id_contact').val('').change().attr('required',false);
-                        break;
-                    case 'contact':
-                        $('#id_contact').parent().parent().css('display','block');
-                        $('#id_contact').attr('required',true);
-                        $('#id_organization').parent().parent().css('display','none');
-                        $('#id_organization').val('').change().attr('required',false);
-                        break;
-                }
-            });         
-
             //Set trigger to update title
             $('.formset').on('blur', 'input[name$="description"]', function() {
                 title = $(this).val();
@@ -143,4 +113,33 @@
             $('.x_content').last().show(); 
         });
     </script>
+
+
+<script>
+
+$(window).load(function() {
+      $('.select2-container').width('100%');
+    });
+
+function contact_type_change(){
+    var radioValue = $('input[name="contact_type"]:checked').val();
+    if(radioValue == 'organization' ){
+        $("#id_organization").parent().parent().show();
+        $("#id_contact").parent().parent().hide();
+    }else{
+        $("#id_organization").parent().parent().hide();
+        $("#id_contact").parent().parent().show();
+    }
+}
+
+
+(function($){
+    $('input[name="contact_type"]').on('ifChecked', function(event){
+      contact_type_change();
+    });
+    contact_type_change();
+
+})(jQuery);
+</script>
+
 {% endblock js %}

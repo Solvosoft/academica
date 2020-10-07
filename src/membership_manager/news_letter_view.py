@@ -8,7 +8,6 @@ from django.views.generic import UpdateView
 
 from async_notifications.models import NewsLetter, NewsLetterTemplate, NewsLetterTask
 from async_notifications.tasks import task_send_newsletter
-from membership_manager.models import Membership
 from membership_manager.newsletterform import NewsLetterTemplateForm, NewsLetterForm, FilterEmailsForm, SendDateForm, \
     TemplateBaseNewsLetterForm
 
@@ -137,3 +136,18 @@ def create_news_letter_template(request):
         form = TemplateBaseNewsLetterForm()
 
     return render(request, "news_letter/create_news_letter_template.html", context={'form': form})
+
+
+@permission_required('async_notifications.add_newsletter')
+def create_news_letter_membership(request):
+
+    templateform = NewsLetterTemplateForm(request.GET)
+    templateform.is_valid()
+    template = get_object_or_404(NewsLetterTemplate, pk=templateform.cleaned_data['news_letter_template'].pk)
+    form_filter = FilterEmailsForm(request.GET)
+    form_filter.is_valid()
+    form = NewsLetterForm(initial={'message': template.message})
+
+    return render(request, "news_letter/create_news_letter.html", context={'form': form,
+                                                                           'template': template.pk,
+                                                                           'form_filter': form_filter})

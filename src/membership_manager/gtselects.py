@@ -11,17 +11,18 @@ class OrganizationGModelLookup(BaseSelect2View):
     model = Organization
     fields = ['name']
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(type=False)
 
 @register_lookups(prefix="contact", basename="contactbasename")
 class ContactGModelLookup(BaseSelect2View):
     model = Organization
     fields = ['name']
 
-    def filter_queryset(self, queryset):
-        q = self.request.GET.get('term', '')
-        self.selected = self.query_get('selected', '')
-        queryset = queryset.filter(Q(name__icontains=q), type=True)
-        return queryset
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(type=True)
 
 
 @register_lookups(prefix="servicetype", basename="servicetypebasename")

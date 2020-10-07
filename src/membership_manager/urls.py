@@ -1,20 +1,18 @@
-from django.contrib.auth.decorators import login_required, permission_required
 from django.urls import path
 
 from membership_manager.reports.view import reports, add_reporttype_view, download_graph, show_report, list_report, \
     filters_extra
-from membership_manager.views import ContactListView, MembershipListView, delete_membership_service, \
-    create_membership, edit_membership, delete_memberships, create_contacts, OrganizationListView, \
-    create_organization, edit_organization, delete_organization
-from membership_manager.views import create_news_letter_membership, \
-    create_email_notification, email_template
-from membership_manager.views import edit_contacts, delete_contacts
-from . import views
-from .news_letter import news_letter_list, create_news_letter, send_news_letter, delete_news_letter, EditNewsLetter, \
-    delete_task, create_news_letter_template, create_task
+from membership_manager.views import delete_membership_service
+from membership_manager.views import create_email_notification, email_template, index
+from .contacts_view import ContactListView, create_contacts, edit_contacts, delete_contacts
+from .memberships_view import MembershipListView, create_membership, edit_membership, delete_memberships
+from .news_letter_view import news_letter_list, create_news_letter, send_news_letter, delete_news_letter, \
+    EditNewsLetter, \
+    delete_task, create_news_letter_template, create_task, create_news_letter_membership
+from .organizations_view import OrganizationListView, create_organization, edit_organization, delete_organization
 
 urlpatterns = [
-    path('home/', views.index, name="home"),
+    path('home/', index, name="home"),
     path('contacts/', ContactListView.as_view(), name="contacts"),
     path('contacts/create', create_contacts, name="create_contacts"),
     path('contacts/edit/<int:pk>', edit_contacts, name="edit_contacts"),

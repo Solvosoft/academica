@@ -91,35 +91,27 @@ class OrganizationForm(forms.ModelForm):
 
 
 class MembershipForm(GTForm, forms.ModelForm):
-    ORGANIZATION = 'organization'
-    CONTACT = 'contact'
-    BOTH = "both"
+
     CHOICES = (
-        (ORGANIZATION, 'Organización'),
-        (BOTH, 'Ambos'),
+        ('organization', 'Organización'),
+        ('contact', 'Contacto'),
     )
     contact_type = forms.ChoiceField(
         choices=CHOICES, widget=widget.RadioSelect, label="Tipo de Contacto")
+    contact = forms.ModelChoiceField(widget=AutocompleteSelect('contactbasename'), queryset=Organization.objects.filter(type=True), label="Contacto")
 
     def __init__(self, *args, **kwargs):
         super(MembershipForm, self).__init__(*args, **kwargs)
-        # assign a (computed, I assume) default value to the choice field
-        self.initial['contact_type'] = self.ORGANIZATION
-        if 'initial' in kwargs:
-            self.fields['annual_cost'].initial = kwargs['initial']['annual_cost']
-            self.fields['currency'].initial = kwargs['initial']['currency_id']
-            self.fields['renewal_period'].initial = kwargs['initial']['renewal_period_id']
-            if 'apply_fees' in kwargs['initial']:
-                self.fields['apply_fees'].initial = kwargs['initial']['apply_fees']
-            if 'contact_id' in kwargs['initial']:
-                self.fields['contact'].initial = kwargs['initial']['contact_id']
-            if 'organization_id' in kwargs['initial']:
-                self.fields['organization'].initial = kwargs['initial']['organization_id']
+
+        self.fields['organization'].label = "Organización"
+        self.fields['apply_fees'].help_text = "(Al no seleccionar este campo la aplicación de impuestos será ignorada)"
+        self.initial['contact_type'] = 'organization'
+
 
     class Meta:
         model = Membership
         fields = [
-            'membership_type', 'contact_type', 'organization',
+            'membership_type', 'contact_type', 'organization', 'contact',
             'annual_cost', 'currency', 'renewal_period', 'state',
             'apply_fees', 'fees'
         ]
@@ -134,23 +126,16 @@ class MembershipForm(GTForm, forms.ModelForm):
             'fees': widget.NumberInput
         }
 
-    def clean_organization(self):
-        contact_type = self.cleaned_data.get("contact_type", None)
-        organization = self.cleaned_data.get("organization", None)
-        if contact_type == MembershipForm.BOTH:
+    def clean(self):
+        contact_type = self.cleaned_data.get("contact_type")
+        organization = self.cleaned_data.get("organization")
+        contact = self.cleaned_data.get("contact")
+        if contact_type == "organization":
             if organization == "" or organization is None:
-                raise ValidationError("Olvido seleccionar una 'organización'")
-        elif contact_type == MembershipForm.ORGANIZATION:
-            if organization == "" or organization is None:
-                raise ValidationError("Olvido seleccionar una 'organización'")
-        return organization
-
-    def clean_fees(self):
-        apply_fees = self.cleaned_data.get("apply_fees", None)
-        fees = self.cleaned_data.get("fees", None)
-        if apply_fees == 'off':
-            fees = 0
-        return fees
+                raise forms.ValidationError("Debe seleccionar una organización")
+        else:
+            if contact == "" or organization is None:
+                raise forms.ValidationError("Debe seleccionar un contacto")
 
 
 class MembershipServiceForm(GTForm, forms.ModelForm):
@@ -278,7 +263,7 @@ class ContactAddForm(GTForm, forms.ModelForm):
 
 class OrganizationSearchForm(GTForm, forms.ModelForm):
     organization = forms.ModelMultipleChoiceField(
-        queryset=Organization.objects.all(), widget=widget.SelectMultiple,
+        queryset=Organization.objects.filter(type=False), widget=widget.SelectMultiple,
         required=False, label="Organización")
     countries = forms.ModelMultipleChoiceField(
         queryset=Country.objects.all(), widget=widget.SelectMultiple,
@@ -326,11 +311,8 @@ class OrganizationAddForm(GTForm, forms.ModelForm):
                 self.fields['contact'].initial = kwargs['initial']['contact_id']
 
 
-class MembershipTemplateForm(GTForm, forms.ModelForm):
-    template = forms.ModelMultipleChoiceField(
-        queryset=MembershipTemplate.objects.all(), widget=widget.Select,
-        required=False, label="Template")
+class MembershipTemplateForm(GTForm, forms.Form):
 
-    class Meta:
-        model = MembershipTemplate
-        fields = ['template']
+    template = forms.ModelChoiceField(
+        queryset=MembershipTemplate.objects.all(), widget=widget.Select,
+        required=False, label="Plantilla de membresía")
