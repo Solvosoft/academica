@@ -3,8 +3,9 @@ from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView
 
 from membership_manager.forms import OrganizationSearchForm, OrganizationAddForm
 from membership_manager.models import Organization
@@ -22,7 +23,7 @@ class OrganizationListView(ListView):
     def get_queryset(self):
         self.form = OrganizationSearchForm(self.request.GET)
         self.form.is_valid()
-        queryset = Organization.objects.all()
+        queryset = Organization.objects.filter(type=False)
         if self.form.cleaned_data['organization']:
             queryset = queryset.filter(
                 Q(pk__in=self.form.cleaned_data['organization']))
@@ -62,7 +63,7 @@ def create_organization(request):
     # We display new contact form
     if request.method == 'GET':
 
-        form = OrganizationAddForm()
+        form = OrganizationAddForm(initial={'type':False})
 
     context = {
         'form': form
@@ -70,38 +71,12 @@ def create_organization(request):
     return render(request, 'organization/create.html', context=context)
 
 
-@permission_required('membership_manager.change_organization')
-def edit_organization(request, pk=None):
-
-    # We create a new contact
-    if request.method == 'POST':
-        if pk is not None:
-            # create a new organization object
-            organization = Organization.objects.get(pk=pk)
-            form = OrganizationAddForm(request.POST, instance=organization)
-
-            # We save the form
-            if form.is_valid():
-                form.save()
-                messages.success(request, "Organización guardada con exíto")
-                return redirect('organizations')
-
-            # if there are errors we return the error messages
-            else:
-                messages.error(
-                    request,
-                    "Error al intentar guardar la organiación")
-
-    # We display new organization form
-    if request.method == 'GET':
-        if pk is not None:
-            organization = Organization.objects.get(pk=pk)
-            form = OrganizationAddForm(initial=organization.__dict__)
-
-    context = {
-        'form': form
-    }
-    return render(request, 'organization/edit.html', context=context)
+@method_decorator(permission_required('membership_manager.change_organization'), name='dispatch')
+class EditOrganization(UpdateView):
+    model = Organization
+    form_class = OrganizationAddForm
+    template_name = 'organization/edit.html'
+    success_url = reverse_lazy('organizations')
 
 
 @permission_required('membership_manager.delete_organization')
@@ -109,5 +84,5 @@ def delete_organization(request, pk):
     organization = Organization.objects.filter(pk=pk).first()
     if organization:
         organization.delete()
-        messages.success(request, "Organización eliminada con exíto")
+        messages.success(request, "Organización eliminada con éxito")
         return redirect('organizations')
