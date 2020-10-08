@@ -2,24 +2,25 @@ from django.urls import path
 
 from membership_manager.reports.view import reports, add_reporttype_view, download_graph, show_report, list_report, \
     filters_extra
-from membership_manager.views import delete_membership_service
 from membership_manager.views import create_email_notification, email_template, index
-from .contacts_view import ContactListView, create_contacts, edit_contacts, delete_contacts
+from membership_manager.views import delete_membership_service
+from .contacts_view import ContactListView, create_contacts, delete_contacts, EditContact
 from .memberships_view import MembershipListView, create_membership, edit_membership, delete_memberships
 from .news_letter_view import news_letter_list, create_news_letter, send_news_letter, delete_news_letter, \
     EditNewsLetter, \
     delete_task, create_news_letter_template, create_task, create_news_letter_membership
-from .organizations_view import OrganizationListView, create_organization, edit_organization, delete_organization
+from .organizations_view import OrganizationListView, create_organization, delete_organization, \
+    EditOrganization
 
 urlpatterns = [
     path('home/', index, name="home"),
     path('contacts/', ContactListView.as_view(), name="contacts"),
     path('contacts/create', create_contacts, name="create_contacts"),
-    path('contacts/edit/<int:pk>', edit_contacts, name="edit_contacts"),
+    path('contacts/edit/<int:pk>', EditContact.as_view(), name="edit_contacts"),
     path('contacts/delete/<int:pk>/', delete_contacts, name="delete_contacts"),
     path('organizations/', OrganizationListView.as_view(), name="organizations"),
     path('organizations/create', create_organization, name="create_organizations"),
-    path('organizations/edit/<int:pk>', edit_organization, name="edit_organizations"),
+    path('organizations/edit/<int:pk>', EditOrganization.as_view(), name="edit_organizations"),
     path('organizations/delete/<int:pk>/', delete_organization, name="delete_organizations"),
     path('memberships/', MembershipListView.as_view(), name="memberships"),
     path(

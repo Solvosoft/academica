@@ -73,6 +73,7 @@ class Organization(GeneralContactInfo):
     class Meta:
         verbose_name = "Organización"
         verbose_name_plural = "Organizaciones"
+        ordering = ['name']
 
 
 class Membership(models.Model):
