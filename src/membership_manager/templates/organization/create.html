@@ -6,10 +6,11 @@
 {% endblock extra_css %}
 
 {% block content %}
-    <h1 style="text-align:center;">Nueva Organización</h1>
+<div class="container">
+    <h1 style="text-align:center;">Nueva organización</h1>
     <div id="membership_form" class="row">
         <form method="post">
-            <div class="col-md-12">
+            <div class='col-md-8 col-md-offset-2 col-xs-12'>
                 <div class="x_panel">
                     {% csrf_token %}
                     {{form.as_horizontal}}
@@ -27,4 +28,5 @@
             </div>
         </form>
     </div>
+</div>
 {% endblock content %}

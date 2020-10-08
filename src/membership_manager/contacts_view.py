@@ -3,8 +3,9 @@ from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView
 
 from membership_manager.forms import ContactSearchForm, ContactAddForm
 from membership_manager.models import Organization
@@ -50,7 +51,7 @@ def create_contacts(request):
         # We save the form and the formset
         if form.is_valid():
             form.save()
-            messages.success(request, "Contacto guardado con exíto")
+            messages.success(request, "Contacto guardado con éxito")
             return redirect('contacts')
 
         # if there are errors we return the error messages
@@ -61,7 +62,7 @@ def create_contacts(request):
 
     # We display new contact form
     if request.method == 'GET':
-        form = ContactAddForm()
+        form = ContactAddForm(initial={'type':True, 'active': True})
 
     context = {
         'form': form
@@ -69,35 +70,12 @@ def create_contacts(request):
     return render(request, 'contact/create.html', context=context)
 
 
-@permission_required('membership_manager.change_contact')
-def edit_contacts(request, pk=None):
-
-    # We will update
-    if request.method == 'POST':
-        # If there is a pk we will update
-        if pk is not None:
-            instance = Organization.objects.get(pk=pk)
-            form = ContactAddForm(request.POST, instance=instance)
-
-            # We update the form and the formset
-            if form.is_valid():
-                form.save()
-                messages.success(request, "Contacto guardado con exíto")
-                return redirect('contacts')
-            # if there are errors we return the error messages
-            else:
-                messages.error(
-                    request,
-                    "Error al actualizar el contacto")
-
-    # We display a new form
-    if request.method == 'GET':
-        contact = Organization.objects.get(pk=pk)
-        form = ContactAddForm(initial=contact.__dict__)
-    context = {
-        'form': form,
-    }
-    return render(request, 'contact/edit.html', context=context)
+@method_decorator(permission_required('membership_manager.change_organization'), name='dispatch')
+class EditContact(UpdateView):
+    model = Organization
+    form_class = ContactAddForm
+    template_name = 'contact/edit.html'
+    success_url = reverse_lazy('contacts')
 
 
 @permission_required('membership_manager.delete_contact')

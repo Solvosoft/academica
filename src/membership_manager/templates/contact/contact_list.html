@@ -54,6 +54,7 @@
                 </div>
             </div>
         </div>
+
         <!-- end delete modal-->
     {% endif %}
     <div class="row contact_cards">
@@ -75,24 +76,16 @@
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
-                        <h4><b>Nombre: {{contact.name|title}}</b></h4>
+                         <h4><b>Nombre: {% if contact.name %} {{contact.name|title}} {% else %} Sin especificar {% endif %}</b></h4>
                         <div style="text-align: left; margin-bottom: 15px;">
                             <h4>Información:</h4>
                         </div>
-                        <div>Correo: {{contact.email}}</div>
-                        {% if contact.phone %}
-                            <div>Teléfono: {{contact.phone}}</div>
-                        {% else %}
-                            <div>Teléfono: No registrado</div>
-                        {% endif %}
-                        {% if contact.cellphone is None %}
-                            <div>Celular: {{contact.cellphone}}</div>
-                        {%else%}
-                            <div>Celular: No registrado</div>
-                        {% endif %}
-                        <div>Activo: {% if contact.active%}Si{%else%}No{% endif %}</div>
-                        <div>Moneda: {{contact.currency}}</div>
-                        <div>Método de pago: {{contact.payment_method}}</div>
+                        <div>Correo: {% if contact.email %} {{contact.email}} {% else %} Sin especificar {% endif %}</div>
+                        <div>Teléfono: {% if contact.phone %} {{contact.phone}} {% else %} Sin especificar {% endif %}</div>
+                        <div>Celular: {% if contact.cellphone %} {{contact.cellphone}} {%else%} Sin especificar {% endif %}</div>
+                        <div>Estado: {% if contact.active%} Activa {%else%} Inactiva {% endif %}</div>
+                        <div>Moneda: {% if contact.currency %} {{contact.currency}} {%else%} Sin especificar {% endif %}</div>
+                        <div>Método de pago: {% if contact.payment_method %} {{contact.payment_method}} {%else%} Sin especificar {% endif %}</div>
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_footer">
@@ -126,15 +119,10 @@
     </div>
 {% endblock content %}
 {% block js %}
-    <script type="text/javascript">
-        {% if perms.membership_manager.delete_organization %}
-            function deletecontact(element){
-                $(function(){
-                    $("#deletecontact").attr("href", $(element).data('url'));
-                    $("#modaldeletecontact").modal();
-                });
-                return false
-            }
-        {% endif %}
-    </script>
+<script>
+function deletecontact(element){
+    $("#deletecontact").attr("href", $(element).data('url'));
+    $("#modaldeletecontact").modal();
+}
+</script>
 {% endblock js%}

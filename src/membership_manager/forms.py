@@ -280,7 +280,7 @@ class OrganizationAddForm(GTForm, forms.ModelForm):
         fields = [
             'name', 'initials', 'identification_type',
             'identification', 'email', 'cellphone',
-            'phone', 'address', 'country', 'city', 'province',
+            'phone', 'address', 'country', 'province', 'city',
             'postal_code', 'active', 'currency', 'payment_method',
         ]
         widgets = {
