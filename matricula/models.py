@@ -63,18 +63,22 @@ class Group(models.Model):
     AUTO_ENROLL = 2
 
     COURRENCY_CHOICES = (
-            ("USD", "US Dollar"),
-            ("EUR", "Euro"),
-            ("CRC", "Costa Rican Colon"),
-                         )
+        ("USD", "US Dollar"),
+        ("EUR", "Euro"),
+        ("CRC", "Costa Rican Colon"),
+    )
 
     FLOWS = (
-             (NORMAL, _('Normal flow (manual enroll activate)')),
-             (
-                AUTO_PREENROLL,
-                _("Auto pre-enroll (automatic enroll activate)")),
-             (AUTO_ENROLL, _("Auto enroll (automatic enroll finished)")),
-             )
+        (NORMAL, _('Normal flow (manual enroll activate)')),
+        (
+            AUTO_PREENROLL,
+            _("Auto pre-enroll (automatic enroll activate)")
+        ),
+        (
+            AUTO_ENROLL, _("Auto enroll (automatic enroll finished)")
+        ),
+    )
+
     period = models.ForeignKey(
         Period, verbose_name=_("Period"), on_delete=models.CASCADE)
     course = models.ForeignKey(
