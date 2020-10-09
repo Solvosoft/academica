@@ -3,11 +3,11 @@ from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, UpdateView
 
-from membership_manager.forms import OrganizationSearchForm, OrganizationAddForm
+from membership_manager.forms import OrganizationSearchForm, OrganizationAddForm, ContactOrganizationForm
 from membership_manager.models import Organization
 
 
@@ -77,6 +77,14 @@ class EditOrganization(UpdateView):
     form_class = OrganizationAddForm
     template_name = 'organization/edit.html'
     success_url = reverse_lazy('organizations')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        organization = context['object']
+        context['contact_form'] = ContactOrganizationForm(pk=organization.pk)
+        context['url_contact'] = reverse('api_organization', args=(organization.pk,))
+        context['contact_list'] = [{'pk': x.pk, 'name': str(x)} for x in organization.contacts.all()]
+        return context
 
 
 @permission_required('membership_manager.delete_organization')

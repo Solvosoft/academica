@@ -7,7 +7,7 @@
 
 {% block content %}
 <div class="row">
-    <div class='col-md-8 col-md-offset-2 col-xs-12'>
+    <div class='col-md-8'>
         <div class="x_panel">
             <div class="x_title">
                 <h1 class="text-center">Editar organización</h1>
@@ -25,6 +25,9 @@
                 </form>
             </div>
         </div>
+    </div>
+    <div class='col-md-4'>
+        {% include 'gentelella/blocks/crud_list.html' with  title="Contactos de la organización" form=contact_form object_list_gencrud=contact_list gencrud_form_url=url_contact gencrud_delete_url=url_contact  %}
     </div>
 </div>
 {% endblock content %}
