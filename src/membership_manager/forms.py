@@ -97,8 +97,9 @@ class MembershipForm(GTForm, forms.ModelForm):
         ('contact', 'Contacto'),
     )
     contact_type = forms.ChoiceField(
-        choices=CHOICES, widget=widget.RadioSelect, label="Tipo de Contacto")
-    contact = forms.ModelChoiceField(widget=AutocompleteSelect('contactbasename'), queryset=Organization.objects.filter(type=True), label="Contacto")
+        choices=CHOICES, widget=widget.RadioSelect, label="Tipo de contacto")
+    contact = forms.ModelChoiceField(widget=AutocompleteSelect('contactbasename'),
+                                     queryset=Organization.objects.filter(type=True), label="Contacto", required=False)
 
     def __init__(self, *args, **kwargs):
         super(MembershipForm, self).__init__(*args, **kwargs)

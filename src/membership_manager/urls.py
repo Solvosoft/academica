@@ -5,7 +5,7 @@ from membership_manager.reports.view import reports, add_reporttype_view, downlo
 from membership_manager.views import create_email_notification, email_template, index
 from membership_manager.views import delete_membership_service
 from .contacts_view import ContactListView, create_contacts, delete_contacts, EditContact
-from .memberships_view import MembershipListView, create_membership, edit_membership, delete_memberships
+from .memberships_view import MembershipListView, create_membership, delete_memberships, EditMembership
 from .news_letter_view import news_letter_list, create_news_letter, send_news_letter, delete_news_letter, \
     EditNewsLetter, \
     delete_task, create_news_letter_template, create_task, create_news_letter_membership
@@ -27,7 +27,7 @@ urlpatterns = [
         'membership/delete_service/<int:pk>/', delete_membership_service,
         name="delete_membership_service"),
     path('memberships/create', create_membership, name="create_memberships"),
-    path('memberships/edit/<int:pk>', edit_membership, name="edit_memberships"),
+    path('memberships/edit/<int:pk>', EditMembership.as_view(), name="edit_memberships"),
     path('memberships/delete/<int:pk>/', delete_memberships, name="delete_memberships"),
     path('newsletter/', news_letter_list, name="news_letter_list"),
     path('newsletter/create/<int:pk>/', create_news_letter, name="create_news_letter"),
