@@ -1,6 +1,5 @@
 django==3.1
 django-allauth==0.42.0
-django-bootstrap3==7.0.1
 django-ckeditor==6.0.0
 django-paypal==1.0.0
 django-simple-email-confirmation
@@ -21,3 +20,5 @@ six==1.10.0
 webencodings==0.5.1
 xhtml2pdf==0.2.4
 psycopg2==2.8.6
+git+https://github.com/luisza/django-gentelella-widgets.git#egg=djgentelella
+djangorestframework==3.12.1
