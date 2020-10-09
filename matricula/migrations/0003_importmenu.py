@@ -22,7 +22,7 @@ def add_menu(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matricula', '0002_auto_20201007_1435'),
+        ('matricula', '0001_initial'),
     ]
 
     operations = [
