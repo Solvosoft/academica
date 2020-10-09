@@ -3,7 +3,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from simple_email_confirmation.models import SimpleEmailConfirmationUserMixin
 from ckeditor.fields import RichTextField
-from django.utils.encoding import python_2_unicode_compatible, smart_text
+from six import python_2_unicode_compatible
+from django.utils.encoding import smart_text
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
