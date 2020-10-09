@@ -2,9 +2,10 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from matricula.views import index
 from matricula.views.Auth import get_profile
+from djgentelella.urls import urlpatterns as djgentelellaurls
 
 
-urlpatterns = [
+urlpatterns = djgentelellaurls + [
     # Examples:
     # url(r'^$', 'academica.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
