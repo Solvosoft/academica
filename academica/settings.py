@@ -51,9 +51,29 @@ INSTALLED_APPS = (
     'matricula.contrib.bills',
     'ckeditor',
     'paypal.standard.ipn',
-
     'django_ajax',
+    'djgentelella',
+    'mptt',
+    'rest_framework',
+    'chunked_upload',
+    'markitup',
 )
+
+USE_L10N = False
+
+MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
+MARKITUP_SET = 'markitup/sets/markdown/'
+JQUERY_URL = None
+
+DATE_INPUT_FORMATS=[
+    '%Y-%m-%d', '%d/%m/%Y', '%d/%m/%y'
+]
+
+DATETIME_INPUT_FORMATS = [
+    '%m/%d/%Y %H:%M %p',
+    '%Y-%m-%d %H:%M %p',
+    '%d/%m/%y %H:%M %p'
+]
 
 MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -125,7 +145,6 @@ LANGUAGES = (
 
 STATIC_URL = '/static/'
 
-AUTH_USER_MODEL = 'matricula.Student'
 
 EMAIL_HOST = "localhost"
 EMAIL_PORT = 1025
