@@ -2,7 +2,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import redirect, get_object_or_404
 from django.shortcuts import render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.generic import UpdateView
 
 from async_notifications.models import EmailTemplate, EmailNotification
 from async_notifications.tasks import send_email
@@ -10,7 +12,7 @@ from membership_core.models import Country, ServiceType
 from membership_manager.dashboard import TopStats
 from membership_manager.models import Membership
 from membership_manager.newsletterform import EmailTemplateForm, EmailNotificationForm
-from .news_letter_view import NewsLetter
+from .forms import ServiceTypeForm
 
 
 def servicios_stats():
@@ -34,15 +36,6 @@ def index(request):
                'servicios_stats': servicios_stats()
                }
     return render(request, 'membership/home.html', context=context)
-
-
-@permission_required('async_notifications.delete_newsletter')
-def delete_membership_service(request, pk):
-    boletin = NewsLetter.objects.filter(pk=pk).first()
-    if boletin:
-        boletin.delete()
-        return redirect('news_letter_list')
-
 
 def email_template(request, pk):
 
@@ -98,3 +91,46 @@ def create_email_notification(request, pk, membership):
 
     return render(request, "membership/create_email_notification.html", context={'form': form,
                                                                                  'template': pk})
+
+@permission_required('membership_core.view_servicetype')
+@permission_required('membership_core.add_servicetype')
+def services_list(request):
+
+    if request.method == "POST":
+        form = ServiceTypeForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('services_list')
+    else:
+        form = ServiceTypeForm()
+
+    services_list = ServiceType.objects.all()
+
+    return render(request, "services/services_list.html", context={'form': form, 'service_edit': 0,
+                                                                   'services_list': services_list})
+
+
+@method_decorator(permission_required('membership_core.view_servicetype'), name='dispatch')
+@method_decorator(permission_required('membership_core.change_servicetype'), name='dispatch')
+class EditService(UpdateView):
+    model = ServiceType
+    form_class = ServiceTypeForm
+    template_name = 'services/services_list.html'
+    success_url = reverse_lazy('services_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['service_edit'] = 1
+        context['services_list'] = ServiceType.objects.all()
+        return context
+
+
+@permission_required('membership_core.view_servicetype')
+@permission_required('membership_core.delete_servicetype')
+def delete_service(request, pk):
+    service = ServiceType.objects.filter(pk=pk).first()
+
+    if service:
+        service.delete()
+        return redirect('services_list')

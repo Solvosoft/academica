@@ -6,7 +6,7 @@ from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as widget
 from djgentelella.widgets.selects import AutocompleteSelect
 
-from membership_core.models import MembershipTemplate, Country
+from membership_core.models import MembershipTemplate, Country, ServiceType
 from membership_manager.models import Membership, Service, Organization,\
     Report, ReportType
 from membership_manager.reports.registro import REPORTES_TITULOS
@@ -303,3 +303,14 @@ class MembershipTemplateForm(GTForm, forms.Form):
     template = forms.ModelChoiceField(
         queryset=MembershipTemplate.objects.all(), widget=widget.Select,
         required=False, label="Plantilla de membresía")
+
+
+class ServiceTypeForm(GTForm, forms.ModelForm):
+
+    class Meta:
+        model = ServiceType
+        fields = '__all__'
+
+        widgets = {
+            'name': genwidgets.Input
+        }

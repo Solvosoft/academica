@@ -2,8 +2,8 @@ from django.urls import path
 
 from membership_manager.reports.view import reports, add_reporttype_view, download_graph, show_report, list_report, \
     filters_extra
-from membership_manager.views import create_email_notification, email_template, index
-from membership_manager.views import delete_membership_service
+from membership_manager.views import create_email_notification, email_template, index, services_list, EditService, \
+    delete_service
 from .contacts_view import ContactListView, create_contacts, delete_contacts, EditContact
 from .memberships_view import MembershipListView, create_membership, delete_memberships, EditMembership
 from .news_letter_view import news_letter_list, create_news_letter, send_news_letter, delete_news_letter, \
@@ -23,16 +23,16 @@ urlpatterns = [
     path('organizations/edit/<int:pk>', EditOrganization.as_view(), name="edit_organizations"),
     path('organizations/delete/<int:pk>/', delete_organization, name="delete_organizations"),
     path('memberships/', MembershipListView.as_view(), name="memberships"),
-    path(
-        'membership/delete_service/<int:pk>/', delete_membership_service,
-        name="delete_membership_service"),
     path('memberships/create', create_membership, name="create_memberships"),
     path('memberships/edit/<int:pk>', EditMembership.as_view(), name="edit_memberships"),
     path('memberships/delete/<int:pk>/', delete_memberships, name="delete_memberships"),
     path('newsletter/', news_letter_list, name="news_letter_list"),
+    path('services/', services_list, name="services_list"),
+    path('services/edit/<int:pk>', EditService.as_view(), name="edit_service"),
     path('newsletter/create/<int:pk>/', create_news_letter, name="create_news_letter"),
     path('newsletter/send/<int:pk>/', send_news_letter, name="send_news_letter"),
     path('newsletter/delete/<int:pk>/', delete_news_letter, name="delete_news_letter"),
+    path('services/delete/<int:pk>/', delete_service, name="delete_service"),
     path('newsletter/edit/<int:pk>/', EditNewsLetter.as_view(), name="edit_news_letter"),
     path('task/create/<int:pk>/', create_task, name="create_task"),
     path('task/delete/<int:pk>/', delete_task, name="delete_task"),
