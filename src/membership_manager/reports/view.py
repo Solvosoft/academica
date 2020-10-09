@@ -1,15 +1,16 @@
 from base64 import b64decode
 
 from django.contrib import messages
-from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import permission_required
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 
 from membership_core.models import ServiceType
 from membership_manager.forms import ReportForm, CreateReportTypeForm
-from membership_manager.models import Report, ReportType, Service
+from membership_manager.models import Report, ReportType
 from membership_manager.reports.registro import REPORTES_DISPONIBLES, REPORTES_TITULOS
+
 
 @permission_required('membership_manager.add_report')
 def reports(request):
@@ -34,7 +35,7 @@ def reports(request):
                 grafico = REPORTES_DISPONIBLES[key](request, form)
                 class_form_filter = grafico.get_extra_forms()
 
-                if class_form_filter is not "":
+                if class_form_filter != "":
                     form_extra = class_form_filter(request.POST)
 
                     if form_extra.is_valid():
@@ -77,7 +78,7 @@ def reports(request):
                 else:
                     if form.do_save:
                         report = form.save()
-                        report.usuaria = user
+                        report.user = user
                         report.save()
                         messages.success(request, "Reporte guardado satisfactoriamente")
                         return redirect('reports')
