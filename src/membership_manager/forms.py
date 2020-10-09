@@ -66,28 +66,28 @@ class ServiceForm(forms.ModelForm):
 
 
 class OrganizationForm(forms.ModelForm):
-    contact = AutoCompleteSelectField('contacts', label="Contacto", required=False)
 
     class Meta:
         model = Organization
         fields = [
-            "name",
-            "initials",
-            "contact",
-            "email",
-            "cellphone",
-            "phone",
-            "address",
-            "country",
-            "city",
-            "province",
-            "postal_code",
-            "active",
-            "currency",
-            "payment_method",
-            "identification_type",
-            "identification",
+            "name", "initials", "email", "cellphone", "phone", "country", "province", "city", "address",
+            "postal_code", "active", "currency", "payment_method", "identification_type", "identification",
         ]
+
+class ContactOrganizationForm(GTForm, forms.Form):
+
+    organization = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Organization.objects.all(), label="Buscar contacto", required=True)
+
+    def __init__(self, *args, **kwargs):
+        pk = kwargs.pop('pk')
+        super().__init__(*args, **kwargs)
+
+        contacts = Organization.objects.filter(pk=pk).first().contacts.all().values_list('pk', flat=True)
+
+        if contacts:
+            self.fields['organization'].queryset = Organization.objects.filter(type=True).exclude(pk__in=contacts)
+
+
 
 
 class MembershipForm(GTForm, forms.ModelForm):
@@ -235,12 +235,11 @@ class ContactAddForm(GTForm, forms.ModelForm):
         model = Organization
         fields = [
             'name', 'email', 'cellphone',
-            'phone', 'address', 'country', 'city', 'province',
-            'postal_code', 'active', 'currency', 'payment_method',
+            'phone', 'country', 'province', 'city', 'address',
+            'postal_code', 'active', 'currency', 'payment_method', 'type'
         ]
         widgets = {
-            'first_name': genwidgets.TextInput,
-            'last_name': genwidgets.TextInput,
+            'name': genwidgets.TextInput,
             'email': genwidgets.EmailInput,
             'cellphone': genwidgets.PhoneNumberMaskInput,
             'phone': genwidgets.PhoneNumberMaskInput,
@@ -251,14 +250,9 @@ class ContactAddForm(GTForm, forms.ModelForm):
             'postal_code': genwidgets.Input,
             'active': genwidgets.YesNoInput,
             'currency': AutocompleteSelect('currencybasename'),
-            'payment_method': widget.Select
+            'payment_method': widget.Select,
+            'type': forms.HiddenInput
         }
-
-    def __init__(self, *args, **kwargs):
-        super(ContactAddForm, self).__init__(*args, **kwargs)
-        if 'initial' in kwargs:
-            if 'country_id' in kwargs['initial']:
-                self.fields['country'].initial = kwargs['initial']['country_id']
 
 
 class OrganizationSearchForm(GTForm, forms.ModelForm):
@@ -300,15 +294,6 @@ class OrganizationAddForm(GTForm, forms.ModelForm):
             'currency': AutocompleteSelect('currencybasename'),
             'payment_method': widget.Select
         }
-
-    def __init__(self, *args, **kwargs):
-        super(OrganizationAddForm, self).__init__(*args, **kwargs)
-        # assign a (computed, I assume) default value to the choice field
-        if 'initial' in kwargs:
-            if 'country_id' in kwargs['initial']:
-                self.fields['country'].initial = kwargs['initial']['country_id']
-            if 'contact_id' in kwargs['initial']:
-                self.fields['contact'].initial = kwargs['initial']['contact_id']
 
 
 class MembershipTemplateForm(GTForm, forms.Form):

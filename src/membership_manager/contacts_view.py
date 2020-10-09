@@ -83,5 +83,5 @@ def delete_contacts(request, pk):
     contact = Organization.objects.filter(pk=pk)
     if contact:
         contact.delete()
-        messages.success(request, "Contacto eliminado con exíto")
+        messages.success(request, "Contacto eliminado con éxito")
         return redirect('contacts')

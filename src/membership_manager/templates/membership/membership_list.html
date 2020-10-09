@@ -44,11 +44,12 @@
                         <div class="row">
                             <div class="text-right">
                                 <a href="{% url 'memberships' %}" class="btn btn-dark">Limpiar filtros</a>
-                                <button class="btn btn-success" type="submit">Buscar</button>
+                                <button class="btn btn-success" type="button" onclick="search_memberships()">Buscar</button>
                             </div>
                         </div>
-                    </form>
-                        <div id="modalnewslettertemplate" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+
+
+                    <div id="modalnewslettertemplate" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -60,12 +61,16 @@
                                         {% include 'field.html' with field=form_template_newsletter.news_letter_template  %}
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                                        <button class="btn btn-success" type="button" data-url="{% url 'create_news_letter_membership' %}" onclick="newsletter_membership(this)">Seleccionar</button>
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                                        <button class="btn btn-success" type="submit" formaction="{% url 'create_news_letter_membership' %}">Seleccionar</button>
+
                                     </div>
+
                                 </div>
+
                             </div>
                         </div>
+                        </form>
 
                 </div>
             </div>
@@ -85,20 +90,17 @@
                             <div class="modal-content">
                                 <form action="create" method="GET">
                                 <div class="modal-header">
-                                    <h1 class="modal-title" id="myModalLabel">Crear un nueva membresía</h1>
-                                    <button type="button" class="close" data-dismiss="modal">
-                                        <span aria-hidden="true">×</span>
-                                    </button>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">Seleccione la plantilla base de membresía</h4>
                                 </div>
                                 
                                 <div class="modal-body">
-                                    <h4>Seleccione la plantilla a utilizar</h4>
-                                    {{ mem_template }}
+                                    {{ mem_template.as_horizontal }}
                                 </div>
                                 
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                    <button type="submit" class="btn btn-primary">Crear</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Seleccionar</button>
                                 </div>
                                 </form>
                             </div>
@@ -221,7 +223,7 @@
                 {{ form_template_email.as_horizontal }}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
                 <button class="btn btn-success" type="submit">Continuar</button>
             </div>
             </form>
@@ -240,21 +242,12 @@
                     return false
                 }
             {% endif %}
-            {% if perms.membership_manager.add_membership %}
-                $("#id_template").prepend(new Option("Sin template", ""));
-                $("#id_template").val("");
-            {% endif %}
         });
     </script>
 <script>
-    function newsletter_membership(element){
-        $("#formfilters").attr("action", $(element).data('url'));
-        $("#formfilters").submit();
-    }
 
-    function memberships(element){
-        $("#formfilters").attr("action", $(element).data('url'));
-        $("#formfilters").submit();
+    function search_memberships(){
+         $("#formfilters").submit();
     }
 
     function email_membership(element){
@@ -269,6 +262,8 @@
     (function(){
 
      $("#id_email_template option:contains('---------')").text('Sin plantilla');
+     $("#id_template option:contains('---------')").text('Sin plantilla');
+
      })(jQuery);
 </script>
 {% endblock js %}

@@ -36,9 +36,9 @@
                         <iframe style="width: 100%; height: 600px; border: 0px solid #fff" ></iframe>
                       </div>
                     <div role="tabpanel" class="tab-pane" id="remitentes">
-                        {% include 'field.html' with field=form.recipient  %}
                         <button type="button" id="loadremitentes" class="btn btn-success"> Cargar correos </button>
                         <button type="button" id="clearremitentes" class="btn btn-success"> Eliminar remitentes </button>
+                        {% include 'field.html' with field=form.recipient  %}
                     </div>
                   </div>
 
