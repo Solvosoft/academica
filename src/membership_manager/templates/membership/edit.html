@@ -53,20 +53,6 @@
             </div>
         </form>
     </div>
-<div id="modaldeleteservice" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">¿Está segura que desea eliminar este servicio?</h4>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                        <a class="btn btn-danger" id="delete_service">Eliminar</a>
-                    </div>
-                </div>
-            </div>
-        </div>
 {% endblock content %}
 {% block js %}
     <script type="text/javascript">
@@ -189,21 +175,9 @@
 
 <script>
 
-    function delete_service(element){
-        $("#delete_service").attr('data-element', $(element).data('element'));
-        $("#modaldeleteservice").modal();
-    }
-
     $(window).load(function() {
       $('.select2-container').width('100%');
     });
 
-(function(){
-    $("#delete_service").on('click', function(){
-        $("#"+$("#delete_service").data('element')).click();
-        $("#modaldeleteservice").modal('hide');
-
-    });
-})(jQuery);
 </script>
 {% endblock js %}

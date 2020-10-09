@@ -8,8 +8,7 @@
             {% endif %}
             <li><a class="btncollapse "><i class="fa fa-eye"></i></a></li>
             {% if formset.can_delete %}
-                <li><a onclick="delete_service(this)" data-element="{{form.description.value|title|truncatechars:30|cut:'.'}}-{{form.servicetype.value}}-{{form.observations.value|cut:'.'}}-{{form.description.value|cut:'.'}}"><i class="fa fa-close"></i></a>
-                <a class="deletebtn" id="{{form.description.value|title|truncatechars:30|cut:'.'}}-{{form.servicetype.value}}-{{form.observations.value|cut:'.'}}-{{form.description.value|cut:'.'}}" style="display:none"></a>
+                <li><a class="deletebtn"><i class="fa fa-close"></i></a>
             {% endif %}
             </li>
         </ul>
