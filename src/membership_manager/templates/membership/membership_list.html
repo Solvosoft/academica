@@ -116,7 +116,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">¿Está segura que desea eliminar este elemento?</h4>
+                                <h4 class="modal-title">¿Está segura que desea eliminar esta membresía?</h4>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
@@ -144,7 +144,7 @@
                                 <li><a href="{% url 'edit_memberships' pk=membership.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
                             {% endif %}
                             {% if perms.membership_manager.delete_membership %}
-                                <li><a data-url="{% url 'delete_memberships' pk=membership.pk %}" onclick="deleteelement(this)"><i class="fa fa-close"></i></a></li>
+                                <li><a data-url="{% url 'delete_memberships' pk=membership.pk %}" onclick="deletemembership(this)"><i class="fa fa-close"></i></a></li>
                             {% endif %}
                         </ul>
                         <div class="clearfix"></div>
@@ -233,18 +233,12 @@
 
 {% endblock content %}
 {% block js %}
-    <script type="text/javascript">
-        $(document).ready(function(){
-            {% if perms.membership_manager.delete_membership %}
-                function deleteelement(element){
-                    $("#deletemembership").attr("href", $(element).data('url'));
-                    $("#modaldeletemembership").modal();
-                    return false
-                }
-            {% endif %}
-        });
-    </script>
 <script>
+
+    function deletemembership(element){
+        $("#deletemembership").attr("href", $(element).data('url'));
+        $("#modaldeletemembership").modal();
+    }
 
     function search_memberships(){
          $("#formfilters").submit();

@@ -45,7 +45,7 @@
                 <div class="row" style="margin-top:50px;">
                     <div class="col-md-12">
                         <div class="form-inline" style="text-align:center;">
-                            <button class="btn btn-secondary text-center" type="reset">Cancelar</button>
+                            <a class="btn btn-danger text-center" href="{% url 'memberships' %}">Cancelar</a>
                             <button class="btn btn-success text-center" type="submit">Guardar</button>
                         </div>
                     </div>
@@ -193,6 +193,11 @@
         $("#delete_service").attr('data-element', $(element).data('element'));
         $("#modaldeleteservice").modal();
     }
+
+    $(window).load(function() {
+      $('.select2-container').width('100%');
+    });
+
 (function(){
     $("#delete_service").on('click', function(){
         $("#"+$("#delete_service").data('element')).click();

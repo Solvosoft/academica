@@ -105,6 +105,7 @@ class MembershipForm(GTForm, forms.ModelForm):
         super(MembershipForm, self).__init__(*args, **kwargs)
 
         self.fields['organization'].label = "Organización"
+        self.fields['organization'].required = False
         self.fields['apply_fees'].help_text = "(Al no seleccionar este campo la aplicación de impuestos será ignorada)"
         self.initial['contact_type'] = 'organization'
 
@@ -135,7 +136,7 @@ class MembershipForm(GTForm, forms.ModelForm):
             if organization == "" or organization is None:
                 raise forms.ValidationError("Debe seleccionar una organización")
         else:
-            if contact == "" or organization is None:
+            if contact == "" or contact is None:
                 raise forms.ValidationError("Debe seleccionar un contacto")
 
 
