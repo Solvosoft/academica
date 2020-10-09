@@ -108,25 +108,6 @@ class GroupAdmin(admin.ModelAdmin, BaseGroup):
 
 
 
-class MyUserAdmin(UserAdmin):
-    def get_fieldsets(self, request, obj=None):
-        if not obj:
-            return self.add_fieldsets
-
-        if request.user.is_superuser:
-            perm_fields = ('is_active', 'is_staff', 'is_superuser',
-                           'groups', 'user_permissions')
-        else:
-            # modify these to suit the fields you want your
-            # staff user to be able to edit
-            perm_fields = ('is_active', 'is_staff')
-
-        return [(None, {'fields': ('username', 'password')}),
-                (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
-                (_('Permissions'), {'fields': perm_fields}),
-                (_('Important dates'), {'fields': ('last_login', 'date_joined')})]
-
-
 class MenuInline(admin.StackedInline):
     model = MenuTranslations
     extra = 1
@@ -158,7 +139,7 @@ class PageAdmin(admin.ModelAdmin):
 class MenuAdmin(admin.ModelAdmin):
     inlines = [MenuInline]
 
-admin.site.register(Student, MyUserAdmin)
+admin.site.register(Student)
 admin.site.register(Course)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(Enroll, EnrollAdmin)
@@ -174,7 +155,7 @@ admin_site = AdminSite(name='matricula_admin')
 admin_site.site_header = _("Academica administrator site")
 
 
-admin_site.register(Student, MyUserAdmin)
+admin_site.register(Student)
 admin_site.register(Course)
 admin_site.register(Group, GroupAdmin)
 admin_site.register(Enroll, EnrollAdmin)
