@@ -1,6 +1,6 @@
 # encoding: utf-8
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 from simple_email_confirmation.models import SimpleEmailConfirmationUserMixin
 from ckeditor.fields import RichTextField
 from six import python_2_unicode_compatible
@@ -10,8 +10,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
 
-class Student(SimpleEmailConfirmationUserMixin, AbstractUser):
-    pass
+class Student(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE,
+        primary_key=True)
+    
 
 
 @python_2_unicode_compatible
