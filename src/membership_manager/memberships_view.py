@@ -33,13 +33,15 @@ class MembershipListView(ListView):
         self.form.is_valid()
 
         filters = {}
+
         if self.form.cleaned_data['name']:
-            queryset = self.form.cleaned_data['name']
+            filters['organization__in'] = self.form.cleaned_data['name']
+
         if self.form.cleaned_data['state']:
             filters['state'] = self.form.cleaned_data['state']
 
         if self.form.cleaned_data['country']:
-            queryset = queryset.filter(organization__country__in=self.form.cleaned_data['country'])
+            filters['organization__country__in'] = self.form.cleaned_data['country']
 
         if self.form.cleaned_data['currency']:
             filters['currency__in'] = self.form.cleaned_data['currency']
