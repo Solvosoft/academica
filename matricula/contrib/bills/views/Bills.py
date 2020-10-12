@@ -24,7 +24,8 @@ def get_amount(bill):
 @csrf_exempt
 @login_required
 def get_my_bills(request):
-    all_bills = Bill.objects.filter(student=request.user).order_by('paid_date')
+    all_bills = Bill.objects.filter(
+        student=request.user.student).order_by('paid_date')
     paid = all_bills.filter(is_paid=True)
     not_paid = all_bills.filter(is_paid=False)
 
