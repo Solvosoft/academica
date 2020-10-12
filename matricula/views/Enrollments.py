@@ -8,7 +8,7 @@ Created on 17/5/2015
 
 from django_ajax.decorators import ajax
 from django.shortcuts import get_object_or_404, render, redirect
-from matricula.models import Group, Enroll
+from matricula.models import Group, Enroll, Student
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.utils import timezone
@@ -19,11 +19,12 @@ from django.db import IntegrityError, transaction
 @login_required
 def enrollme(request, pk):
     group = get_object_or_404(Group, pk=pk)
-    list_enroll = Enroll.objects.filter(group=group, student=request.user)
+    student = request.user.student
+    list_enroll = Enroll.objects.filter(group=group, student=student)
     if not list_enroll.exists():
         try:
             with transaction.atomic():
-                enroll = Enroll.objects.create(group=group, student=request.user)
+                enroll = Enroll.objects.create(group=group, student=student)
             if group.flow == group.AUTO_PREENROLL:
                 enroll.enroll_activate = True
                 enroll.save()
@@ -50,11 +51,13 @@ def enrollme(request, pk):
 
 @login_required
 def list_enroll(request):
-    list_enroll = Enroll.objects.filter(student=request.user, enroll_activate=True, enroll_finished=False,
+    print(request.user.pk)
+    student = Student.objects.get(pk=request.user.pk)
+    list_enroll = Enroll.objects.filter(student=student, enroll_activate=True, enroll_finished=False,
       group__enroll_start__lte=timezone.now(),
       group__enroll_finish__gte=timezone.now()).order_by("-enroll_date")
 
-    finished_enroll = Enroll.objects.filter(student=request.user, enroll_finished=True).order_by("-enroll_date")
+    finished_enroll = Enroll.objects.filter(student=student, enroll_finished=True).order_by("-enroll_date")
 
     return render(request, 'enroll.html', {'list_enroll': list_enroll,
                                            'finished_enroll': finished_enroll}
