@@ -1,18 +1,43 @@
 # encoding: utf-8
 from django.db import models
 from django.contrib.auth.models import User
-from simple_email_confirmation.models import SimpleEmailConfirmationUserMixin
+from simple_email_confirmation.models import AbstractEmailAddress, EmailAddress,\
+    SimpleEmailConfirmationUserMixin, EmailAddressManager
 from ckeditor.fields import RichTextField
 from six import python_2_unicode_compatible
 from django.utils.encoding import smart_text
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from django.utils.timezone import now, timedelta
+import uuid
+
+
+def get_expire_date():
+    return now() + timedelta(days=settings.TOKEN_CONFIRMATION_EXPIRE_DAYS)
 
 
 class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE,
-        primary_key=True)
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, primary_key=True)
+    key = models.UUIDField(default=uuid.uuid4)
+    confirmed_at = models.DateTimeField(null=True, blank=True)
+    expired_at = models.DateTimeField(default=get_expire_date())
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def confirm(self, key):
+        if(now() < self.expired_at and str(self.key) == key):
+            print('entra')
+            self.user.is_active = True
+            self.user.save()
+            self.confirmed_at = now()
+            self.save()
+            return True
+        print('no entra')
+        return False
+    
+    def __str__(self):
+        return self.user.first_name + " " + self.user.last_name
     
 
 
@@ -136,7 +161,7 @@ class Enroll(models.Model):
         default=False, verbose_name=_("Bill created"))
 
     def __str__(self):
-        return self.student.username + " -- " + smart_text(self.group)
+        return self.student.user.username + " -- " + smart_text(self.group)
 
     class Meta:
         verbose_name = _("Enrollment")

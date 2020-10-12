@@ -121,6 +121,8 @@ DATABASES = {
     }
 }
 
+# Set in weeks
+TOKEN_CONFIRMATION_EXPIRE_DAYS = 15
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
