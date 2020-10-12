@@ -20,27 +20,35 @@ from django_ajax.decorators import ajax
 from django.template.loader import render_to_string
 from django.template.context import RequestContext
 from django.views.generic.edit import UpdateView
+from django.contrib.auth.models import User
+from simple_email_confirmation.models import EmailAddress, EmailAddressManager
+from datetime import datetime
 
 
 def create_user(request):
     if request.method == 'POST':
         form = StudentCreateForm(request.POST)
         if form.is_valid():
-            user = Student.objects.create_user(form.cleaned_data['name'],
+            user = User.objects.create_user(form.cleaned_data['name'],
                                                form.cleaned_data['email'],
                                                form.cleaned_data['password'])
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name']
+            user.is_active = False
             user.save()
+            student = Student(user=user)
+            student.save()
             mail_body = render_to_string("email_confirmation.html",
                      {
                       "url": request.build_absolute_uri(reverse('confirm_email')),
                       "user": user,
+                      'email': user.email,
+                      'student': student
                       })
             send_mail(_('Email confirmation'),
                       'Url confirmation %s?id=%d&key=%s' % (request.build_absolute_uri(reverse('confirm_email')),
-                                               user.pk,
-                                               user.confirmation_key
+                                                student.pk,
+                                                str(student.key)
                                                ),
                       settings.DEFAULT_FROM_EMAIL, [form.cleaned_data['email']],
                       html_message=mail_body)
@@ -62,20 +70,19 @@ def confirm_email(request):
     key = request.GET.get('key', '')
 
     try:
-        user = Student.objects.get(pk=int(id))
+        student = Student.objects.get(pk=id)
     except:
         return render(request, 'messages.html',
                           {'message': _('Key not found'),
                            'mtype': 'warning'}
                           )
     try:
-        user.confirm_email(key)
-
-        if user.is_confirmed:
+        student.confirm(key)
+        if student.user.is_active:
             return render(request, 'messages.html',
-                          {'message': _('Congratulations, now you can login'),
-                           'mtype': 'success'}
-                      )
+                        {'message': _('Congratulations, now you can login'),
+                        'mtype': 'success'}
+                    )
     except:
         pass
 
@@ -97,7 +104,7 @@ def authenticate(request):
     username = request.POST.get('username', '')
     password = request.POST.get('password', '')
     user = auth.authenticate(username=username, password=password)
-    if user is not None and user.is_active and user.is_confirmed:
+    if user is not None and user.is_active:
         auth.login(request, user)
         mnext = request.POST.get('next', '')
         if mnext:

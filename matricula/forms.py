@@ -5,11 +5,11 @@ Created on 7/4/2015
 
 @author: luisza
 '''
-
 from django import forms
 from matricula.models import Student, Page, MenuItem
 from django.utils.translation import ugettext_lazy as _
 from django.core import validators
+from django.contrib.auth.models import User
 
 
 class StudentCreateForm(forms.Form):
@@ -35,7 +35,7 @@ class StudentCreateForm(forms.Form):
 
     def clean(self):
         cleaned_data = super(StudentCreateForm, self).clean()
-        if Student.objects.filter(username=cleaned_data.get('name')).exists():
+        if User.objects.filter(username=cleaned_data.get('name')).exists():
             raise forms.ValidationError(_("User name exist "))
 
         if cleaned_data.get('password') != cleaned_data.get('password_check'):
