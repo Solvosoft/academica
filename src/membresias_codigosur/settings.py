@@ -202,7 +202,7 @@ ASYNC_NEWSLETTER_WIDGET = 'markitup.widgets.AdminMarkItUpWidget'
 
 
 DATE_INPUT_FORMATS=[
-    '%Y-%m-%d', '%d/%m/%Y', '%d/%m/%y'
+    '%d/%m/%Y', '%d/%m/%y', '%Y-%m-%d',
 ]
 
 DATETIME_INPUT_FORMATS = [

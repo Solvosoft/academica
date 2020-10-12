@@ -7,8 +7,8 @@ from djgentelella.widgets import core as widget
 from djgentelella.widgets.selects import AutocompleteSelect
 
 from membership_core.models import MembershipTemplate, Country
-from membership_manager.models import Membership, Service, Organization,\
-    Report, ReportType
+from membership_manager.models import Membership, Service, Organization, \
+    Report, ReportType, Invoice
 from membership_manager.reports.registro import REPORTES_TITULOS
 from djgentelella.widgets import core as genwidgets
 
@@ -301,3 +301,44 @@ class MembershipTemplateForm(GTForm, forms.Form):
     template = forms.ModelChoiceField(
         queryset=MembershipTemplate.objects.all(), widget=widget.Select,
         required=False, label="Plantilla de membresía")
+
+
+class InvoiceChangeForm(GTForm, forms.ModelForm):
+    status = forms.ChoiceField(choices=Invoice.STATUS, widget=genwidgets.RadioSelect, label='Estado')
+    next = forms.CharField(widget=forms.HiddenInput)
+    field_order = ['status', 'amount', 'currency', 'payment_date', 'description',
+                   'expiration_date', 'payment_method', 'transaction_number', 'receipt']
+    class Meta:
+        model = Invoice
+        exclude =['creation_date', 'membership', 'renewal_period', 'code', 'pdf_invoice']
+        widgets={
+            'expiration_date': genwidgets.DateInput,
+            'payment_date': genwidgets.DateInput,
+            #'membership': genwidgets.ReadOnlySelect,
+            #'renewal_period': genwidgets.ReadOnlySelect,
+            'description': genwidgets.Textarea,
+            'amount': genwidgets.NumberInput,
+            'currency': genwidgets.Select,
+            'payment_method': genwidgets.Select,
+            'transaction_number': genwidgets.TextInput,
+            #'pdf_invoice': genwidgets.FileInput,
+            #'receipt': genwidgets.FileInput
+        }
+
+
+class InvoicePayForm(GTForm, forms.ModelForm):
+    next = forms.CharField(widget=forms.HiddenInput)
+
+    class Meta:
+        model = Invoice
+        exclude =['creation_date', 'membership', 'renewal_period', 'code', 'pdf_invoice', 'status',
+                  'expiration_date', 'description']
+        widgets={
+            'payment_date': genwidgets.DateInput,
+            'amount': genwidgets.NumberInput,
+            'currency': genwidgets.Select,
+            'payment_method': genwidgets.Select,
+            'transaction_number': genwidgets.TextInput,
+            #'pdf_invoice': genwidgets.FileInput,
+            #'receipt': genwidgets.FileInput
+        }

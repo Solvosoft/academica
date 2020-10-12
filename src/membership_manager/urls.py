@@ -5,6 +5,7 @@ from membership_manager.reports.view import reports, add_reporttype_view, downlo
 from membership_manager.views import create_email_notification, email_template, index
 from membership_manager.views import delete_membership_service
 from .contacts_view import ContactListView, create_contacts, delete_contacts, EditContact
+from .invoice_view import InvoiceListView, InvoiceChangeView, InvoicePayView
 from .memberships_view import MembershipListView, create_membership, edit_membership, delete_memberships
 from .news_letter_view import news_letter_list, create_news_letter, send_news_letter, delete_news_letter, \
     EditNewsLetter, \
@@ -46,6 +47,8 @@ urlpatterns = [
     path('reports/graph_download/', download_graph, name="download_graph"),
     path('reports/<str:key>/', filters_extra, name="extra_filters"),
     path('reporttype/add', add_reporttype_view, name='add_reporttype'),
-
+    path('invoice/list', InvoiceListView.as_view(), name='invoice-list'),
+    path('invoice/<int:pk>/', InvoiceChangeView.as_view(), name='invoice-edit'),
+    path('invoice/pay/<int:pk>/', InvoicePayView.as_view(), name='invoice-pay'),
 
 ]

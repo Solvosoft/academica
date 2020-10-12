@@ -57,6 +57,7 @@
                         </ul>
                     </li>
                 {% endif %}
+                {% if perms.membership_manager.view_invoice %}
                 <li>
                     <a>
                         <i class="fa fa-credit-card"></i>
@@ -65,11 +66,11 @@
                     </a>
                     <ul class="nav child_menu">
                         <li>
-                            <a href="#">Lista de facturas</a>
+                            <a href="{% url 'invoice-list' %}">Lista de facturas</a>
                         </li>
                     </ul>
                 </li>
-
+                {% endif %}
                 {% if perms.membership_manager.view_newsletter %}
 
                 <li>

@@ -325,6 +325,8 @@ class FilterEmailsForm(GTForm, forms.Form):
     membership_type = forms.MultipleChoiceField(widget=genwidgets.SelectMultiple, choices=MEMBERSHIP_TYPES, required=False, label="Tipo de membresía")
 
 
+
+
 class SendDateForm(CustomForm, forms.Form):
 
     send_date = forms.DateTimeField(widget=genwidgets.DateTimeInput, required=True, label="Fecha y hora de envío",

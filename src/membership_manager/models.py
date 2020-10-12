@@ -176,6 +176,7 @@ class MembershipRenew(models.Model):
         verbose_name = "Renovación de membresía"
         verbose_name_plural = "Renovaciones de membresía"
 
+
 class Invoice(models.Model):
     STATUS = (
         ('pending', "Pendiente"),
