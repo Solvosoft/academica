@@ -201,14 +201,15 @@ def get_profile(request):
 
 
 class StudentEdit(UpdateView):
-    model = Student
+    model = User
     fields = ['first_name', 'last_name', 'email']
     success_url = reverse_lazy('index')
+    template_name = "matricula/student_form.html"
 
     def get_context_data(self, **kwargs):
 
         context = UpdateView.get_context_data(self, **kwargs)
-        enroll = Enroll.objects.filter(student=self.object).order_by('enroll_date')
+        enroll = Enroll.objects.filter(student__user=self.object).order_by('enroll_date')
         context['enroll'] = enroll.filter(enroll_activate=True, enroll_finished=True)
         context['pre_enroll'] = enroll.filter(enroll_activate=True, enroll_finished=False)
         return context
