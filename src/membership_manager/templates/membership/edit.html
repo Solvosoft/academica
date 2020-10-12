@@ -7,7 +7,7 @@
 
 {% block content %}
     
-    <h1 style="text-align:center;">Nueva Membresía</h1>
+    <h1 style="text-align:center;">Editar membresía</h1>
     <div id="membership_form" class="row">
         <form method="post">
             <div class="col-md-8">
@@ -45,7 +45,7 @@
                 <div class="row" style="margin-top:50px;">
                     <div class="col-md-12">
                         <div class="form-inline" style="text-align:center;">
-                            <button class="btn btn-secondary text-center" type="reset">Cancelar</button>
+                            <a class="btn btn-danger text-center" href="{% url 'memberships' %}">Cancelar</a>
                             <button class="btn btn-success text-center" type="submit">Guardar</button>
                         </div>
                     </div>
@@ -171,4 +171,13 @@
             $('.x_content').last().show(); 
         });
     </script>
+
+
+<script>
+
+    $(window).load(function() {
+      $('.select2-container').width('100%');
+    });
+
+</script>
 {% endblock js %}

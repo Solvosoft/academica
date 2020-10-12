@@ -8,13 +8,15 @@
             {% endif %}
             <li><a class="btncollapse "><i class="fa fa-eye"></i></a></li>
             {% if formset.can_delete %}
-                <li><a class="deletebtn "><i class="fa fa-close"></i></a>
+                <li><a class="deletebtn"><i class="fa fa-close"></i></a>
             {% endif %}
             </li>
         </ul>
         <div class="clearfix"></div>
     </div>
     <div class="x_content">
-        {{ form.as_horizontal }}
+        <div class="form-group" style="text-align:center;">
+            {{ form.as_inline}}
+        </div>
     </div>
 </div>

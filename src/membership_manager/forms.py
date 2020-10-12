@@ -1,16 +1,17 @@
 from ajax_select.fields import AutoCompleteSelectField
 from django import forms
-from django.core.exceptions import ValidationError
 from django.urls import reverse
 from djgentelella.forms.forms import GTForm
+from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets import core as widget
 from djgentelella.widgets.selects import AutocompleteSelect
 
-from membership_core.models import MembershipTemplate, Country
+from membership_core.models import MembershipTemplate, Country, ServiceType
+from membership_manager.models import Invoice
 from membership_manager.models import Membership, Service, Organization, \
-    Report, ReportType, Invoice
+    Report, ReportType
 from membership_manager.reports.registro import REPORTES_TITULOS
-from djgentelella.widgets import core as genwidgets
+
 
 class TemplateWidget(forms.Select):
     class Media:
@@ -97,13 +98,15 @@ class MembershipForm(GTForm, forms.ModelForm):
         ('contact', 'Contacto'),
     )
     contact_type = forms.ChoiceField(
-        choices=CHOICES, widget=widget.RadioSelect, label="Tipo de Contacto")
-    contact = forms.ModelChoiceField(widget=AutocompleteSelect('contactbasename'), queryset=Organization.objects.filter(type=True), label="Contacto")
+        choices=CHOICES, widget=widget.RadioSelect, label="Tipo de contacto")
+    contact = forms.ModelChoiceField(widget=AutocompleteSelect('contactbasename'),
+                                     queryset=Organization.objects.filter(type=True), label="Contacto", required=False)
 
     def __init__(self, *args, **kwargs):
         super(MembershipForm, self).__init__(*args, **kwargs)
 
         self.fields['organization'].label = "Organización"
+        self.fields['organization'].required = False
         self.fields['apply_fees'].help_text = "(Al no seleccionar este campo la aplicación de impuestos será ignorada)"
         self.initial['contact_type'] = 'organization'
 
@@ -134,7 +137,7 @@ class MembershipForm(GTForm, forms.ModelForm):
             if organization == "" or organization is None:
                 raise forms.ValidationError("Debe seleccionar una organización")
         else:
-            if contact == "" or organization is None:
+            if contact == "" or contact is None:
                 raise forms.ValidationError("Debe seleccionar un contacto")
 
 
@@ -341,4 +344,14 @@ class InvoicePayForm(GTForm, forms.ModelForm):
             'transaction_number': genwidgets.TextInput,
             #'pdf_invoice': genwidgets.FileInput,
             #'receipt': genwidgets.FileInput
+        }
+
+class ServiceTypeForm(GTForm, forms.ModelForm):
+
+    class Meta:
+        model = ServiceType
+        fields = '__all__'
+
+        widgets = {
+            'name': genwidgets.Input
         }

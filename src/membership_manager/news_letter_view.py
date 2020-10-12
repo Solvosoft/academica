@@ -144,7 +144,11 @@ def create_news_letter_membership(request):
     templateform = NewsLetterTemplateForm(request.GET)
     templateform.is_valid()
     template = get_object_or_404(NewsLetterTemplate, pk=templateform.cleaned_data['news_letter_template'].pk)
-    form_filter = FilterEmailsForm(request.GET)
+    querydictfilters = QueryDict('', mutable=True)
+    auxquerydict = QueryDict('', mutable=True)
+    querydictfilters.update(request.GET)
+    querydictfilters.update(auxquerydict.update({'apply_filters': 'True'}))
+    form_filter = FilterEmailsForm(querydictfilters)
     form_filter.is_valid()
     form = NewsLetterForm(initial={'message': template.message})
 

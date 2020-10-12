@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView
 from djgentelella.forms.forms import GTBaseModelFormSet
 
 from membership_core.models import MembershipTemplate, ServiceMT
@@ -33,13 +33,15 @@ class MembershipListView(ListView):
         self.form.is_valid()
 
         filters = {}
+
         if self.form.cleaned_data['name']:
-            queryset = self.form.cleaned_data['name']
+            filters['organization__in'] = self.form.cleaned_data['name']
+
         if self.form.cleaned_data['state']:
             filters['state'] = self.form.cleaned_data['state']
 
         if self.form.cleaned_data['country']:
-            queryset = queryset.filter(organization__country__in=self.form.cleaned_data['country'])
+            filters['organization__country__in'] = self.form.cleaned_data['country']
 
         if self.form.cleaned_data['currency']:
             filters['currency__in'] = self.form.cleaned_data['currency']
@@ -70,64 +72,64 @@ class MembershipListView(ListView):
         return context
 
 
-@permission_required('membership_manager.change_membership')
-def edit_membership(request, pk=None):
-    formset = modelformset_factory(
-        Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
-        can_delete=True, extra=1, can_order=True)
+@method_decorator(permission_required('membership_manager.change_membership'), name='dispatch')
+class EditMembership(UpdateView):
+    model = Membership
+    form_class = MembershipForm
+    template_name = 'membership/edit.html'
+    success_url = reverse_lazy('memberships')
 
-    # We will save or update
-    if request.method == 'POST':
-        # If there is a pk we will update
-        if pk is not None:
-            instance = Membership.objects.get(pk=pk)
-            form = MembershipForm(request.POST, instance=instance)
-            fset = formset(request.POST, queryset=Service.objects.filter(
-                membership__pk=pk), prefix="mts")
-
-            # We save or update the form and the formset
-            if form.is_valid() and fset.is_valid():
-                instm = form.save()
-                instances = fset.save(commit=False)
-                for delinst in fset.deleted_objects:
-                    delinst.delete()
-                for instance in instances:
-                    instance.membership = instm
-                    instance.save()
-                messages.success(request, "Membresía guardada con exíto")
-                return redirect('memberships')
-
-        # if there are errors we return the error messages
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        memberhsip = context['object']
+        extra = memberhsip.service_set.all().count()
+        if extra == 0:
+            extra = 1
         else:
-            messages.error(
-                request,
-                "Error al intentar guardar los servicios asociados")
+            extra = 0
+        formset = modelformset_factory(
+            Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
+            can_delete=True, extra=extra, can_order=True)
+        fset = formset(queryset=Service.objects.filter(membership=memberhsip), prefix='mts')
+        context['formset'] = fset
+        return context
 
-    # We will list data or show new form
-    if request.method == 'GET':
 
-        # if pk we need list related data
-        if pk is not None:
-            memberhsip = Membership.objects.get(pk=pk)
-            extra = memberhsip.service_set.all().count()
-            if extra == 0:
-                extra = 1
-            else:
-                extra = 0
-            formset = modelformset_factory(
-                Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
-                can_delete=True, extra=extra, can_order=True)
-            form = MembershipForm(initial=memberhsip.__dict__)
-            fset = formset(queryset=Service.objects.filter(membership__pk=pk), prefix='mts')
-            context = {
-                'form': form,
-                'formset': fset
-            }
-            return render(request, 'membership/edit.html', context=context)
+    def form_valid(self, form):
 
+        membership = self.object
+        if form.cleaned_data["contact_type"] == "organization":
+            membership.organization = form.cleaned_data['organization']
         else:
-            messages.error("No fue posible cargar la membresía")
-    return redirect("memberships")
+            membership.organization = form.cleaned_data['contact']
+
+        membership.fees = form.cleaned_data['fees']
+        membership.state = form.cleaned_data['state']
+        membership.currency = form.cleaned_data['currency']
+        membership.apply_fees = form.cleaned_data['apply_fees']
+        membership.annual_cost = form.cleaned_data['annual_cost']
+        membership.renewal_period = form.cleaned_data['renewal_period']
+        membership.membership_type = form.cleaned_data['membership_type']
+        membership.save()
+
+        formset = modelformset_factory(
+            Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
+            can_delete=True, extra=1, can_order=True)
+
+        fset = formset(self.request.POST, queryset=Service.objects.filter(
+            membership=membership), prefix="mts")
+
+        if fset.is_valid():
+            instances = fset.save(commit=False)
+            for delinst in fset.deleted_objects:
+                delinst.delete()
+            for instance in instances:
+                instance.membership = membership
+                instance.save()
+            messages.success(self.request, "Membresía guardada con éxito")
+
+        return super().form_valid(form)
+
 
 
 
@@ -154,7 +156,7 @@ def create_membership(request):
             for instance in instances:
                 instance.membership = instm
                 instance.save()
-            messages.success(request, "Membresía guardada con exíto")
+            messages.success(request, "Membresía guardada con éxito")
             return redirect('memberships')
 
         # if there are errors we return the error messages
@@ -206,5 +208,5 @@ def delete_memberships(request, pk):
     membership = Membership.objects.filter(pk=pk).first()
     if membership:
         membership.delete()
-        messages.success(request, "Membresía eliminada con exíto")
+        messages.success(request, "Membresía eliminada con éxito")
         return redirect('memberships')
