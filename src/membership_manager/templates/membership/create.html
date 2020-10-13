@@ -60,35 +60,16 @@
             
             //Button add organization
             btnNewOrg = "<div class='text-right' style='margin-top:5px'>"+
-                "<a href='/organizations' onclick='window.open(this.href,&quot;&quot;,"+
-                " &quot;resizable=yes,width=600,height=800&quot;); return false;'"+
-                " style='font-size:2em'><i class='fa fa-plus-square'></i></a></div>";   
+                "<a title='Nueva organización' href='/organizations/create'" +
+                " style='font-size:2em' target='_blank'><i class='fa fa-plus-square'></i></a></div>";
             $('#id_organization').parent().append(btnNewOrg);
             
             //Button add contact
             bntNewContact = "<div class='text-right' style='margin-top:5px'>"+
-                "<a href='/contacts' onclick='window.open(this.href,&quot;&quot;,"+
-                " &quot;resizable=yes,width=600,height=800&quot;); return false;'"+
-                " style='font-size:2em'><i class='fa fa-plus-square'></i></a></div>"; 
+                "<a title='Nuevo contacto' href='/contacts/create'" +
+                " style='font-size:2em' target='_blank'><i class='fa fa-plus-square'></i></a></div>";
             $('#id_contact').parent().append(bntNewContact);
-            
-            //Set initial fees field to display none
-            $("input[type='checkbox']").val('off');
-            $('#id_fees').parent().parent().css('display','none');
-            
 
-            //Trigger to display fees field when apply_fees change
-            $("input[type='checkbox']").change(function() {
-                isVisible = !isVisible;
-                if(isVisible){
-                    $('#id_fees').parent().parent().css('display','block');
-                     $("input[type='checkbox']").val('on');
-                }else{
-                    $('#id_fees').parent().parent().css('display','none');
-                    $("input[type='checkbox']").val('off');
-                }
-                
-            });
 
             //Set trigger to update title
             $('.formset').on('blur', 'input[name$="description"]', function() {
@@ -132,12 +113,23 @@ function contact_type_change(){
     }
 }
 
+function apply_fees_change(){
+    if($("#id_apply_fees")[0].checked){
+        $("#id_fees").parent().parent().show();
+    }else{
+         $("#id_fees").parent().parent().hide();
+    }
+}
+
 
 (function($){
     $('input[name="contact_type"]').on('ifChecked', function(event){
       contact_type_change();
     });
     contact_type_change();
+
+    $('input[name="apply_fees"]').on('change',  apply_fees_change);
+    apply_fees_change();
 
 })(jQuery);
 </script>

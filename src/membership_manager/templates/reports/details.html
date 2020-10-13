@@ -46,10 +46,13 @@
 
                 <ul class="nav navbar-right panel_toolbox">
 
+                     {% if perms.membership_manager.change_report %}
                     <li style="margin-left: 1.4em"><a href="?nocache=s" ><i class="fa fa-refresh green" aria-hidden="true"></i></a></li>
+                    {% endif %}
 
+                    {% if perms.membership_manager.delete_report %}
                     <li style="margin-left: 2em"><a data-toggle="modal" data-target="#reportsavemodal"><i class="fa fa-trash-o red delete" aria-hidden="true"></i></a></li>
-
+                    {% endif %}
 
                   </ul>
                 <div class="clearfix"></div>
