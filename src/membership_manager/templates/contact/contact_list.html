@@ -1,6 +1,7 @@
 {% extends 'gentelella/base.html' %}
 {% load membership_code %}
 {% load static %}
+{% load organization_payment_method %}
 {% block extra_css %}
     <link href="{% static 'css/membership.css' %}" rel="stylesheet">
 {% endblock extra_css %}
@@ -10,7 +11,11 @@
     <h1 class="text-center">Contactos</h1>
     <div class="search_options">
         <div class="row">
-            <div class="col-md-9">
+            {% if not perms.membership_manager.add_organization %}
+                <div class="col-md-10 col-md-offset-1 col-xs-12">
+                {% else %}
+                    <div class="col-md-10">
+                {% endif %}
                 <div class="x_panel">
                     <form method="GET">
                     <div class="row">
@@ -29,13 +34,13 @@
                     </form>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="buttons">
-                    {% if perms.membership_manager.add_organization %}
+            {% if perms.membership_manager.add_organization %}
+                <div class="col-md-2">
+                    <div class="buttons">
                         <a href="{% url 'create_contacts' %}" class="btn btn-primary">Nuevo contacto</a>
-                    {% endif %}
+                    </div>
                 </div>
-            </div>
+            {% endif %}
         </div>
     </div>
     {% if perms.membership_manager.delete_organization %}
@@ -63,14 +68,14 @@
                 <div class="x_panel fixed_height_390 {% if not contact.active %}inactive_contact{%endif%}">
                     <div class="x_title">
                         <h2>
-                            <span class="{{ contact.country.flag }}"></span>
+                            <span title="{{ contact.country.name }}" class="{{ contact.country.flag }}"></span>
                         </h2>
                         <ul class="nav navbar-right panel_toolbox">
-                            {% if perms.membership_manager.change_contact %}
-                                <li><a href="{% url 'edit_contacts' pk=contact.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
+                            {% if perms.membership_manager.change_organization %}
+                                <li><a title="Editar contacto" href="{% url 'edit_contacts' pk=contact.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
                             {% endif %}
-                            {% if perms.membership_manager.delete_contact %}
-                                <li><a data-url="{% url 'delete_contacts' pk=contact.pk %}" onclick="deletecontact(this)"><i class="fa fa-close"></i></a></li>
+                            {% if perms.membership_manager.delete_organization %}
+                                <li><a title="Eliminar contacto" data-url="{% url 'delete_contacts' pk=contact.pk %}" onclick="deletecontact(this)"><i class="fa fa-close"></i></a></li>
                             {% endif %}
                         </ul>
                         <div class="clearfix"></div>
@@ -85,7 +90,8 @@
                         <div>Celular: {% if contact.cellphone %} {{contact.cellphone}} {%else%} Sin especificar {% endif %}</div>
                         <div>Estado: {% if contact.active%} Activa {%else%} Inactiva {% endif %}</div>
                         <div>Moneda: {% if contact.currency %} {{contact.currency}} {%else%} Sin especificar {% endif %}</div>
-                        <div>Método de pago: {% if contact.payment_method %} {{contact.payment_method}} {%else%} Sin especificar {% endif %}</div>
+                        {% get_payment_method contact.payment_method as payment_method %}
+                        <div>Método de pago: {% if contact.payment_method %} {{payment_method}} {%else%} Sin especificar {% endif %}</div>
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_footer">

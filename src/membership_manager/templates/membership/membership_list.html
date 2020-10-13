@@ -10,7 +10,12 @@
     <h1 class="text-center">Membresías</h1>
     <div class="search_options">
         <div class="row">
+
+            {% if not perms.membership_manager.add_newsletter and not perms.membership_manager.add_membership %}
+            <div class="col-md-10 col-md-offset-1 col-xs-12">
+                {% else %}
             <div class="col-md-10">
+                {% endif %}
                 <div class="x_panel">
                     <form action="{% url 'memberships' %}" method="GET" id="formfilters">
                         <div class="row" style="margin-bottom: 2%;">
@@ -74,14 +79,18 @@
 
                 </div>
             </div>
+                {% if perms.membership_manager.add_newsletter or perms.membership_manager.add_membership %}
             <div class="col-md-2">
                 <div class="buttons" style="text-align:right;">
+                    {% if perms.async_notifications.add_newsletter %}
                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalnewslettertemplate">Nuevo boletín</button>
+                    {% endif %}
                     {% if perms.membership_manager.add_membership %}
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-md">Nueva membresía</button>
                     {% endif %}
                     </div>
             </div>
+                {% endif %}
             <div>
                 {% if perms.membership_manager.add_membership %}
                     <!--modal new membership-->
@@ -136,15 +145,15 @@
                 {% if membership.state == 'inactive' %}{{"inactive_membership"}}{% endif %}">
                     <div class="x_title">
                         <h2>
-                            <span class="{{ membership.country.flag }}"></span>
+                            <span title="{{ membership.country.name }}" class="{{ membership.country.flag }}"></span>
                             <b>{{membership.membership_type}}</b>
                         </h2>
                         <ul class="nav navbar-right panel_toolbox">
                             {% if perms.membership_manager.change_membership %}
-                                <li><a href="{% url 'edit_memberships' pk=membership.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
+                                <li><a title="Editar membresía" href="{% url 'edit_memberships' pk=membership.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
                             {% endif %}
                             {% if perms.membership_manager.delete_membership %}
-                                <li><a data-url="{% url 'delete_memberships' pk=membership.pk %}" onclick="deletemembership(this)"><i class="fa fa-close"></i></a></li>
+                                <li><a title="Eliminar membresía" data-url="{% url 'delete_memberships' pk=membership.pk %}" onclick="deletemembership(this)"><i class="fa fa-close"></i></a></li>
                             {% endif %}
                         </ul>
                         <div class="clearfix"></div>
@@ -154,29 +163,19 @@
                             <h4>Información:</h4>
                             <h5>{{membership.name}}</h5>
                             <div>Renovación: {{membership.renewal_period}}</div>
-                            <div>Estado:
-                                {% if membership.state == 'active' %} 
-                                    Activa
-                                {% else %}
-                                    Inactiva
-                                {% endif %}
-                            </div>
+                            <div>Estado: {% if membership.state == 'active' %} Activa {% else %} Inactiva {% endif %}</div>
                             <div>Número de facturas:{{membership.mem_inv.all.count}}</div>
-                            <div>
-                                Fecha de renovación: {{ membership.last_renew|date:"Y-m-d" }}
-                            </div>
-                            <div>
-                                Moneda: {{ membership.currency.currency }}
-                            </div>
+                            <div>Fecha de renovación: {% if membership.last_renew %} {{ membership.last_renew|date:"Y-m-d" }} {% else %} ----- {% endif %}</div>
+                            <div>Moneda: {{ membership.currency.currency }}</div>
                             <div>Contactar: 
                                 {% if membership.organization.telgroup.chat_id != "" %}
                                     <a href="https://t.me/joingroup/{{ membership.organization.telgroup.chat_id }}"><span class="telegram_icon"><i class="fa fa-send" aria-hidden="true"></i></span></a>
                                 {% endif %}
 
-                                <a type="button" data-url="{% url 'email_template' pk=membership.pk %}" onclick="email_membership(this)"><span class="mail"><i class="fa fa-envelope" aria-hidden="true"></i></span></a>
+                                <a title="Notificación de correo electrónico" type="button" data-url="{% url 'email_template' pk=membership.pk %}" onclick="email_membership(this)"><span class="mail"><i class="fa fa-envelope" aria-hidden="true"></i></span></a>
                             </div>
                             <div> Facturas:
-                                 <a target="_blank" href="{% url 'invoice-list' %}?name={{membership.organization.pk}}" ><span class="mail"><i class="fa fa-money" aria-hidden="true"></i></span></a>
+                                 <a title="Ver facturas" target="_blank" href="{% url 'invoice-list' %}?name={{membership.organization.pk}}" ><span class="mail"><i class="fa fa-money" aria-hidden="true"></i></span></a>
 
                             </div>
                         </div>

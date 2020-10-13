@@ -48,16 +48,16 @@
                                 <td>
                                 {% for task in boletin.newslettertask_set.all %}
                                     <div class="row text-center">
-                                        {{ task.send_date }} <a class="btn btn-sm" data-url="{% url 'delete_task' pk=task.pk %}" onclick="deleteelement(this)"><i class="fa fa-close" style="color:red"></i></a>
+                                        {{ task.send_date }} <a title="Eliminar fecha de envío" class="btn btn-sm" data-url="{% url 'delete_task' pk=task.pk %}" onclick="deleteelement(this)"><i class="fa fa-close" style="color:red"></i></a>
 
                                     </div>
                                    {% endfor %}
                                 </td>
                                 <td>
-                                    <a class="btn btn-sm" href="{% url 'edit_news_letter' pk=boletin.pk %}"><i class="fa fa-edit fa-2x"></i> </a>
-                                    <a class="btn btn-sm" data-url="{% url 'delete_news_letter' pk=boletin.pk %}" onclick="deleteelement(this)"><i class="fa fa-trash fa-2x"></i></a>
-                                    <a class="btn btn-sm" data-url="{% url 'send_news_letter' pk=boletin.pk %}" onclick="sendnewsletter(this)"><i class="fa fa-send fa-2x"></i></a>
-                                    <a class="btn btn-sm" data-url="{% url 'create_task' pk=boletin.pk %}" onclick="show_task(this)"
+                                    <a title="Editar boletín" class="btn btn-sm" href="{% url 'edit_news_letter' pk=boletin.pk %}"><i class="fa fa-edit fa-2x"></i> </a>
+                                    <a title="Eliminar boletín" class="btn btn-sm" data-url="{% url 'delete_news_letter' pk=boletin.pk %}" onclick="deleteelement(this)"><i class="fa fa-trash fa-2x"></i></a>
+                                    <a title="Enviar ahora" class="btn btn-sm" data-url="{% url 'send_news_letter' pk=boletin.pk %}" onclick="sendnewsletter(this)"><i class="fa fa-send fa-2x"></i></a>
+                                    <a title="Agregar fecha de envío" class="btn btn-sm" data-url="{% url 'create_task' pk=boletin.pk %}" onclick="show_task(this)"
                                     id="btnshowtask"><i class="fa fa-clock-o fa-2x"></i></a>
                                 </td>
                             </tr>
