@@ -335,8 +335,13 @@ class SendDateForm(CustomForm, forms.Form):
     def clean(self):
 
         cleaned_data = super(SendDateForm, self).clean()
-        current_date = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
-        send_date = cleaned_data.get("send_date").strftime("%d/%m/%Y, %H:%M:%S")
+        current_date = datetime.datetime.now()
+        current_date = datetime.datetime(current_date.year, current_date.month, current_date.day, current_date.hour,
+                                         current_date.minute, current_date.second)
+        send_date = cleaned_data.get("send_date")
+        send_date = datetime.datetime(send_date.year, send_date.month, send_date.day, send_date.hour,
+                                         send_date.minute, send_date.second)
+
         if send_date > current_date:
             return cleaned_data
         else:
