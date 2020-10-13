@@ -1,0 +1,16 @@
+{% block top_navigation %}
+	{% load  gentelellamenu %}
+	<div class="nav_menu">
+		<div class="nav toggle">
+			<a id="menu_toggle"><i class="fa fa-bars"></i></a>
+		</div>
+		<ul class="nav navbar-nav navbar-right">
+			{% top_menu  %}
+            {% if not request.user.is_authenticated %}
+			    <li><a href="{% url "login" %}">Iniciar sesión</a><li>
+            {% else %}
+                <li><a href="{% url "logout" %}">Cerrar sesión</a><li>
+            {% endif %}
+		</ul>
+	</div>
+{% endblock top_navigation %}
