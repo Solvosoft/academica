@@ -25,15 +25,13 @@ def validateEmail( email ):
 
 def get_emails(membership):
     emails = []
-    if membership.contact:
-        if validateEmail(membership.contact.email):
-            emails.append(membership.contact.email )
     if membership.organization:
         if validateEmail(membership.organization.email):
             emails.append(membership.organization.email )
-        if membership.organization.contact:
-            if validateEmail(membership.organization.contact.email):
-                emails.append(membership.organization.contact.email)
+        if membership.organization.contacts:
+            for contact in membership.organization.contacts.all():
+                if validateEmail(contact.email):
+                    emails.append(contact.email)
     if emails:
         emails = list(set(emails))
     return emails

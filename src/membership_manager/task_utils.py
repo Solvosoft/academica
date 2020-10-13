@@ -186,7 +186,7 @@ def create_invoice_tool(id_renew):
     return invoice
 
 def send_welcome_notification(id_membership):
-    instance = Membership.objects.filter(Q(contact__active=True)|Q(organization__active=True), pk=id_membership).first()
+    instance = Membership.objects.filter(organization__active=True, pk=id_membership).first()
     if instance:
         emails = get_emails(instance)
         send_email_from_template('welcome_mail', emails,

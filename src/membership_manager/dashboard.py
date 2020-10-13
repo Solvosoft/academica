@@ -64,7 +64,7 @@ class PaisesStats(StatsElement):
         return " Organizaciones"
 
     def get_count(self):
-        return Organization.objects.filter(active=True).count()
+        return Organization.objects.filter(active=True, type=False).count()
 
     def get_count_color(self):
         return 'green'
