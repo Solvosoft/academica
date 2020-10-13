@@ -51,6 +51,7 @@ def create_news_letter(request, pk):
                 filters=form.cleaned_data['filters']
             )
             news_letter.save()
+            messages.success(request, "Boletín registrado con éxito")
             return redirect('news_letter_list')
     else:
         form = NewsLetterForm(initial={'message': template.message})
@@ -63,6 +64,7 @@ def create_news_letter(request, pk):
 
 def send_news_letter(request, pk):
     task_send_newsletter.delay(pk)
+    messages.success(request, "Envío de boletín éxitoso")
     return redirect('news_letter_list')
 
 
@@ -72,6 +74,7 @@ def delete_news_letter(request, pk):
 
     if boletin:
         boletin.delete()
+        messages.success(request, "Boletín eliminado con éxito")
         return redirect('news_letter_list')
 
 
@@ -91,8 +94,13 @@ class EditNewsLetter(UpdateView):
                         })
         return context
 
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, "Boletín actualizado con éxito")
+        return super().form_valid(form)
 
-@permission_required('async_notifications.create_newslettertask')
+
+@permission_required('async_notifications.add_newslettertask')
 def create_task(request, pk):
     boletin = NewsLetter.objects.filter(pk=pk).first()
 
@@ -107,7 +115,7 @@ def create_task(request, pk):
                 send_date=form.cleaned_data['send_date']
             )
             task.save()
-            messages.success(request, 'Fecha de envío registrada exitosamente.')
+            messages.success(request, 'Fecha de envío registrada con éxito')
             return redirect('news_letter_list')
         else:
             messages.error(request, 'La fecha y hora ingresada no debe ser inferior a la fecha y hora actual.')
@@ -120,6 +128,7 @@ def delete_task(request, pk):
 
     if task:
         task.delete()
+        messages.success(request, "Fecha de envío eliminada con éxito")
         return redirect('news_letter_list')
 
 
@@ -131,6 +140,7 @@ def create_news_letter_template(request):
 
         if form.is_valid():
             form.save()
+            messages.success(request, "Plantilla base de boletín registrada con éxito")
             return redirect('news_letter_list')
     else:
         form = TemplateBaseNewsLetterForm()
@@ -147,7 +157,8 @@ def create_news_letter_membership(request):
     querydictfilters = QueryDict('', mutable=True)
     auxquerydict = QueryDict('', mutable=True)
     querydictfilters.update(request.GET)
-    querydictfilters.update(auxquerydict.update({'apply_filters': 'True'}))
+    auxquerydict.update({'apply_filters': 'True'})
+    querydictfilters.update(auxquerydict)
     form_filter = FilterEmailsForm(querydictfilters)
     form_filter.is_valid()
     form = NewsLetterForm(initial={'message': template.message})

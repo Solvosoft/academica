@@ -11,7 +11,7 @@ from membership_manager.forms import ContactSearchForm, ContactAddForm
 from membership_manager.models import Organization
 
 
-@method_decorator(permission_required('membership_manager.view_contact'), name='dispatch')
+@method_decorator(permission_required('membership_manager.view_organization'), name='dispatch')
 class ContactListView(ListView):
     template_name = "contact/contact_list.html"
     paginate_by = 30
@@ -39,7 +39,7 @@ class ContactListView(ListView):
         return context
 
 
-@permission_required('membership_manager.add_contact')
+@permission_required('membership_manager.add_organization')
 def create_contacts(request):
 
     # We create a new contact
@@ -51,7 +51,7 @@ def create_contacts(request):
         # We save the form and the formset
         if form.is_valid():
             form.save()
-            messages.success(request, "Contacto guardado con éxito")
+            messages.success(request, "Contacto registrado con éxito")
             return redirect('contacts')
 
         # if there are errors we return the error messages
@@ -77,8 +77,13 @@ class EditContact(UpdateView):
     template_name = 'contact/edit.html'
     success_url = reverse_lazy('contacts')
 
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, "Contacto actualizado con éxito")
+        return super().form_valid(form)
 
-@permission_required('membership_manager.delete_contact')
+
+@permission_required('membership_manager.delete_organization')
 def delete_contacts(request, pk):
     contact = Organization.objects.filter(pk=pk)
     if contact:

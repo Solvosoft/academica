@@ -51,7 +51,7 @@ def create_organization(request):
         # We save the form
         if form.is_valid():
             form.save()
-            messages.success(request, "Organización guardada con exíto")
+            messages.success(request, "Organización registrada con éxito")
             return redirect('organizations')
 
         # if there are errors we return the error messages
@@ -85,6 +85,11 @@ class EditOrganization(UpdateView):
         context['url_contact'] = reverse('api_organization', args=(organization.pk,))
         context['contact_list'] = [{'pk': x.pk, 'name': str(x)} for x in organization.contacts.all()]
         return context
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, "Organización actualizada con éxito")
+        return super().form_valid(form)
 
 
 @permission_required('membership_manager.delete_organization')

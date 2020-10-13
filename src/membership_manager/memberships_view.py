@@ -126,7 +126,7 @@ class EditMembership(UpdateView):
             for instance in instances:
                 instance.membership = membership
                 instance.save()
-            messages.success(self.request, "Membresía guardada con éxito")
+            messages.success(self.request, "Membresía actualizada con éxito")
 
         return super().form_valid(form)
 
@@ -151,19 +151,35 @@ def create_membership(request):
 
         # We save the form and the formset
         if form.is_valid() and fset.is_valid():
-            instm = form.save()
+
+            organization = form.cleaned_data['organization']
+            if form.cleaned_data['contact_type'] == "contact":
+                organization = form.cleaned_data['contact']
+
+            membership = Membership(
+                membership_type=form.cleaned_data['membership_type'],
+                organization=organization,
+                annual_cost=form.cleaned_data['annual_cost'],
+                currency=form.cleaned_data['currency'],
+                renewal_period=form.cleaned_data['renewal_period'],
+                state=form.cleaned_data['state'],
+                apply_fees=form.cleaned_data['apply_fees'],
+                fees=form.cleaned_data['fees']
+            )
+
+            instm = membership.save()
             instances = fset.save(commit=False)
             for instance in instances:
                 instance.membership = instm
                 instance.save()
-            messages.success(request, "Membresía guardada con éxito")
+            messages.success(request, "Membresía registrada con éxito")
             return redirect('memberships')
 
         # if there are errors we return the error messages
         else:
             messages.error(
                 request,
-                "Error al intentar guardar los servicios asociados")
+                "Error al intentar crear la membresía")
 
     # We will list data or show new form
     if request.method == 'GET':

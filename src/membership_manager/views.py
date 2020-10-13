@@ -101,6 +101,7 @@ def services_list(request):
 
         if form.is_valid():
             form.save()
+            messages.success(request, "Servicio guardado con éxito")
             return redirect('services_list')
     else:
         form = ServiceTypeForm()
@@ -111,7 +112,6 @@ def services_list(request):
                                                                    'services_list': services_list})
 
 
-@method_decorator(permission_required('membership_core.view_servicetype'), name='dispatch')
 @method_decorator(permission_required('membership_core.change_servicetype'), name='dispatch')
 class EditService(UpdateView):
     model = ServiceType
@@ -125,6 +125,11 @@ class EditService(UpdateView):
         context['services_list'] = ServiceType.objects.all()
         return context
 
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, "Servicio actualizado con éxito")
+        return super().form_valid(form)
+
 
 @permission_required('membership_core.view_servicetype')
 @permission_required('membership_core.delete_servicetype')
@@ -133,4 +138,5 @@ def delete_service(request, pk):
 
     if service:
         service.delete()
+        messages.success(request, "Servicio eliminado con éxito")
         return redirect('services_list')
