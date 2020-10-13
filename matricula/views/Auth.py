@@ -6,7 +6,7 @@ Created on 17/5/2015
 '''
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render, redirect, get_object_or_404
-from matricula.forms import StudentCreateForm
+from matricula.forms import StudentCreateForm, StudentEditForm
 from matricula.models import Student, Enroll
 from django.core.mail import send_mail
 from django.urls import reverse, reverse_lazy
@@ -201,18 +201,17 @@ def get_profile(request):
 
 
 class StudentEdit(UpdateView):
-    model = User
-    fields = ['first_name', 'last_name', 'email']
     success_url = reverse_lazy('index')
+    model = User
+    form_class = StudentEditForm
     template_name = "matricula/student_form.html"
 
     def get_context_data(self, **kwargs):
-
         context = UpdateView.get_context_data(self, **kwargs)
         enroll = Enroll.objects.filter(student__user=self.object).order_by('enroll_date')
         context['enroll'] = enroll.filter(enroll_activate=True, enroll_finished=True)
         context['pre_enroll'] = enroll.filter(enroll_activate=True, enroll_finished=False)
-        return context
+        return context    
 
 
 def login_user(request):
