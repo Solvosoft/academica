@@ -1,5 +1,7 @@
 from django.contrib import messages
+from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth.decorators import permission_required
+from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -8,8 +10,11 @@ from django.utils.timezone import now
 from django.views.generic import ListView, UpdateView
 
 from membership_manager.forms import InvoiceChangeForm, InvoicePayForm
+from membership_manager.invoice_utils import pay_invoice
 from membership_manager.models import Invoice
-from membership_manager.newsletterform import FilterEmailsForm
+from membership_manager.newsletterform import FilterEmailsForm, NewsLetterTemplateForm
+from membership_telbot_manager.utils import get_telegram_group
+from membership_telbot_manager.views import send_notification_message, send_invoice_message
 
 
 @method_decorator(permission_required('membership_manager.view_invoice'), name='dispatch')
@@ -72,6 +77,7 @@ class InvoiceListView(ListView):
         context['years'] = self.years
         context['current_year'] = self.current_year
         context['form_filters'] = self.form
+        context['form_template_newsletter'] = NewsLetterTemplateForm()
         context['params'] = self.get_pagination_params()
         return context
 
@@ -158,5 +164,23 @@ class InvoicePayView(UpdateView):
         super().form_valid(form)
         self.object.status = 'paid'
         self.object.save()
+
+        membership = self.object.membership
+        pay_invoice(self.object)
+        LogEntry.objects.log_action(
+            user_id=self.request.user.pk,
+            content_type_id=ContentType.objects.get_for_model(membership).pk,
+            object_id=membership.pk,
+            object_repr="Pago de membresía realizado.",
+            action_flag=CHANGE
+        )
+        if membership.organization:
+            if not membership.organization.type:
+                telgroup = get_telegram_group(membership)
+                if telgroup:
+                    send_notification_message(telgroup.chat_id, membership.organization)
+                    if self.object.pdf_invoice:
+                        send_invoice_message(telgroup.chat_id, self.object.pdf_invoice)
+
         messages.success(self.request, "Factura pagada satisfactoriamente")
         return HttpResponseRedirect(form.cleaned_data['next'])

@@ -25,7 +25,11 @@
 <div class="search_options">
     <form action="{% url 'invoice-list' %}" method="GET" id="formfilters">
         <div class="row">
+            {% if not perms.async_notifications.add_newsletter %}
+            <div class="col-md-10 col-md-offset-1 col-xs-12">
+                {% else %}
             <div class="col-md-10">
+                {% endif %}
                 <div class="x_panel">
 
                         <div class="row" style="margin-bottom: 2%;">
@@ -59,17 +63,42 @@
                         <div class="row">
                             <div class="text-right">
                                 <a href="{% url 'invoice-list' %}" class="btn btn-dark">Limpiar filtros</a>
-                                <button class="btn btn-success" type="submit" >Buscar</button>
+                                <button class="btn btn-success" type="button" onclick="search_invoices()">Buscar</button>
                             </div>
                         </div>
+
+                    <div id="modalnewslettertemplate" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title">Seleccione la plantilla base de boletín</h4>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        {% include 'field.html' with field=form_template_newsletter.news_letter_template  %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                                        <button class="btn btn-success" type="submit" formaction="{% url 'create_news_letter_membership' %}">Seleccionar</button>
+                                        <input type="hidden" name="year" value="{{current_year}}" />
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+
                 </div>
             </div>
-            <div class="col-md-2">
-                <div class="buttons" style="text-align:right;">
-                    <input type="hidden" name="year" value="{{current_year}}" />
-                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalnewslettertemplate">Nuevo boletín</button>
+            {% if perms.async_notifications.add_newsletter %}
+                <div class="col-md-2">
+                    <div class="buttons" style="text-align:right;">
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalnewslettertemplate">Nuevo boletín</button>
                     </div>
-            </div>
+                </div>
+            {% endif %}
         </div>
       </form>
 </div>
@@ -170,3 +199,15 @@
     </ul>
 </div>
 {% endblock content %}
+{% block js %}
+<script>
+    function search_invoices(){
+         $("#formfilters").submit();
+    }
+
+
+    $(window).load(function() {
+      $('.select2-container').width('100%');
+    });
+</script>
+{% endblock %}

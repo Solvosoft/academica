@@ -11,7 +11,7 @@
     <div class="search_options">
         <div class="row">
 
-            {% if not perms.membership_manager.add_newsletter and not perms.membership_manager.add_membership %}
+            {% if not perms.async_notifications.add_newsletter and not perms.membership_manager.add_membership %}
             <div class="col-md-10 col-md-offset-1 col-xs-12">
                 {% else %}
             <div class="col-md-10">
@@ -79,7 +79,7 @@
 
                 </div>
             </div>
-                {% if perms.membership_manager.add_newsletter or perms.membership_manager.add_membership %}
+                {% if perms.async_notifications.add_newsletter or perms.membership_manager.add_membership %}
             <div class="col-md-2">
                 <div class="buttons" style="text-align:right;">
                     {% if perms.async_notifications.add_newsletter %}
