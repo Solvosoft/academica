@@ -55,61 +55,6 @@ class MembershipFilterForm(forms.Form):
     service_type = forms.ModelMultipleChoiceField(queryset=ServiceType.objects.all(), required=False)
     membership_type = forms.MultipleChoiceField(choices=[(None, "Todas")]+list(Membership.TYPES), required=False)
 
-class MembershipManager(NewsLetterInterface):
-    name = "membresia"
-    model = Membership
-    form = MembershipFilterForm
-
-    field_map = {
-        'exclude': { 'excludeemail': 'organization__email__in'},
-        'filter': {
-            'active': 'state',
-            'country': 'organization__country__in',
-            'currency': 'organization__currency__in',
-            'payment_method': 'organization__payment_method__in',
-            'apply_fees': 'apply_fees',
-            'membership_type': 'membership_type__in',
-            'service_type': 'service__servicetype__in'
-        }
-    }
-
-
-    def get_exclude(self):
-        exclude = {}
-        self.excludedata=set()
-        excludeemail = self.form.cleaned_data['excludeemail']
-        if excludeemail:
-            e = excludeemail.replace(" ", '').split(',')
-            if not e[0]:
-                e.pop(0)
-            self.excludedata = set(e)
-        return exclude
-
-    def get_emails(self):
-        mails = []
-        busqueda = self.form.cleaned_data.get('busqueda_en', '0')
-        if not busqueda:
-            busqueda='0'
-        if busqueda == '0' or busqueda == '2':
-            mails += list(self.queryset.exclude(organization__email__isnull=True).values_list('organization__email', flat=True))
-        return list(set(mails)-self.excludedata)
-
-
-    def get_emails_instance(self):
-        mails = []
-        pks_used = []
-        busqueda = self.form.cleaned_data.get('busqueda_en', '0')
-        if not busqueda:
-            busqueda='0'
-        if busqueda == '0' or busqueda == '2':
-            mails += list(self.queryset.exclude(organization__email__isnull=True).values_list('organization__email', 'pk'))
-        for item in mails:
-            pk, email = item[1], item[0]
-            key = str(pk)+"_"+email
-            if email not in self.excludedata and key not in pks_used:
-                yield self.model.objects.filter(pk=pk).first(), email
-                pks_used.append(key)
-
 
 class OrganizationFilterForm(forms.Form):
     ACTIVE_CHOICE = (
@@ -397,3 +342,55 @@ class EmailNotificationForm(GTForm, forms.ModelForm):
 
     class Media:
         js = ['js/newsletter.js']
+
+
+class MembershipManager(NewsLetterInterface):
+    name = "membresia"
+    model = Membership
+    form = FilterEmailsForm
+
+    field_map = {
+        'filter': {
+            'country': 'organization__country__in',
+            'currency': 'organization__currency__in',
+            'payment_method': 'organization__payment_method__in',
+            'membership_type': 'membership_type__in',
+            'service_type': 'service__servicetype__in',
+            'name': 'organization__in',
+        }
+    }
+
+
+    def get_queryset(self):
+        filters = self.get_filters()
+        self.queryset = self.model.objects.all()
+
+        apply_filters = self.form.cleaned_data.get('apply_filters', False)
+        search_in = self.form.cleaned_data.get('search_in', None)
+        invoices = self.form.cleaned_data.get('invoices', None)
+        apply_fees = self.form.cleaned_data.get('apply_fees', None)
+
+        if apply_filters:
+
+            if filters:
+                if search_in:
+                    if search_in == "contacto":
+                        filters['organization__type'] = True
+                    elif search_in == "organizacion":
+                        filters['organization__type'] = False
+
+                if invoices:
+                    filters['mem_inv__status'] = invoices
+
+                if apply_fees:
+                    filters['apply_fees'] = apply_fees
+
+                self.queryset = self.queryset.filter(**filters)
+
+        return self.queryset
+
+
+    def get_emails(self):
+        mails = []
+        mails += list(self.queryset.exclude(organization__email__isnull=True).values_list('organization__email', flat=True))
+        return list(mails)
