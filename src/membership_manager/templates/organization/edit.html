@@ -31,3 +31,16 @@
     </div>
 </div>
 {% endblock content %}
+
+{% block js %}
+<script>
+
+    $(document).on('crudlistadd', function(event, form, result){
+        for(i=0; i<result.length; i++){
+            $('#id_organization').find("option[value='" + result[i]['id'] + "']").remove();
+        }
+        $('#id_organization').change();
+    });
+
+</script>
+{% endblock %}
