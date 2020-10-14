@@ -21,15 +21,13 @@ class ContactListView(ListView):
         return super(ContactListView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
-        self.form = ContactSearchForm(self.request.GET, initial={'apply_filters': True})
+        self.form = ContactSearchForm(self.request.GET)
         self.form.is_valid()
-        queryset = Organization.objects.filter(type=True)
+        queryset = Organization.objects.filter(type=True).order_by("-active", "name")
         if self.form.cleaned_data['contact']:
-            queryset = queryset.filter(
-                Q(pk__in=self.form.cleaned_data['contact']))
+            queryset = queryset.filter(pk__in=self.form.cleaned_data['contact'])
         if self.form.cleaned_data['countries']:
-            queryset = queryset.filter(
-                Q(country__pk__in=self.form.cleaned_data['countries']))
+            queryset = queryset.filter(country__in=self.form.cleaned_data['countries'])
         return queryset
 
     def get_context_data(self, **kwargs):
