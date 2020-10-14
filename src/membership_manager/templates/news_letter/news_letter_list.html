@@ -1,5 +1,5 @@
 {% extends 'gentelella/base.html' %}
-
+{% load news_letter_emails %}
 {% block content %}
 <div class="container">
     <div class="row">
@@ -59,6 +59,11 @@
                                     <a title="Enviar ahora" class="btn btn-sm" data-url="{% url 'send_news_letter' pk=boletin.pk %}" onclick="sendnewsletter(this)"><i class="fa fa-send fa-2x"></i></a>
                                     <a title="Agregar fecha de envío" class="btn btn-sm" data-url="{% url 'create_task' pk=boletin.pk %}" onclick="show_task(this)"
                                     id="btnshowtask"><i class="fa fa-clock-o fa-2x"></i></a>
+                                    {% update_emails boletin as update_news_letter %}
+
+                                    {% if update_news_letter %}
+                                    <a title="Actualizar remitentes" class="btn btn-sm" href="{% url 'update_emails_news_letter' pk=boletin.pk %}"><i class="fa fa-refresh fa-2x"></i></a>
+                                    {% endif %}
                                 </td>
                             </tr>
                             {% endfor %}

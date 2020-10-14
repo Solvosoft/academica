@@ -10,7 +10,7 @@ from .memberships_view import MembershipListView, create_membership, delete_memb
 
 from .news_letter_view import news_letter_list, create_news_letter, send_news_letter, delete_news_letter, \
     EditNewsLetter, \
-    delete_task, create_news_letter_template, create_task, create_news_letter_membership
+    delete_task, create_news_letter_template, create_task, create_news_letter_membership, update_emails_news_letter
 from .organizations_view import OrganizationListView, create_organization, delete_organization, \
     EditOrganization
 
@@ -35,6 +35,7 @@ urlpatterns = [
     path('newsletter/send/<int:pk>/', send_news_letter, name="send_news_letter"),
     path('newsletter/delete/<int:pk>/', delete_news_letter, name="delete_news_letter"),
     path('services/delete/<int:pk>/', delete_service, name="delete_service"),
+    path('newsletter/update_emails/<int:pk>/', update_emails_news_letter, name="update_emails_news_letter"),
     path('newsletter/edit/<int:pk>/', EditNewsLetter.as_view(), name="edit_news_letter"),
     path('task/create/<int:pk>/', create_task, name="create_task"),
     path('task/delete/<int:pk>/', delete_task, name="delete_task"),

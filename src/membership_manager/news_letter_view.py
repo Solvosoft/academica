@@ -10,6 +10,7 @@ from async_notifications.models import NewsLetter, NewsLetterTemplate, NewsLette
 from async_notifications.tasks import task_send_newsletter
 from membership_manager.newsletterform import NewsLetterTemplateForm, NewsLetterForm, FilterEmailsForm, SendDateForm, \
     TemplateBaseNewsLetterForm
+from membership_manager.utils import get_emails_news_letter
 
 
 @permission_required('async_notifications.view_newsletter')
@@ -95,7 +96,14 @@ class EditNewsLetter(UpdateView):
         return context
 
     def form_valid(self, form):
-        form.save()
+        news_letter = self.object
+        news_letter.filters = form.cleaned_data['filters']
+        news_letter.subject = form.cleaned_data['subject']
+        news_letter.message = form.cleaned_data['message']
+        news_letter.file = form.cleaned_data['file']
+        mails = get_emails_news_letter(news_letter)
+        news_letter.recipient = ", ".join(mails)
+        news_letter.save()
         messages.success(self.request, "Boletín actualizado con éxito")
         return super().form_valid(form)
 
@@ -166,3 +174,12 @@ def create_news_letter_membership(request):
     return render(request, "news_letter/create_news_letter.html", context={'form': form,
                                                                            'template': template.pk,
                                                                            'form_filter': form_filter})
+
+
+@permission_required('async_notifications.change_newslettertask')
+def update_emails_news_letter(request, pk):
+    news_letter = NewsLetter.objects.filter(pk=pk).first()
+    mails = get_emails_news_letter(news_letter)
+    news_letter.recipient = ", ".join(mails)
+    news_letter.save()
+    return redirect('news_letter_list')

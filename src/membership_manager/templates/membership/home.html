@@ -83,3 +83,12 @@
         </div>
     </div>
     {% endblock %}
+
+{% block js %}
+<script>
+$(window).load(function() {
+    $('#update_news_letter').attr('href', {% url 'news_letter_list' %});
+});
+</script>
+
+{% endblock %}

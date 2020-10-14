@@ -167,10 +167,10 @@ def create_membership(request):
                 fees=form.cleaned_data['fees']
             )
 
-            instm = membership.save()
+            membership.save()
             instances = fset.save(commit=False)
             for instance in instances:
-                instance.membership = instm
+                instance.membership = membership
                 instance.save()
             messages.success(request, "Membresía registrada con éxito")
             return redirect('memberships')

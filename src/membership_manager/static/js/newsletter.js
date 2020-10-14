@@ -12,6 +12,7 @@ function manageNewsletter(url, previewurl){
               data: {'recipient': $(".datafilter").find(':input').serialize()},
               success: function(data){
                     for (var x=0; x<data['emails'].length; x++){
+                         $('input[name="recipient"]').data('tagify').removeAllTags();
                          $('input[name="recipient"]').data('tagify').addTags(data['emails'][x])
                     }
               }

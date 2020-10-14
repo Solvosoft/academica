@@ -1,7 +1,9 @@
 from djgentelella.elements import StatsElement, StatsCountList
 
+from async_notifications.models import NewsLetter
 from membership_core.models import Country
 from membership_manager.models import Membership, Invoice, Organization
+from membership_manager.utils import check_newsletter_update
 
 
 class MembresiasActivasStats(StatsElement):
@@ -82,6 +84,25 @@ class PaisesStats(StatsElement):
         return Country.objects.all().count()
 
 
+class UpdateNewsLetter(StatsElement):
+    def render(self):
+        dev = "<a type='button' class='btn btn-success' id='update_news_letter' style='margin-top: 10%;'>Actualizar boletines</a>"
+        return dev
+
+
+def update_news_letter_emails():
+    news_letter_list = NewsLetter.objects.all()
+    add_update_button = False
+
+    for news_letter in news_letter_list:
+        if check_newsletter_update(news_letter):
+            add_update_button = True
+            break
+    return add_update_button
 
 class TopStats(StatsCountList):
+
     stats_views = [MembresiasActivasStats, FacturasStats, PaisesStats]
+
+    if update_news_letter_emails():
+        stats_views = [MembresiasActivasStats, FacturasStats, PaisesStats, UpdateNewsLetter]

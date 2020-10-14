@@ -1,19 +1,20 @@
 import random
 import string
-from datetime import timedelta
 
-from async_notifications.models import NewsLetterTemplate
-from async_notifications.utils import get_newsletter_context
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.db.models import Q
+from django.http import QueryDict
 from django.utils import timezone
 
+from async_notifications.models import NewsLetterTemplate
 from async_notifications.register import update_template_context
+from async_notifications.utils import get_newsletter_context
 from membership_core.models import ServiceMT
-from membership_manager.models import Invoice
+from membership_manager.models import Invoice, Membership
+from membership_manager.newsletterform import FilterEmailsForm
 
 
 def validateEmail( email ):
@@ -159,3 +160,68 @@ def get_context_news_letter(template_pk):
             )
 
     return context_list
+
+def get_emails_news_letter(news_letter):
+
+    form = FilterEmailsForm(QueryDict(news_letter.filters))
+    form.is_valid()
+    queryset = Membership.objects.all()
+    filters = {}
+
+    apply_filters = form.cleaned_data['apply_filters']
+    search_in = form.cleaned_data['search_in']
+    apply_fees = form.cleaned_data['apply_fees']
+
+    if apply_filters:
+
+        if form.cleaned_data['name']:
+            filters['organization__in'] = form.cleaned_data['name']
+
+        if form.cleaned_data['state']:
+            filters['state'] = form.cleaned_data['state']
+
+        if form.cleaned_data['country']:
+            filters['organization__country__in'] = form.cleaned_data['country']
+
+        if form.cleaned_data['currency']:
+            filters['currency__in'] = form.cleaned_data['currency']
+
+        if form.cleaned_data['payment_method']:
+            filters['payment_method__in'] = form.cleaned_data['payment_method']
+
+        if form.cleaned_data['membership_type']:
+            filters['membership_type__in'] = form.cleaned_data['membership_type']
+
+        if form.cleaned_data['service_type']:
+            filters['service__servicetype__in'] = form.cleaned_data['service_type']
+
+        if form.cleaned_data['invoices']:
+            filters['mem_inv__status'] = form.cleaned_data['invoices']
+
+
+        if search_in:
+            if search_in == "contacto":
+                filters['organization__type'] = True
+            elif search_in == "organizacion":
+                filters['organization__type'] = False
+
+        if apply_fees:
+            filters['apply_fees'] = apply_fees
+
+        queryset = queryset.filter(**filters)
+
+    mails = list(queryset.exclude(organization__email__isnull=True).values_list('organization__email', flat=True))
+
+    return mails
+
+def check_newsletter_update(news_letter):
+
+    mails = news_letter.recipient.replace(' ', '').split(',')
+    update_news_letter = False
+
+    for email in get_emails_news_letter(news_letter):
+        email = email.replace(' ', '')
+        if not email in mails:
+            update_news_letter = True
+            break
+    return update_news_letter
