@@ -66,9 +66,8 @@
 <div id="hoursmodal" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="hoursModalLabel">
   <div class="modal-dialog modal-sm" role="document">
     <div class="modal-content">
-        <form method="post" action="{% url '' %}" >
+        <form id="hoursform" method="post" action="{% url 'activityreporthour-add' %}" >
             {{hoursform.as_horizontal}}
-
         </form>
     </div>
       <div class="modal-footer">
@@ -78,5 +77,19 @@
     </div>
   </div>
 </div>
+
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script>
+    $(document).ready(function(){
+        $(".raclock").on('click', function(){
+            $('input[name="item"]').val($(this).data("item"));
+            $("#hoursmodal").modal();
+        });
+    });
+
+</script>
 
 {% endblock %}
