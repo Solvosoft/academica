@@ -53,6 +53,12 @@
                                 <a href="{% url 'services_list' %}">Servicios</a>
                             </li>
                             {% endif %}
+
+                            {% if perms.membership_manager.view_activityreport %}
+                            <li>
+                                <a href="{% url 'activityreport-list' %}">Reporte de Atención</a>
+                            </li>
+                            {% endif %}
                         </ul>
                     </li>
                 {% endif %}

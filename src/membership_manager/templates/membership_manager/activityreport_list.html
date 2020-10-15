@@ -1,0 +1,82 @@
+{% extends 'gentelella/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="x_panel">
+ <div class="x_content">
+  <form method="GET" >
+      {{ filterform.as_horizontal }}
+        <div class="row">
+
+           <div class="text-right">
+               <a href="{% url 'activityreport-list' %}" class="btn btn-dark">Limpiar filtros</a>
+               <button class="btn btn-success" type="submit"  >Buscar</button>
+           </div>
+       </div>
+  </form>
+ </div>
+</div>
+<div class="x_panel">
+<div class="x_title">
+<h2>Lista de atenciones realizadas</h2>
+ <ul class="nav navbar-right panel_toolbox">
+  <li><a href="{% url 'activityreport-add' %}" class="btn btn-success pull-right " style="color: #fff;"><i class="fa fa-plus"></i> Nueva</a>
+ </ul>
+<div class="clearfix"></div>
+</div>
+<div class="x_content">
+<ul class="list-unstyled timeline">
+       {% for object in object_list %}
+        <li>
+        <div class="block">
+        <div class="tags">
+        <a href="" class="tag">
+        <span>{{object.duration}} horas</span>
+        </a>
+        </div>
+        <div class="block_content">
+        <h2 class="title">
+        <a>{{object.organization}}</a>
+        </h2>
+        <div class="byline">
+         {% if perms.membership_manager.change_activityreport %}
+         <a href="{% url 'activityreport-edit' object.pk %}"><i class="fa fa-edit"></i>  </a>
+         {% endif %}
+        <span>{{object.start_date}} a {{object.end_date}}</span> creado por <a>{{object.user.username}}</a>
+        </div>
+        <p class="excerpt">
+         {{object.description}}
+         {% if perms.membership_manager.change_activityreport %}
+         <button data-item="{{object.pk}}" class="btn btn-xs btn-info pull-right raclock"><i class="fa fa-clock-o" aria-hidden="true"></i>
+</button>
+         {% endif %}
+        </p>
+        </div>
+        </div>
+        </li>
+        {% endfor %}
+
+</ul>
+</div>
+</div>
+
+{% include 'gentelella/cruds/pagination/enumeration.html' %}
+
+<div id="hoursmodal" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="hoursModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+        <form method="post" action="{% url '' %}" >
+            {{hoursform.as_horizontal}}
+
+        </form>
+    </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="hoursbtn">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

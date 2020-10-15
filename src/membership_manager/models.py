@@ -257,6 +257,14 @@ class Invoice(models.Model):
 
 
 class ActivityReport(models.Model):
+    ATYPES = (
+        (0, 'Mantenimiento del sistema'),
+        (1, 'Presencial'),
+        (2, 'Fallo en servicio'),
+        (3, 'Capacitación'),
+    )
+
+
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,
                               verbose_name="Usuario creador")
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE,
@@ -267,6 +275,7 @@ class ActivityReport(models.Model):
     duration = models.PositiveIntegerField(default=0, verbose_name="Duración en horas",
                                            help_text="Si se deja en 0 y se incluye atenciones la duración en horas se calcula automáticamente")
     manual_edited = models.BooleanField(default=True)
+    attention_type = models.IntegerField(default=0, choices=ATYPES)
 
     def __str__(self):
         return "%s - %s" % (

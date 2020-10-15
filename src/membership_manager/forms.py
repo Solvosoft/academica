@@ -7,7 +7,7 @@ from djgentelella.widgets import core as widget
 from djgentelella.widgets.selects import AutocompleteSelect
 
 from membership_core.models import MembershipTemplate, Country, ServiceType
-from membership_manager.models import Invoice
+from membership_manager.models import Invoice, ActivityReport
 from membership_manager.models import Membership, Service, Organization, \
     Report, ReportType
 from membership_manager.reports.registro import REPORTES_TITULOS
@@ -346,6 +346,7 @@ class InvoicePayForm(GTForm, forms.ModelForm):
             #'receipt': genwidgets.FileInput
         }
 
+
 class ServiceTypeForm(GTForm, forms.ModelForm):
 
     class Meta:
@@ -354,4 +355,38 @@ class ServiceTypeForm(GTForm, forms.ModelForm):
 
         widgets = {
             'name': genwidgets.Input
+        }
+
+
+class ActivityReportForm(GTForm, forms.Form):
+    organization = forms.ModelMultipleChoiceField(
+        queryset=Organization.objects.all(),
+        widget=genwidgets.SelectMultiple,
+        required=False, label="Organizaciones o Contactos"
+    )
+    daterange = forms.CharField(
+        widget= genwidgets.DateRangeInput,
+        required=False, label='Rango de fechas'
+    )
+
+
+class ActivityReportHours(GTForm, forms.Form):
+    start_date = forms.DateTimeField(widget=genwidgets.DateTimeInput)
+    end_date = forms.DateTimeField(widget=genwidgets.DateTimeInput)
+    item = forms.IntegerField(widget=forms.HiddenInput)
+
+class ActivityReportAddForm(GTForm, forms.ModelForm):
+    field_order = ['attention_type', 'organization', 'description', 'start_date', 'end_date', 'duration']
+
+    class Meta:
+        model = ActivityReport
+        exclude = ['user', 'manual_edited']
+        widgets = {
+            'organization': genwidgets.Select,
+            'description': genwidgets.Textarea,
+            'start_date': genwidgets.DateInput,
+            'end_date': genwidgets.DateInput,
+            'duration': genwidgets.NumberInput,
+            'attention_type': genwidgets.RadioHorizontalSelect
+
         }
