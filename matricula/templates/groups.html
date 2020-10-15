@@ -15,25 +15,23 @@
                 <span  id="count_{{group.pk}}" class="value green">{{group.enroll_set.count}}</span>
             </li>
             <div style="margin:5px;">
-                {% for group in course.groups%}
-                    <li>
-                        {%if add_schedule%}
-                            <span>{{group.schedule}}</span>
-                        {% endif %}
-                    </li>
-                    <li></li>
-                    <li>
-                        {% if request.user.is_authenticated and group.in_enrollment%}
-                            <a class="btn btn-primary btn-sm" data-href="{% url 'enrollme' group.pk%}"  data-ajax="true">
-                                {% if group.flow == group.AUTO_ENROLL%}
-                                    {% trans 'Enroll me' %}
-                                {% else %}
-                                    {% trans 'Pre-enroll me' %}
-                                {% endif%}
-                            </a>
-                        {% endif %}
-                    </li>
-                {%endfor%}
+                <li>
+                    {%if add_schedule%}
+                        <span>{{group.schedule}}</span>
+                    {% endif %}
+                </li>
+                <li></li>
+                <li>
+                    {% if request.user.is_authenticated and group.in_enrollment%}
+                        <a class="btn btn-primary btn-sm" data-href="{% url 'enrollme' group.pk%}"  data-ajax="true">
+                            {% if group.flow == group.AUTO_ENROLL%}
+                                {% trans 'Enroll me' %}
+                            {% else %}
+                                {% trans 'Pre-enroll me' %}
+                            {% endif%}
+                        </a>
+                    {% endif %}
+                </li>
             </div>
         </div>
     {% endfor %}
