@@ -6,18 +6,18 @@
 {%block content%}
 	<div class="row">
 		<h1> {% trans 'List of available courses' %} </h1>
+		<div id="group_message"></div>
 		<div class="x_panel">
 			<div class="x_content">
 				{% for pk, course in courses.items %}
 					<div class="col-md-6 col-sm-12 profile_details">
 						<div class="well profile_view" style="display:block;">
 							<div class="col-sm-12">
-								<h3 class="brief"><i>{{course.course.name}}</i></h3>
-								<div class="left col-md-7 col-sm-7">
-									<h2><b>Descripción</b></h2>
+								<h3 class="green">{{course.course.name}}</h3>
+								<div class="left col-md-5 col-sm-12">
 									<span class="inline-first">{{course.course.content|truncatechars:100|safe}}</span>
 								</div>
-								<div class="right col-md-5 col-sm-5 text-center">
+								<div class="right col-md-7 col-sm-12 text-center">
 									<div class="col-md-12">
 										{% include 'groups.html' %}
 									</div>
@@ -27,7 +27,7 @@
 								<div class=" col-sm-6 emphasis">
 								</div>
 								<div class=" col-sm-6 emphasis" style="text-align:right;">
-									<a class="btn btn-primary btn-sm" href="{% url 'course' course.course.pk%}">
+									<a class="btn btn-link btn-lg green" href="{% url 'course' course.course.pk%}">
 										<i class="fa fa-eye"> </i> Leer Más...
 									</a>
 								</div>
@@ -47,4 +47,8 @@
 			</div>
 		</div>
 	</div>
-{%endblock%}
+{% endblock %}
+{% block js %}
+	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
+{% endblock %}
