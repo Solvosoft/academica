@@ -9,13 +9,13 @@
 			<ul class="messages">
 				<li>
 					<div class="message_date">
-						<h3 class="date text-info" style="text-align:left;">{{enroll.group.schedule}}</h3>
+						<h3 class="date text-info green" style="text-align:left;">{{enroll.group.schedule}}</h3>
 						<a class="btn-sm btn-primary" href="{% url 'finish_enroll' enroll.pk %}">
 							{% trans 'Enrollme' %}
 						</a>
 					</div>
 					<div style="margin-left:0" class="message_wrapper">
-						<h4 class="heading">{{enroll.group }}</h4>
+						<h4 class="heading green">{{enroll.group }}</h4>
 						<blockquote class="message">{{enroll.group.course.content|striptags|truncatechars:300|safe}}</blockquote>
 						<br />
 					</div>
@@ -44,10 +44,10 @@
 			<ul class="messages">
 				<li>
 					<div class="message_date">
-						<h3 class="date text-info">{{enroll.group.schedule}}</h3>
+						<h3 class="date text-info green">{{enroll.group.schedule}}</h3>
 					</div>
 					<div style="margin-left:0" class="message_wrapper">
-						<h4 class="heading">{{enroll.group }}</h4>
+						<h4 class="heading green">{{enroll.group }}</h4>
 						<blockquote class="message">{{enroll.group.course.content|striptags|truncatechars:300|safe}}</blockquote>
 						<br />
 					</div>
