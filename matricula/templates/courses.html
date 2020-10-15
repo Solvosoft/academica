@@ -1,36 +1,50 @@
 {% extends 'gentelella/base.html'%}
-{%load i18n %}
+{%load i18n static %}
+{% block extra_css %} 
+	<link href="{% static 'css/matricula.css' %}" rel="stylesheet">
+{% endblock %}
 {%block content%}
-<h1 class="text-center"> {% trans 'List of available courses' %} </h1>
-
-<div id="group_message"> </div>
-<ul class="list-group">
-{% for pk, course in courses.items %}
-
-  <li class="list-group-item">
-  	<div class="row">
-  		<div class="col-md-8">
-  		<a href="{% url 'course' course.course.pk%}" >
-  		<h3 class="list-group-item-heading text-center">{{course.course.name}}</h3></a>
-  		<br>
-    	<p class="list-group-item-text text-justify">{{course.course.content|truncatewords_html:60|safe}}</p>
-    	<a class= "btn btn-success" href="{% url 'course' course.course.pk%}" > {% trans 'Read more' %} </a>
-  		</div>
-  
-  		<div class="col-md-4">
-				{% include 'groups.html' %}
-  		</div>
-
-    </div>
-  </li>
-
-{%endfor%}
-</ul>
-    {% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
+	<div class="row">
+		<h1> {% trans 'List of available courses' %} </h1>
+		<div class="x_panel">
+			<div class="x_content">
+				{% for pk, course in courses.items %}
+					<div class="col-md-6 col-sm-12 profile_details">
+						<div class="well profile_view" style="display:block;">
+							<div class="col-sm-12">
+								<h3 class="brief"><i>{{course.course.name}}</i></h3>
+								<div class="left col-md-7 col-sm-7">
+									<h2><b>Descripción</b></h2>
+									<span class="inline-first">{{course.course.content|truncatechars:100|safe}}</span>
+								</div>
+								<div class="right col-md-5 col-sm-5 text-center">
+									<div class="col-md-12">
+										{% include 'groups.html' %}
+									</div>
+								</div>
+							</div>
+							<div class="profile-bottom text-center">
+								<div class=" col-sm-6 emphasis">
+								</div>
+								<div class=" col-sm-6 emphasis" style="text-align:right;">
+									<a class="btn btn-primary btn-sm" href="{% url 'course' course.course.pk%}">
+										<i class="fa fa-eye"> </i> Leer Más...
+									</a>
+								</div>
+							</div>
+							<div class="clearfix"></div>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+				{%endfor%}
+				{% if messages %}
+					<ul class="messages">
+						{% for message in messages %}
+						<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			</div>
+		</div>
+	</div>
 {%endblock%}

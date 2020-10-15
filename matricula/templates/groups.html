@@ -1,50 +1,35 @@
 {%load i18n %}
-<h4 class="text-left"> {% trans 'Groups' %} </h4>
-
-
 <table class="table">
-            <thead>
-            <tr>
-                <th>Groups</th>
-                <th>Maximum Students</th>
-                <th>Enrollment</th>
-
-            </tr>
-
-
-            </thead>
-
-            <tbody>
-
-	{% for group in course.groups%}
-
-		<tr>
-            <td>{{group.name}}</td>
-            <td><span class="badge">{{ group.maximum }}</span></td>
-            <td>
-                <span id="count_{{group.pk}}" class="badge">{{group.enroll_set.count}}</span>
-            </td>
-
-
-
-		{%if add_schedule%}<td> <span>{{group.schedule}} </span></td>{%endif%}
-
-
-		{% if request.user.is_authenticated and group.in_enrollment%}
-			<td> <a data-href="{% url 'enrollme' group.pk%}"  data-ajax="true">
-				{% if group.flow == group.AUTO_ENROLL%}
-					{% trans 'Enroll me' %}
-
-				{% else %}
-
-					{% trans 'Pre-enroll me' %}
-
-				{% endif%}
-				 </a>
-            </td>
-		{%endif%}
-
+    <thead>
+        <tr>
+            <th>Groups</th>
+            <th>Maximum Students</th>
+            <th>Enrollment</th>
         </tr>
-	{%endfor%}
-</tbody>
+    </thead>
+    <tbody>
+        {% for group in course.groups%}
+            <tr>
+                <td>{{group.name}}</td>
+                <td><span class="badge">{{ group.maximum }}</span></td>
+                <td>
+                    <span id="count_{{group.pk}}" class="badge">{{group.enroll_set.count}}</span>
+                </td>
+                {%if add_schedule%}
+                    <td> <span>{{group.schedule}} </span></td>
+                {%endif%}
+                {% if request.user.is_authenticated and group.in_enrollment%}
+                    <td> 
+                        <a data-href="{% url 'enrollme' group.pk%}"  data-ajax="true">
+                        {% if group.flow == group.AUTO_ENROLL%}
+                            {% trans 'Enroll me' %}
+                        {% else %}
+                            {% trans 'Pre-enroll me' %}
+                        {% endif%}
+                        </a>
+                    </td>
+                {%endif%}
+            </tr>
+        {%endfor%}
+    </tbody>
 </table>
