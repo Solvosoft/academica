@@ -206,6 +206,7 @@ DATE_INPUT_FORMATS=[
 ]
 
 DATETIME_INPUT_FORMATS = [
+    '%m/%d/%Y %H:%M %A',
     '%m/%d/%Y %H:%M %p',
     '%Y-%m-%d %H:%M %p',
     '%d/%m/%y %H:%M %p'

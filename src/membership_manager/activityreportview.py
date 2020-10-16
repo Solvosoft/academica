@@ -1,12 +1,13 @@
 from django.contrib.auth.decorators import permission_required
 from django.db.models.query import QuerySet
 from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
 from django.views.generic import ListView, CreateView, UpdateView
 from membership_manager.forms import ActivityReportForm, ActivityReportAddForm, ActivityReportHours
-from membership_manager.models import ActivityReport
+from membership_manager.models import ActivityReport, Attention
 import datetime
 
 
@@ -83,4 +84,16 @@ class ActivityReportEdit(UpdateView):
 
 @permission_required('membership_manager.change_activityreport')
 def addHour(request):
-    return JsonResponse({'result': 'ok'})
+    form = ActivityReportHours(request.POST)
+    if form.is_valid():
+        obj = get_object_or_404(ActivityReport, pk=form.cleaned_data['item'])
+        att = Attention.objects.create(activity=obj,
+            start_date=form.cleaned_data['start_date'],
+            end_date=form.cleaned_data['end_date']
+        )
+        obj.manual_edited=False
+        obj.save()
+    return JsonResponse({'result': 'ok', 'item': form.cleaned_data['item'],
+                         'duration': int(obj.duration), 'time': "%s a %s"%(
+            att.start_date.strftime('%b %d, %Y %I:%M %p').lower(), att.end_date.strftime('%b %d, %Y %I:%M %p').lower())
+                         })

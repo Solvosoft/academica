@@ -31,8 +31,8 @@
         <li>
         <div class="block">
         <div class="tags">
-        <a href="" class="tag">
-        <span>{{object.duration}} horas</span>
+        <a href="#" class="tag">
+        <span id="duration_{{object.pk}}">{{object.duration}} horas</span>
         </a>
         </div>
         <div class="block_content">
@@ -48,9 +48,16 @@
         <p class="excerpt">
          {{object.description}}
          {% if perms.membership_manager.change_activityreport %}
+            {% if object.duration == 0 or not object.manual_edited %}
          <button data-item="{{object.pk}}" class="btn btn-xs btn-info pull-right raclock"><i class="fa fa-clock-o" aria-hidden="true"></i>
 </button>
+            {% endif %}
          {% endif %}
+            <ul id="ulatt_{{object.pk}}" class="fa-ul" style="width: 80%">
+            {% for att in object.attentions.all %}
+            <li><i class="fa-li fa fa-clock-o"></i> {{att.start_date}} a {{att.end_date}}</li>
+            {% endfor %}
+            </ul>
         </p>
         </div>
         </div>
@@ -66,14 +73,18 @@
 <div id="hoursmodal" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="hoursModalLabel">
   <div class="modal-dialog modal-sm" role="document">
     <div class="modal-content">
+        <div class="modal-body">
+
         <form id="hoursform" method="post" action="{% url 'activityreporthour-add' %}" >
             {{hoursform.as_horizontal}}
+            {% csrf_token %}
         </form>
-    </div>
+        </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary" id="hoursbtn">Guardar</button>
       </div>
+           </div>
     </div>
   </div>
 </div>
@@ -83,7 +94,25 @@
 {% block js %}
 {{ block.super }}
 <script>
+
     $(document).ready(function(){
+        $("#hoursbtn").on('click', function(){
+            $.ajax({
+                method: "POST",
+                url: $("#hoursform").attr('action'),
+                data: $("#hoursform").serialize(),
+                dataType: 'json',
+                success: function(data){
+                   $("#duration_"+data.item).html(data.duration+" horas");
+                   $("#ulatt_"+data.item).append('<li><i class="fa-li fa fa-clock-o"></i>'+data.time+'</li>');
+                   $("#hoursmodal").modal('hide');
+                },
+                error: function (result) {
+                      alert("Un error inesperado ha ocurrido, por favor vuelva a intentarlo");
+                }
+        });
+        });
+
         $(".raclock").on('click', function(){
             $('input[name="item"]').val($(this).data("item"));
             $("#hoursmodal").modal();

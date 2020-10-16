@@ -281,6 +281,7 @@ class ActivityReport(models.Model):
         return "%s - %s" % (
             self.organization, self.description
         )
+
     class Meta:
         verbose_name = "Reporte Atencion"
         verbose_name_plural = "Reportes de Atencion"

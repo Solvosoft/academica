@@ -28,7 +28,7 @@ def save_attention(sender, instance, **kwargs):
         total = 0
         for act in instance.attentions.all():
             d = act.end_date - act.start_date
-            total += d.seconds / 60 / 60
+            total += d.days*24 + d.seconds / 60 / 60
         instance.duration = total
         instance.__class__.objects.filter(pk=instance.pk).update(duration=int(total))
 
