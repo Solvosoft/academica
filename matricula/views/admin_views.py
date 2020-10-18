@@ -93,7 +93,7 @@ def edit_category(request, pk=None):
                 form = CategoryCreateForm(category.__dict__)
             else:
                 form = CategoryCreateForm()
-        return render(request, 'categories/update_category.html', {
+        return render(request, 'categories/category_update.html', {
                                     'form': form,
                                     'object_list': categories,
                                     'form_search': search_form
