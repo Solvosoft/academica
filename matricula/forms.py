@@ -6,11 +6,12 @@ Created on 7/4/2015
 @author: luisza
 '''
 from django import forms
-from matricula.models import Student, Page, MenuItem
+from matricula.models import Student, Page, MenuItem, Category
 from django.utils.translation import ugettext_lazy as _
 from django.core import validators
 from django.contrib.auth.models import User
 from djgentelella.widgets import core as djgentelella
+from djgentelella.widgets import wysiwyg as widget
 from djgentelella.forms.forms import GTForm
 
 
@@ -79,3 +80,21 @@ class MenuItemFormPage(forms.ModelForm):
         exclude = ("name",)
         fields = ["name", 'type', 'description', 'require_authentication',
                   'order', 'parent', 'publicated', 'is_index']
+
+class CategoryCreateForm(forms.ModelForm, GTForm):  
+    class Meta:
+        model = Category
+        fields = '__all__'
+        widgets = {
+            'name': djgentelella.TextInput(attrs={'placeholder':"Nombre categoría"}),
+            'description': widget.TextareaWysiwyg,
+        }
+
+
+class CategorySearchForm(forms.ModelForm, GTForm):  
+    class Meta:
+        model = Category
+        fields = ['name']
+        widgets = {
+            'name': djgentelella.TextInput(attrs={'placeholder':"Ingrese el término de búsqueda"}),
+        }

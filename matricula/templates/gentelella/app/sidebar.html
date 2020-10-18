@@ -12,11 +12,23 @@
                 <li>
                     <a>
                         <i class="fa fa-credit-card"></i>
-                        Acádemica
+                        Matricula
                         <span class="fa fa-chevron-down"></span>
                     </a>
                     <ul class="nav child_menu">
                         {% show_menu request.user.is_authenticated %}
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav side-menu">
+                <li>
+                    <a>
+                        <i class="fa fa-credit-card"></i>
+                        Acádemica
+                        <span class="fa fa-chevron-down"></span>
+                    </a>
+                    <ul class="nav child_menu">
+                        <li><a href="{% url 'categories' %}">Categorías</a></li>
                     </ul>
                 </li>
             </ul>

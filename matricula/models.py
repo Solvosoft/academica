@@ -58,7 +58,7 @@ class Period(models.Model):
 @python_2_unicode_compatible
 class Category(models.Model):
     name = models.CharField(max_length=300, verbose_name=_("Name"))
-    description = RichTextField(verbose_name=_("Description"))
+    description = models.TextField(verbose_name=_("Description"))
 
     def __str__(self):
         return self.name
