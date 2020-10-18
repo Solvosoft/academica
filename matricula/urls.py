@@ -6,6 +6,7 @@ Created on 7/4/2015
 '''
 
 from django.conf.urls import url
+from django.urls import path
 from matricula.views.Auth import recover_password,\
     mail_recover_pass, authenticate, create_user, login_user,\
     confirm_email, logout, StudentEdit
@@ -14,7 +15,8 @@ from .admin import admin_site
 from matricula.views.Pages import PageDetail
 from matricula.views.Enrollments import list_enroll, enrollme,\
     finish_enroll
-from .views.admin_views import CategoryList, create_category
+from .views.admin_views import CategoryList, create_category,\
+    show_category, CategoryDelete, edit_category
 
 urlpatterns = [
     url('^create_user$', create_user, name="create_user"),
@@ -33,6 +35,9 @@ urlpatterns = [
     url('^finish_enroll/(?P<pk>\\d+)$', finish_enroll, name="finish_enroll"),
     url(r'^admin/', admin_site.urls),
     url(r'^pages/(?P<pk>\d+)$', PageDetail.as_view(), name="academica_pages"),
-    url('^enrrolment/categories', CategoryList.as_view(), name="categories"),
-    url('^enrrolment/create_category', create_category, name="create_category"),
+    url('enrrolment/categories', CategoryList.as_view(), name="categories"),
+    url('enrrolment/create_category', create_category, name="create_category"),
+    path('enrrolment/show_category/<int:pk>/', show_category, name="show_category"),
+    path('enrrolment/delete_category/<int:pk>/', CategoryDelete.as_view() , name="delete_category"),
+    path('enrrolment/edit_category/<int:pk>/', edit_category, name="edit_category"),
 ]

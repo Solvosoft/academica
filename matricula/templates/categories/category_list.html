@@ -17,6 +17,24 @@
 					</form>
 				</div>
 			</div>
+			{% if perms.matricula.delete_category %}
+				<!-- modal delete category -->
+				<div id="modaldeleteitem" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								<h4 class="modal-title">¿Está segura que desea eliminar este elemento?</h4>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+								<a class="btn btn-danger" id="deleteitem">Eliminar</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end delete modal-->
+			{% endif %}
 			{% for category in object_list %}
 				<div class="col-md-6 col-lg-6 col-sm-12">
 					<div class="x_panel">
@@ -24,14 +42,14 @@
 							<h2>{{category.name}}</h2>
 							<ul class="nav navbar-right panel_toolbox">
 								<li>
-									<a class="none-link"><i class="fa fa-eye"></i></a>
+									<a href="{% url 'show_category' category.pk %}" class="none-link"><i class="fa fa-eye"></i></a>
 								</li>
 								<li>
-									<a class="edit-link"><i class="fa fa-edit"></i></a>
+									<a href="{% url 'edit_category' category.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
 								</li>
-								<li>
-									<a class="delete-link"><i class="fa fa-close"></i></a>
-								</li>
+								{% if perms.matricula.delete_category %}
+									<li><a data-url="{% url 'delete_category' pk=category.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+								{% endif %}
 							</ul>
 							<div class="clearfix"></div>
 						</div>
@@ -61,3 +79,16 @@
 		</div>
 	</div>
 {%endblock%}
+{% block js %}
+    <script type="text/javascript">
+        {% if perms.matricula.delete_category %}
+            function deleteitem(element){
+                $(function(){
+                    $("#deleteitem").attr("href", $(element).data('url'));
+                    $("#modaldeleteitem").modal();
+                });
+                return false
+            }
+        {% endif %}
+    </script>
+{% endblock js%}

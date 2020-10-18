@@ -4,7 +4,7 @@ Created on 18/10/2020
 
 @author: allexiusw
 '''
-from django.views.generic import ListView
+from django.views.generic import ListView, DeleteView
 from django.shortcuts import render, get_object_or_404
 from matricula.models import Category
 from matricula.forms import CategoryCreateForm, CategorySearchForm
@@ -56,3 +56,22 @@ def create_category(request):
         return render(request, 'categories/category_list.html', context)
     else:
         return HttpResponseRedirect(reverse('categories'))
+
+def show_category(request):
+    pass
+
+class CategoryDelete(DeleteView):
+    model = Category
+    success_url = "/matricula/enrrolment/categories/"
+    success_message = "Categoría eliminada con exíto"
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(CategoryDelete, self).delete(request, *args, **kwargs)
+
+
+def edit_category(request):
+    pass
