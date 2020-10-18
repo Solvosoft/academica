@@ -73,5 +73,29 @@ class CategoryDelete(DeleteView):
         return super(CategoryDelete, self).delete(request, *args, **kwargs)
 
 
-def edit_category(request):
-    pass
+def edit_category(request, pk=None):
+    context = {}
+    categories = Category.objects.all()
+    search_form = CategorySearchForm()
+    if pk is not None:
+        if request.method == "POST":
+            category = Category.objects.get(pk=pk)
+            form = CategoryCreateForm(request.POST, instance=category)
+            if form.is_valid():
+                messages.success(request, "Categoría guardada con exíto")
+                form.save()
+                return HttpResponseRedirect(reverse('categories'))
+            else:
+                messages.error(request, "Error al actualizar")
+        else:
+            if request.method == "GET":
+                category = Category.objects.get(pk=pk)
+                form = CategoryCreateForm(category.__dict__)
+            else:
+                form = CategoryCreateForm()
+        return render(request, 'categories/update_category.html', {
+                                    'form': form,
+                                    'object_list': categories,
+                                    'form_search': search_form
+                                    })
+    return HttpResponseRedirect(reverse(request, 'categories'))
