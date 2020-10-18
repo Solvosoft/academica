@@ -1,44 +1,50 @@
 {% extends 'gentelella/base.html'%}
 {%load i18n %}
-
 {%block content%}
-
-
-<div class="row">
-	<div class="col-md-6 well">
-		
-	<form  method="post" action="{% url 'myprofile' request.user.pk%}" >
-	
-		{% csrf_token %}
-		<div class="table-responsive">
-		<table class="table">
-		{{form}}
-		</table>
+	<div class="row">
+		<div class="col-md-6">
+			<h3 class="green"> Perfil de Usuario</h3>
+			<div class="x_panel">
+				<form method="post" action="{% url 'myprofile' request.user.pk%}" >
+					{% csrf_token %}
+					<div>
+						{{form.as_table}}
+					</div>
+					<div class="text-right" style="margin-top:5px;">
+						<button type="submit" class="btn btn-success">{% trans 'Save' %}</button>
+					</div>
+				</form>
+			</div>
 		</div>
-		<button type="submit" class="btn btn-success">{% trans 'Save' %}</button>
-	</form>
+		<div class="col-md-6">
+			<h3 class="green">{% trans 'Pre-enrolled groups' %}</h3>
+			<div class="x_panel">
+				{% for pre in pre_enroll%}
+					<div class="profile_title">
+						<h2>{{pre.group}}</h2>
+					</div>
+				{% empty %}
+					<div style="margin:5px; padding:5px;" class="profile_title"> 
+						<h2>
+							{% trans "You don't have pre-enrolled groups yet" %}
+						</h2>
+					</div>
+				{% endfor%}
+			</div>
+			<h3 class="green"> {% trans 'Enrolled groups' %}</h3>
+			<div class="x_panel">
+				{% for en in enroll%}
+					<div style="margin:5px; padding:5px;" class="profile_title">
+						<h2>{{en.group}}</h2>
+					</div>
+				{% empty %}
+					<div class="profile_title">
+						<h2> 
+							{% trans "You don't have enrolled groups yet" %}
+						</h2>
+					</div>
+				{% endfor%}
+			</div>
+		</div>
 	</div>
-	<div class="col-md-6">
-		<h2>{% trans 'Pre-enrolled groups' %} </h2>
-		<ul class="list-group">
-		{% for pre in pre_enroll%}
-		<li class="list-group-item">{{pre.group}}</li>
-		{% empty %}
-		<li class="list-group-item"> {% trans "You don't have pre-enrolled groups yet" %} </li>
-		{% endfor%}</ul>
-		
-		<h2> {% trans 'Enrolled groups' %}</h2>
-		<ul class="list-group">
-		{% for en in enroll%}
-			<li class="list-group-item">{{en.group}}</li>
-		{% empty %}
-			<li class="list-group-item"> {% trans "You don't have enrolled groups yet" %}</li>
-		{% endfor%}
-		</ul>
-		
-	</div>
-	
-</div>
-
-
 {%endblock%}

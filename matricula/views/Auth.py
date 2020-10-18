@@ -23,6 +23,7 @@ from django.views.generic.edit import UpdateView
 from django.contrib.auth.models import User
 from simple_email_confirmation.models import EmailAddress, EmailAddressManager
 from datetime import datetime
+from django.contrib.messages.views import SuccessMessageMixin
 
 
 def create_user(request):
@@ -200,18 +201,22 @@ def get_profile(request):
     return redirect(reverse('myprofile', kwargs={'pk': request.user.pk}))
 
 
-class StudentEdit(UpdateView):
-    success_url = reverse_lazy('index')
+class StudentEdit(SuccessMessageMixin, UpdateView):
     model = User
     form_class = StudentEditForm
     template_name = "matricula/student_form.html"
+    success_message = "Perfil actualizado con exíto"
 
     def get_context_data(self, **kwargs):
         context = UpdateView.get_context_data(self, **kwargs)
         enroll = Enroll.objects.filter(student__user=self.object).order_by('enroll_date')
         context['enroll'] = enroll.filter(enroll_activate=True, enroll_finished=True)
         context['pre_enroll'] = enroll.filter(enroll_activate=True, enroll_finished=False)
-        return context    
+        return context
+
+    def get_success_url(self):
+          pk=self.kwargs['pk']
+          return reverse_lazy('myprofile', kwargs={'pk': pk}) 
 
 
 def login_user(request):
