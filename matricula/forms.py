@@ -92,9 +92,13 @@ class CategoryCreateForm(forms.ModelForm, GTForm):
 
 
 class CategorySearchForm(forms.ModelForm, GTForm):  
+    name = forms.CharField(
+        label='Término de búsqueda', required=False,
+            widget=djgentelella.TextInput(attrs={
+                'placeholder':"Ingrese el término de búsqueda",
+            }
+        )
+    )
     class Meta:
         model = Category
         fields = ['name']
-        widgets = {
-            'name': djgentelella.TextInput(attrs={'placeholder':"Ingrese el término de búsqueda"}),
-        }

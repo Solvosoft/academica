@@ -14,7 +14,7 @@ from .admin import admin_site
 from matricula.views.Pages import PageDetail
 from matricula.views.Enrollments import list_enroll, enrollme,\
     finish_enroll
-from .views.admin_views import CategoryList
+from .views.admin_views import CategoryList, create_category
 
 urlpatterns = [
     url('^create_user$', create_user, name="create_user"),
@@ -34,5 +34,5 @@ urlpatterns = [
     url(r'^admin/', admin_site.urls),
     url(r'^pages/(?P<pk>\d+)$', PageDetail.as_view(), name="academica_pages"),
     url('^enrrolment/categories', CategoryList.as_view(), name="categories"),
-    url('^enrrolment/add_categories', CategoryList.as_view(), name="add_categories")
+    url('^enrrolment/create_category', create_category, name="create_category"),
 ]
