@@ -203,27 +203,21 @@ class CourseDelete(DeleteView):
 @permission_required('matricula.change_course')
 def edit_course(request, pk=None):
     context = {}
-    categories = Category.objects.all()
-    search_form = CategorySearchForm()
     if pk is not None:
         if request.method == "POST":
-            category = Category.objects.get(pk=pk)
-            form = CategoryCreateForm(request.POST, instance=category)
+            course = Course.objects.get(pk=pk)
+            form = CourseCreateForm(request.POST, instance=course)
             if form.is_valid():
-                messages.success(request, "Categoría guardada con exíto")
+                messages.success(request, "Curso guardado con exíto")
                 form.save()
-                return HttpResponseRedirect(reverse('categories'))
+                return HttpResponseRedirect(reverse('enrrolment_courses'))
             else:
                 messages.error(request, "Error al actualizar")
         else:
             if request.method == "GET":
-                category = Category.objects.get(pk=pk)
-                form = CategoryCreateForm(category.__dict__)
+                course = Course.objects.get(pk=pk)
+                form = CourseCreateForm(initial=course.__dict__)
             else:
-                form = CategoryCreateForm()
-        return render(request, 'categories/category_update.html', {
-                                    'form': form,
-                                    'object_list': categories,
-                                    'form_search': search_form
-                                    })
-    return HttpResponseRedirect(reverse(request, 'categories'))
+                form = CourseCreateForm()
+        return render(request, 'courses/course_update.html', {'form': form})
+    return HttpResponseRedirect(reverse(request, 'enrrolment_courses'))

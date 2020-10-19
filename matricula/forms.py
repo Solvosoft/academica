@@ -131,3 +131,10 @@ class CourseCreateForm(forms.ModelForm, GTForm):
             'content': widget.TextareaWysiwyg,
             'category': AutocompleteSelect('categorybasename'),
         }
+    def __init__(self, *args, **kwargs):
+        super(CourseCreateForm, self).__init__(*args, **kwargs)
+        # assign a (computed, I assume) default value to the choice field
+        print(kwargs)
+        if 'initial' in kwargs:
+            if 'category_id' in kwargs['initial']:
+                self.fields['category'].initial = kwargs['initial']['category_id']
