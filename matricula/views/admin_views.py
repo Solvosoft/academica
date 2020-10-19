@@ -14,6 +14,7 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import permission_required
 from django.utils.decorators import method_decorator
+from django.db.models import Q
 
 
 @method_decorator(permission_required('matricula.view_category'), name='dispatch')
@@ -138,7 +139,10 @@ class CourseList(ListView):
         queryset = Course.objects.all()
         name = self.request.GET.get('name', None)
         if name is not None:
-            queryset = queryset.filter(name__icontains=name)
+            queryset = queryset.filter(Q(name__icontains=name) | Q(content__icontains=name))
+        category = self.request.GET.get('category', None)
+        if category is not None:
+             queryset = queryset.filter(Q(category__in=category))
         return queryset
 
     def get_context_data(self, **kwargs):
