@@ -74,6 +74,8 @@ DATETIME_INPUT_FORMATS = [
     '%Y-%m-%d %H:%M %p',
     '%d/%m/%y %H:%M %p'
 ]
+MEDIA_ROOT = "uploads/"
+FROALA_UPLOAD_PATH = os.path.join(MEDIA_ROOT, 'froala_editor/')
 
 MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -179,7 +181,7 @@ PAYPAL_RECEIVER_EMAIL = "luisza14-buyer@gmail.com"
 MY_PAYPAL_HOST = "http://academica.ngrok.io"
 
 
-LOGIN_URL = "/matricula/accounts/login/"
+LOGIN_URL = "/accounts/login/"
 
 SOCIALACCOUNT_PROVIDERS = \
     { 'google':
