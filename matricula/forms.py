@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 from djgentelella.widgets import core as djgentelella
 from djgentelella.widgets import wysiwyg as widget
 from djgentelella.forms.forms import GTForm
+from djgentelella.widgets.selects import AutocompleteSelect
 
 
 class StudentCreateForm(GTForm, forms.ModelForm):
@@ -116,3 +117,14 @@ class CourseSearchForm(forms.ModelForm, GTForm):
     class Meta:
         model = Course
         fields = ['name']
+
+
+class CourseCreateForm(forms.ModelForm, GTForm):  
+    class Meta:
+        model = Course
+        fields = '__all__'
+        widgets = {
+            'name': djgentelella.TextInput(attrs={'placeholder':"Nombre curso"}),
+            'content': widget.TextareaWysiwyg,
+            'category': AutocompleteSelect('categorybasename'),
+        }

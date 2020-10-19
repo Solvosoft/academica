@@ -73,7 +73,7 @@ class Course(models.Model):
     category = models.ForeignKey(
         Category, verbose_name=_("Category"), on_delete=models.CASCADE)
     name = models.CharField(max_length=300, verbose_name=_("Name"))
-    content = RichTextField(verbose_name=_("Content"))
+    content = models.TextField(verbose_name=_("Content"))
 
     def __str__(self):
         return self.name

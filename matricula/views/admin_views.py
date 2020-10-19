@@ -8,7 +8,7 @@ from django.views.generic import ListView, DeleteView
 from django.shortcuts import render, get_object_or_404
 from matricula.models import Category, Course
 from matricula.forms import CategoryCreateForm, CategorySearchForm,\
-    CourseSearchForm
+    CourseSearchForm, CourseCreateForm
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -155,26 +155,17 @@ class CourseList(ListView):
 def create_course(request):
     context = {}
     if request.method == 'POST':
-        name = request.GET.get('name', None)
-        if name is not None:
-            context['form_search'] = CategorySearchForm(request.GET)
-            context['object_list'] = Category.objects.filter(name__icontains=name)
-        else: 
-            context['form_search'] = CategorySearchForm()
-            context['object_list'] = Category.objects.all()
-
-        form = CategoryCreateForm(request.POST)
+        form = CourseCreateForm(request.POST)
         context['form'] = form
         if form.is_valid():
             form.save()
-            messages.success(request, "Registro creado con exíto!")
-            context['form'] = CategoryCreateForm()
-            return HttpResponseRedirect(reverse('categories'))
+            messages.success(request, "Curso guardado con exíto")
+            return HttpResponseRedirect(reverse('enrrolment_courses'))
         else:
-            messages.error(request, "No se ha podido guardar la categoría")
-        return render(request, 'categories/category_list.html', context)
+            messages.error(request, "Error al guardar curso")
     else:
-        return HttpResponseRedirect(reverse('categories'))
+        context['form'] = CourseCreateForm()
+    return render(request, 'courses/course_create.html', context)
 
 
 @permission_required('matricula.view_course')
