@@ -16,7 +16,8 @@ from matricula.views.Pages import PageDetail
 from matricula.views.Enrollments import list_enroll, enrollme,\
     finish_enroll
 from .views.admin_views import CategoryList, create_category,\
-    show_category, CategoryDelete, edit_category
+    show_category, CategoryDelete, edit_category, CourseList,\
+    create_course, show_course, CourseDelete, edit_course
 
 urlpatterns = [
     url('^create_user$', create_user, name="create_user"),
@@ -40,4 +41,9 @@ urlpatterns = [
     path('enrrolment/show_category/<int:pk>/', show_category, name="show_category"),
     path('enrrolment/delete_category/<int:pk>/', CategoryDelete.as_view() , name="delete_category"),
     path('enrrolment/edit_category/<int:pk>/', edit_category, name="edit_category"),
+    url('enrrolment/courses', CourseList.as_view(), name="enrrolment_courses"),
+    url('enrrolment/create_course', create_course, name="create_course"),
+    path('enrrolment/show_course/<int:pk>/', show_course, name="show_course"),
+    path('enrrolment/delete_course/<int:pk>/', CourseDelete.as_view() , name="delete_course"),
+    path('enrrolment/edit_course/<int:pk>/', edit_course, name="edit_course"),
 ]

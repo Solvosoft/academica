@@ -27,11 +27,14 @@
                         Acádemica
                         <span class="fa fa-chevron-down"></span>
                     </a>
-                    {% if perms.matricula.view_category %}
-                        <ul class="nav child_menu">
+                    <ul class="nav child_menu">
+                        {% if perms.matricula.view_category %}
                             <li><a href="{% url 'categories' %}">Categorías</a></li>
-                        </ul>
-                    {% endif %}
+                        {% endif %}
+                        {% if perms.matricula.view_course %}
+                            <li><a href="{% url 'enrrolment_courses' %}">Cursos</a></li>
+                        {% endif %}
+                    </ul>
                 </li>
             </ul>
         </div>
