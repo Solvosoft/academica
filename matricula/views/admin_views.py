@@ -11,10 +11,17 @@ from matricula.forms import CategoryCreateForm, CategorySearchForm
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import permission_required
+from django.utils.decorators import method_decorator
 
 
+@method_decorator(permission_required('matricula.view_category'), name='dispatch')
 class CategoryList(ListView):
     template_name = "categories/category_list.html"
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(CategoryList, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
         queryset = Category.objects.all()
@@ -33,6 +40,8 @@ class CategoryList(ListView):
             context['form_search'] = CategorySearchForm()
         return context
 
+
+@permission_required('matricula.create_category')
 def create_category(request):
     context = {}
     if request.method == 'POST':
@@ -58,6 +67,7 @@ def create_category(request):
         return HttpResponseRedirect(reverse('categories'))
 
 
+@permission_required('matricula.view_category')
 def show_category(request, pk=None):
     context = {}
     if pk is not None:
@@ -67,10 +77,15 @@ def show_category(request, pk=None):
     return HttpResponseRedirect(reverse(request, 'categories'))
 
 
+@method_decorator(permission_required('matricula.delete_category'), name='dispatch')
 class CategoryDelete(DeleteView):
     model = Category
     success_url = "/matricula/enrrolment/categories/"
     success_message = "Categoría eliminada con exíto"
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(CategoryDelete, self).dispatch(*args, **kwargs)
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
@@ -80,6 +95,7 @@ class CategoryDelete(DeleteView):
         return super(CategoryDelete, self).delete(request, *args, **kwargs)
 
 
+@permission_required('matricula.change_category')
 def edit_category(request, pk=None):
     context = {}
     categories = Category.objects.all()
