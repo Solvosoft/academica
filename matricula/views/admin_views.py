@@ -57,8 +57,15 @@ def create_category(request):
     else:
         return HttpResponseRedirect(reverse('categories'))
 
-def show_category(request):
-    pass
+
+def show_category(request, pk=None):
+    context = {}
+    if pk is not None:
+        category = Category.objects.get(pk=pk)
+        return render(request, 'categories/category_show.html', {
+                                'object': category,})
+    return HttpResponseRedirect(reverse(request, 'categories'))
+
 
 class CategoryDelete(DeleteView):
     model = Category
