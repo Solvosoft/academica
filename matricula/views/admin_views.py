@@ -43,7 +43,7 @@ class CategoryList(ListView):
         return context
 
 
-@permission_required('matricula.create_category')
+@permission_required('matricula.add_category')
 def create_category(request):
     context = {}
     if request.method == 'POST':
@@ -155,7 +155,7 @@ class CourseList(ListView):
         return context
 
 
-@permission_required('matricula.create_course')
+@permission_required('matricula.add_course')
 def create_course(request):
     context = {}
     if request.method == 'POST':
@@ -176,10 +176,10 @@ def create_course(request):
 def show_course(request, pk=None):
     context = {}
     if pk is not None:
-        category = Category.objects.get(pk=pk)
-        return render(request, 'categories/category_show.html', {
-                                'object': category,})
-    return HttpResponseRedirect(reverse(request, 'categories'))
+        course = Course.objects.get(pk=pk)
+        return render(request, 'courses/course_show.html', {
+                                'object': course,})
+    return HttpResponseRedirect(reverse(request, 'enrrolment_courses'))
 
 
 @method_decorator(permission_required('matricula.delete_course'), name='dispatch')
