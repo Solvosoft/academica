@@ -184,9 +184,9 @@ def show_course(request, pk=None):
 
 @method_decorator(permission_required('matricula.delete_course'), name='dispatch')
 class CourseDelete(DeleteView):
-    model = Category
-    success_url = "/matricula/enrrolment/categories/"
-    success_message = "Categoría eliminada con exíto"
+    model = Course
+    success_url = "/matricula/enrrolment/courses/"
+    success_message = "Curso eliminada con exíto"
 
     def dispatch(self, *args, **kwargs):
         """ Permission check for this class """
@@ -197,7 +197,7 @@ class CourseDelete(DeleteView):
     
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
-        return super(CategoryDelete, self).delete(request, *args, **kwargs)
+        return super(CourseDelete, self).delete(request, *args, **kwargs)
 
 
 @permission_required('matricula.change_course')
