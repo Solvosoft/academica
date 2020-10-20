@@ -4,17 +4,17 @@
 	<h1>Elementos del Menú</h1>
 	<div class="row">
 		{% if perms.matricula.add_course %}
-			<div class="col-sm-12 col-lg-10 col-md-9">
+			<div class="col-sm-12 col-xs-12 col-lg-10 col-md-9">
 		{% else %}
-			<div class="col-sm-12 col-lg-12 col-md-12">
+			<div class="col-sm-12 col-xs-12 col-lg-12 col-md-12">
 		{% endif %}
 			<div class="x_panel">
 				<div class="x_content">
 					<form method="GET" action="{% url 'enrrolment_courses'%}">
-						<div class="col-lg-6 col-md-6 col-sm-12">
+						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 							<label>Nombre:</label> {{form_search.name}}
 						</div>
-						<div class="col-lg-6 col-md-6 col-sm-12">
+						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 							<label>Categoría</label>
 							{{form_search.category}}
 						</div>
@@ -26,7 +26,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-12 col-lg-2 col-md-3">
+		<div class="col-sm-12 col-xs-12 col-lg-2 col-md-3">
 			{% if perms.matricula.add_menuitem %}
 				<a class="btn btn-primary" href="{% url 'create_menuitem' %}">Crear elemento del menú</a>
 			{% endif %}
@@ -51,7 +51,7 @@
 		<!-- end delete modal-->
 	{% endif %}
 	{% for menuitem in object_list %}
-		<div class="col-md-6 col-lg-4 col-sm-12">
+		<div class="col-md-6 col-lg-4 col-sm-6 col-xs-12">
 			<div class="x_panel">
 				<div class="x_title">
 					<h2 class="green">{{menuitem.name}}--{{menuitem.description}}</h2>
@@ -72,7 +72,7 @@
 				</div>
 				<div class="x_content">
 					<div class="row">
-						<div class="col-md-6 col-sm-12">
+						<div class="col-md-6 col-sm-6 col-xs-6">
 							<ul class="list-unstyled user_data">
 								<li>
 									{% if menuitem.require_authentication%}<i class="fa fa-lock"></i> Requiere Autenticación{% else %}<i class="fa fa-unlock"></i> Sin autenticación{% endif %}
@@ -85,7 +85,7 @@
 								</li>
 							</ul>
 						</div>
-						<div class="col-md-6 col-sm-12">
+						<div class="col-md-6 col-sm-6 col-xs-6">
 							<p><strong>Tipo: </strong>{{ menuitem.TYPES|index:menuitem.type|index:1}}</p>
 							<p><strong>Orden: </strong>{{menuitem.order}}</p>
 							<p><strong>Padre: </strong>{{menuitem.parent}}</p>
