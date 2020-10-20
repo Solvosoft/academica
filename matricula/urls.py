@@ -17,7 +17,9 @@ from matricula.views.Enrollments import list_enroll, enrollme,\
     finish_enroll
 from .views.admin_views import CategoryList, create_category,\
     show_category, CategoryDelete, edit_category, CourseList,\
-    create_course, show_course, CourseDelete, edit_course
+    create_course, show_course, CourseDelete, edit_course,\
+    MenuItemList, create_menuitem, show_menuitem, MenuItemDelete,\
+    edit_menuitem
 
 urlpatterns = [
     url('^create_user$', create_user, name="create_user"),
@@ -46,4 +48,9 @@ urlpatterns = [
     path('enrrolment/show_course/<int:pk>/', show_course, name="show_course"),
     path('enrrolment/delete_course/<int:pk>/', CourseDelete.as_view() , name="delete_course"),
     path('enrrolment/edit_course/<int:pk>/', edit_course, name="edit_course"),
+    url('enrrolment/menuitems', MenuItemList.as_view(), name="menuitems"),
+    url('enrrolment/create_menuitem', create_menuitem, name="create_menuitem"),
+    path('enrrolment/show_menuitem/<int:pk>/', show_menuitem, name="show_menuitem"),
+    path('enrrolment/delete_menuitem/<int:pk>/', MenuItemDelete.as_view() , name="delete_menuitem"),
+    path('enrrolment/edit_menuitem/<int:pk>/', edit_menuitem, name="edit_menuitem"),
 ]

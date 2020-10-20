@@ -1,0 +1,112 @@
+{% extends 'gentelella/base.html'%}
+{% load static utils %}
+{%block content %}
+	<h1>Elementos del Menú</h1>
+	<div class="row">
+		{% if perms.matricula.add_course %}
+			<div class="col-sm-12 col-lg-10 col-md-9">
+		{% else %}
+			<div class="col-sm-12 col-lg-12 col-md-12">
+		{% endif %}
+			<div class="x_panel">
+				<div class="x_content">
+					<form method="GET" action="{% url 'enrrolment_courses'%}">
+						<div class="col-lg-6 col-md-6 col-sm-12">
+							<label>Nombre:</label> {{form_search.name}}
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-12">
+							<label>Categoría</label>
+							{{form_search.category}}
+						</div>
+						<div class="text-right">
+							<a style="margin-top:10px;" href="{% url 'enrrolment_courses' %}" class="btn btn-dark">Limpiar</a>
+							<button style="margin-top:10px;" class="btn btn-success" type="submit">Buscar</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-12 col-lg-2 col-md-3">
+			{% if perms.matricula.add_menuitem %}
+				<a class="btn btn-primary" href="{% url 'create_menuitem' %}">Crear elemento del menú</a>
+			{% endif %}
+		</div>
+	</div>
+	{% if perms.matricula.delete_menuitem %}
+		<!-- modal delete category -->
+		<div id="modaldeleteitem" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">¿Está segura que desea eliminar este elemento?</h4>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+						<a class="btn btn-danger" id="deleteitem">Eliminar</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end delete modal-->
+	{% endif %}
+	{% for menuitem in object_list %}
+		<div class="col-md-6 col-lg-4 col-sm-12">
+			<div class="x_panel">
+				<div class="x_title">
+					<h2 class="green">{{menuitem.name}}--{{menuitem.description}}</h2>
+					<ul class="nav navbar-right panel_toolbox">
+						<li>
+							<a href="{% url 'show_menuitem' menuitem.pk %}" class="none-link"><i class="fa fa-eye"></i></a>
+						</li>
+						{% if perms.matricula.change_menuitem %}
+							<li>
+								<a href="{% url 'edit_menuitem' menuitem.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
+							</li>
+						{% endif %}
+						{% if perms.matricula.delete_menuitem %}
+							<li><a data-url="{% url 'delete_menuitem' pk=menuitem.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+						{% endif %}
+					</ul>
+					<div class="clearfix"></div>
+				</div>
+				<div class="x_content">
+					<div class="row">
+						<div class="col-md-6 col-sm-12">
+							<ul class="list-unstyled user_data">
+								<li>
+									{% if menuitem.require_authentication%}<i class="fa fa-lock"></i> Requiere Autenticación{% else %}<i class="fa fa-unlock"></i> Sin autenticación{% endif %}
+								</li>
+								<li>
+									{% if menuitem.publicated%}<i class="fa fa-globe "></i> Publicado{% else %}<i class="fa fa-unlink "></i> Sin publicar{% endif %}
+								</li>
+								<li>
+									</i><i class="fa fa-sort-numeric-asc"></i> {% if menuitem.is_index%}Principal{% else %}Secundaria{% endif %}
+								</li>
+							</ul>
+						</div>
+						<div class="col-md-6 col-sm-12">
+							<p><strong>Tipo: </strong>{{ menuitem.TYPES|index:menuitem.type|index:1}}</p>
+							<p><strong>Orden: </strong>{{menuitem.order}}</p>
+							<p><strong>Padre: </strong>{{menuitem.parent}}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+	<div class="clearfix"></div>
+{%endblock%}
+{% if perms.matricula.delete_menuitem %}
+	{% block js %}
+		<script type="text/javascript">
+			function deleteitem(element){
+				$(function(){
+					$("#deleteitem").attr("href", $(element).data('url'));
+					$("#modaldeleteitem").modal();
+				});
+				return false
+			}
+		</script>
+	{% endblock js%}
+{% endif %}
