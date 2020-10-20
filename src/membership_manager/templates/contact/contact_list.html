@@ -50,10 +50,11 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">¿Está segura que desea eliminar este contacto?</h4>
+                        <h4 class="modal-title">Al eliminar este contacto todos sus elementos relacionados(membresías, facturas, etc) serán eliminados también. Es recomendable que en lugar de eliminar este contacto, lo desactive.</h4>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                        <a class="btn btn-success" id="deactivatecontact">Desactivar</a>
                         <a class="btn btn-danger" id="deletecontact">Eliminar</a>
                     </div>
                 </div>
@@ -75,7 +76,7 @@
                                 <li><a title="Editar contacto" href="{% url 'edit_contacts' pk=contact.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
                             {% endif %}
                             {% if perms.membership_manager.delete_organization %}
-                                <li><a title="Eliminar contacto" data-url="{% url 'delete_contacts' pk=contact.pk %}" onclick="deletecontact(this)"><i class="fa fa-close"></i></a></li>
+                                <li><a title="Eliminar contacto" data-url="{% url 'delete_contacts' pk=contact.pk %}" data-href="{% url 'deactivate_contact' pk=contact.pk %}" onclick="deletecontact(this)"><i class="fa fa-close"></i></a></li>
                             {% endif %}
                         </ul>
                         <div class="clearfix"></div>
@@ -123,11 +124,13 @@
             </ul>
         {% endif %}
     </div>
+    </div>
 {% endblock content %}
 {% block js %}
 <script>
 function deletecontact(element){
     $("#deletecontact").attr("href", $(element).data('url'));
+    $("#deactivatecontact").attr("href", $(element).data('href'));
     $("#modaldeletecontact").modal();
 }
 </script>

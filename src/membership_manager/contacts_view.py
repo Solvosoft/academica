@@ -8,7 +8,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView, UpdateView
 
 from membership_manager.forms import ContactSearchForm, ContactAddForm
-from membership_manager.models import Organization
+from membership_manager.models import Organization, Membership
 
 
 @method_decorator(permission_required('membership_manager.view_organization'), name='dispatch')
@@ -76,6 +76,13 @@ class EditContact(UpdateView):
     success_url = reverse_lazy('contacts')
 
     def form_valid(self, form):
+
+        if form.cleaned_data['active']:
+            Membership.objects.filter(organization=self.object).update(state="active")
+
+        else:
+            Membership.objects.filter(organization=self.object).update(state="inactive")
+
         form.save()
         messages.success(self.request, "Contacto actualizado con éxito")
         return super().form_valid(form)
@@ -83,8 +90,19 @@ class EditContact(UpdateView):
 
 @permission_required('membership_manager.delete_organization')
 def delete_contacts(request, pk):
-    contact = Organization.objects.filter(pk=pk)
+    contact = Organization.objects.filter(pk=pk).first()
     if contact:
         contact.delete()
         messages.success(request, "Contacto eliminado con éxito")
+        return redirect('contacts')
+
+
+@permission_required('membership_manager.change_organization')
+def deactivate_contact(request, pk):
+    contact = Organization.objects.filter(pk=pk).first()
+    if contact:
+        contact.active = False
+        contact.save()
+        Membership.objects.filter(organization=contact).update(state="inactive")
+        messages.success(request, "Contacto desactivado con éxito")
         return redirect('contacts')
