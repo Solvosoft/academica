@@ -125,10 +125,11 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">¿Está segura que desea eliminar esta membresía?</h4>
+                                <h4 class="modal-title">Al eliminar esta membresía todos sus elementos relacionados(servicios, facturas, etc) serán eliminados también. Es recomendable que en lugar de eliminar esta membresía, la desactive.</h4>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                                 <a class="btn btn-success" id="deactivatemembership">Desactivar</a>
                                 <a class="btn btn-danger" id="deletemembership">Eliminar</a>
                             </div>
                         </div>
@@ -153,7 +154,7 @@
                                 <li><a title="Editar membresía" href="{% url 'edit_memberships' pk=membership.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
                             {% endif %}
                             {% if perms.membership_manager.delete_membership %}
-                                <li><a title="Eliminar membresía" data-url="{% url 'delete_memberships' pk=membership.pk %}" onclick="deletemembership(this)"><i class="fa fa-close"></i></a></li>
+                                <li><a title="Eliminar membresía" data-url="{% url 'delete_memberships' pk=membership.pk %}" data-href="{% url 'deactivate_membership' pk=membership.pk %}" onclick="deletemembership(this)"><i class="fa fa-close"></i></a></li>
                             {% endif %}
                         </ul>
                         <div class="clearfix"></div>
@@ -240,6 +241,7 @@
 
     function deletemembership(element){
         $("#deletemembership").attr("href", $(element).data('url'));
+        $("#deactivatemembership").attr("href", $(element).data('href'));
         $("#modaldeletemembership").modal();
     }
 

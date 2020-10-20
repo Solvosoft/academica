@@ -243,7 +243,7 @@ class ContactAddForm(GTForm, forms.ModelForm):
         ]
         widgets = {
             'name': genwidgets.TextInput,
-            'email': genwidgets.EmailInput,
+            'email': genwidgets.EmailMaskInput,
             'cellphone': genwidgets.PhoneNumberMaskInput,
             'phone': genwidgets.PhoneNumberMaskInput,
             'address': genwidgets.TextInput,
@@ -285,7 +285,7 @@ class OrganizationAddForm(GTForm, forms.ModelForm):
             'initials': genwidgets.Input,
             'identification_type': genwidgets.Select,
             'identification': genwidgets.TextInput,
-            'email': genwidgets.EmailInput,
+            'email': genwidgets.EmailMaskInput,
             'cellphone': genwidgets.PhoneNumberMaskInput,
             'phone': genwidgets.PhoneNumberMaskInput,
             'address': genwidgets.TextInput,
@@ -362,7 +362,7 @@ class ActivityReportForm(GTForm, forms.Form):
     organization = forms.ModelMultipleChoiceField(
         queryset=Organization.objects.all(),
         widget=genwidgets.SelectMultiple,
-        required=False, label="Organizaciones o Contactos"
+        required=False, label="Organizaciones o contactos"
     )
     daterange = forms.CharField(
         widget= genwidgets.DateRangeInput,

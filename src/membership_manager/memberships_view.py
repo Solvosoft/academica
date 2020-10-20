@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import permission_required
 from django.forms import modelformset_factory
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
@@ -225,4 +226,14 @@ def delete_memberships(request, pk):
     if membership:
         membership.delete()
         messages.success(request, "Membresía eliminada con éxito")
+        return redirect('memberships')
+
+
+@permission_required('membership_manager.change_membership')
+def deactivate_membership(request, pk):
+    membership = Membership.objects.filter(pk=pk).first()
+    if membership:
+        membership.state = "inactive"
+        membership.save()
+        messages.success(request, "Membresía desactivada con éxito")
         return redirect('memberships')
