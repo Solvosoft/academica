@@ -100,9 +100,12 @@ def update_news_letter_emails():
             break
     return add_update_button
 
+
 class TopStats(StatsCountList):
 
     stats_views = [MembresiasActivasStats, FacturasStats, PaisesStats]
-
-    if update_news_letter_emails():
-        stats_views = [MembresiasActivasStats, FacturasStats, PaisesStats, UpdateNewsLetter]
+    try:
+        if update_news_letter_emails():
+            stats_views = [MembresiasActivasStats, FacturasStats, PaisesStats, UpdateNewsLetter]
+    except:
+        pass
