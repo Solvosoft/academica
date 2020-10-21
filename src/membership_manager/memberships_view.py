@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import permission_required
 from django.forms import modelformset_factory
 from django.shortcuts import redirect
 from django.shortcuts import render
-from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
@@ -80,9 +79,31 @@ class EditMembership(UpdateView):
     template_name = 'membership/edit.html'
     success_url = reverse_lazy('memberships')
 
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+
+        contact = None
+        organization = None
+        contact_type = "organization"
+
+        if self.object.organization.type:
+            contact = self.object.organization
+            contact_type = "contact"
+        else:
+            organization = self.object.organization
+
+        kwargs['initial']={
+            'contact': contact,
+            'organization': organization,
+            'contact_type': contact_type
+        }
+        return kwargs
+
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super().get_context_data()
         memberhsip = context['object']
+
         extra = memberhsip.service_set.all().count()
         if extra == 0:
             extra = 1
@@ -93,6 +114,8 @@ class EditMembership(UpdateView):
             can_delete=True, extra=extra, can_order=True)
         fset = formset(queryset=Service.objects.filter(membership=memberhsip), prefix='mts')
         context['formset'] = fset
+        context['contact_type'] = 'contact' if memberhsip.organization.type else 'organization'
+
         return context
 
 
@@ -127,7 +150,26 @@ class EditMembership(UpdateView):
             for instance in instances:
                 instance.membership = membership
                 instance.save()
-            messages.success(self.request, "Membresía actualizada con éxito")
+
+            if membership.organization.active:
+                messages.success(self.request, "Membresía actualizada con éxito")
+            else:
+
+                context = {
+                    'pk_orga_contact': membership.organization.pk,
+                    'type': "organization",
+                    'today': now(),
+                    'form_filters': FilterEmailsForm(),
+                    'form_template_newsletter': NewsLetterTemplateForm(),
+                    'form_template_email': EmailTemplateForm(),
+                    'mem_template': MembershipTemplateForm(),
+                    'object_list': Membership.objects.all()
+                }
+
+                if membership.organization.type:
+                    context['type'] = "contact"
+
+                return render(self.request, "membership/membership_list.html", context=context)
 
         return super().form_valid(form)
 

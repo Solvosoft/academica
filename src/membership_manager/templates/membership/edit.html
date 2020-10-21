@@ -57,96 +57,18 @@
 {% block js %}
     <script type="text/javascript">
         $(document).ready(function(){
-            let isVisible = false;
-            if($("#id_apply_fees").is(":checked")) isVisible=true;
-            if(isVisible==true){
-                $('#id_fees').parent().parent().css('display','block');
-            }else{
-                $('#id_apply_fees').removeAttr('checked');
-                $('#id_fees').parent().parent().css('display','none');
-            }
             
-            //Button add organization
+           //Button add organization
             btnNewOrg = "<div class='text-right' style='margin-top:5px'>"+
-                "<a href='/organizations' onclick='window.open(this.href,&quot;&quot;,"+
-                " &quot;resizable=yes,width=600,height=800&quot;); return false;'"+
-                " style='font-size:2em'><i class='fa fa-plus-square'></i></a></div>";   
+                "<a title='Nueva organización' href='/organizations/create'" +
+                " style='font-size:2em' target='_blank'><i class='fa fa-plus-square'></i></a></div>";
             $('#id_organization').parent().append(btnNewOrg);
-            
+
             //Button add contact
             bntNewContact = "<div class='text-right' style='margin-top:5px'>"+
-                "<a href='/contacts' onclick='window.open(this.href,&quot;&quot;,"+
-                " &quot;resizable=yes,width=600,height=800&quot;); return false;'"+
-                " style='font-size:2em'><i class='fa fa-plus-square'></i></a></div>"; 
+                "<a title='Nuevo contacto' href='/contacts/create'" +
+                " style='font-size:2em' target='_blank'><i class='fa fa-plus-square'></i></a></div>";
             $('#id_contact').parent().append(bntNewContact);
-
-            //Trigger to display fees field when apply_fees change
-            $("#id_apply_fees").change(function() {
-                if($(this).is(":checked")){
-                    $('#id_fees').parent().parent().css('display','block');
-                    $('#id_apply_fees').attr('checked','checked');
-                }else{
-                    $('#id_fees').parent().parent().css('display','none');
-                    $('#id_apply_fees').removeAttr('checked');
-                }
-                
-            });
-
-            /**
-                Set trigger to display contact, organization or both depending
-                on the contact_type value selected 
-            **/
-            $('input[name="contact_type"]').on('ifChecked', function(){
-                const option = $(this).val();
-                switch(option){
-                    case 'both':
-                        $('#id_contact').parent().parent().css('display','block');
-                        $('#id_contact').attr('required',true);
-                        $('#id_organization').parent().parent().css('display','block');
-                        $('#id_organization').attr('required',true);
-                        break;
-                    case 'organization':
-                        $('#id_organization').parent().parent().css('display','block');
-                        $('#id_organization').attr('required',true);
-                        $('#id_contact').parent().parent().css('display','none');
-                        $('#id_contact').val('').change().attr('required',false);
-                        break;
-                    case 'contact':
-                        $('#id_contact').parent().parent().css('display','block');
-                        $('#id_contact').attr('required',true);
-                        $('#id_organization').parent().parent().css('display','none');
-                        $('#id_organization').val('').change().attr('required',false);
-                        break;
-                }
-            });    
-
-            // can be organization, contact or both
-            option = 'organization';
-            if($('#id_organization').val() != "" && $('#id_contact').val() != ""){
-                option = 'both';
-                $('#id_contact').parent().parent().css('display','block');
-                $('#id_contact').attr('required',true);
-                $('#id_organization').parent().parent().css('display','block');
-                $('#id_organization').attr('required',true);
-            }else if($('#id_contact').val() != ""){
-                option = "contact";
-                $('#id_contact').parent().parent().css('display','block');
-                $('#id_contact').attr('required',true);
-                $('#id_organization').parent().parent().css('display','none');
-                $('#id_organization').val('').change().attr('required',false);
-            }else{
-                $('#id_organization').parent().parent().css('display','block');
-                $('#id_organization').attr('required',true);
-                $('#id_contact').parent().parent().css('display','none');
-                $('#id_contact').val('').change().attr('required',false);
-            }
-            $('input[name="contact_type"]').each(function( index ) {
-                if($(this).val()==option){
-                    $(this).iCheck('check');
-                }else{
-                    $(this).iCheck('uncheck');
-                }
-            });
 
             //set trigger to update title
             $('.formset').on('blur', 'input[name$="description"]', function() {
@@ -168,7 +90,7 @@
                 $('.x_content').hide().last().show();
             });
 
-            $('.x_content').last().show(); 
+            $('.x_content').last().show();
         });
     </script>
 
@@ -178,6 +100,38 @@
     $(window).load(function() {
       $('.select2-container').width('100%');
     });
+
+
+    function contact_type_change(){
+    var radioValue = $('input[name="contact_type"]:checked').val();
+    if(radioValue == 'organization' ){
+        $("#id_organization").parent().parent().show();
+        $("#id_contact").parent().parent().hide();
+    }else{
+        $("#id_organization").parent().parent().hide();
+        $("#id_contact").parent().parent().show();
+    }
+}
+
+function apply_fees_change(){
+    if($("#id_apply_fees")[0].checked){
+        $("#id_fees").parent().parent().show();
+    }else{
+         $("#id_fees").parent().parent().hide();
+    }
+}
+
+
+(function($){
+    $('input[name="contact_type"]').on('ifChecked', function(event){
+      contact_type_change();
+    });
+    contact_type_change();
+
+    $('input[name="apply_fees"]').on('change',  apply_fees_change);
+    apply_fees_change();
+
+})(jQuery);
 
 </script>
 {% endblock js %}

@@ -108,7 +108,6 @@ class MembershipForm(GTForm, forms.ModelForm):
         self.fields['organization'].label = "Organización"
         self.fields['organization'].required = False
         self.fields['apply_fees'].help_text = "(Al no seleccionar este campo la aplicación de impuestos será ignorada)"
-        self.initial['contact_type'] = 'organization'
 
 
     class Meta:

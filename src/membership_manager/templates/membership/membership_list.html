@@ -7,6 +7,24 @@
 {% endblock extra_css %}
 
 {% block content %}
+<div class="row" id="membership_message">
+    <div class="col-md-12">
+        <div class="alert alert-success alert-dismissible fade in" role="alert">
+            <ul class="messages">
+                <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">x</span>
+                </button>
+                {% if type == 'contact' %}
+                    <li class="warning">Membresía actualizada con éxito, si desea activar el contacto relacionado a la misma ingrese <a href="{% url 'edit_contacts' pk=pk_orga_contact %}">Aquí</a></li>
+                {% elif type == 'organization' %}
+                    <li class="warning">Membresía actualizada con éxito, si desea activar la organización relacionada a la misma ingrese <a href="{% url 'edit_organizations' pk=pk_orga_contact %}">Aquí</a></li>
+                {% endif %}
+            </ul>
+
+        </div>
+    </div>
+</div>
+
     <h1 class="text-center">Membresías</h1>
     <div class="search_options">
         <div class="row">
@@ -256,6 +274,17 @@
 
     $(window).load(function() {
       $('.select2-container').width('100%');
+      $('#membership_message').hide();
+
+      var pk = parseInt({{pk_orga_contact}});
+
+      if(isNaN(pk)){
+        $('#membership_message').hide();
+      }else{
+            $('#membership_message').show();
+        }
+
+
     });
 
     (function(){
