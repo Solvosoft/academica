@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
+    <style>
+@media only screen and (max-width: 600px) {
+
+    .ebody{
+       padding: 2em;
+       background-color: #2A3F54;
+    }
+    .eheader{
+        width: 100%;
+        min-height: 1em;
+        color: #fff;
+        background-color: #5bc0de;
+    }
+    .econtent{
+        width: 100;
+        min-height: 1em;
+        background-color: #EDEDED;
+        padding: 1em;
+    }
+    .econtent a{
+        color: #73879C;
+    }
+    .efooter{
+        width: 100%;
+        min-height: 1em;
+        color: #fff;
+        background-color: #5bc0de;
+    }
+    }
+
+</style>
+</head>
+<body>
+    <table width="100%" class="ebody">
+        <tbody class="econtent">
+        {% block content %} {% endblock %}
+        </tbody>
+    </table>
+
+</body>
+</html>

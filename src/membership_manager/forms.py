@@ -1,11 +1,13 @@
 from ajax_select.fields import AutoCompleteSelectField
 from django import forms
+from django.contrib.auth.models import User
 from django.urls import reverse
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets import core as widget
 from djgentelella.widgets.selects import AutocompleteSelect
 
+from async_notifications.lookups import Group
 from membership_core.models import MembershipTemplate, Country, ServiceType
 from membership_manager.models import Invoice, ActivityReport
 from membership_manager.models import Membership, Service, Organization, \
@@ -387,5 +389,37 @@ class ActivityReportAddForm(GTForm, forms.ModelForm):
             'end_date': genwidgets.DateInput,
             'duration': genwidgets.NumberInput,
             'attention_type': genwidgets.RadioHorizontalSelect
+
+        }
+
+
+class UserSearchForm(GTForm, forms.Form):
+    user = forms.ModelMultipleChoiceField(
+        queryset=User.objects.all(), widget=widget.SelectMultiple,
+        required=False, label="Buscar por nombre de usuario")
+    group = forms.ModelMultipleChoiceField(
+        queryset=Group.objects.all(), widget=widget.SelectMultiple,
+        required=False, label="Grupo")
+
+
+class UserAddForm(GTForm, forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].required = True
+
+
+    field_order = ['username', 'first_name', 'last_name', 'email', 'is_active', 'groups']
+
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email', 'is_active', 'groups']
+        widgets = {
+            'username': genwidgets.TextInput,
+            'first_name': genwidgets.TextInput,
+            'last_name': genwidgets.TextInput,
+            'email': genwidgets.EmailMaskInput,
+            'is_active': genwidgets.YesNoInput,
+            'groups': genwidgets.SelectMultiple
 
         }
