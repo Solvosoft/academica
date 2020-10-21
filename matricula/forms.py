@@ -140,19 +140,16 @@ class CourseCreateForm(forms.ModelForm, GTForm):
 
 
 class MenuItemSearchForm(GTForm, forms.ModelForm):  
+    name = forms.CharField(required=False,widget=djgentelella.TextInput)
     parent = forms.ModelMultipleChoiceField(
         queryset=MenuItem.objects.all(), required=False,
         widget=djgentelella.SelectMultiple
     )
-
+    type = forms.MultipleChoiceField(
+        choices=MenuItem.TYPES, required=False,
+        widget=djgentelella.SelectMultiple
+    )
+    
     class Meta:
         model = MenuItem
-        fields = ['name']
-
-        widgets = {
-            'name': djgentelella.TextInput
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['name'].required=False
+        fields = []

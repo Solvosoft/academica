@@ -241,8 +241,9 @@ class MenuItemList(ListView):
                 Q(name__icontains=self.form.cleaned_data['name']) | 
                 Q(description__icontains=self.form.cleaned_data['name']))
         if self.form.cleaned_data['parent']:
-            #queryset = queryset.filter(parent__in=list(self.form.cleaned_data['parent'].values_list('pk',flat=True)))
             queryset = queryset.filter(parent__in=self.form.cleaned_data['parent'])
+        if self.form.cleaned_data['type']:
+            queryset = queryset.filter(type__in=self.form.cleaned_data['type'])
         return queryset
 
     def get_context_data(self, **kwargs):
