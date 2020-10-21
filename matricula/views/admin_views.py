@@ -8,7 +8,7 @@ from django.views.generic import ListView, DeleteView
 from django.shortcuts import render, get_object_or_404
 from matricula.models import Category, Course, MenuItem
 from matricula.forms import CategoryCreateForm, CategorySearchForm,\
-    CourseSearchForm, CourseCreateForm
+    CourseSearchForm, CourseCreateForm, MenuItemSearchForm
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -223,7 +223,7 @@ def edit_course(request, pk=None):
     return HttpResponseRedirect(reverse(request, 'enrrolment_courses'))
 
 
-@method_decorator(permission_required('matricula.view_course'), name='dispatch')
+@method_decorator(permission_required('matricula.view_menuitem'), name='dispatch')
 class MenuItemList(ListView):
     template_name = "menuitems/menuitem_list.html"
     model = MenuItem
@@ -233,19 +233,21 @@ class MenuItemList(ListView):
         return super(MenuItemList, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
-        queryset = MenuItem.objects.all()
-        name = self.request.GET.get('name', None)
-        if name is not None:
-            queryset = queryset.filter(Q(name__icontains=name) | Q(description__icontains=name))
+        queryset = super().get_queryset()
+        self.form = MenuItemSearchForm(self.request.GET)
+        self.form.is_valid()
+        if self.form.cleaned_data['name']:
+           queryset = queryset.filter(
+                Q(name__icontains=self.form.cleaned_data['name']) | 
+                Q(description__icontains=self.form.cleaned_data['name']))
+        if self.form.cleaned_data['parent']:
+            #queryset = queryset.filter(parent__in=list(self.form.cleaned_data['parent'].values_list('pk',flat=True)))
+            queryset = queryset.filter(parent__in=self.form.cleaned_data['parent'])
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        name = self.request.GET.get('name', None)
-        if name is not None:
-            context["form_search"] = CourseSearchForm(self.request.GET)
-        else:
-            context['form_search'] = CourseSearchForm()
+        context['form_search'] = MenuItemSearchForm(self.request.GET)
         return context
 
 

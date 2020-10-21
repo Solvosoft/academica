@@ -131,10 +131,28 @@ class CourseCreateForm(forms.ModelForm, GTForm):
             'content': widget.TextareaWysiwyg,
             'category': AutocompleteSelect('categorybasename'),
         }
+
     def __init__(self, *args, **kwargs):
         super(CourseCreateForm, self).__init__(*args, **kwargs)
-        # assign a (computed, I assume) default value to the choice field
-        print(kwargs)
         if 'initial' in kwargs:
             if 'category_id' in kwargs['initial']:
                 self.fields['category'].initial = kwargs['initial']['category_id']
+
+
+class MenuItemSearchForm(GTForm, forms.ModelForm):  
+    parent = forms.ModelMultipleChoiceField(
+        queryset=MenuItem.objects.all(), required=False,
+        widget=djgentelella.SelectMultiple
+    )
+
+    class Meta:
+        model = MenuItem
+        fields = ['name']
+
+        widgets = {
+            'name': djgentelella.TextInput
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['name'].required=False
