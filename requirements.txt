@@ -1,6 +1,6 @@
 django>=3.1
 pyTelegramBotAPI
-async_notifications==0.1.22
+async_notifications==0.1.23
 django-ajax-selects==1.9.1
 celery==4.4.7
 django-celery-beat==2.0.0

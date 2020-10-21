@@ -186,8 +186,7 @@ ASYNC_NOTIFICATION_USER='membership_manager.Organization'
 ASYNC_NOTIFICATION_USER_LOOKUP_FIELDS= {'order_by': 'name',
      'display': 'name',
      'filter': ['email__icontains',
-                'name__icontains'],
-     'group_lookup': 'groups__name'}
+                'name__icontains']}
 
 
 TELEGRAM_BOT_API='1051485056:AAH8trHRYe31ZpHqVoswAbaxc2oQrKFANM0'
