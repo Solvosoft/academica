@@ -1,5 +1,5 @@
 Pago pendiente:
-Estimado {{organization.contact.first_name}}
+Estimado {{organization.name}}
 
 Por este medio se le recuerda que su membresía está proxima a vencer y tiene un pendiente de pago.
 Sería una pena para Código Sur no poder renovar nuestros servicios, por favor evite esta situación cancelando
