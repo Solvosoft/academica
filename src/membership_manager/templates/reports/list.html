@@ -23,6 +23,11 @@
                 <ul  class="list-group paginate-content">
               {% for report in obj.report_set.all %}
                     <a href="{% url 'report_detail' report.pk %}" class="list-group-item" data-toggle="tooltip" data-placement="bottom" title="{{report}}">  {{report|truncatechars:39 }}</a>
+
+                    {% empty %}
+
+                    <p>Categoría sin reportes</p>
+
                 {% endfor %}
 
             </ul>
