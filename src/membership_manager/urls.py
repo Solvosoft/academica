@@ -59,5 +59,4 @@ urlpatterns = [
     path('templates/create', templates_view.create_template, name="create_template"),
     path('templates/edit/<int:pk>', templates_view.EditTemplate.as_view(), name="edit_template"),
     path('templates/delete/<int:pk>/', templates_view.delete_template, name="delete_template"),
-    path('templates/deactivate/<int:pk>/', templates_view.deactivate_template, name="deactivate_template"),
 ]

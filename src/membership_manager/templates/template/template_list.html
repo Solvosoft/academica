@@ -47,17 +47,16 @@
     </div>
     {% if perms.membership_core.delete_membershiptemplate %}
         <!-- modal delete organization -->
-        <div id="modaldeleteorganization" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+        <div id="modaldeleteitem" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Al eliminar esta plantilla.</h4>
+                        <h4 class="modal-title">¿Esta seguro de eliminar esta plantilla?</h4>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                        <a class="btn btn-success" id="deactivateorganization">Desactivar</a>
-                        <a class="btn btn-danger" id="deleteorganization">Eliminar</a>
+                        <a class="btn btn-danger" id="deleteitem">Eliminar</a>
                     </div>
                 </div>
             </div>
@@ -75,7 +74,7 @@
                                 <li><a title="Editar plantilla" href="{% url 'edit_template' pk=template.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
                             {% endif %}
                             {% if perms.membership_core.delete_membershiptemplate %}
-                                <li><a title="Eliminar plantilla" data-url="{% url 'delete_template' pk=template.pk %}" data-href="{% url 'deactivate_template' pk=template.pk %}" onclick="deleteorganization(this)"><i class="fa fa-close"></i></a></li>
+                                <li><a title="Eliminar plantilla" data-url="{% url 'delete_template' pk=template.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
                             {% endif %}
                         </ul>
                         <div class="clearfix"></div>
@@ -122,12 +121,13 @@
     </div>
     </div>
 {% endblock content %}
-{% block js %}
-<script>
-function deleteorganization(element){
-    $("#deleteorganization").attr("href", $(element).data('url'));
-    $("#deactivateorganization").attr("href", $(element).data('href'));
-    $("#modaldeleteorganization").modal();
-}
-</script>
-{% endblock js%}
+{% if perms.membership_core.delete_membershiptemplate %}
+    {% block js %}
+    <script>
+    function deleteitem(element){
+        $("#deleteitem").attr("href", $(element).data('url'));
+        $("#modaldeleteitem").modal();
+    }
+    </script>
+    {% endblock js%}
+{% endif %}

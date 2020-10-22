@@ -82,19 +82,8 @@ class EditTemplate(UpdateView):
 
 @permission_required('membership_manager.delete_template')
 def delete_template(request, pk):
-    organization = Organization.objects.filter(pk=pk).first()
-    if organization:
-        organization.delete()
-        messages.success(request, "Organización eliminada con éxito")
-        return redirect('organizations')
-
-
-@permission_required('membership_manager.change_template')
-def deactivate_template(request, pk):
-    organization = Organization.objects.filter(pk=pk).first()
-    if organization:
-        organization.active = False
-        organization.save()
-        Membership.objects.filter(organization=organization).update(state="inactive")
-        messages.success(request, "Organización desactivada con éxito")
-        return redirect('organizations')
+    template = MembershipTemplate.objects.filter(pk=pk).first()
+    if template:
+        template.delete()
+        messages.success(request, "Plantilla eliminada con éxito")
+        return redirect('templates')
