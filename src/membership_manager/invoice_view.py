@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.http import urlsafe_base64_decode
@@ -10,7 +10,8 @@ from django.utils.timezone import now
 from django.views.generic import ListView, UpdateView
 
 from membership_manager.forms import InvoiceChangeForm, InvoicePayForm
-from membership_manager.invoice_utils import pay_invoice
+from membership_manager.invoice_utils import pay_invoice, regenerate_invoice_pdf, regenerate_invoice_code, \
+    send_paid_invoice
 from membership_manager.models import Invoice
 from membership_manager.newsletterform import FilterEmailsForm, NewsLetterTemplateForm
 from membership_telbot_manager.utils import get_telegram_group
@@ -184,3 +185,31 @@ class InvoicePayView(UpdateView):
 
         messages.success(self.request, "Factura pagada satisfactoriamente")
         return HttpResponseRedirect(form.cleaned_data['next'])
+
+
+@permission_required('membership_manager.change_invoice')
+def invoiceAction(request):
+    action = request.POST.get('oper')
+    obj = request.POST.get('pk')
+    ok='Error'
+    if action and obj:
+        queryset = Invoice.objects.filter(pk=obj)
+
+        if action == "NP":
+            send_paid_invoice(queryset, request, 'pay_mail')
+            ok='ok'
+            messages.success(request, "Correo envidado")
+        elif action == "ER":
+            send_paid_invoice(queryset, request, 'notification_mail')
+            ok='ok'
+            messages.success(request, "Correo envidado")
+        elif action == "RC":
+            regenerate_invoice_code(queryset, request)
+            ok='ok'
+            messages.success(request, "Código de factura regenerado correctamente")
+        elif action == "RP":
+            regenerate_invoice_pdf(queryset, request)
+            ok='ok'
+            messages.success(request, "PDF regenerado correctamente")
+
+    return JsonResponse({'result': ok})

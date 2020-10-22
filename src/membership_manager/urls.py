@@ -47,6 +47,7 @@ urlpatterns = [
     path('reports/graph_download/', reports_view.download_graph, name="download_graph"),
     path('reports/<str:key>/', reports_view.filters_extra, name="extra_filters"),
     path('reporttype/add', reports_view.add_reporttype_view, name='add_reporttype'),
+    path('invoice/actions', invoice_view.invoiceAction, name='invoice-actions'),
     path('invoice/list', invoice_view.InvoiceListView.as_view(), name='invoice-list'),
     path('invoice/<int:pk>/', invoice_view.InvoiceChangeView.as_view(), name='invoice-edit'),
     path('invoice/pay/<int:pk>/', invoice_view.InvoicePayView.as_view(), name='invoice-pay'),

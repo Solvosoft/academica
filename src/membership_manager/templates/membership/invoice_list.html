@@ -132,14 +132,15 @@
     <ul class="list-group">
     {% for object in objlist %}
     <li class="list-group-item row">
-<div class="row">
-    <div class="col-md-6">
-      <span title="{{ object.get_status_display }}">
-      <i class="fa s-2 {% if object.status == 'pending' %}fa-exclamation-circle orange{%elif object.status == 'paid'%}fa-check-circle green{% endif %}" aria-hidden="true"></i>
-      </span>
+        <div class="row">
+            <div class="col-md-1">
+                <span title="{{ object.get_status_display }}">
+                  <i class="fa s-2 {% if object.status == 'pending' %}fa-exclamation-circle orange{%elif object.status == 'paid'%}fa-check-circle green{% endif %}" aria-hidden="true"></i>
+              </span>
+            </div>
+    <div class="col-md-5">
         <a href="{% url 'invoice-edit'  object.pk %}?next={% next_url %}">
             {{ object.membership }}</a>
-
     </div>
     <div class="col-md-2">{{ object.renewal_period }}</div>
     <div class="col-md-2">{{ object.amount }} {{ object.currency }}{% if object.status == 'pending' %}
@@ -156,12 +157,24 @@
       {% endif %}
   </div>
 </div>
-        <div class="row aero">
+        <div class="row green" style="margin-bottom: 2em; margin-top: 0.5em;">
             <div class="col-md-4">{{ object.code }} {{ object.membership.get_membership_type_display }}</div>
             <div class="col-md-4">{% if object.transaction_number %} Trans #:
                 {{ object.transaction_number }}{%endif%}</div>
             <div class="col-md-4">{% if object.payment_date %} Fecha pago:
-                {{ object.payment_date|default:" " }}{% endif %}</div>
+                {{ object.payment_date|default:" " }}{% endif %}
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+            <div class="btn-group" role="group" aria-label="...">
+              <button style="margin-right: 1em" type="button" data-item="{{object.pk}}" data-action="NP"  class="btn btn-xs btn-primary baction">Notificar Pago</button>
+              <button style="margin-right: 1em" type="button" data-item="{{object.pk}}" data-action="ER" class="btn btn-xs btn-info baction">Enviar Recordatorio</button>
+              <button style="margin-right: 1em" type="button" data-item="{{object.pk}}" data-action="RC" class="btn btn-xs btn-primary baction">Regenerar código</button>
+              <button type="button" data-item="{{object.pk}}" data-action="RP" class="btn btn-xs btn-info baction">Regenerar PDF</button>
+            </div>
+            </div>
         </div>
 
 
@@ -198,16 +211,85 @@
          {% endfor %}
     </ul>
 </div>
+
+<div id="invoicemodal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Está segura de que desea realizar esta acción</h4>
+      </div>
+      <div class="modal-body">
+          <p>Está a punto de realizar la acción <span class="actionname"></span>, algunas acciones podrían enviar correos a las organizaciones</p>
+          <form id="invform" method="post" action="{% url 'invoice-actions' %}"> {% csrf_token %}
+              <input type="hidden"  name="oper" value="" />
+              <input type="hidden"  name="pk" value="" />
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary btninvoice" >Aplicar acción</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 {% endblock content %}
 {% block js %}
 <script>
     function search_invoices(){
          $("#formfilters").submit();
     }
-
-
     $(window).load(function() {
       $('.select2-container').width('100%');
     });
+
+    $(".btninvoice").on('click',  function(){
+            NProgress.configure({ parent: '#invoicemodal .modal-body' });
+            NProgress.start();
+                $.ajax({
+                url: $("#invform").attr('action'),
+                data: $("#invform").serialize(),
+                type : "POST",
+                dataType : 'json',
+                success : function(data) {
+                   NProgress.done();
+                   if(data.result == 'ok'){
+                        window.location.reload();
+                    }else{
+                        alert("Ha ocurrido un error por favor intentelo de nuevo");
+                    }
+                     $("#invoicemodal").modal('hide');
+                },
+                error: function(xhr, resp, text) {
+                    console.log(xhr, resp, text);
+                    NProgress.done();
+                    $("#invoicemodal").modal('hide');
+                    alert("Ha ocurrido un error por favor intentelo de nuevo");
+                }
+                });
+    });
+
+
+
+
+    $(".baction").on('click', function(){
+        var action = $(this).data('action');
+        var text = '';
+        if(action == "NP"){
+            text='Notificar Pago';
+        }else if(action == "ER"){
+            text='Enviar Recordatorio';
+        }else if(action == "RC"){
+            text='Regenerar código de factura';
+        }else if(action == "RP"){
+            text='Regenerar PDF';
+        }
+        $(".actionname").html(text);
+        $('input[name="oper"]').val(action);
+        $('input[name="pk"]').val($(this).data('item'));
+        $("#invoicemodal").modal();
+    });
+
 </script>
 {% endblock %}

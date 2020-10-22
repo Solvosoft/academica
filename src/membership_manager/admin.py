@@ -182,11 +182,10 @@ class ServiceAdmin(admin.TabularInline):
 
 
 class MemberShipAdmin(AjaxSelectAdmin, admin.ModelAdmin):
-    actions = [membership_payments_history, send_email_to_owner, send_welcome_email,
-              send_email_vencimiento, export_csv_fields, rebuild_encobro_renews]
-    list_filter = (OrganizationFilter, InvoiceNextExpirationFilter,  InvoiceRenewalNotificationFilter, MembershipPaisFilter)
-    search_fields = ('organization__name',
-                     'organization__initials')
+    #actions = [membership_payments_history, send_email_to_owner, send_welcome_email,
+    #          send_email_vencimiento, export_csv_fields, rebuild_encobro_renews]
+    #list_filter = (OrganizationFilter, InvoiceNextExpirationFilter,  InvoiceRenewalNotificationFilter, MembershipPaisFilter)
+    search_fields = ('organization__name', 'organization__initials')
     list_display = ('name', 'show_amount', 'countryspect', 'state', 'invoices', 'next_pay' )
     readonly_fields = ['exchange_rates', 'invoices', 'next_pay', 'name', 'countryspect']
 
