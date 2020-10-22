@@ -101,11 +101,16 @@ class EditTemplate(UpdateView):
         formset = modelformset_factory(
             ServiceMT, form=TemplateServiceAddForm, formset=GTBaseModelFormSet,
             can_delete=True, extra=extra, can_order=True)
-        fset = formset(queryset=ServiceMT.objects.filter(
-            membership=template), prefix='mts')
+        if self.request.POST:
+            fset = formset(
+                self.request.POST, queryset=ServiceMT.objects.filter(
+                    membership=template), prefix='mts')
+        else:
+            fset = formset(queryset=ServiceMT.objects.filter(
+                membership=template), prefix='mts')
         context['formset'] = fset
         return context
-    
+
     def form_valid(self, form):
         template = self.object
         template.state = form.cleaned_data['state']
@@ -113,11 +118,9 @@ class EditTemplate(UpdateView):
         template.annual_cost = form.cleaned_data['annual_cost']
         template.renewal_period = form.cleaned_data['renewal_period']
         template.save()
-
         formset = modelformset_factory(
             ServiceMT, form=TemplateServiceAddForm, formset=GTBaseModelFormSet,
             can_delete=True, extra=1, can_order=True)
-
         fset = formset(self.request.POST, queryset=ServiceMT.objects.filter(
             membership=template), prefix="mts")
 
@@ -128,11 +131,10 @@ class EditTemplate(UpdateView):
             for instance in instances:
                 instance.membership = template
                 instance.save()
-
-                messages.success(self.request, "Plantilla actualizada con éxito")
-            else:
-                return redirect("templates")
-
+        else:
+            messages.error(self.request, "Error al guardar plantilla")
+            return reverse('edit_template', args=(template.pk,))
+        messages.success(self.request, "Plantilla actualizada con éxito")
         return super().form_valid(form)
 
 
