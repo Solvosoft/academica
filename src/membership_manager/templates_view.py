@@ -7,9 +7,12 @@ from django.utils.decorators import method_decorator
 from django.db.models import Q
 from django.views.generic import ListView, UpdateView
 from membership_manager.forms import OrganizationAddForm,\
-    ContactOrganizationForm, TemplateSearchForm, TemplateAddForm
-from membership_core.models import MembershipTemplate
-from membership_manager.models import Organization
+    ContactOrganizationForm, TemplateSearchForm, TemplateAddForm,\
+    MembershipServiceForm, TemplateServiceAddForm
+from membership_core.models import MembershipTemplate, ServiceMT, ServiceType
+from membership_manager.models import Organization, Service
+from django.forms import modelformset_factory
+from djgentelella.forms.forms import GTBaseModelFormSet
 
 
 @method_decorator(permission_required('membership_core.view_membershiptemplate'), name='dispatch')
@@ -44,19 +47,37 @@ class TemplateListView(ListView):
 
 @permission_required('membership_core.add_membershiptemplate')
 def create_template(request):
+    formset = modelformset_factory(
+        ServiceMT, form=TemplateServiceAddForm, formset=GTBaseModelFormSet,
+        can_delete=True, extra=1, can_order=True)
     if request.method == 'POST':
         form = TemplateAddForm(request.POST)
-
-        if form.is_valid():
-            form.save()
+        fset = formset(
+            request.POST, queryset=Service.objects.none(), prefix="mts")
+        if form.is_valid() and fset.is_valid():
+            template = MembershipTemplate(
+                name=form.cleaned_data['name'],
+                annual_cost=form.cleaned_data['annual_cost'],
+                currency=form.cleaned_data['currency'],
+                renewal_period=form.cleaned_data['renewal_period'],
+                state=form.cleaned_data['state'],
+                description=form.cleaned_data['description'],
+            )
+            template.save()
+            instances = fset.save(commit=False)
+            for instance in instances:
+                instance.membership = template
+                instance.save()
             messages.success(request, "Plantilla registrada con éxito")
             return redirect('templates')
         else:
             messages.error(request, "Error al guardar la plantilla")
     else:
+        fset = formset(queryset=Service.objects.none(), prefix='mts')
         form = TemplateAddForm()
     context = {
-        'form': form
+        'form': form,
+        'formset': fset
     }
     return render(request, 'template/create.html', context=context)
 

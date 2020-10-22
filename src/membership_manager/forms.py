@@ -7,7 +7,7 @@ from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets import core as widget
 from djgentelella.widgets.selects import AutocompleteSelect
 
-from membership_core.models import MembershipTemplate, Country, ServiceType, SystemCurrency, RenewalPeriod
+from membership_core.models import MembershipTemplate, Country, ServiceType, SystemCurrency, RenewalPeriod, ServiceMT
 from membership_manager.models import Invoice, ActivityReport
 from membership_manager.models import Membership, Service, Organization, \
     Report, ReportType
@@ -444,4 +444,16 @@ class TemplateAddForm(GTForm, forms.ModelForm):
             'state': widget.Select,
             'currency': widget.Select,
             'description': djgentelella.TextareaWysiwyg
+        }
+
+
+class TemplateServiceAddForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = ServiceMT
+        fields = ['servicetype', 'description', 'observations']
+
+        widgets = {
+            'servicetype': AutocompleteSelect('servicetypebasename'),
+            'description': widget.TextInput,
+            'observations': widget.Textarea,
         }

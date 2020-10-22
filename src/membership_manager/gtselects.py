@@ -3,7 +3,7 @@ from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View
 
 from membership_core.models import ServiceType, Country, SystemCurrency
-from membership_manager.models import Organization, Membership
+from membership_manager.models import Organization
 
 
 @register_lookups(prefix="organization", basename="organizationbasename")
