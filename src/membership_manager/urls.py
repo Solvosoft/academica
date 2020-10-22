@@ -9,6 +9,8 @@ from . import memberships_view
 from . import news_letter_view
 from . import organizations_view
 from . import user_view
+from . import templates_view
+
 
 urlpatterns = [
     path('home/', base_views.index, name="home"),
@@ -64,4 +66,9 @@ urlpatterns = [
     path('groups/', user_view.groups_list, name="groups_list"),
     path('groups/edit/<int:pk>', user_view.EditGroup.as_view(), name="edit_group"),
     path('groups/delete/<int:pk>/', user_view.delete_group, name="delete_group"),
+    path('templates/', templates_view.TemplateListView.as_view(), name="templates"),
+    path('templates/create', templates_view.create_template, name="create_template"),
+    path('templates/edit/<int:pk>', templates_view.EditTemplate.as_view(), name="edit_template"),
+    path('templates/delete/<int:pk>/', templates_view.delete_template, name="delete_template"),
+
 ]

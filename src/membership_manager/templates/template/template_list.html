@@ -1,0 +1,143 @@
+{% extends 'gentelella/base.html' %}
+{% load membership_code %}
+{% load static %}
+{% block extra_css %}
+    <link href="{% static 'css/membership.css' %}" rel="stylesheet">
+{% endblock extra_css %}
+
+{% block content %}
+    <h1 class="text-center">Plantillas</h1>
+    <div class="search_options">
+        <div class="row">
+            {% if perms.membership_core.add_membershiptemplate %}
+            <div class="col-md-10 col-xs-12">
+            {% else %}
+            <div class="col-md-10 col-xs-12 col-md-offset-1">
+            {% endif %}
+                <div class="x_panel">
+                    <form method="GET">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class='col-md-12 col-lg-6 col-sm-12 col-xs-12'>
+                                {% include 'field.html' with field=formsearch.name%}
+                            </div>
+                            <div class='col-md-6 col-lg-3 col-sm-6 col-xs-12'>
+                                {% include 'field.html' with field=formsearch.currency %}
+                            </div>
+                            <div class='col-md-6 col-lg-3 col-sm-6 col-xs-12'>
+                                {% include  'field.html' with field=formsearch.renewal_period %}
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+                    <div style="text-align:right;">
+                        <a href="{% url 'templates' %}" class="btn btn-dark">Limpiar filtros</a>
+                        <button class="btn btn-success" type="submit">Buscar</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+            {% if perms.membership_core.add_membershiptemplate %}
+            <div class="col-md-2">
+                <div class="buttons">
+                    <a href="{% url 'create_template' %}" class="btn btn-primary">Nueva Plantilla</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% if perms.membership_core.delete_membershiptemplate %}
+        <!-- modal delete organization -->
+        <div id="modaldeleteitem" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">¿Esta seguro de eliminar esta plantilla?</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                        <a class="btn btn-danger" id="deleteitem">Eliminar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end delete modal-->
+    {% endif %}
+    <div class="row contact_cards">
+        {% for template in object_list %}
+            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12 widget widget_tally_box">
+                <div class="x_panel fixed_height_390 {% if template.state == "inactive" %}inactive_template{% elif template.state == 'active' %} active_template {% else %}grace_period_template{% endif %}">
+                    <div class="x_title">
+                        <h2>{{template.name|title|wordwrap:20|linebreaks}}</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            {% if perms.membership_core.change_membershiptemplate %}
+                                <li><a title="Editar plantilla" href="{% url 'edit_template' pk=template.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
+                            {% endif %}
+                            {% if perms.membership_core.delete_membershiptemplate %}
+                                <li><a title="Eliminar plantilla" data-url="{% url 'delete_template' pk=template.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+                            {% endif %}
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <h4><b>Descripción:</b></h4>
+                        <div class="description">{{template.description|safe}}</div>
+                        <div style="text-align: left; margin-bottom: 15px;">
+                            <h4>Información: </h4>
+                        </div>
+                        <div><b>Moneda:</b> {% if template.currency %} {{template.currency}} {%else%} Sin especificar {% endif %}</div>
+                        <div><b>Costo anual:</b> {% if template.annual_cost %} {{template.annual_cost}} {%else%} Sin especificar {% endif %}</div>
+                        <div><b>Renovación:</b> {% if template.renewal_period %} {{template.renewal_period}} {%else%} Sin especificar {% endif %}</div>
+                        <div><b>Estado:</b> 
+                            {% if template.state == "active" %} 
+                                Activa 
+                            {%elif template.state == "inactive" %} 
+                                Inactiva 
+                            {% else %}
+                                Peorido de Gracia
+                            {% endif %}
+                            </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_footer">
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="paginator_container">
+        {% if is_paginated %}
+            <ul class="pagination">
+                {% if paginator.has_previous %}
+                    <li><a href="?{% url_replace request 'page' paginator.previous_page_number %}">&laquo;</a></li>
+                {% else %}
+                    <li class="disabled"><span>&laquo;</span></li>
+                {% endif %}
+                {% for i in paginator.page_range %}
+                    {% if page_obj.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                    {% else %}
+                        <li><a href="?{% url_replace request 'page' i %}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if paginator.has_next %}
+                    <li><a href="?{% url_replace request 'page' paginator.next_page_number %}">&raquo;</a></li>
+                {% else %}
+                    <li class="disabled"><span>&raquo;</span></li>
+                {% endif %}
+            </ul>
+        {% endif %}
+    </div>
+    </div>
+{% endblock content %}
+{% if perms.membership_core.delete_membershiptemplate %}
+    {% block js %}
+    <script>
+    function deleteitem(element){
+        $("#deleteitem").attr("href", $(element).data('url'));
+        $("#modaldeleteitem").modal();
+    }
+    </script>
+    {% endblock js%}
+{% endif %}

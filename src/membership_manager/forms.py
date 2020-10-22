@@ -7,11 +7,12 @@ from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets import core as widget
 from djgentelella.widgets.selects import AutocompleteSelect
 
-from membership_core.models import MembershipTemplate, Country, ServiceType
+from membership_core.models import MembershipTemplate, Country, ServiceType, SystemCurrency, RenewalPeriod
 from membership_manager.models import Invoice, ActivityReport
 from membership_manager.models import Membership, Service, Organization, \
     Report, ReportType
 from membership_manager.reports.registro import REPORTES_TITULOS
+from djgentelella.widgets import wysiwyg as djgentelella
 
 
 class TemplateWidget(forms.Select):
@@ -22,15 +23,14 @@ class TemplateWidget(forms.Select):
 class MembInvPaymentsForm(forms.Form):
     option = forms.ChoiceField(choices=(
         ('pending', 'Pendiente'),
-        ('paid','Pagado'),
-        ('inactive','Inactivo')
-    ),required=False,widget=forms.RadioSelect(attrs={'class': 'grp-horizontal-list','padding':'0x 10px'}),)
+        ('paid', 'Pagado'),
+        ('inactive', 'Inactivo')
+    ), required=False, widget=forms.RadioSelect(attrs={'class': 'grp-horizontal-list', 'padding': '0x 10px'}), )
 
 
 class MembershipAddForm(forms.ModelForm):
-
-    organization=AutoCompleteSelectField('orgs', label="Organización", required=False)
-    #contact = AutoCompleteSelectField('contacts', label="Contacto", required=False)
+    organization = AutoCompleteSelectField('orgs', label="Organización", required=False)
+    # contact = AutoCompleteSelectField('contacts', label="Contacto", required=False)
 
     membership_template = forms.ModelChoiceField(
         queryset=MembershipTemplate.objects.filter(state="active"),
@@ -59,7 +59,6 @@ class ServiceForm(forms.ModelForm):
 
 
 class OrganizationForm(forms.ModelForm):
-
     class Meta:
         model = Organization
         fields = [
@@ -67,9 +66,10 @@ class OrganizationForm(forms.ModelForm):
             "postal_code", "active", "currency", "payment_method", "identification_type", "identification",
         ]
 
-class ContactOrganizationForm(GTForm, forms.Form):
 
-    organization = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Organization.objects.all(), label="Buscar contacto", required=True)
+class ContactOrganizationForm(GTForm, forms.Form):
+    organization = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Organization.objects.all(),
+                                          label="Buscar contacto", required=True)
 
     def __init__(self, *args, **kwargs):
         pk = kwargs.pop('pk')
@@ -81,10 +81,7 @@ class ContactOrganizationForm(GTForm, forms.Form):
             self.fields['organization'].queryset = Organization.objects.filter(type=True).exclude(pk__in=contacts)
 
 
-
-
 class MembershipForm(GTForm, forms.ModelForm):
-
     CHOICES = (
         ('organization', 'Organización'),
         ('contact', 'Contacto'),
@@ -100,7 +97,6 @@ class MembershipForm(GTForm, forms.ModelForm):
         self.fields['organization'].label = "Organización"
         self.fields['organization'].required = False
         self.fields['apply_fees'].help_text = "(Al no seleccionar este campo la aplicación de impuestos será ignorada)"
-
 
     class Meta:
         model = Membership
@@ -147,9 +143,10 @@ class MembershipServiceForm(GTForm, forms.ModelForm):
 class ReportForm(GTForm, forms.ModelForm):
     name = forms.CharField(widget=widget.TextInput, required=False, label="Nombre")
     category = forms.ModelChoiceField(queryset=ReportType.objects.all(),
-                                       required=False,
-                                       widget=widget.SelectWithAdd(attrs={'add_url': "#"}), label="Categoría")
-    country = forms.ModelMultipleChoiceField(queryset=Country.objects.all(), widget=widget.SelectMultiple, required=False, label="País")
+                                      required=False,
+                                      widget=widget.SelectWithAdd(attrs={'add_url': "#"}), label="Categoría")
+    country = forms.ModelMultipleChoiceField(queryset=Country.objects.all(), widget=widget.SelectMultiple,
+                                             required=False, label="País")
     start_date = forms.DateField(widget=widget.DateInput, required=False, label="Fecha inicial")
     end_date = forms.DateField(widget=widget.DateInput, required=False, label="Fecha final")
     report_type = forms.ChoiceField(widget=widget.Select, required=True, label="Tipo de reporte")
@@ -182,8 +179,8 @@ class ReportForm(GTForm, forms.ModelForm):
 
         else:
             self.fields['category'] = forms.ModelChoiceField(queryset=ReportType.objects.all(),
-                                              required=False,
-                                              widget=widget.Select, label="Categoría")
+                                                             required=False,
+                                                             widget=widget.Select, label="Categoría")
 
         if self.do_save:
             self.fields["name"].required = True
@@ -201,7 +198,6 @@ class CreateReportTypeForm(GTForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['name'].label = "Nombre"
-
 
     class Meta:
         model = ReportType
@@ -291,7 +287,6 @@ class OrganizationAddForm(GTForm, forms.ModelForm):
 
 
 class MembershipTemplateForm(GTForm, forms.Form):
-
     template = forms.ModelChoiceField(
         queryset=MembershipTemplate.objects.all(), widget=widget.Select,
         required=False, label="Plantilla de membresía")
@@ -302,21 +297,22 @@ class InvoiceChangeForm(GTForm, forms.ModelForm):
     next = forms.CharField(widget=forms.HiddenInput)
     field_order = ['status', 'amount', 'currency', 'payment_date', 'description',
                    'expiration_date', 'payment_method', 'transaction_number', 'receipt']
+
     class Meta:
         model = Invoice
-        exclude =['creation_date', 'membership', 'renewal_period', 'code', 'pdf_invoice']
-        widgets={
+        exclude = ['creation_date', 'membership', 'renewal_period', 'code', 'pdf_invoice']
+        widgets = {
             'expiration_date': genwidgets.DateInput,
             'payment_date': genwidgets.DateInput,
-            #'membership': genwidgets.ReadOnlySelect,
-            #'renewal_period': genwidgets.ReadOnlySelect,
+            # 'membership': genwidgets.ReadOnlySelect,
+            # 'renewal_period': genwidgets.ReadOnlySelect,
             'description': genwidgets.Textarea,
             'amount': genwidgets.NumberInput,
             'currency': genwidgets.Select,
             'payment_method': genwidgets.Select,
             'transaction_number': genwidgets.TextInput,
-            #'pdf_invoice': genwidgets.FileInput,
-            #'receipt': genwidgets.FileInput
+            # 'pdf_invoice': genwidgets.FileInput,
+            # 'receipt': genwidgets.FileInput
         }
 
 
@@ -325,21 +321,20 @@ class InvoicePayForm(GTForm, forms.ModelForm):
 
     class Meta:
         model = Invoice
-        exclude =['creation_date', 'membership', 'renewal_period', 'code', 'pdf_invoice', 'status',
-                  'expiration_date', 'description']
-        widgets={
+        exclude = ['creation_date', 'membership', 'renewal_period', 'code', 'pdf_invoice', 'status',
+                   'expiration_date', 'description']
+        widgets = {
             'payment_date': genwidgets.DateInput,
             'amount': genwidgets.NumberInput,
             'currency': genwidgets.Select,
             'payment_method': genwidgets.Select,
             'transaction_number': genwidgets.TextInput,
-            #'pdf_invoice': genwidgets.FileInput,
-            #'receipt': genwidgets.FileInput
+            # 'pdf_invoice': genwidgets.FileInput,
+            # 'receipt': genwidgets.FileInput
         }
 
 
 class ServiceTypeForm(GTForm, forms.ModelForm):
-
     class Meta:
         model = ServiceType
         fields = '__all__'
@@ -356,7 +351,7 @@ class ActivityReportForm(GTForm, forms.Form):
         required=False, label="Organizaciones o contactos"
     )
     daterange = forms.CharField(
-        widget= genwidgets.DateRangeInput,
+        widget=genwidgets.DateRangeInput,
         required=False, label='Rango de fechas'
     )
 
@@ -365,6 +360,7 @@ class ActivityReportHours(GTForm, forms.Form):
     start_date = forms.DateTimeField(widget=genwidgets.DateTimeInput)
     end_date = forms.DateTimeField(widget=genwidgets.DateTimeInput)
     item = forms.IntegerField(widget=forms.HiddenInput)
+
 
 class ActivityReportAddForm(GTForm, forms.ModelForm):
     field_order = ['attention_type', 'organization', 'description', 'start_date', 'end_date', 'duration']
@@ -398,7 +394,6 @@ class UserAddForm(GTForm, forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['email'].required = True
 
-
     field_order = ['username', 'first_name', 'last_name', 'email', 'is_active', 'groups']
 
     class Meta:
@@ -416,7 +411,6 @@ class UserAddForm(GTForm, forms.ModelForm):
 
 
 class GroupAddForm(GTForm, forms.ModelForm):
-
     class Meta:
         model = Group
         fields = ['name', 'permissions']
@@ -424,4 +418,30 @@ class GroupAddForm(GTForm, forms.ModelForm):
         widgets = {
             'name': genwidgets.Input,
             'permissions': genwidgets.SelectMultiple
+        }
+
+
+class TemplateSearchForm(GTForm, forms.Form):
+    name = forms.CharField(
+        required=False, label="Nombre", widget=widget.TextInput)
+    currency = forms.ModelMultipleChoiceField(
+        required=False, label="Moneda", widget=widget.SelectMultiple,
+        queryset=SystemCurrency.objects.all())
+    renewal_period = forms.ModelMultipleChoiceField(
+        required=False, label="Perido de renovación", widget=widget.SelectMultiple,
+        queryset=RenewalPeriod.objects.all())
+
+
+class TemplateAddForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = MembershipTemplate
+        fields = '__all__'
+        widgets = {
+            'name': widget.TextInput,
+            'state': widget.Select,
+            'renewal_period': widget.Select,
+            'annual_cost': widget.NumberInput,
+            'state': widget.Select,
+            'currency': widget.Select,
+            'description': djgentelella.TextareaWysiwyg
         }
