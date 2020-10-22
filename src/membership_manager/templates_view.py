@@ -93,11 +93,46 @@ class EditTemplate(UpdateView):
         context = super().get_context_data(**kwargs)
         template = context['object']
         context['template_form'] = TemplateAddForm(instance=template)
+        extra = template.servicemt_set.all().count()
+        if extra == 0:
+            extra = 1
+        else:
+            extra = 0
+        formset = modelformset_factory(
+            ServiceMT, form=TemplateServiceAddForm, formset=GTBaseModelFormSet,
+            can_delete=True, extra=extra, can_order=True)
+        fset = formset(queryset=ServiceMT.objects.filter(
+            membership=template), prefix='mts')
+        context['formset'] = fset
         return context
-
+    
     def form_valid(self, form):
-        form.save()
-        messages.success(self.request, "Plantilla actualizada con éxito")
+        template = self.object
+        template.state = form.cleaned_data['state']
+        template.currency = form.cleaned_data['currency']
+        template.annual_cost = form.cleaned_data['annual_cost']
+        template.renewal_period = form.cleaned_data['renewal_period']
+        template.save()
+
+        formset = modelformset_factory(
+            ServiceMT, form=TemplateServiceAddForm, formset=GTBaseModelFormSet,
+            can_delete=True, extra=1, can_order=True)
+
+        fset = formset(self.request.POST, queryset=ServiceMT.objects.filter(
+            membership=template), prefix="mts")
+
+        if fset.is_valid():
+            instances = fset.save(commit=False)
+            for delinst in fset.deleted_objects:
+                delinst.delete()
+            for instance in instances:
+                instance.membership = template
+                instance.save()
+
+                messages.success(self.request, "Plantilla actualizada con éxito")
+            else:
+                return redirect("templates")
+
         return super().form_valid(form)
 
 
