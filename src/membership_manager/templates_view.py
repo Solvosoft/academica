@@ -12,7 +12,7 @@ from membership_core.models import MembershipTemplate
 from membership_manager.models import Organization
 
 
-@method_decorator(permission_required('membership_core.view_template'), name='dispatch')
+@method_decorator(permission_required('membership_core.view_membershiptemplate'), name='dispatch')
 class TemplateListView(ListView):
     template_name = "template/template_list.html"
     paginate_by = 30
@@ -42,7 +42,7 @@ class TemplateListView(ListView):
         return context
 
 
-@permission_required('membership_core.add_template')
+@permission_required('membership_core.add_membershiptemplate')
 def create_template(request):
     if request.method == 'POST':
         form = TemplateAddForm(request.POST)
@@ -61,7 +61,7 @@ def create_template(request):
     return render(request, 'template/create.html', context=context)
 
 
-@method_decorator(permission_required('membership_core.change_template'), name='dispatch')
+@method_decorator(permission_required('membership_core.change_membershiptemplate'), name='dispatch')
 class EditTemplate(UpdateView):
     model = MembershipTemplate
     form_class = TemplateAddForm
@@ -80,7 +80,7 @@ class EditTemplate(UpdateView):
         return super().form_valid(form)
 
 
-@permission_required('membership_manager.delete_template')
+@permission_required('membership_core.delete_membershiptemplate')
 def delete_template(request, pk):
     template = MembershipTemplate.objects.filter(pk=pk).first()
     if template:
