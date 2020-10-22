@@ -11,6 +11,7 @@ from membership_manager.models import Invoice, ActivityReport
 from membership_manager.models import Membership, Service, Organization, \
     Report, ReportType
 from membership_manager.reports.registro import REPORTES_TITULOS
+from djgentelella.widgets import wysiwyg as djgentelella
 
 
 class TemplateWidget(forms.Select):
@@ -402,3 +403,24 @@ class TemplateSearchForm(GTForm, forms.Form):
     renewal_period = forms.ModelMultipleChoiceField(
         required=False, widget=widget.SelectMultiple,
         queryset=RenewalPeriod.objects.all())
+
+
+class TemplateAddForm(GTForm, forms.ModelForm):
+    STATES = (
+        ("active", "Activa"),
+        ("inactive", "Inactiva"),
+        ("graceperiod", "Periodo de gracia"),
+    )
+
+    class Meta:
+        model = MembershipTemplate
+        fields = '__all__'
+        widgets = {
+            'name': widget.TextInput,
+            'state': widget.Select,
+            'renewal_period': widget.Select,
+            'annual_cost': widget.NumberInput,
+            'state': widget.Select,
+            'currency': widget.Select,
+            'description': djgentelella.TextareaWysiwyg
+        }

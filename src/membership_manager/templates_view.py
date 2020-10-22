@@ -6,8 +6,8 @@ from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.db.models import Q
 from django.views.generic import ListView, UpdateView
-from membership_manager.forms import OrganizationSearchForm, OrganizationAddForm, ContactOrganizationForm,\
-    TemplateSearchForm
+from membership_manager.forms import OrganizationAddForm,\
+    ContactOrganizationForm, TemplateSearchForm, TemplateAddForm
 from membership_core.models import MembershipTemplate
 from membership_manager.models import Organization
 
@@ -44,30 +44,17 @@ class TemplateListView(ListView):
 
 @permission_required('membership_core.add_template')
 def create_template(request):
-
-    # We create a new organization
     if request.method == 'POST':
+        form = TemplateAddForm(request.POST)
 
-        # create a new organization object
-        form = OrganizationAddForm(request.POST)
-
-        # We save the form
         if form.is_valid():
             form.save()
-            messages.success(request, "Organización registrada con éxito")
-            return redirect('organizations')
-
-        # if there are errors we return the error messages
+            messages.success(request, "Plantilla registrada con éxito")
+            return redirect('templates')
         else:
-            messages.error(
-                request,
-                "Error al intentar guardar la organización")
-
-    # We display new contact form
-    if request.method == 'GET':
-
-        form = OrganizationAddForm(initial={'type':False})
-
+            messages.error(request, "Error al guardar la plantilla")
+    else:
+        form = TemplateAddForm()
     context = {
         'form': form
     }
