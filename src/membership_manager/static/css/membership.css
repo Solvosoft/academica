@@ -79,3 +79,6 @@
 .grace_period_template{
     border-top: 4px solid #ffc107 !important;
 }
+.description > p{
+    text-align: left !important;
+}

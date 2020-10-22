@@ -63,29 +63,20 @@ def create_template(request):
 
 @method_decorator(permission_required('membership_core.change_template'), name='dispatch')
 class EditTemplate(UpdateView):
-    model = Organization
-    form_class = OrganizationAddForm
-    template_name = 'organization/edit.html'
-    success_url = reverse_lazy('organizations')
+    model = MembershipTemplate
+    form_class = TemplateAddForm
+    template_name = 'template/edit.html'
+    success_url = reverse_lazy('templates')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        organization = context['object']
-        context['contact_form'] = ContactOrganizationForm(pk=organization.pk)
-        context['url_contact'] = reverse('api_organization', args=(organization.pk,))
-        context['contact_list'] = [{'pk': x.pk, 'name': str(x)} for x in organization.contacts.all()]
+        template = context['object']
+        context['template_form'] = TemplateAddForm(instance=template)
         return context
 
     def form_valid(self, form):
-
-        if form.cleaned_data['active']:
-            Membership.objects.filter(organization=self.object).update(state="active")
-
-        else:
-            Membership.objects.filter(organization=self.object).update(state="inactive")
-
         form.save()
-        messages.success(self.request, "Organización actualizada con éxito")
+        messages.success(self.request, "Plantilla actualizada con éxito")
         return super().form_valid(form)
 
 
