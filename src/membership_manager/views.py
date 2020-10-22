@@ -112,6 +112,7 @@ def services_list(request):
                                                                    'services_list': services_list})
 
 
+@method_decorator(permission_required('membership_core.view_servicetype'), name='dispatch')
 @method_decorator(permission_required('membership_core.change_servicetype'), name='dispatch')
 class EditService(UpdateView):
     model = ServiceType

@@ -1,5 +1,10 @@
 {% extends 'gentelella/base.html' %}
 {% load news_letter_emails %}
+{% load static %}
+{% load gtsettings %}
+{% block pre_head %}
+    {% define_true "use_datatables" as use_datatables %}
+{% endblock %}
 {% block content %}
 <div class="container">
     <div class="row">
@@ -151,6 +156,7 @@ function sendnewsletter(element){
 }
 
 (function(){
+    $("#listadoboletines").DataTable();
     $("#id_message").css({'width': 407 });
     $("#btndeletetask").on('click', function(){
     });

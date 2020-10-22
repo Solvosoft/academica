@@ -92,7 +92,6 @@
                 </li>
 
                 {% endif %}
-                {% if perms.membership_manager.view_report %}
 
                 <li>
                     <a>
@@ -101,15 +100,39 @@
                         <span class="fa fa-chevron-down"></span>
                     </a>
                     <ul class="nav child_menu">
+                        {% if perms.membership_manager.add_report %}
                         <li>
                             <a href="{% url 'reports' %}">Generar reporte</a>
                         </li>
+                        {% endif %}
+                        {% if perms.membership_manager.view_report %}
                         <li>
                             <a href="{% url 'report_list' %}">Reportes</a>
                         </li>
+                        {% endif %}
                     </ul>
                 </li>
-                 {% endif %}
+
+                <li>
+                    <a>
+                        <i class="fa fa-book"></i>
+                        Administración
+                        <span class="fa fa-chevron-down"></span>
+                    </a>
+                    <ul class="nav child_menu">
+                        {% if perms.auth.view_user %}
+                        <li>
+                            <a href="{% url 'user_list' %}">Lista de usuarias</a>
+                        </li>
+                        {% endif %}
+                        {% if perms.auth.view_group %}
+                        <li>
+                            <a href="{% url 'groups_list' %}">Grupos</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </li>
+
             </ul>
         </div>
     </div>
