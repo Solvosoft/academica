@@ -1,15 +1,15 @@
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.mail import send_mail
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, UpdateView, CreateView
 
-from membership_manager.forms import UserSearchForm, UserAddForm
+from membership_manager.forms import UserSearchForm, UserAddForm, GroupAddForm
 
 
 @method_decorator(permission_required('auth.view_user'), name='dispatch')
@@ -97,3 +97,51 @@ def deactivate_user(request, pk):
         user.save()
         messages.success(request, "Usuaria desactivada con éxito")
         return redirect('user_list')
+
+
+@permission_required('auth.view_group')
+@permission_required('auth.add_group')
+def groups_list(request):
+
+    if request.method == "POST":
+        form = GroupAddForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Grupo registrado con éxito")
+            return redirect('groups_list')
+    else:
+        form = GroupAddForm()
+
+    groups_list = Group.objects.all()
+
+    return render(request, "groups/groups_list.html", context={'form': form, 'group_edit': 0,
+                                                                   'groups_list': groups_list})
+
+
+@method_decorator(permission_required('auth.change_group'), name='dispatch')
+class EditGroup(UpdateView):
+    model = Group
+    form_class = GroupAddForm
+    template_name = 'groups/groups_list.html'
+    success_url = reverse_lazy('groups_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['group_edit'] = 1
+        context['groups_list'] = Group.objects.all()
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, "Grupo actualizado con éxito")
+        return super().form_valid(form)
+
+
+@permission_required('auth.delete_group')
+def delete_group(request, pk):
+    group = Group.objects.filter(pk=pk).first()
+    if group:
+        group.delete()
+        messages.success(request, "Grupo eliminado con éxito")
+        return redirect('groups_list')

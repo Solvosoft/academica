@@ -125,6 +125,11 @@
                             <a href="{% url 'user_list' %}">Lista de usuarias</a>
                         </li>
                         {% endif %}
+                        {% if perms.auth.view_group %}
+                        <li>
+                            <a href="{% url 'groups_list' %}">Grupos</a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </li>
 

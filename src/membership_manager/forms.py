@@ -1,13 +1,12 @@
 from ajax_select.fields import AutoCompleteSelectField
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.urls import reverse
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets import core as widget
 from djgentelella.widgets.selects import AutocompleteSelect
 
-from async_notifications.lookups import Group
 from membership_core.models import MembershipTemplate, Country, ServiceType
 from membership_manager.models import Invoice, ActivityReport
 from membership_manager.models import Membership, Service, Organization, \
@@ -422,4 +421,16 @@ class UserAddForm(GTForm, forms.ModelForm):
             'is_active': genwidgets.YesNoInput,
             'groups': genwidgets.SelectMultiple
 
+        }
+
+
+class GroupAddForm(GTForm, forms.ModelForm):
+
+    class Meta:
+        model = Group
+        fields = ['name', 'permissions']
+
+        widgets = {
+            'name': genwidgets.Input,
+            'permissions': genwidgets.SelectMultiple
         }
