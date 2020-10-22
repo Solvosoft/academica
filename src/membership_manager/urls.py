@@ -8,6 +8,7 @@ from . import invoice_view
 from . import memberships_view
 from . import news_letter_view
 from . import organizations_view
+from . import templates_view
 
 urlpatterns = [
     path('home/', base_views.index, name="home"),
@@ -54,4 +55,9 @@ urlpatterns = [
     path('activityReport/<int:pk>/', activityreportview.ActivityReportEdit.as_view(), name="activityreport-edit"),
     path('activityReport/', activityreportview.ActivityReportList.as_view(), name="activityreport-list"),
     path('activityReport_addhour/', activityreportview.addHour, name="activityreporthour-add"),
+    path('templates/', templates_view.TemplateListView.as_view(), name="templates"),
+    path('templates/create', templates_view.create_template, name="create_template"),
+    path('templates/edit/<int:pk>', templates_view.EditTemplate.as_view(), name="edit_template"),
+    path('templates/delete/<int:pk>/', templates_view.delete_template, name="delete_template"),
+    path('templates/deactivate/<int:pk>/', templates_view.deactivate_template, name="deactivate_template"),
 ]

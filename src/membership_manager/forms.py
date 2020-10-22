@@ -6,7 +6,7 @@ from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets import core as widget
 from djgentelella.widgets.selects import AutocompleteSelect
 
-from membership_core.models import MembershipTemplate, Country, ServiceType
+from membership_core.models import MembershipTemplate, Country, ServiceType, SystemCurrency, RenewalPeriod
 from membership_manager.models import Invoice, ActivityReport
 from membership_manager.models import Membership, Service, Organization, \
     Report, ReportType
@@ -389,3 +389,16 @@ class ActivityReportAddForm(GTForm, forms.ModelForm):
             'attention_type': genwidgets.RadioHorizontalSelect
 
         }
+
+
+class TemplateSearchForm(GTForm, forms.Form):
+    name = forms.CharField(
+        required=False, widget=widget.TextInput(attrs={
+            'placeholder': 'nombre'
+        }))
+    currency = forms.ModelMultipleChoiceField(
+        required=False, widget=widget.SelectMultiple,
+        queryset=SystemCurrency.objects.all())
+    renewal_period = forms.ModelMultipleChoiceField(
+        required=False, widget=widget.SelectMultiple,
+        queryset=RenewalPeriod.objects.all())

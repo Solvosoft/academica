@@ -1,0 +1,122 @@
+from django.contrib import messages
+from django.contrib.auth.decorators import permission_required
+from django.shortcuts import redirect
+from django.shortcuts import render
+from django.urls import reverse_lazy, reverse
+from django.utils.decorators import method_decorator
+from django.db.models import Q
+from django.views.generic import ListView, UpdateView
+from membership_manager.forms import OrganizationSearchForm, OrganizationAddForm, ContactOrganizationForm,\
+    TemplateSearchForm
+from membership_core.models import MembershipTemplate
+from membership_manager.models import Organization
+
+
+@method_decorator(permission_required('membership_core.view_template'), name='dispatch')
+class TemplateListView(ListView):
+    template_name = "template/template_list.html"
+    paginate_by = 30
+    model = MembershipTemplate
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(TemplateListView, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        self.form = TemplateSearchForm(self.request.GET)
+        self.form.is_valid()
+        queryset = MembershipTemplate.objects.all()
+        if self.form.cleaned_data['name']:
+            queryset = queryset.filter(
+                Q(name__icontains=self.form.cleaned_data['name']) |
+                Q(description__icontains=self.form.cleaned_data['name']))
+        if self.form.cleaned_data['currency']:
+            queryset = queryset.filter(currency__in=self.form.cleaned_data['currency'])
+        if self.form.cleaned_data['renewal_period']:
+            queryset = queryset.filter(renewal_period__in=self.form.cleaned_data['renewal_period'])
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['formsearch'] = TemplateSearchForm(self.request.GET)
+        return context
+
+
+@permission_required('membership_core.add_template')
+def create_template(request):
+
+    # We create a new organization
+    if request.method == 'POST':
+
+        # create a new organization object
+        form = OrganizationAddForm(request.POST)
+
+        # We save the form
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Organización registrada con éxito")
+            return redirect('organizations')
+
+        # if there are errors we return the error messages
+        else:
+            messages.error(
+                request,
+                "Error al intentar guardar la organización")
+
+    # We display new contact form
+    if request.method == 'GET':
+
+        form = OrganizationAddForm(initial={'type':False})
+
+    context = {
+        'form': form
+    }
+    return render(request, 'template/create.html', context=context)
+
+
+@method_decorator(permission_required('membership_core.change_template'), name='dispatch')
+class EditTemplate(UpdateView):
+    model = Organization
+    form_class = OrganizationAddForm
+    template_name = 'organization/edit.html'
+    success_url = reverse_lazy('organizations')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        organization = context['object']
+        context['contact_form'] = ContactOrganizationForm(pk=organization.pk)
+        context['url_contact'] = reverse('api_organization', args=(organization.pk,))
+        context['contact_list'] = [{'pk': x.pk, 'name': str(x)} for x in organization.contacts.all()]
+        return context
+
+    def form_valid(self, form):
+
+        if form.cleaned_data['active']:
+            Membership.objects.filter(organization=self.object).update(state="active")
+
+        else:
+            Membership.objects.filter(organization=self.object).update(state="inactive")
+
+        form.save()
+        messages.success(self.request, "Organización actualizada con éxito")
+        return super().form_valid(form)
+
+
+@permission_required('membership_manager.delete_template')
+def delete_template(request, pk):
+    organization = Organization.objects.filter(pk=pk).first()
+    if organization:
+        organization.delete()
+        messages.success(request, "Organización eliminada con éxito")
+        return redirect('organizations')
+
+
+@permission_required('membership_manager.change_template')
+def deactivate_template(request, pk):
+    organization = Organization.objects.filter(pk=pk).first()
+    if organization:
+        organization.active = False
+        organization.save()
+        Membership.objects.filter(organization=organization).update(state="inactive")
+        messages.success(request, "Organización desactivada con éxito")
+        return redirect('organizations')

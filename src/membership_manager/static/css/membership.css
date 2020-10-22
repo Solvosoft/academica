@@ -67,3 +67,15 @@
 .margin_xs{
     margin-bottom: 10px;
 }
+
+.inactive_template{
+    border-top: 4px solid #dc3545 !important;
+}
+
+.active_template{
+    border-top: 4px solid rgba(38,185,154,0.88) !important;
+}
+
+.grace_period_template{
+    border-top: 4px solid #ffc107 !important;
+}

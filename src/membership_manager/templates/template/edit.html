@@ -1,0 +1,46 @@
+{% extends 'gentelella/base.html' %}
+
+{% load static %}
+{% block extra_css %}
+    <link href="{% static 'css/membership.css' %}" rel="stylesheet">
+{% endblock extra_css %}
+
+{% block content %}
+<div class="row">
+    <div class='col-md-8'>
+        <div class="x_panel">
+            <div class="x_title">
+                <h1 class="text-center">Editar organización</h1>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form method="post">
+                    {% csrf_token %}
+                    {{form.as_horizontal}}
+                    <br>
+                    <div class="form-group" style="text-align:center">
+                        <a class="btn btn-danger" type="button" href="{% url 'organizations' %}">Cancelar</a>
+                        <button class="btn btn-success" type="submit">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class='col-md-4'>
+        {% include 'gentelella/blocks/crud_list.html' with  title="Contactos de la organización" form=contact_form object_list_gencrud=contact_list gencrud_form_url=url_contact gencrud_delete_url=url_contact  %}
+    </div>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script>
+
+    $(document).on('crudlistadd', function(event, form, result){
+        for(i=0; i<result.length; i++){
+            $('#id_organization').find("option[value='" + result[i]['id'] + "']").remove();
+        }
+        $('#id_organization').change();
+    });
+
+</script>
+{% endblock %}
