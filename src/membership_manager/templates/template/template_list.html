@@ -9,22 +9,23 @@
     <h1 class="text-center">Plantillas</h1>
     <div class="search_options">
         <div class="row">
+            {% if perms.membership_core.add_membershiptemplate %}
             <div class="col-md-10 col-xs-12">
+            {% else %}
+            <div class="col-md-12 col-xs-12">
+            {% endif %}
                 <div class="x_panel">
                     <form method="GET">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class='col-md-6'>
-                                <div>Nombre:</div>
-                                <div>{{formsearch.name}}</div>
+                            <div class='col-md-12 col-lg-6 col-sm-12 col-xs-12'>
+                                {% include 'field.html' with field=formsearch.name%}
                             </div>
-                            <div class='col-md-3'>
-                                <div>Moneda:</div>
-                                <div>{{formsearch.currency}}</div>
+                            <div class='col-md-6 col-lg-3 col-sm-6 col-xs-12'>
+                                {% include 'field.html' with field=formsearch.currency %}
                             </div>
-                            <div class='col-md-3'>
-                                <div>Periodo:</div>
-                                <div>{{formsearch.renewal_period}}</div>
+                            <div class='col-md-6 col-lg-3 col-sm-6 col-xs-12'>
+                                {% include  'field.html' with field=formsearch.renewal_period %}
                             </div>
                         </div>
                     </div>
@@ -65,10 +66,10 @@
     {% endif %}
     <div class="row contact_cards">
         {% for template in object_list %}
-            <div class="col-md-3 widget widget_tally_box">
+            <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12 widget widget_tally_box">
                 <div class="x_panel fixed_height_390 {% if template.state == "inactive" %}inactive_template{% elif template.state == 'active' %} active_template {% else %}grace_period_template{% endif %}">
                     <div class="x_title">
-                        <h2>{{template.name}}</h2>
+                        <h2>{{template.name|title|wordwrap:20|linebreaks}}</h2>
                         <ul class="nav navbar-right panel_toolbox">
                             {% if perms.membership_core.change_membershiptemplate %}
                                 <li><a title="Editar plantilla" href="{% url 'edit_template' pk=template.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
@@ -85,9 +86,18 @@
                         <div style="text-align: left; margin-bottom: 15px;">
                             <h4>Información: </h4>
                         </div>
-                        <div>Moneda: {% if template.currency %} {{template.currency}} {%else%} Sin especificar {% endif %}</div>
-                        <div>Costo anual: {% if template.annual_cost %} {{template.annual_cost}} {%else%} Sin especificar {% endif %}</div>
-                        <div>Periodo de renovación: {% if template.renewal_period %} {{template.renewal_period}} {%else%} Sin especificar {% endif %}</div>
+                        <div><b>Moneda:</b> {% if template.currency %} {{template.currency}} {%else%} Sin especificar {% endif %}</div>
+                        <div><b>Costo anual:</b> {% if template.annual_cost %} {{template.annual_cost}} {%else%} Sin especificar {% endif %}</div>
+                        <div><b>Renovación:</b> {% if template.renewal_period %} {{template.renewal_period}} {%else%} Sin especificar {% endif %}</div>
+                        <div><b>Estado:</b> 
+                            {% if template.state == "active" %} 
+                                Activa 
+                            {%elif template.state == "inactive" %} 
+                                Inactiva 
+                            {% else %}
+                                Peorido de Gracia
+                            {% endif %}
+                            </div>
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_footer">

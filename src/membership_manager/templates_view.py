@@ -25,7 +25,7 @@ class TemplateListView(ListView):
     def get_queryset(self):
         self.form = TemplateSearchForm(self.request.GET)
         self.form.is_valid()
-        queryset = MembershipTemplate.objects.all()
+        queryset = MembershipTemplate.objects.all().order_by('name')
         if self.form.cleaned_data['name']:
             queryset = queryset.filter(
                 Q(name__icontains=self.form.cleaned_data['name']) |

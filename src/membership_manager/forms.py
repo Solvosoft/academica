@@ -394,24 +394,16 @@ class ActivityReportAddForm(GTForm, forms.ModelForm):
 
 class TemplateSearchForm(GTForm, forms.Form):
     name = forms.CharField(
-        required=False, widget=widget.TextInput(attrs={
-            'placeholder': 'nombre'
-        }))
+        required=False, label="Nombre", widget=widget.TextInput)
     currency = forms.ModelMultipleChoiceField(
-        required=False, widget=widget.SelectMultiple,
+        required=False, label="Moneda", widget=widget.SelectMultiple,
         queryset=SystemCurrency.objects.all())
     renewal_period = forms.ModelMultipleChoiceField(
-        required=False, widget=widget.SelectMultiple,
+        required=False, label="Perido de renovación", widget=widget.SelectMultiple,
         queryset=RenewalPeriod.objects.all())
 
 
 class TemplateAddForm(GTForm, forms.ModelForm):
-    STATES = (
-        ("active", "Activa"),
-        ("inactive", "Inactiva"),
-        ("graceperiod", "Periodo de gracia"),
-    )
-
     class Meta:
         model = MembershipTemplate
         fields = '__all__'
