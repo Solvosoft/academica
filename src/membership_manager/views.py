@@ -1,10 +1,12 @@
 from django.contrib import messages
+from django.contrib.admin.models import LogEntry
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import redirect, get_object_or_404
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, ListView
 
 from async_notifications.models import EmailTemplate, EmailNotification
 from async_notifications.tasks import send_email
@@ -12,7 +14,7 @@ from membership_core.models import Country, ServiceType
 from membership_manager.dashboard import TopStats
 from membership_manager.models import Membership
 from membership_manager.newsletterform import EmailTemplateForm, EmailNotificationForm
-from .forms import ServiceTypeForm
+from .forms import ServiceTypeForm, LogEntryFilterForm
 
 
 def servicios_stats():
@@ -141,3 +143,29 @@ def delete_service(request, pk):
         service.delete()
         messages.success(request, "Servicio eliminado con éxito")
         return redirect('services_list')
+
+
+def logentry_filter_view(request):
+
+    contenttype = None
+
+    if request.method == "POST":
+        form = LogEntryFilterForm(request.POST)
+        if form.is_valid():
+            category = form.cleaned_data['category']
+            if category:
+                contenttype = ContentType.objects.filter(pk=int(category)).first()
+            return redirect('logentry_list', model=contenttype.model)
+
+    else:
+        form = LogEntryFilterForm()
+
+
+    return render(request, 'logentry_filter.html', context={'form':form})
+
+
+
+permission_required('admin.view_logentry')
+def logentry_list(request, model):
+    logentry_list = LogEntry.objects.filter(content_type__model=model)
+    return render(request, 'logentry_list.html', context={'logentry_list': logentry_list})

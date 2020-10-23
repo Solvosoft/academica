@@ -3,6 +3,7 @@ import string
 
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.db.models import Q
@@ -224,3 +225,11 @@ def check_newsletter_update(news_letter):
             update_news_letter = True
             break
     return update_news_letter
+
+def get_contentype_choices():
+    CHOICES = []
+
+    for ct in ContentType.objects.all():
+        CHOICES.append((ct.pk, ct.name))
+
+    return tuple(CHOICES)

@@ -134,6 +134,11 @@
                             <a href="{% url 'groups_list' %}">Grupos</a>
                         </li>
                         {% endif %}
+                        {% if perms.admin.view_logentry %}
+                        <li>
+                            <a href="{% url 'logentry_filter' %}">Bitácora</a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </li>
 
