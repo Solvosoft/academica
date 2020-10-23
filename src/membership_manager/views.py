@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.contrib import messages
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.decorators import login_required, permission_required
@@ -6,7 +7,7 @@ from django.shortcuts import redirect, get_object_or_404
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import UpdateView, ListView
+from django.views.generic import UpdateView
 
 from async_notifications.models import EmailTemplate, EmailNotification
 from async_notifications.tasks import send_email
@@ -146,7 +147,6 @@ def delete_service(request, pk):
 
 
 def logentry_filter_view(request):
-
     contenttype = None
 
     if request.method == "POST":
@@ -166,6 +166,15 @@ def logentry_filter_view(request):
 
 
 permission_required('admin.view_logentry')
-def logentry_list(request, model):
+def logentry_list(request, model, pk):
     logentry_list = LogEntry.objects.filter(content_type__model=model)
+    return render(request, 'logentry_list.html', context={'logentry_list': logentry_list})
+
+
+permission_required('admin.view_logentry')
+def logentry_object(request, app, model, pk):
+
+    model_n = apps.get_model(app, model)
+    object_n = get_object_or_404(model_n, pk=pk)
+    logentry_list = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(object_n).pk, object_id=pk)
     return render(request, 'logentry_list.html', context={'logentry_list': logentry_list})
