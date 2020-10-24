@@ -41,7 +41,7 @@
         </h2>
         <div class="byline">
          {% if perms.membership_manager.change_activityreport %}
-         <a href="{% url 'activityreport-edit' object.pk %}"><i class="fa fa-edit"></i>  </a>
+         <a href="{% url 'activityreport-edit' object.pk %}" title="Editar"><i class="fa fa-edit"></i>  </a>
          {% endif %}
         <span>{{object.start_date}} a {{object.end_date}}</span> creado por <a>{{object.user.username}}</a>
         </div>

@@ -47,11 +47,15 @@
                 <ul class="nav navbar-right panel_toolbox">
 
                      {% if perms.membership_manager.change_report %}
-                    <li style="margin-left: 1.4em"><a href="?nocache=s" ><i class="fa fa-refresh green" aria-hidden="true"></i></a></li>
+                    <li style="margin-left: 1.4em"><a href="?nocache=s" title="Actualizar"><i class="fa fa-refresh green" aria-hidden="true"></i></a></li>
                     {% endif %}
 
+                    {% if perms.admin.view_logentry %}
+                    <li style="margin-left: 2em"><a title="Ver historial" href="{% url 'logentry_object' app='membership_manager' model='report' pk=report.pk %}" class="edit-link"><i class="fa fa-history green"></i></a></li>
+                      {% endif %}
+
                     {% if perms.membership_manager.delete_report %}
-                    <li style="margin-left: 2em"><a data-toggle="modal" data-target="#reportsavemodal"><i class="fa fa-trash-o red delete" aria-hidden="true"></i></a></li>
+                    <li style="margin-left: 2em" title="Eliminar"><a data-toggle="modal" data-target="#reportsavemodal"><i class="fa fa-trash-o red delete" aria-hidden="true"></i></a></li>
                     {% endif %}
 
                   </ul>
