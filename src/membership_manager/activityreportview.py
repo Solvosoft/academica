@@ -1,3 +1,6 @@
+from datetime import datetime
+
+from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.db.models.query import QuerySet
 from django.http import HttpResponseRedirect, JsonResponse
@@ -6,14 +9,15 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
 from django.views.generic import ListView, CreateView, UpdateView
+
 from membership_manager.forms import ActivityReportForm, ActivityReportAddForm, ActivityReportHours
 from membership_manager.models import ActivityReport, Attention
-import datetime
+from membership_manager.utils import add_logentry
 
 
 def parse_date(text):
       #15/10/2020
-    return datetime.datetime.strptime(text, "%d/%m/%Y").date()
+    return datetime.strptime(text, "%d/%m/%Y").date()
 
 
 @method_decorator(permission_required('membership_manager.view_activityreport'), name='dispatch')
@@ -71,9 +75,11 @@ class ActivityReportAdd(CreateView):
     success_url = reverse_lazy('activityreport-list')
 
     def form_valid(self, form):
-        self.object = form.save(commit=False)
+        self.object = form.save()
         self.object.user = self.request.user
         self.object.save()
+        object_repr = str(self.object) if len(str(self.object)) < 200 else str(self.object)[0:196] + "..."
+        add_logentry("membership_manager", "activityreport", self.object.pk, object_repr, self.request.user, 1)
         return HttpResponseRedirect(self.get_success_url())
 
 @method_decorator(permission_required('membership_manager.change_activityreport'), name='dispatch')
@@ -87,6 +93,13 @@ class ActivityReportEdit(UpdateView):
         activityreport = context['object']
         context['activityreport'] = activityreport.pk
         return context
+
+    def form_valid(self, form):
+        activityreport = form.save()
+        object_repr = str(activityreport) if len(str(activityreport)) < 200 else str(activityreport)[0:196] + "..."
+        add_logentry("membership_manager", "activityreport", activityreport.pk, object_repr, self.request.user, 2)
+        messages.success(self.request, "Reporte de atención actualizado con éxito")
+        return HttpResponseRedirect(self.get_success_url())
 
 @permission_required('membership_manager.change_activityreport')
 def addHour(request):

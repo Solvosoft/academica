@@ -1,5 +1,9 @@
+from datetime import datetime
+
 from django.contrib import messages
+from django.contrib.admin.models import LogEntry
 from django.contrib.auth.decorators import permission_required
+from django.contrib.contenttypes.models import ContentType
 from django.http import QueryDict
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -10,7 +14,7 @@ from async_notifications.models import NewsLetter, NewsLetterTemplate, NewsLette
 from async_notifications.tasks import task_send_newsletter
 from membership_manager.newsletterform import NewsLetterTemplateForm, NewsLetterForm, FilterEmailsForm, SendDateForm, \
     TemplateBaseNewsLetterForm
-from membership_manager.utils import get_emails_news_letter
+from membership_manager.utils import get_emails_news_letter, add_logentry
 
 
 @permission_required('async_notifications.view_newsletter')
@@ -52,6 +56,7 @@ def create_news_letter(request, pk):
                 filters=form.cleaned_data['filters']
             )
             news_letter.save()
+            add_logentry("async_notifications", "newsletter", news_letter.pk, str(news_letter), request.user, 1)
             messages.success(request, "Boletín registrado con éxito")
             return redirect('news_letter_list')
     else:
@@ -74,7 +79,10 @@ def delete_news_letter(request, pk):
     boletin = NewsLetter.objects.filter(pk=pk).first()
 
     if boletin:
+        object_repr = str(boletin)
+        object_pk = boletin.pk
         boletin.delete()
+        add_logentry("async_notifications", "newsletter", object_pk, object_repr, request.user, 3)
         messages.success(request, "Boletín eliminado con éxito")
         return redirect('news_letter_list')
 
@@ -105,6 +113,7 @@ class EditNewsLetter(UpdateView):
         mails = get_emails_news_letter(news_letter)
         news_letter.recipient = ", ".join(mails)
         news_letter.save()
+        add_logentry("async_notifications", "newsletter", news_letter.pk, str(news_letter), self.request.user, 2)
         messages.success(self.request, "Boletín actualizado con éxito")
         return super().form_valid(form)
 
@@ -124,6 +133,7 @@ def create_task(request, pk):
                 send_date=form.cleaned_data['send_date']
             )
             task.save()
+            add_logentry("async_notifications", "newslettertask", task.pk, str(task), request.user, 1)
             messages.success(request, 'Fecha de envío registrada con éxito')
             return redirect('news_letter_list')
         else:
@@ -136,7 +146,10 @@ def delete_task(request, pk):
     task = NewsLetterTask.objects.filter(pk=pk).first()
 
     if task:
+        object_repr = str(task)
+        object_pk = task.pk
         task.delete()
+        add_logentry("async_notifications", "newslettertask", object_pk, object_repr, request.user, 3)
         messages.success(request, "Fecha de envío eliminada con éxito")
         return redirect('news_letter_list')
 
@@ -148,7 +161,8 @@ def create_news_letter_template(request):
         form = TemplateBaseNewsLetterForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            newslettertemplate = form.save()
+            add_logentry("async_notifications", "newslettertemplate", newslettertemplate.pk, str(newslettertemplate), request.user, 1)
             messages.success(request, "Plantilla base de boletín registrada con éxito")
             return redirect('news_letter_list')
     else:
@@ -177,10 +191,11 @@ def create_news_letter_membership(request):
                                                                            'form_filter': form_filter})
 
 
-@permission_required('async_notifications.change_newslettertask')
+@permission_required('async_notifications.change_newsletter')
 def update_emails_news_letter(request, pk):
     news_letter = NewsLetter.objects.filter(pk=pk).first()
     mails = get_emails_news_letter(news_letter)
     news_letter.recipient = ", ".join(mails)
     news_letter.save()
+    add_logentry("async_notifications", "newsletter", news_letter.pk, str(news_letter), request.user, 2)
     return redirect('news_letter_list')

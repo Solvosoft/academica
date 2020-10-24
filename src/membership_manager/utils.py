@@ -1,7 +1,9 @@
 import random
 import string
+from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
+from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
@@ -233,3 +235,15 @@ def get_contentype_choices():
         CHOICES.append((ct.pk, ct.name))
 
     return tuple(CHOICES)
+
+
+def add_logentry(app_label, model, object_pk, object_repr, user, action):
+    contenttype = ContentType.objects.filter(app_label=app_label, model=model).first()
+    entry = LogEntry()
+    entry.action_time = datetime.now()
+    entry.content_type = contenttype
+    entry.object_id = object_pk
+    entry.object_repr = object_repr
+    entry.user = user
+    entry.action_flag = action
+    entry.save()

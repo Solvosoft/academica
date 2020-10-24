@@ -13,9 +13,10 @@ from async_notifications.models import EmailTemplate, EmailNotification
 from async_notifications.tasks import send_email
 from membership_core.models import Country, ServiceType
 from membership_manager.dashboard import TopStats
-from membership_manager.models import Membership
+from membership_manager.models import Membership, Service
 from membership_manager.newsletterform import EmailTemplateForm, EmailNotificationForm
 from .forms import ServiceTypeForm, LogEntryFilterForm
+from .utils import add_logentry
 
 
 def servicios_stats():
@@ -76,6 +77,7 @@ def create_email_notification(request, pk, membership):
             )
             emailnotification.save()
             obj = EmailNotification.objects.all().last()
+            add_logentry("async_notifications", "emailnotification", obj.pk, str(obj), request.user, 1)
             send_email(obj.pk)
             messages.success(request, 'Notificación de correo electrónico generada exitosamente.')
             return redirect('memberships')
@@ -103,8 +105,9 @@ def services_list(request):
         form = ServiceTypeForm(request.POST)
 
         if form.is_valid():
-            form.save()
-            messages.success(request, "Servicio guardado con éxito")
+            service = form.save()
+            add_logentry("membership_core", "servicetype", service.pk, service.name, request.user, 1)
+            messages.success(request, "Servicio registrado con éxito")
             return redirect('services_list')
     else:
         form = ServiceTypeForm()
@@ -130,7 +133,8 @@ class EditService(UpdateView):
         return context
 
     def form_valid(self, form):
-        form.save()
+        service = form.save()
+        add_logentry("membership_core", "servicetype", service.pk, service.name, self.request.user, 2)
         messages.success(self.request, "Servicio actualizado con éxito")
         return super().form_valid(form)
 
@@ -141,7 +145,11 @@ def delete_service(request, pk):
     service = ServiceType.objects.filter(pk=pk).first()
 
     if service:
+        object_pk = service.pk
+        object_repr = service.name
+        Service.objects.filter(servicetype=service).delete()
         service.delete()
+        add_logentry("membership_core", "servicetype", object_pk, object_repr, request.user, 3)
         messages.success(request, "Servicio eliminado con éxito")
         return redirect('services_list')
 
@@ -166,7 +174,7 @@ def logentry_filter_view(request):
 
 
 permission_required('admin.view_logentry')
-def logentry_list(request, model, pk):
+def logentry_list(request, model):
     logentry_list = LogEntry.objects.filter(content_type__model=model)
     return render(request, 'logentry_list.html', context={'logentry_list': logentry_list})
 

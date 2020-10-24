@@ -10,6 +10,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView, UpdateView, CreateView
 
 from membership_manager.forms import UserSearchForm, UserAddForm, GroupAddForm
+from membership_manager.utils import add_logentry
 
 
 @method_decorator(permission_required('auth.view_user'), name='dispatch')
@@ -60,7 +61,8 @@ class AddUser(CreateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        form.save()
+        user = form.save()
+        add_logentry("auth", "user", user.pk, str(user), self.request.user, 1)
         self.send_email(self.object)
         messages.success(self.request, "Usuaria registrada con éxito")
         return response
@@ -81,7 +83,8 @@ class EditUser(UpdateView):
         return context
 
     def form_valid(self, form):
-        form.save()
+        user = form.save()
+        add_logentry("auth", "user", user.pk, str(user), self.request.user, 2)
         messages.success(self.request, "Usuaria actualizada con éxito")
         return super().form_valid(form)
 
@@ -89,8 +92,12 @@ class EditUser(UpdateView):
 @permission_required('auth.delete_user')
 def delete_user(request, pk):
     user = User.objects.filter(pk=pk).first()
+
     if user:
+        object_repr = str(user)
+        object_pk = user.pk
         user.delete()
+        add_logentry("auth", "user", object_pk, object_repr, request.user, 3)
         messages.success(request, "Usuaria eliminada con éxito")
         return redirect('user_list')
 
@@ -101,6 +108,7 @@ def deactivate_user(request, pk):
     if user:
         user.is_active = False
         user.save()
+        add_logentry("auth", "user", user.pk, str(user), request.user, 2)
         messages.success(request, "Usuaria desactivada con éxito")
         return redirect('user_list')
 
@@ -113,7 +121,8 @@ def groups_list(request):
         form = GroupAddForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            group = form.save()
+            add_logentry("auth", "group", group.pk, group.name, request.user, 1)
             messages.success(request, "Grupo registrado con éxito")
             return redirect('groups_list')
     else:
@@ -139,7 +148,8 @@ class EditGroup(UpdateView):
         return context
 
     def form_valid(self, form):
-        form.save()
+        group = form.save()
+        add_logentry("auth", "group", group.pk, group.name, self.request.user, 2)
         messages.success(self.request, "Grupo actualizado con éxito")
         return super().form_valid(form)
 
@@ -147,7 +157,16 @@ class EditGroup(UpdateView):
 @permission_required('auth.delete_group')
 def delete_group(request, pk):
     group = Group.objects.filter(pk=pk).first()
+
     if group:
+        for user in User.objects.all():
+            if group in user.groups.all():
+                user.groups.remove(group)
+
+        object_pk = group.pk
+        object_repr = str(group)
         group.delete()
+        add_logentry("auth", "group", object_pk, object_repr, request.user, 3)
+
         messages.success(request, "Grupo eliminado con éxito")
         return redirect('groups_list')

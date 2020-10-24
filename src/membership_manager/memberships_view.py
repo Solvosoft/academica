@@ -15,9 +15,7 @@ from membership_manager.models import Membership, Service
 from membership_manager.newsletterform import FilterEmailsForm, NewsLetterTemplateForm, \
     EmailTemplateForm
 from membership_manager.renew_utils import create_renew
-from django.utils import timezone
-
-from membership_manager.task_utils import invoice_creation
+from membership_manager.utils import add_logentry
 
 
 @method_decorator(permission_required('membership_manager.view_membership'), name='dispatch')
@@ -140,6 +138,7 @@ class EditMembership(UpdateView):
         membership.renewal_period = form.cleaned_data['renewal_period']
         membership.membership_type = form.cleaned_data['membership_type']
         membership.save()
+        add_logentry("membership_manager", "membership", membership.pk, str(membership), self.request.user, 2)
 
         if not membership.renews.exists():
             create_renew(membership)
@@ -153,7 +152,7 @@ class EditMembership(UpdateView):
             membership=membership), prefix="mts")
 
         if fset.is_valid():
-            instances = fset.save(commit=False)
+            instances = fset.save()
             for delinst in fset.deleted_objects:
                 delinst.delete()
             for instance in instances:
@@ -220,6 +219,7 @@ def create_membership(request):
             )
 
             membership.save()
+            add_logentry("membership_manager", "membership", membership.pk, str(membership), request.user, 1)
 
             if not membership.renews.exists():
                 create_renew(membership)
@@ -279,8 +279,12 @@ def create_membership(request):
 @permission_required('membership_manager.delete_membership')
 def delete_memberships(request, pk):
     membership = Membership.objects.filter(pk=pk).first()
+
     if membership:
+        object_repr = str(membership)
+        object_pk = membership.pk
         membership.delete()
+        add_logentry("membership_manager", "membership", object_pk, object_repr, request.user, 3)
         messages.success(request, "Membresía eliminada con éxito")
         return redirect('memberships')
 
@@ -291,5 +295,6 @@ def deactivate_membership(request, pk):
     if membership:
         membership.state = "inactive"
         membership.save()
+        add_logentry("membership_manager", "membership", membership.pk, str(membership), request.user, 2)
         messages.success(request, "Membresía desactivada con éxito")
         return redirect('memberships')
