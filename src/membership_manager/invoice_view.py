@@ -123,7 +123,9 @@ class InvoiceChangeView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context=super().get_context_data()
+        invoice = context['object']
         context['title'] = 'Editar factura'
+        context['invoice'] = invoice.pk
         return context
 
     def form_valid(self, form):

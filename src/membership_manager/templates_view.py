@@ -72,6 +72,7 @@ class EditTemplate(UpdateView):
         context = super().get_context_data(**kwargs)
         template = context['object']
         context['template_form'] = TemplateAddForm(instance=template)
+        context['membershiptemplate'] = template.pk
         return context
 
     def form_valid(self, form):

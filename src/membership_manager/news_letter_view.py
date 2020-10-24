@@ -92,6 +92,7 @@ class EditNewsLetter(UpdateView):
         form_filter = FilterEmailsForm(QueryDict(news_letter.filters))
         context.update({'form_filter': form_filter,
                         'template': news_letter.template.pk,
+                        'news_letter': news_letter.pk
                         })
         return context
 

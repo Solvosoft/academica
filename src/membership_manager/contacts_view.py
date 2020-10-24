@@ -75,6 +75,12 @@ class EditContact(UpdateView):
     template_name = 'contact/edit.html'
     success_url = reverse_lazy('contacts')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        contact = context['object']
+        context['contact'] = contact.pk
+        return context
+
     def form_valid(self, form):
 
         if form.cleaned_data['active']:

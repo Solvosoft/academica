@@ -82,6 +82,7 @@ class EditOrganization(UpdateView):
         context['contact_form'] = ContactOrganizationForm(pk=organization.pk)
         context['url_contact'] = reverse('api_organization', args=(organization.pk,))
         context['contact_list'] = [{'pk': x.pk, 'name': str(x)} for x in organization.contacts.all()]
+        context['organization'] = organization.pk
         return context
 
     def form_valid(self, form):

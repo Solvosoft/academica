@@ -106,9 +106,9 @@ class EditMembership(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        memberhsip = context['object']
+        membership = context['object']
 
-        extra = memberhsip.service_set.all().count()
+        extra = membership.service_set.all().count()
         if extra == 0:
             extra = 1
         else:
@@ -116,9 +116,10 @@ class EditMembership(UpdateView):
         formset = modelformset_factory(
             Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
             can_delete=True, extra=extra, can_order=True)
-        fset = formset(queryset=Service.objects.filter(membership=memberhsip), prefix='mts')
+        fset = formset(queryset=Service.objects.filter(membership=membership), prefix='mts')
         context['formset'] = fset
-        context['contact_type'] = 'contact' if memberhsip.organization.type else 'organization'
+        context['contact_type'] = 'contact' if membership.organization.type else 'organization'
+        context['membership'] = membership.pk
 
         return context
 

@@ -74,6 +74,12 @@ class EditUser(UpdateView):
     template_name = 'user/edit.html'
     success_url = reverse_lazy('user_list')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = context['object']
+        context['user'] = user.pk
+        return context
+
     def form_valid(self, form):
         form.save()
         messages.success(self.request, "Usuaria actualizada con éxito")

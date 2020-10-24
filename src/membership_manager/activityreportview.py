@@ -82,6 +82,12 @@ class ActivityReportEdit(UpdateView):
     form_class = ActivityReportAddForm
     success_url = reverse_lazy('activityreport-list')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        activityreport = context['object']
+        context['activityreport'] = activityreport.pk
+        return context
+
 @permission_required('membership_manager.change_activityreport')
 def addHour(request):
     form = ActivityReportHours(request.POST)
