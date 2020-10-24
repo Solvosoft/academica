@@ -168,6 +168,9 @@
                             <b>{{membership.membership_type}}</b>
                         </h2>
                         <ul class="nav navbar-right panel_toolbox">
+                            {% if perms.admin.view_logentry %}
+                            <li><a title="Ver historial" href="{% url 'logentry_object' app='membership_manager' model='membership' pk=membership.pk %}" class="edit-link"><i class="fa fa-history green"></i></a></li>
+                            {% endif %}
                             {% if perms.membership_manager.change_membership %}
                                 <li><a title="Editar membresía" href="{% url 'edit_memberships' pk=membership.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
                             {% endif %}

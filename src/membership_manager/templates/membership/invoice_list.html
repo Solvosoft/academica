@@ -100,8 +100,9 @@
                 </div>
             {% endif %}
         </div>
+            </div>
       </form>
-</div>
+
 
 <div class="container">
     <div class="row">
@@ -138,7 +139,11 @@
                   <i class="fa s-2 {% if object.status == 'pending' %}fa-exclamation-circle orange{%elif object.status == 'paid'%}fa-check-circle green{% endif %}" aria-hidden="true"></i>
               </span>
             </div>
-    <div class="col-md-5">
+            {% if perms.admin.view_logentry %}
+    <div class="col-md-4">
+        {% else %}
+        <div class="col-md-5">
+        {% endif %}
         <a href="{% url 'invoice-edit'  object.pk %}?next={% next_url %}">
             {{ object.membership }}</a>
     </div>
@@ -156,6 +161,11 @@
       </a>
       {% endif %}
   </div>
+        {% if perms.admin.view_logentry %}
+        <div class="col-md-1">
+            <a title="Ver historial" href="{% url 'logentry_object' app='membership_manager' model='invoice' pk=object.pk %}" class="edit-link"><i class="fa fa-history green"></i></a>
+        </div>
+            {% endif %}
 </div>
         <div class="row green" style="margin-bottom: 2em; margin-top: 0.5em;">
             <div class="col-md-4">{{ object.code }} {{ object.membership.get_membership_type_display }}</div>

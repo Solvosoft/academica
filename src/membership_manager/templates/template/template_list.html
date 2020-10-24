@@ -71,6 +71,9 @@
                     <div class="x_title">
                         <h2>{{template.name|title|wordwrap:20|linebreaks}}</h2>
                         <ul class="nav navbar-right panel_toolbox">
+                            {% if perms.admin.view_logentry %}
+                                <li><a title="Ver historial" href="{% url 'logentry_object' app='membership_core' model='membershiptemplate' pk=template.pk %}" class="edit-link"><i class="fa fa-history green"></i></a></li>
+                            {% endif %}
                             {% if perms.membership_core.change_membershiptemplate %}
                                 <li><a title="Editar plantilla" href="{% url 'edit_template' pk=template.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
                             {% endif %}
