@@ -186,7 +186,7 @@ class EditMembership(UpdateView):
 
 @permission_required('membership_manager.add_membership')
 def create_membership(request):
-    m_template = {}
+
     template = request.GET.get('template', None)
     formset = modelformset_factory(
         Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
@@ -197,8 +197,7 @@ def create_membership(request):
 
         # create a new object membership
         form = MembershipForm(request.POST)
-        fset = formset(
-            request.POST, queryset=Service.objects.none(), prefix="mts")
+        fset = formset(request.POST, queryset=Service.objects.none(), prefix="mts")
 
         # We save the form and the formset
         if form.is_valid() and fset.is_valid():
@@ -247,13 +246,13 @@ def create_membership(request):
             form = MembershipForm(initial=m_template)
             servicesmt = ServiceMT.objects.filter(membership__pk=template)
             templateinitial = []
-            for services in servicesmt:
-                for service in servicesmt:
-                    templateinitial.append({
-                        'servicetype': service.servicetype,
-                        'description': service.description,
-                        'observations': service.observations
-                    })
+
+            for service in servicesmt:
+                templateinitial.append({
+                    'servicetype': service.servicetype,
+                    'description': service.description,
+                    'observations': service.observations
+                })
             extra = servicesmt.count()
             if servicesmt.count() == 0:
                 extra = 1
@@ -299,7 +298,7 @@ def deactivate_membership(request, pk):
         messages.success(request, "Membresía desactivada con éxito")
         return redirect('memberships')
 
-
+@permission_required('membership_manager.view_membershiprenew')
 def renewals_list(request, pk):
     renewals_list = MembershipRenew.objects.filter(membership__pk=pk).order_by('-start_date')
     return render(request, "membership/renewals.html", context={'renewals_list': renewals_list})

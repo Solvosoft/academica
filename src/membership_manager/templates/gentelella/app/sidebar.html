@@ -37,7 +37,7 @@
                         </ul>
                     </li>
                 {% endif %}
-                {% if perms.membership_manager.view_membership %}
+
                     <li>
                         <a>
                             <i class="fa fa-list-alt"></i>
@@ -45,9 +45,11 @@
                             <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">
+                            {% if perms.membership_manager.view_membership %}
                             <li>
                                 <a href="{% url 'memberships' %}">Lista de membresías</a>
                             </li>
+                            {% endif %}
                             {% if perms.membership_core.view_servicetype %}
                             <li>
                                 <a href="{% url 'services_list' %}">Servicios</a>
@@ -65,7 +67,6 @@
                             {% endif %}
                         </ul>
                     </li>
-                {% endif %}
                 {% if perms.membership_manager.view_invoice %}
                 <li>
                     <a>
