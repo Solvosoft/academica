@@ -180,7 +180,7 @@
                     <div class="x_content">
                         <div style="text-align: left; margin-bottom: 15px;">
                             <h4>Información:</h4>
-                            <h5>{{membership.name}}</h5>
+                            <h5><a href="{% url 'renewals_list' pk=membership.pk %}">{{membership.name}}</a></h5>
                             <div>Renovación: {{membership.renewal_period}}</div>
                             <div>Estado: {% if membership.state == 'active' %} Activa {% else %} Inactiva {% endif %}</div>
                             <div>Número de facturas:{{membership.mem_inv.all.count}}</div>

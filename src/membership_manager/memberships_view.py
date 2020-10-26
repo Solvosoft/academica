@@ -6,12 +6,12 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
-from django.views.generic import ListView, UpdateView
+from django.views.generic import ListView, UpdateView, DetailView
 from djgentelella.forms.forms import GTBaseModelFormSet
 
 from membership_core.models import MembershipTemplate, ServiceMT
 from membership_manager.forms import MembershipServiceForm, MembershipForm, MembershipTemplateForm
-from membership_manager.models import Membership, Service
+from membership_manager.models import Membership, Service, MembershipRenew
 from membership_manager.newsletterform import FilterEmailsForm, NewsLetterTemplateForm, \
     EmailTemplateForm
 from membership_manager.renew_utils import create_renew
@@ -292,3 +292,8 @@ def deactivate_membership(request, pk):
         membership.save()
         messages.success(request, "Membresía desactivada con éxito")
         return redirect('memberships')
+
+
+def renewals_list(request, pk):
+    renewals_list = MembershipRenew.objects.filter(membership__pk=pk).order_by('-start_date')
+    return render(request, "membership/renewals.html", context={'renewals_list': renewals_list})
