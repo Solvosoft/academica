@@ -69,6 +69,9 @@
                                     {% if update_news_letter %}
                                     <a title="Actualizar remitentes" class="btn btn-sm" href="{% url 'update_emails_news_letter' pk=boletin.pk %}"><i class="fa fa-refresh fa-2x"></i></a>
                                     {% endif %}
+                                    {% if perms.admin.view_logentry %}
+                                        <a title="Ver historial" href="{% url 'logentry_object' app='async_notifications' model='newsletter' pk=boletin.pk %}" class="edit-link"><i class="fa fa-history green fa-2x"></i></a>
+                                    {% endif %}
                                 </td>
                             </tr>
                             {% endfor %}

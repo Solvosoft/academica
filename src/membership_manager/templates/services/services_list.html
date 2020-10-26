@@ -57,6 +57,9 @@
                                 <td>
                                     <a title="Editar servicio" class="btn btn-sm" href="{% url 'edit_service' pk=service.pk %}"><i class="fa fa-edit fa-2x"></i> </a>
                                     <a title="Eliminar servicio" class="btn btn-sm" data-url="{% url 'delete_service' pk=service.pk %}" onclick="delete_service(this)"><i class="fa fa-trash fa-2x"></i></a>
+                                    {% if perms.admin.view_logentry %}
+                                    <a title="Ver historial" href="{% url 'logentry_object' app='membership_core' model='servicetype' pk=service.pk %}" class="edit-link"><i class="fa fa-history green fa-2x"></i></a>
+                                    {% endif %}
                                 </td>
                             </tr>
                             {% endfor %}

@@ -57,6 +57,9 @@
                                 <td>
                                     <a title="Editar grupo" class="btn btn-sm" href="{% url 'edit_group' pk=group.pk %}"><i class="fa fa-edit fa-2x"></i> </a>
                                     <a title="Eliminar grupo" class="btn btn-sm" data-url="{% url 'delete_group' pk=group.pk %}" onclick="delete_group(this)"><i class="fa fa-trash fa-2x"></i></a>
+                                    {% if perms.admin.view_logentry %}
+                                    <a title="Ver historial" href="{% url 'logentry_object' app='auth' model='group' pk=group.pk %}" class="edit-link"><i class="fa fa-history green fa-2x"></i></a>
+                                    {% endif %}
                                 </td>
                             </tr>
                             {% endfor %}

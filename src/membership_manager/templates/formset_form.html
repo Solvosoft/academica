@@ -3,14 +3,13 @@
         <h2>{{form.description.value|title|truncatechars:30}}</h2>
         <ul class="nav navbar-right panel_toolbox">
             {% if formset.can_order %}
-                <li><a class="btndown "><i class="fa fa-chevron-down"></i></a></li>
-                <li><a class="btnup "><i class="fa fa-chevron-up"></i></a></li>
+                <li><a class="btndown" title="Mover hacia abajo"><i class="fa fa-chevron-down"></i></a></li>
+                <li><a class="btnup" title="Mover hacia arriba"><i class="fa fa-chevron-up"></i></a></li>
             {% endif %}
-            <li><a class="btncollapse "><i class="fa fa-eye"></i></a></li>
+            <li><a class="btncollapse" title="Expandir/Contraer"><i class="fa fa-eye"></i></a></li>
             {% if formset.can_delete %}
-                <li><a class="deletebtn"><i class="fa fa-close"></i></a>
+                <li><a class="deletebtn" title="Eliminar"><i class="fa fa-close"></i></a></li>
             {% endif %}
-            </li>
         </ul>
         <div class="clearfix"></div>
     </div>

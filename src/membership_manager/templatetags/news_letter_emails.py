@@ -1,6 +1,6 @@
 from django import template
 
-from membership_manager.utils import get_emails_news_letter, check_newsletter_update
+from membership_manager.utils import check_newsletter_update
 
 register = template.Library()
 

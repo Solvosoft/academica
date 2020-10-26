@@ -64,9 +64,9 @@ class Organization(GeneralContactInfo):
     identification  = models.CharField(max_length=50, null=True, blank=True,verbose_name="Número de Identificación")
 
     def __str__(self):
-        mstr = self.name[:80]+ '. '
+        mstr = self.name[:80]
         if self.initials:
-            mstr = mstr +'( ' + self.initials +' )'
+            mstr = mstr +' (' + self.initials +')'
 
         return mstr
 
@@ -87,7 +87,9 @@ class Membership(models.Model):
              ("Organizacional", "Organizacional"),
              ("Global", "Global"),
              ("Honoraria", "Honoraria"),
-             ('Básica', 'Básica'))
+             ('Básica', 'Básica'),
+             ('Streaming.la', 'Streaming.la')
+             )
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
     membership_type = models.CharField(max_length=50, choices=TYPES, verbose_name="Tipo de membresía")
     organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
