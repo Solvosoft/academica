@@ -73,5 +73,5 @@ urlpatterns = [
     path('logentry/list/<str:model>/', base_views.logentry_list, name="logentry_list"),
     path('logentry/', base_views.logentry_filter_view, name="logentry_filter"),
     path('logentry/<str:app>/<str:model>/<int:pk>', base_views.logentry_object, name="logentry_object"),
-
+    path('renewals_list/<int:pk>/', memberships_view.renewals_list, name="renewals_list"),
 ]
