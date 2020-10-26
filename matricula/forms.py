@@ -139,17 +139,32 @@ class CourseCreateForm(forms.ModelForm, GTForm):
                 self.fields['category'].initial = kwargs['initial']['category_id']
 
 
-class MenuItemSearchForm(GTForm, forms.ModelForm):  
-    name = forms.CharField(required=False,widget=djgentelella.TextInput)
+class MenuItemSearchForm(GTForm, forms.Form):  
+    name = forms.CharField(
+        required=False, widget=djgentelella.TextInput,
+        label="Nombre")
     parent = forms.ModelMultipleChoiceField(
         queryset=MenuItem.objects.all(), required=False,
-        widget=djgentelella.SelectMultiple
+        widget=djgentelella.SelectMultiple, label="Padre"
     )
     type = forms.MultipleChoiceField(
         choices=MenuItem.TYPES, required=False,
-        widget=djgentelella.SelectMultiple
+        widget=djgentelella.SelectMultiple, label="Tipo"
     )
-    
+
+
+class MenuItemCreateForm(forms.ModelForm, GTForm):  
     class Meta:
         model = MenuItem
-        fields = []
+        fields = '__all__'
+        widgets = {
+            'name': djgentelella.TextInput,
+            'type': djgentelella.Select,
+            'description': widget.TextareaWysiwyg,
+            'require_authentication': djgentelella.YesNoInput,
+            'order': djgentelella.NumberInput,
+            'parent': djgentelella.Select,
+            'publicated': djgentelella.YesNoInput,
+            'is_index': djgentelella.YesNoInput
+
+        }

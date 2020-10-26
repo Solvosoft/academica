@@ -11,6 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.utils.timezone import now, timedelta
 import uuid
+from django.utils.html import strip_tags
 
 
 def get_expire_date():
@@ -205,7 +206,7 @@ class MenuItem(models.Model):
         return name
 
     def __str__(self):
-        return self.description
+        return strip_tags(self.description)
 
     class Meta:
         verbose_name = _("Menu Item")

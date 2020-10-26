@@ -8,7 +8,8 @@ from django.views.generic import ListView, DeleteView
 from django.shortcuts import render, get_object_or_404
 from matricula.models import Category, Course, MenuItem
 from matricula.forms import CategoryCreateForm, CategorySearchForm,\
-    CourseSearchForm, CourseCreateForm, MenuItemSearchForm
+    CourseSearchForm, CourseCreateForm, MenuItemSearchForm,\
+    MenuItemCreateForm
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -252,38 +253,28 @@ class MenuItemList(ListView):
         return context
 
 
-@permission_required('matricula.add_course')
+@permission_required('matricula.add_menuitem')
 def create_menuitem(request):
     context = {}
     if request.method == 'POST':
-        form = CourseCreateForm(request.POST)
+        form = CreateMenuItem(request.POST)
         context['form'] = form
         if form.is_valid():
             form.save()
-            messages.success(request, "Curso guardado con exíto")
-            return HttpResponseRedirect(reverse('enrrolment_courses'))
+            messages.success(request, "Elemento del menú guardado con exíto")
+            return HttpResponseRedirect(reverse('menuitems'))
         else:
-            messages.error(request, "Error al guardar curso")
+            messages.error(request, "Error al guardar elemento del menú")
     else:
-        context['form'] = CourseCreateForm()
-    return render(request, 'courses/course_create.html', context)
+        context['form'] = MenuItemCreateForm()
+    return render(request, 'menuitems/menuitem_create.html', context)
 
 
-@permission_required('matricula.view_course')
-def show_menuitem(request, pk=None):
-    context = {}
-    if pk is not None:
-        course = Course.objects.get(pk=pk)
-        return render(request, 'courses/course_show.html', {
-                                'object': course,})
-    return HttpResponseRedirect(reverse(request, 'enrrolment_courses'))
-
-
-@method_decorator(permission_required('matricula.delete_course'), name='dispatch')
+@method_decorator(permission_required('matricula.delete_menuitem'), name='dispatch')
 class MenuItemDelete(DeleteView):
-    model = Course
-    success_url = "/matricula/enrrolment/courses/"
-    success_message = "Curso eliminada con exíto"
+    model = MenuItem
+    success_url = "/matricula/enrrolment/menuitems"
+    success_message = "Menú eliminado con exíto"
 
     def dispatch(self, *args, **kwargs):
         """ Permission check for this class """
@@ -297,24 +288,23 @@ class MenuItemDelete(DeleteView):
         return super(MenuItemDelete, self).delete(request, *args, **kwargs)
 
 
-@permission_required('matricula.change_course')
+@permission_required('matricula.change_menuitem')
 def edit_menuitem(request, pk=None):
     context = {}
     if pk is not None:
         if request.method == "POST":
-            course = Course.objects.get(pk=pk)
-            form = CourseCreateForm(request.POST, instance=course)
+            instance = MenuItem.objects.get(pk=pk)
+            form = MenuItemCreateForm(request.POST, instance=instance)
             if form.is_valid():
-                messages.success(request, "Curso guardado con exíto")
+                messages.success(request, "Elemento del menú guardado con éxito")
                 form.save()
-                return HttpResponseRedirect(reverse('enrrolment_courses'))
+                return HttpResponseRedirect(reverse('menuitems'))
             else:
                 messages.error(request, "Error al actualizar")
+                return render(request, 'menuitems/menuitem_update.html', {'form': form})
         else:
             if request.method == "GET":
-                course = Course.objects.get(pk=pk)
-                form = CourseCreateForm(initial=course.__dict__)
-            else:
-                form = CourseCreateForm()
-        return render(request, 'courses/course_update.html', {'form': form})
-    return HttpResponseRedirect(reverse(request, 'enrrolment_courses'))
+                instance = MenuItem.objects.get(pk=pk)
+                form = MenuItemCreateForm(initial=instance.__dict__)
+                return render(request, 'menuitems/menuitem_update.html', {'form': form})
+    return HttpResponseRedirect(reverse('menuitems'))
