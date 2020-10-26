@@ -10,6 +10,7 @@ from membership_core.models import ServiceType
 from membership_manager.forms import ReportForm, CreateReportTypeForm
 from membership_manager.models import Report, ReportType
 from membership_manager.reports.registro import REPORTES_DISPONIBLES, REPORTES_TITULOS
+from membership_manager.utils import add_logentry
 
 
 @permission_required('membership_manager.add_report')
@@ -63,6 +64,7 @@ def reports(request):
                             report.info_filters = dict(info_filtros)
                             report.user = user
                             report.save()
+                            add_logentry("membership_manager", "report", report.pk, str(report), request.user, 1)
                             messages.success(request, "Reporte guardado satisfactoriamente")
                             return redirect('reports')
 
@@ -78,6 +80,7 @@ def reports(request):
                 else:
                     if form.do_save:
                         report = form.save()
+                        add_logentry("membership_manager", "report", report.pk, str(report), request.user, 1)
                         report.user = user
                         report.save()
                         messages.success(request, "Reporte guardado satisfactoriamente")
@@ -132,6 +135,7 @@ def show_report(request, pk):
         report.cache_table = grafico.view_render_table()
         report.cache_grafic = grafico.view_render_graphics()
         report.save()
+        add_logentry("membership_manager", "report", report.pk, str(report), request.user, 2)
 
     if "chart-container" in report.cache_grafic:
         mostrar_boton = True

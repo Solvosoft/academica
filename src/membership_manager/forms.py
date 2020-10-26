@@ -1,6 +1,7 @@
 from ajax_select.fields import AutoCompleteSelectField
 from django import forms
 from django.contrib.auth.models import User, Group
+from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
@@ -13,6 +14,8 @@ from membership_manager.models import Membership, Service, Organization, \
     Report, ReportType
 from membership_manager.reports.registro import REPORTES_TITULOS
 from djgentelella.widgets import wysiwyg as djgentelella
+
+from membership_manager.utils import get_contentype_choices
 
 
 class TemplateWidget(forms.Select):
@@ -445,3 +448,8 @@ class TemplateAddForm(GTForm, forms.ModelForm):
             'currency': widget.Select,
             'description': djgentelella.TextareaWysiwyg
         }
+
+
+class LogEntryFilterForm(GTForm, forms.Form):
+
+    category = forms.ChoiceField(widget=genwidgets.Select, choices=get_contentype_choices(), label="Categoría", required=True)

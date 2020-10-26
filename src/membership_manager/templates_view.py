@@ -1,15 +1,15 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
+from django.db.models import Q
 from django.shortcuts import redirect
 from django.shortcuts import render
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.db.models import Q
 from django.views.generic import ListView, UpdateView
-from membership_manager.forms import OrganizationAddForm,\
-    ContactOrganizationForm, TemplateSearchForm, TemplateAddForm
+
 from membership_core.models import MembershipTemplate
-from membership_manager.models import Organization
+from membership_manager.forms import TemplateSearchForm, TemplateAddForm
+from membership_manager.utils import add_logentry
 
 
 @method_decorator(permission_required('membership_core.view_membershiptemplate'), name='dispatch')
@@ -48,7 +48,8 @@ def create_template(request):
         form = TemplateAddForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            template = form.save()
+            add_logentry("membership_core", "membershiptemplate", template.pk, str(template), request.user, 1)
             messages.success(request, "Plantilla registrada con éxito")
             return redirect('templates')
         else:
@@ -72,10 +73,12 @@ class EditTemplate(UpdateView):
         context = super().get_context_data(**kwargs)
         template = context['object']
         context['template_form'] = TemplateAddForm(instance=template)
+        context['membershiptemplate'] = template.pk
         return context
 
     def form_valid(self, form):
-        form.save()
+        template = form.save(commit=False)
+        add_logentry("membership_core", "membershiptemplate", template.pk, str(template), self.request.user, 2)
         messages.success(self.request, "Plantilla actualizada con éxito")
         return super().form_valid(form)
 
@@ -83,7 +86,11 @@ class EditTemplate(UpdateView):
 @permission_required('membership_core.delete_membershiptemplate')
 def delete_template(request, pk):
     template = MembershipTemplate.objects.filter(pk=pk).first()
+
     if template:
+        object_repr = str(template)
+        object_pk = template.pk
         template.delete()
+        add_logentry("membership_core", "membershiptemplate", object_pk, object_repr, request.user, 3)
         messages.success(request, "Plantilla eliminada con éxito")
         return redirect('templates')

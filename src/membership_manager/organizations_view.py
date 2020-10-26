@@ -1,6 +1,5 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
-from django.db.models import Q
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
@@ -9,6 +8,7 @@ from django.views.generic import ListView, UpdateView
 
 from membership_manager.forms import OrganizationSearchForm, OrganizationAddForm, ContactOrganizationForm
 from membership_manager.models import Organization, Membership
+from membership_manager.utils import add_logentry
 
 
 @method_decorator(permission_required('membership_manager.view_organization'), name='dispatch')
@@ -48,7 +48,8 @@ def create_organization(request):
 
         # We save the form
         if form.is_valid():
-            form.save()
+            organization = form.save()
+            add_logentry("membership_manager", "organization", organization.pk, str(organization), request.user, 1)
             messages.success(request, "Organización registrada con éxito")
             return redirect('organizations')
 
@@ -82,6 +83,7 @@ class EditOrganization(UpdateView):
         context['contact_form'] = ContactOrganizationForm(pk=organization.pk)
         context['url_contact'] = reverse('api_organization', args=(organization.pk,))
         context['contact_list'] = [{'pk': x.pk, 'name': str(x)} for x in organization.contacts.all()]
+        context['organization'] = organization.pk
         return context
 
     def form_valid(self, form):
@@ -92,7 +94,8 @@ class EditOrganization(UpdateView):
         else:
             Membership.objects.filter(organization=self.object).update(state="inactive")
 
-        form.save()
+        organization = form.save()
+        add_logentry("membership_manager", "organization", organization.pk, str(organization), self.request.user, 2)
         messages.success(self.request, "Organización actualizada con éxito")
         return super().form_valid(form)
 
@@ -100,8 +103,12 @@ class EditOrganization(UpdateView):
 @permission_required('membership_manager.delete_organization')
 def delete_organization(request, pk):
     organization = Organization.objects.filter(pk=pk).first()
+
     if organization:
+        object_repr = str(organization)
+        object_pk = organization.pk
         organization.delete()
+        add_logentry("membership_manager", "organization", object_pk, object_repr, request.user, 3)
         messages.success(request, "Organización eliminada con éxito")
         return redirect('organizations')
 
@@ -109,9 +116,11 @@ def delete_organization(request, pk):
 @permission_required('membership_manager.change_organization')
 def deactivate_organization(request, pk):
     organization = Organization.objects.filter(pk=pk).first()
+
     if organization:
         organization.active = False
         organization.save()
+        add_logentry("membership_manager", "organization", organization.pk, str(organization), request.user, 2)
         Membership.objects.filter(organization=organization).update(state="inactive")
         messages.success(request, "Organización desactivada con éxito")
         return redirect('organizations')
