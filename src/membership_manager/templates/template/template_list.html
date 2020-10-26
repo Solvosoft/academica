@@ -17,17 +17,23 @@
                 <div class="x_panel">
                     <form method="GET">
                     <div class="row">
-                        <div class="col-md-12">
-                            <div class='col-md-12 col-lg-6 col-sm-12 col-xs-12'>
+                            <div class='col-md-4'>
                                 {% include 'field.html' with field=formsearch.name%}
                             </div>
-                            <div class='col-md-6 col-lg-3 col-sm-6 col-xs-12'>
+                            <div class='col-md-4'>
                                 {% include 'field.html' with field=formsearch.currency %}
                             </div>
-                            <div class='col-md-6 col-lg-3 col-sm-6 col-xs-12'>
-                                {% include  'field.html' with field=formsearch.renewal_period %}
+                            <div class='col-md-4'>
+                                <div class="form-group row">
+                                  <div class="col-sm-4">
+                                    {{ formsearch.renewal_period.label_tag }}
+                                  </div>
+                                  <div class="col-sm-8 col-xs-12">
+                                    {{formsearch.renewal_period}}
+                                    {{ formsearch.renewal_period.errors }}
+                                  </div>
+                              </div>
                             </div>
-                        </div>
                     </div>
                     <br/>
                     <div style="text-align:right;">
@@ -69,7 +75,7 @@
             <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12 widget widget_tally_box">
                 <div class="x_panel fixed_height_390 {% if template.state == "inactive" %}inactive_template{% elif template.state == 'active' %} active_template {% else %}grace_period_template{% endif %}">
                     <div class="x_title">
-                        <h2>{{template.name|title|wordwrap:20|linebreaks}}</h2>
+                        <h2>{{template.name|title|wordwrap:18|linebreaks}}</h2>
                         <ul class="nav navbar-right panel_toolbox">
                             {% if perms.admin.view_logentry %}
                                 <li><a title="Ver historial" href="{% url 'logentry_object' app='membership_core' model='membershiptemplate' pk=template.pk %}" class="edit-link"><i class="fa fa-history green"></i></a></li>

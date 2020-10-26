@@ -429,7 +429,7 @@ class TemplateSearchForm(GTForm, forms.Form):
         required=False, label="Moneda", widget=widget.SelectMultiple,
         queryset=SystemCurrency.objects.all())
     renewal_period = forms.ModelMultipleChoiceField(
-        required=False, label="Perido de renovación", widget=widget.SelectMultiple,
+        required=False, label="Período de renovación", widget=widget.SelectMultiple,
         queryset=RenewalPeriod.objects.all())
 
 
