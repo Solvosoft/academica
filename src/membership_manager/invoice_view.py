@@ -14,6 +14,7 @@ from membership_manager.invoice_utils import pay_invoice, regenerate_invoice_pdf
     send_paid_invoice
 from membership_manager.models import Invoice
 from membership_manager.newsletterform import FilterEmailsForm, NewsLetterTemplateForm
+from membership_manager.utils import add_logentry
 from membership_telbot_manager.utils import get_telegram_group
 from membership_telbot_manager.views import send_notification_message, send_invoice_message
 
@@ -123,11 +124,15 @@ class InvoiceChangeView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context=super().get_context_data()
+        invoice = context['object']
         context['title'] = 'Editar factura'
+        context['invoice'] = invoice.pk
         return context
 
     def form_valid(self, form):
         super().form_valid(form)
+        invoice = form.save()
+        add_logentry("membership_manager", "invoice", invoice.pk, str(invoice), self.request.user, 2)
         messages.success(self.request, "Factura guardada satisfactoriamente")
         return HttpResponseRedirect(form.cleaned_data['next'])
 

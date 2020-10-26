@@ -5,6 +5,7 @@ from django.urls import reverse
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets import core as widget
+from djgentelella.widgets import wysiwyg as djgentelella
 from djgentelella.widgets.selects import AutocompleteSelect
 
 from membership_core.models import MembershipTemplate, Country, ServiceType, SystemCurrency, RenewalPeriod, ServiceMT
@@ -12,7 +13,7 @@ from membership_manager.models import Invoice, ActivityReport
 from membership_manager.models import Membership, Service, Organization, \
     Report, ReportType
 from membership_manager.reports.registro import REPORTES_TITULOS
-from djgentelella.widgets import wysiwyg as djgentelella
+from membership_manager.utils import get_contentype_choices
 
 
 class TemplateWidget(forms.Select):
@@ -457,3 +458,8 @@ class TemplateServiceAddForm(GTForm, forms.ModelForm):
             'description': widget.TextInput,
             'observations': widget.Textarea,
         }
+
+
+class LogEntryFilterForm(GTForm, forms.Form):
+    category = forms.ChoiceField(widget=genwidgets.Select, choices=get_contentype_choices(), label="Categoría", required=True)
+

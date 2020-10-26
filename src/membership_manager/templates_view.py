@@ -1,18 +1,20 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
+from django.db.models import Q
+from django.forms import modelformset_factory
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
-from django.db.models import Q
 from django.views.generic import ListView, UpdateView
-from membership_manager.forms import OrganizationAddForm,\
-    ContactOrganizationForm, TemplateSearchForm, TemplateAddForm,\
-    MembershipServiceForm, TemplateServiceAddForm
-from membership_core.models import MembershipTemplate, ServiceMT, ServiceType
-from membership_manager.models import Organization, Service
-from django.forms import modelformset_factory
 from djgentelella.forms.forms import GTBaseModelFormSet
+
+from membership_core.models import MembershipTemplate
+from membership_core.models import ServiceMT
+from membership_manager.forms import TemplateSearchForm, TemplateAddForm
+from membership_manager.forms import TemplateServiceAddForm
+from membership_manager.models import Service
+from membership_manager.utils import add_logentry
 
 
 @method_decorator(permission_required('membership_core.view_membershiptemplate'), name='dispatch')
@@ -68,6 +70,7 @@ def create_template(request):
             for instance in instances:
                 instance.membership = template
                 instance.save()
+            add_logentry("membership_core", "membershiptemplate", template.pk, str(template), request.user, 1)
             messages.success(request, "Plantilla registrada con éxito")
             return redirect('templates')
         else:
@@ -134,6 +137,7 @@ class EditTemplate(UpdateView):
         else:
             messages.error(self.request, "Error al guardar plantilla")
             return reverse('edit_template', args=(template.pk,))
+        add_logentry("membership_core", "membershiptemplate", template.pk, str(template), self.request.user, 2)
         messages.success(self.request, "Plantilla actualizada con éxito")
         return super().form_valid(form)
 
@@ -141,7 +145,11 @@ class EditTemplate(UpdateView):
 @permission_required('membership_core.delete_membershiptemplate')
 def delete_template(request, pk):
     template = MembershipTemplate.objects.filter(pk=pk).first()
+
     if template:
+        object_repr = str(template)
+        object_pk = template.pk
         template.delete()
+        add_logentry("membership_core", "membershiptemplate", object_pk, object_repr, request.user, 3)
         messages.success(request, "Plantilla eliminada con éxito")
         return redirect('templates')

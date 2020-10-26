@@ -1,6 +1,5 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
-from django.db.models import Q
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -9,6 +8,7 @@ from django.views.generic import ListView, UpdateView
 
 from membership_manager.forms import ContactSearchForm, ContactAddForm
 from membership_manager.models import Organization, Membership
+from membership_manager.utils import add_logentry
 
 
 @method_decorator(permission_required('membership_manager.view_organization'), name='dispatch')
@@ -48,7 +48,8 @@ def create_contacts(request):
 
         # We save the form and the formset
         if form.is_valid():
-            form.save()
+            contact = form.save()
+            add_logentry("membership_manager", "organization", contact.pk, str(contact), request.user, 1)
             messages.success(request, "Contacto registrado con éxito")
             return redirect('contacts')
 
@@ -75,6 +76,12 @@ class EditContact(UpdateView):
     template_name = 'contact/edit.html'
     success_url = reverse_lazy('contacts')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        contact = context['object']
+        context['contact'] = contact.pk
+        return context
+
     def form_valid(self, form):
 
         if form.cleaned_data['active']:
@@ -83,7 +90,8 @@ class EditContact(UpdateView):
         else:
             Membership.objects.filter(organization=self.object).update(state="inactive")
 
-        form.save()
+        contact = form.save()
+        add_logentry("membership_manager", "organization", contact.pk, str(contact), self.request.user, 2)
         messages.success(self.request, "Contacto actualizado con éxito")
         return super().form_valid(form)
 
@@ -91,8 +99,12 @@ class EditContact(UpdateView):
 @permission_required('membership_manager.delete_organization')
 def delete_contacts(request, pk):
     contact = Organization.objects.filter(pk=pk).first()
+
     if contact:
+        object_repr = str(contact)
+        object_pk = contact.pk
         contact.delete()
+        add_logentry("membership_manager", "organization", object_pk, object_repr, request.user, 3)
         messages.success(request, "Contacto eliminado con éxito")
         return redirect('contacts')
 
@@ -100,9 +112,11 @@ def delete_contacts(request, pk):
 @permission_required('membership_manager.change_organization')
 def deactivate_contact(request, pk):
     contact = Organization.objects.filter(pk=pk).first()
+
     if contact:
         contact.active = False
         contact.save()
+        add_logentry("membership_manager", "organization", contact.pk, str(contact), request.user, 2)
         Membership.objects.filter(organization=contact).update(state="inactive")
         messages.success(request, "Contacto desactivado con éxito")
         return redirect('contacts')

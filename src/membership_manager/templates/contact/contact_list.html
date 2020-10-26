@@ -72,6 +72,9 @@
                             <span title="{{ contact.country.name }}" class="{{ contact.country.flag }}"></span>
                         </h2>
                         <ul class="nav navbar-right panel_toolbox">
+                            {% if perms.admin.view_logentry %}
+                            <li><a title="Ver historial" href="{% url 'logentry_object' app='membership_manager' model='organization' pk=contact.pk %}" class="edit-link"><i class="fa fa-history green"></i></a></li>
+                            {% endif %}
                             {% if perms.membership_manager.change_organization %}
                                 <li><a title="Editar contacto" href="{% url 'edit_contacts' pk=contact.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
                             {% endif %}
