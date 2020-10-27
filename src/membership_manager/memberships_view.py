@@ -1,3 +1,4 @@
+from dateutil.relativedelta import relativedelta
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.forms import modelformset_factory
@@ -5,9 +6,9 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.utils.timezone import now
-from django.views.generic import ListView, UpdateView, DetailView
+from django.views.generic import ListView, UpdateView
 from djgentelella.forms.forms import GTBaseModelFormSet
+from django.utils import timezone
 
 from membership_core.models import MembershipTemplate, ServiceMT
 from membership_manager.forms import MembershipServiceForm, MembershipForm, MembershipTemplateForm
@@ -66,7 +67,7 @@ class MembershipListView(ListView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
 
-        context['today'] = now()
+        context['today'] = timezone.now()
         context['form_filters'] = FilterEmailsForm(self.request.GET)
         context['form_template_newsletter'] = NewsLetterTemplateForm()
         context['form_template_email'] = EmailTemplateForm()
@@ -140,9 +141,12 @@ class EditMembership(UpdateView):
         membership.save()
         add_logentry("membership_manager", "membership", membership.pk, str(membership), self.request.user, 2)
 
-        if not membership.renews.exists():
-            create_renew(membership)
-
+        if not membership.renews.exists() and membership.membership_type != 'Streaming.la':
+            now = timezone.localdate(timezone.now())
+            MembershipRenew.objects.create(membership=membership, creation_date=now,
+                                           start_date=now,
+                                           encobro=True,
+                                           end_date=now + relativedelta(months=+membership.renewal_period.months))
 
         formset = modelformset_factory(
             Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
@@ -220,7 +224,8 @@ def create_membership(request):
             membership.save()
             add_logentry("membership_manager", "membership", membership.pk, str(membership), request.user, 1)
 
-            if not membership.renews.exists():
+
+            if not membership.renews.exists() and membership.membership_type != 'Streaming.la':
                 create_renew(membership)
 
             instances = fset.save(commit=False)

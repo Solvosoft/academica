@@ -85,11 +85,12 @@ def invoice_expiration_filter_queryset(now=None):
     if now is None:
         now = timezone.localdate(timezone.now())
     dates_list = [ now + relativedelta(days=x) for x in [ 45, 30, 15, 7, 3,2, 1]]
-    queryset = Invoice.objects.filter( membership__organization__active=True,
+    queryset = Invoice.objects.filter( embership__organization__active=True,
             status='pending',
             membership__state="active",
             creation_date__in=dates_list,
-            renewal_period__encobro=True, amount__gt=0 )
+            renewal_period__encobro=True, amount__gt=0).exclude(
+            membership__membership_type='Streaming.la')
     return queryset
 
 

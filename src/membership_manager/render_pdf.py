@@ -40,24 +40,26 @@ def generate_invoice(membership, invoice, email_template='pay_mail',
     if now is None:
         now = timezone.localdate(timezone.now())
 
-    if buildpdf:
-        if invoice.pdf_invoice:
-            invoice.pdf_invoice.delete(False)
-        build_pdf_invoice(membership, invoice)
+    if membership.membership_type != 'Streaming.la':
 
-    if send_email:
-        emails = get_emails(membership)
-        delta = invoice.expiration_date - now
-        send_email_from_template(email_template, emails,
-                             context={
-                                 'invoice': invoice,
-                                 'membership': membership,
-                                 'today': now,
-                                 'days': delta.days
-                             },
-                             enqueued=enqueued,
-                             user=None,
-                             upfile=invoice.pdf_invoice)
+        if buildpdf:
+            if invoice.pdf_invoice:
+                invoice.pdf_invoice.delete(False)
+            build_pdf_invoice(membership, invoice)
+
+        if send_email:
+            emails = get_emails(membership)
+            delta = invoice.expiration_date - now
+            send_email_from_template(email_template, emails,
+                                 context={
+                                     'invoice': invoice,
+                                     'membership': membership,
+                                     'today': now,
+                                     'days': delta.days
+                                 },
+                                 enqueued=enqueued,
+                                 user=None,
+                                 upfile=invoice.pdf_invoice)
 
 def link_callback(uri, rel):
     """
