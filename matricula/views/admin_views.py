@@ -6,10 +6,10 @@ Created on 18/10/2020
 '''
 from django.views.generic import ListView, DeleteView
 from django.shortcuts import render, get_object_or_404
-from matricula.models import Category, Course, MenuItem, Period
+from matricula.models import Category, Course, MenuItem, Period, Group
 from matricula.forms import CategoryCreateForm, CategorySearchForm,\
     CourseSearchForm, CourseCreateForm, MenuItemSearchForm,\
-    MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm
+    MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, GroupSearchForm
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -394,3 +394,92 @@ def edit_period(request, pk=None):
                 context['form_search'] = PeriodSearchForm()
                 return render(request, 'periods/period_update.html', context)
     return HttpResponseRedirect(reverse('periods'))
+
+
+@method_decorator(permission_required('matricula.view_group'), name='dispatch')
+class GroupList(ListView):
+    template_name = "groups/group_list.html"
+    model = Group
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(GroupList, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.form = GroupSearchForm(self.request.GET)
+        self.form.is_valid()
+        if self.form.cleaned_data['period']:
+            queryset = queryset.filter(period__in=self.form.cleaned_data['period'])
+        if self.form.cleaned_data['currency']:
+            queryset = queryset.filter(currency__in=self.form.cleaned_data['currency'])
+        if self.form.cleaned_data['category']:
+            queryset = queryset.filter(course__category__in=self.form.cleaned_data['category'])
+        if self.form.cleaned_data['open'] and int(self.form.cleaned_data['open']) != GroupSearchForm.DO_NOT_APPLY:
+            if int(self.form.cleaned_data['open']) == GroupSearchForm.OPEN:
+                queryset = queryset.filter(is_open=True)
+            else:
+                queryset = queryset.filter(is_open=False)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_search'] = GroupSearchForm(self.request.GET)
+        return context
+
+
+@permission_required('matricula.add_group')
+def create_group(request):
+    context = {}
+    if request.method == 'POST':
+        form = GroupCreateForm(request.POST)
+        context['form'] = form
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Grupo guardado con éxito")
+            return HttpResponseRedirect(reverse('groups'))
+        else:
+            messages.error(request, "Error al guardar grupo")
+    else:
+        context['form'] = GroupCreateForm()
+    return render(request, 'groups/group_create.html', context)
+
+
+@method_decorator(permission_required('matricula.delete_group'), name='dispatch')
+class GroupDelete(DeleteView):
+    model = MenuItem
+    success_url = "/matricula/enrrolment/groups"
+    success_message = "Grupo eliminado con éxito"
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(GroupDelete, self).dispatch(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(GroupDelete, self).delete(request, *args, **kwargs)
+
+
+@permission_required('matricula.change_group')
+def edit_group(request, pk=None):
+    context = {}
+    if pk is not None:
+        if request.method == "POST":
+            instance = Group.objects.get(pk=pk)
+            form = GroupCreateForm(request.POST, instance=instance)
+            if form.is_valid():
+                messages.success(request, "Grupo guardado con éxito")
+                form.save()
+                return HttpResponseRedirect(reverse('groups'))
+            else:
+                messages.error(request, "Error al actualizar")
+                return render(request, 'groups/group_update.html', {'form': form})
+        else:
+            if request.method == "GET":
+                instance = Group.objects.get(pk=pk)
+                form = GroupCreateForm(initial=instance.__dict__)
+                return render(request, 'groups/group_update.html', {'form': form})
+    return HttpResponseRedirect(reverse('groups'))

@@ -6,7 +6,7 @@ Created on 7/4/2015
 @author: luisza
 '''
 from django import forms
-from matricula.models import Student, Page, MenuItem, Category, Course, Period
+from matricula.models import Student, Page, MenuItem, Category, Course, Period, Group
 from django.utils.translation import ugettext_lazy as _
 from django.core import validators
 from django.contrib.auth.models import User
@@ -192,3 +192,63 @@ class PeriodCreateForm(forms.ModelForm, GTForm):
         if finish_date < start_date:
             msg = u"La fecha final es menor a la inicial"
             self._errors["finish_date"] = self.error_class([msg])
+
+
+
+class GroupSearchForm(GTForm, forms.Form):
+    OPEN = 0
+    CLOSE = 1
+    DO_NOT_APPLY = 2
+
+    OPTIONS = (
+        (DO_NOT_APPLY, "No aplicar"),
+        (OPEN, "Abierto"),
+        (CLOSE, "Cerrado"),
+    )
+    period = forms.ModelMultipleChoiceField(
+        queryset=Period.objects.all(), label="Periodo", widget=djgentelella.SelectMultiple,
+        required=False
+    )
+    currency = forms.MultipleChoiceField(
+        choices=Group.COURRENCY_CHOICES, widget=djgentelella.SelectMultiple, label="Moneda",
+        required=False
+    )
+    category = forms.ModelMultipleChoiceField(
+        queryset=Category.objects.all(), widget=djgentelella.SelectMultiple, label="Categoría",
+        required=False
+    )
+    open = forms.ChoiceField(
+        choices=OPTIONS, widget=djgentelella.Select, label="Abierto", required=False,
+    )
+
+
+class GroupCreateForm(forms.ModelForm, GTForm):  
+    class Meta:
+        model = Group
+        fields = [
+            'name', 'period', 'course', 'schedule', 'pre_enroll_start', 'pre_enroll_finish',
+            'enroll_start', 'enroll_finish', 'currency', 'cost', 'maximum', 'flow'
+        ]
+        widgets = {
+            'name': djgentelella.TextInput,
+            'period': djgentelella.Select,
+            'course': djgentelella.Select,
+            'schedule': djgentelella.TextInput,
+            'pre_enroll_start': djgentelella.DateInput,
+            'pre_enroll_finish': djgentelella.DateInput,
+            'enroll_start': djgentelella.DateInput,
+            'enroll_finish': djgentelella.DateInput,
+            'currency': djgentelella.Select,
+            'cost': djgentelella.NumberInput,
+            'maximum': djgentelella.NumberInput,
+            'flow': djgentelella.Select
+
+        }
+    def __init__(self, *args, **kwargs):
+        super(GroupCreateForm, self).__init__(*args, **kwargs)
+        if 'initial' in kwargs:
+            if 'period_id' in kwargs['initial']:
+                self.fields['period'].initial = kwargs['initial']['period_id']
+            if 'course_id' in kwargs['initial']:
+                self.fields['course'].initial = kwargs['initial']['course_id']
+

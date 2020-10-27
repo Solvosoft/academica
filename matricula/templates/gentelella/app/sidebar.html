@@ -38,7 +38,7 @@
                             <li><a href="{% url 'menuitems' %}">Elementos del Menú</a></li>
                         {% endif %}
                         {% if perms.matricula.view_course %}
-                            <li><a href="{% url 'categories' %}">Grupos</a></li>
+                            <li><a href="{% url 'groups' %}">Grupos</a></li>
                         {% endif %}
                         {% if perms.matricula.view_course %}
                             <li><a href="{% url 'categories' %}">Matriculas</a></li>

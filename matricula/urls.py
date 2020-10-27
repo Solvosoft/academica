@@ -18,7 +18,8 @@ from matricula.views.Enrollments import list_enroll, enrollme,\
 from .views.admin_views import CategoryList, create_category,show_category,\
     CategoryDelete, edit_category, CourseList, create_course, show_course,\
     CourseDelete, edit_course, MenuItemList, create_menuitem, MenuItemDelete,\
-    edit_menuitem, PeriodList, create_period, edit_period, PeriodDelete
+    edit_menuitem, PeriodList, create_period, edit_period, PeriodDelete,\
+    GroupList, create_group, edit_group, GroupDelete
 
 urlpatterns = [
     url('^create_user$', create_user, name="create_user"),
@@ -55,4 +56,8 @@ urlpatterns = [
     url('enrrolment/create_period', create_period, name="create_period"),
     path('enrrolment/delete_period/<int:pk>/', PeriodDelete.as_view() , name="delete_period"),
     path('enrrolment/edit_period/<int:pk>/', edit_period, name="edit_period"),
+    url('enrrolment/groups', GroupList.as_view(), name="groups"),
+    url('enrrolment/create_group', create_group, name="create_group"),
+    path('enrrolment/delete_group/<int:pk>/', GroupDelete.as_view() , name="delete_group"),
+    path('enrrolment/edit_group/<int:pk>/', edit_group, name="edit_group"),
 ]
