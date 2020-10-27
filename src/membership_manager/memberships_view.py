@@ -148,7 +148,7 @@ class EditMembership(UpdateView):
             membership=membership), prefix="mts")
 
         if fset.is_valid():
-            instances = fset.save()
+            instances = fset.save(commit=False)
             for delinst in fset.deleted_objects:
                 delinst.delete()
             for instance in instances:
