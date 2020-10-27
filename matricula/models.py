@@ -28,17 +28,15 @@ class Student(models.Model):
 
     def confirm(self, key):
         if(now() < self.expired_at and str(self.key) == key):
-            print('entra')
             self.user.is_active = True
             self.user.save()
             self.confirmed_at = now()
             self.save()
             return True
-        print('no entra')
         return False
     
     def __str__(self):
-        return self.user.first_name + " " + self.user.last_name
+        return self.user.username
     
 
 
