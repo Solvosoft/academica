@@ -15,11 +15,10 @@ from .admin import admin_site
 from matricula.views.Pages import PageDetail
 from matricula.views.Enrollments import list_enroll, enrollme,\
     finish_enroll
-from .views.admin_views import CategoryList, create_category,\
-    show_category, CategoryDelete, edit_category, CourseList,\
-    create_course, show_course, CourseDelete, edit_course,\
-    MenuItemList, create_menuitem, MenuItemDelete,\
-    edit_menuitem
+from .views.admin_views import CategoryList, create_category,show_category,\
+    CategoryDelete, edit_category, CourseList, create_course, show_course,\
+    CourseDelete, edit_course, MenuItemList, create_menuitem, MenuItemDelete,\
+    edit_menuitem, PeriodList, create_period, edit_period, PeriodDelete
 
 urlpatterns = [
     url('^create_user$', create_user, name="create_user"),
@@ -52,4 +51,8 @@ urlpatterns = [
     url('enrrolment/create_menuitem', create_menuitem, name="create_menuitem"),
     path('enrrolment/delete_menuitem/<int:pk>/', MenuItemDelete.as_view() , name="delete_menuitem"),
     path('enrrolment/edit_menuitem/<int:pk>/', edit_menuitem, name="edit_menuitem"),
+    url('enrrolment/periods', PeriodList.as_view(), name="periods"),
+    url('enrrolment/create_period', create_period, name="create_period"),
+    path('enrrolment/delete_period/<int:pk>/', PeriodDelete.as_view() , name="delete_period"),
+    path('enrrolment/edit_period/<int:pk>/', edit_period, name="edit_period"),
 ]

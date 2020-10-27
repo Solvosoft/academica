@@ -43,8 +43,8 @@
                         {% if perms.matricula.view_course %}
                             <li><a href="{% url 'categories' %}">Matriculas</a></li>
                         {% endif %}
-                        {% if perms.matricula.view_course %}
-                            <li><a href="{% url 'categories' %}">Periodos</a></li>
+                        {% if perms.matricula.view_period %}
+                            <li><a href="{% url 'periods' %}">Periodos</a></li>
                         {% endif %}
                         {% if perms.matricula.view_course %}
                             <li><a href="{% url 'categories' %}">Páginas</a></li>

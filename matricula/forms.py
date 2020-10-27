@@ -6,7 +6,7 @@ Created on 7/4/2015
 @author: luisza
 '''
 from django import forms
-from matricula.models import Student, Page, MenuItem, Category, Course
+from matricula.models import Student, Page, MenuItem, Category, Course, Period
 from django.utils.translation import ugettext_lazy as _
 from django.core import validators
 from django.contrib.auth.models import User
@@ -168,3 +168,27 @@ class MenuItemCreateForm(forms.ModelForm, GTForm):
             'is_index': djgentelella.YesNoInput
 
         }
+
+
+class PeriodSearchForm(GTForm, forms.Form):  
+    name = forms.CharField(
+        required=False, widget=djgentelella.TextInput,
+        label="Nombre")
+
+
+class PeriodCreateForm(forms.ModelForm, GTForm):  
+    class Meta:
+        model = Period
+        fields = '__all__'
+        widgets = {
+            'name': djgentelella.TextInput,
+            'start_date': djgentelella.DateInput,
+            'finish_date': djgentelella.DateInput
+        }
+
+    def clean(self):
+        start_date = self.cleaned_data.get("start_date")
+        finish_date = self.cleaned_data.get("finish_date")
+        if finish_date < start_date:
+            msg = u"La fecha final es menor a la inicial"
+            self._errors["finish_date"] = self.error_class([msg])

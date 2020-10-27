@@ -6,10 +6,10 @@ Created on 18/10/2020
 '''
 from django.views.generic import ListView, DeleteView
 from django.shortcuts import render, get_object_or_404
-from matricula.models import Category, Course, MenuItem
+from matricula.models import Category, Course, MenuItem, Period
 from matricula.forms import CategoryCreateForm, CategorySearchForm,\
     CourseSearchForm, CourseCreateForm, MenuItemSearchForm,\
-    MenuItemCreateForm
+    MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -60,7 +60,7 @@ def create_category(request):
         context['form'] = form
         if form.is_valid():
             form.save()
-            messages.success(request, "Registro creado con exíto!")
+            messages.success(request, "Registro creado con éxito!")
             context['form'] = CategoryCreateForm()
             return HttpResponseRedirect(reverse('categories'))
         else:
@@ -84,7 +84,7 @@ def show_category(request, pk=None):
 class CategoryDelete(DeleteView):
     model = Category
     success_url = "/matricula/enrrolment/categories/"
-    success_message = "Categoría eliminada con exíto"
+    success_message = "Categoría eliminada con éxito"
 
     def dispatch(self, *args, **kwargs):
         """ Permission check for this class """
@@ -108,7 +108,7 @@ def edit_category(request, pk=None):
             category = Category.objects.get(pk=pk)
             form = CategoryCreateForm(request.POST, instance=category)
             if form.is_valid():
-                messages.success(request, "Categoría guardada con exíto")
+                messages.success(request, "Categoría guardada con éxito")
                 form.save()
                 return HttpResponseRedirect(reverse('categories'))
             else:
@@ -164,7 +164,7 @@ def create_course(request):
         context['form'] = form
         if form.is_valid():
             form.save()
-            messages.success(request, "Curso guardado con exíto")
+            messages.success(request, "Curso guardado con éxito")
             return HttpResponseRedirect(reverse('enrrolment_courses'))
         else:
             messages.error(request, "Error al guardar curso")
@@ -187,7 +187,7 @@ def show_course(request, pk=None):
 class CourseDelete(DeleteView):
     model = Course
     success_url = "/matricula/enrrolment/courses/"
-    success_message = "Curso eliminada con exíto"
+    success_message = "Curso eliminada con éxito"
 
     def dispatch(self, *args, **kwargs):
         """ Permission check for this class """
@@ -209,7 +209,7 @@ def edit_course(request, pk=None):
             course = Course.objects.get(pk=pk)
             form = CourseCreateForm(request.POST, instance=course)
             if form.is_valid():
-                messages.success(request, "Curso guardado con exíto")
+                messages.success(request, "Curso guardado con éxito")
                 form.save()
                 return HttpResponseRedirect(reverse('enrrolment_courses'))
             else:
@@ -257,11 +257,11 @@ class MenuItemList(ListView):
 def create_menuitem(request):
     context = {}
     if request.method == 'POST':
-        form = CreateMenuItem(request.POST)
+        form = MenuItemCreateForm(request.POST)
         context['form'] = form
         if form.is_valid():
             form.save()
-            messages.success(request, "Elemento del menú guardado con exíto")
+            messages.success(request, "Elemento del menú guardado con éxito")
             return HttpResponseRedirect(reverse('menuitems'))
         else:
             messages.error(request, "Error al guardar elemento del menú")
@@ -274,7 +274,7 @@ def create_menuitem(request):
 class MenuItemDelete(DeleteView):
     model = MenuItem
     success_url = "/matricula/enrrolment/menuitems"
-    success_message = "Menú eliminado con exíto"
+    success_message = "Menú eliminado con éxito"
 
     def dispatch(self, *args, **kwargs):
         """ Permission check for this class """
@@ -308,3 +308,89 @@ def edit_menuitem(request, pk=None):
                 form = MenuItemCreateForm(initial=instance.__dict__)
                 return render(request, 'menuitems/menuitem_update.html', {'form': form})
     return HttpResponseRedirect(reverse('menuitems'))
+
+
+@method_decorator(permission_required('matricula.view_period'), name='dispatch')
+class PeriodList(ListView):
+    template_name = "periods/period_list.html"
+    model = Period
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(PeriodList, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.form = PeriodSearchForm(self.request.GET)
+        self.form.is_valid()
+        queryset = Period.objects.all()
+        if self.form.cleaned_data['name']:
+           queryset = queryset.filter(name__icontains=self.form.cleaned_data['name'])
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = PeriodCreateForm()
+        context['form_search'] = PeriodSearchForm(self.request.GET)
+        return context
+
+
+@permission_required('matricula.add_period')
+def create_period(request):
+    context = {}
+    if request.method == 'POST':
+        form = PeriodCreateForm(request.POST)
+        context['form'] = form
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Periodo guardado con éxito")
+            return HttpResponseRedirect(reverse('periods'))
+        else:
+            messages.error(request, "Error al guardar el periodo")
+            context['object_list'] = Period.objects.all()
+            return render(request, 'periods/period_list.html', context)
+    return HttpResponseRedirect(reverse('periods'))
+
+
+@method_decorator(permission_required('matricula.delete_period'), name='dispatch')
+class PeriodDelete(DeleteView):
+    model = Period
+    success_url = "/matricula/enrrolment/periods"
+    success_message = "Periodo eliminado con éxito"
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(PeriodDelete, self).dispatch(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(PeriodDelete, self).delete(request, *args, **kwargs)
+
+
+@permission_required('matricula.change_period')
+def edit_period(request, pk=None):
+    context = {}
+    if pk is not None:
+        context = {}
+        if request.method == "POST":
+            instance = Period.objects.get(pk=pk)
+            form = PeriodCreateForm(request.POST, instance=instance)
+            context['form'] = form
+            if form.is_valid():
+                messages.success(request, "Periodo guardado con éxito")
+                form.save()
+                return HttpResponseRedirect(reverse('periods'))
+            else:
+                messages.error(request, "Error al actualizar")
+                return render(request, 'periods/period_update.html', context)
+        else:
+            if request.method == "GET":
+                instance = Period.objects.get(pk=pk)
+                context['object_list'] = Period.objects.all()
+                context['form'] = PeriodCreateForm(initial=instance.__dict__)
+                context['form_search'] = PeriodSearchForm()
+                return render(request, 'periods/period_update.html', context)
+    return HttpResponseRedirect(reverse('periods'))
