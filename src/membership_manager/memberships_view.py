@@ -1,14 +1,13 @@
-from dateutil.relativedelta import relativedelta
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.forms import modelformset_factory
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, UpdateView
 from djgentelella.forms.forms import GTBaseModelFormSet
-from django.utils import timezone
 
 from membership_core.models import MembershipTemplate, ServiceMT
 from membership_manager.forms import MembershipServiceForm, MembershipForm, MembershipTemplateForm
@@ -163,7 +162,7 @@ class EditMembership(UpdateView):
                 context = {
                     'pk_orga_contact': membership.organization.pk,
                     'type': "organization",
-                    'today': now(),
+                    'today': timezone.now(),
                     'form_filters': FilterEmailsForm(),
                     'form_template_newsletter': NewsLetterTemplateForm(),
                     'form_template_email': EmailTemplateForm(),
@@ -239,9 +238,16 @@ def create_membership(request):
 
         # if there is a template load initial data
         if template is not None and template != "":
-            m_template = MembershipTemplate.objects.get(pk=template).__dict__
-            m_template['contact_type'] = 'organization'
-            form = MembershipForm(initial=m_template)
+            m_template = MembershipTemplate.objects.filter(pk=template).first()
+
+            form = MembershipForm(initial={
+                'state': m_template.state,
+                'contact_type': 'organization',
+                'currency': m_template.currency,
+                'annual_cost': m_template.annual_cost,
+                'renewal_period': m_template.renewal_period,
+                'free_membership': m_template.free_membership,
+            })
             servicesmt = ServiceMT.objects.filter(membership__pk=template)
             templateinitial = []
 
