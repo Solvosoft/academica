@@ -60,6 +60,7 @@ class MembershipTemplate(models.Model):
                                        verbose_name="Período de renovación")
     state = models.CharField(max_length=15, choices=STATES, default="active",
                              verbose_name="Estado")
+    free_membership = models.BooleanField(default=False, verbose_name="¿Membresía gratuita sin factura?")
 
     def __str__(self):
         return self.name

@@ -75,7 +75,7 @@
             <div class="col-md-4 col-lg-3 col-sm-6 col-xs-12 widget widget_tally_box">
                 <div class="x_panel fixed_height_390 {% if template.state == "inactive" %}inactive_template{% elif template.state == 'active' %} active_template {% else %}grace_period_template{% endif %}">
                     <div class="x_title">
-                        <h2>{{template.name|title|wordwrap:18|linebreaks}}</h2>
+                        <h2>{{template.name|title|wordwrap:17|linebreaks}}</h2>
                         <ul class="nav navbar-right panel_toolbox">
                             {% if perms.admin.view_logentry %}
                                 <li><a title="Ver historial" href="{% url 'logentry_object' app='membership_core' model='membershiptemplate' pk=template.pk %}" class="edit-link"><i class="fa fa-history green"></i></a></li>
@@ -96,7 +96,7 @@
                             <h4>Información: </h4>
                         </div>
                         <div><b>Moneda:</b> {% if template.currency %} {{template.currency}} {%else%} Sin especificar {% endif %}</div>
-                        <div><b>Costo anual:</b> {% if template.annual_cost %} {{template.annual_cost}} {%else%} Sin especificar {% endif %}</div>
+                        <div><b>Costo anual:</b> {% if template.annual_cost %} {{template.annual_cost}} {% elif template.annual_cost == 0 or template.annual_cost == 0.0 %} 0.0 {% else %} Sin especificar {% endif %}</div>
                         <div><b>Renovación:</b> {% if template.renewal_period %} {{template.renewal_period}} {%else%} Sin especificar {% endif %}</div>
                         <div><b>Estado:</b> 
                             {% if template.state == "active" %} 

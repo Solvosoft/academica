@@ -96,7 +96,7 @@ class Membership(models.Model):
     annual_cost = models.FloatField(verbose_name="Costo")
     currency = models.ForeignKey(SystemCurrency, on_delete=models.SET_DEFAULT, default=4, verbose_name="Moneda")
     renewal_period = models.ForeignKey(RenewalPeriod, on_delete=models.CASCADE,
-                                       verbose_name="Periodo de renovación")
+                                       verbose_name="Período de renovación")
     state = models.CharField(max_length=11, choices=STATES, default="active",
                              verbose_name="Estado")
     apply_fees = models.BooleanField(default=False, verbose_name="Aplicar impuestos", help_text="Si no se selecciona, el campo de impuestos es ignorado")
@@ -104,6 +104,7 @@ class Membership(models.Model):
                                help_text="Un número de 0 a 100")
 
     last_renew_start_date = models.DateField(null=True, blank=True)
+    free_membership = models.BooleanField(default=False, verbose_name="¿Membresía gratuita sin factura?")
 
     @property
     def name(self):

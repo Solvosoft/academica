@@ -75,6 +75,7 @@ def create_template(request):
                 renewal_period=form.cleaned_data['renewal_period'],
                 state=form.cleaned_data['state'],
                 description=form.cleaned_data['description'],
+                free_membership=form.cleaned_data['free_membership'],
             )
             template.save()
             instances = fset.save(commit=False)

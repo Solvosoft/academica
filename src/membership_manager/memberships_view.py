@@ -4,9 +4,9 @@ from django.forms import modelformset_factory
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.timezone import now
-from django.views.generic import ListView, UpdateView, DetailView
+from django.views.generic import ListView, UpdateView
 from djgentelella.forms.forms import GTBaseModelFormSet
 
 from membership_core.models import MembershipTemplate, ServiceMT
@@ -66,7 +66,7 @@ class MembershipListView(ListView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
 
-        context['today'] = now()
+        context['today'] = timezone.now()
         context['form_filters'] = FilterEmailsForm(self.request.GET)
         context['form_template_newsletter'] = NewsLetterTemplateForm()
         context['form_template_email'] = EmailTemplateForm()
@@ -140,10 +140,6 @@ class EditMembership(UpdateView):
         membership.save()
         add_logentry("membership_manager", "membership", membership.pk, str(membership), self.request.user, 2)
 
-        if not membership.renews.exists():
-            create_renew(membership)
-
-
         formset = modelformset_factory(
             Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
             can_delete=True, extra=1, can_order=True)
@@ -166,7 +162,7 @@ class EditMembership(UpdateView):
                 context = {
                     'pk_orga_contact': membership.organization.pk,
                     'type': "organization",
-                    'today': now(),
+                    'today': timezone.now(),
                     'form_filters': FilterEmailsForm(),
                     'form_template_newsletter': NewsLetterTemplateForm(),
                     'form_template_email': EmailTemplateForm(),
@@ -214,13 +210,14 @@ def create_membership(request):
                 renewal_period=form.cleaned_data['renewal_period'],
                 state=form.cleaned_data['state'],
                 apply_fees=form.cleaned_data['apply_fees'],
-                fees=form.cleaned_data['fees']
+                fees=form.cleaned_data['fees'],
+                free_membership=form.cleaned_data['free_membership']
             )
 
             membership.save()
             add_logentry("membership_manager", "membership", membership.pk, str(membership), request.user, 1)
 
-            if not membership.renews.exists():
+            if not membership.renews.exists() and not membership.free_membership:
                 create_renew(membership)
 
             instances = fset.save(commit=False)
@@ -241,9 +238,16 @@ def create_membership(request):
 
         # if there is a template load initial data
         if template is not None and template != "":
-            m_template = MembershipTemplate.objects.get(pk=template).__dict__
-            m_template['contact_type'] = 'organization'
-            form = MembershipForm(initial=m_template)
+            m_template = MembershipTemplate.objects.filter(pk=template).first()
+
+            form = MembershipForm(initial={
+                'state': m_template.state,
+                'contact_type': 'organization',
+                'currency': m_template.currency,
+                'annual_cost': m_template.annual_cost,
+                'renewal_period': m_template.renewal_period,
+                'free_membership': m_template.free_membership,
+            })
             servicesmt = ServiceMT.objects.filter(membership__pk=template)
             templateinitial = []
 
