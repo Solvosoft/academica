@@ -6,7 +6,7 @@ Created on 7/4/2015
 @author: luisza
 '''
 from django import forms
-from matricula.models import Student, Page, MenuItem, Category, Course, Period, Group
+from matricula.models import Student, Page, MenuItem, Category, Course, Period, Group, Enroll
 from django.utils.translation import ugettext_lazy as _
 from django.core import validators
 from django.contrib.auth.models import User
@@ -252,3 +252,34 @@ class GroupCreateForm(forms.ModelForm, GTForm):
             if 'course_id' in kwargs['initial']:
                 self.fields['course'].initial = kwargs['initial']['course_id']
 
+
+class EnrollSearchForm(GTForm, forms.Form):
+    student = forms.ModelMultipleChoiceField(
+        queryset=Student.objects.all(), label="Estudiante", widget=djgentelella.SelectMultiple,
+        required=False
+    )
+    group = forms.ModelMultipleChoiceField(
+        queryset=Group.objects.all(), widget=djgentelella.SelectMultiple, label="Grupo",
+        required=False
+    )
+
+
+class EnrollCreateForm(forms.ModelForm, GTForm):  
+    class Meta:
+        model = Enroll
+        fields = [
+            'student', 'group', 'enroll_finished', 'enroll_activate'
+        ]
+        widgets = {
+            'student': djgentelella.Select,
+            'group': djgentelella.Select,
+            'enroll_finished': djgentelella.YesNoInput,
+            'enroll_activate': djgentelella.YesNoInput
+        }
+    def __init__(self, *args, **kwargs):
+        super(EnrollCreateForm, self).__init__(*args, **kwargs)
+        if 'initial' in kwargs:
+            if 'group_id' in kwargs['initial']:
+                self.fields['group'].initial = kwargs['initial']['group_id']
+            if 'student_id' in kwargs['initial']:
+                self.fields['student'].initial = kwargs['initial']['student_id']

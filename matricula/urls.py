@@ -19,7 +19,8 @@ from .views.admin_views import CategoryList, create_category,show_category,\
     CategoryDelete, edit_category, CourseList, create_course, show_course,\
     CourseDelete, edit_course, MenuItemList, create_menuitem, MenuItemDelete,\
     edit_menuitem, PeriodList, create_period, edit_period, PeriodDelete,\
-    GroupList, create_group, edit_group, GroupDelete
+    GroupList, create_group, edit_group, GroupDelete, EnrollList, create_enroll,\
+    edit_enroll, EnrollDelete
 
 urlpatterns = [
     url('^create_user$', create_user, name="create_user"),
@@ -60,4 +61,8 @@ urlpatterns = [
     url('enrrolment/create_group', create_group, name="create_group"),
     path('enrrolment/delete_group/<int:pk>/', GroupDelete.as_view() , name="delete_group"),
     path('enrrolment/edit_group/<int:pk>/', edit_group, name="edit_group"),
+    url('enrrolment/enrolls', EnrollList.as_view(), name="enrolls"),
+    url('enrrolment/create_enroll', create_enroll, name="create_enroll"),
+    path('enrrolment/delete_enroll/<int:pk>/', EnrollDelete.as_view() , name="delete_enroll"),
+    path('enrrolment/edit_enroll/<int:pk>/', edit_enroll, name="edit_enroll"),
 ]

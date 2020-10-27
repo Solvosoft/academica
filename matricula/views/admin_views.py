@@ -6,10 +6,11 @@ Created on 18/10/2020
 '''
 from django.views.generic import ListView, DeleteView
 from django.shortcuts import render, get_object_or_404
-from matricula.models import Category, Course, MenuItem, Period, Group
+from matricula.models import Category, Course, MenuItem, Period, Group, Enroll
 from matricula.forms import CategoryCreateForm, CategorySearchForm,\
     CourseSearchForm, CourseCreateForm, MenuItemSearchForm,\
-    MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, GroupSearchForm
+    MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, GroupSearchForm,\
+    EnrollSearchForm, EnrollCreateForm
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -483,3 +484,85 @@ def edit_group(request, pk=None):
                 form = GroupCreateForm(initial=instance.__dict__)
                 return render(request, 'groups/group_update.html', {'form': form})
     return HttpResponseRedirect(reverse('groups'))
+
+
+@method_decorator(permission_required('matricula.view_enroll'), name='dispatch')
+class EnrollList(ListView):
+    template_name = "enrolls/enroll_list.html"
+    model = Enroll
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(EnrollList, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.form = EnrollSearchForm(self.request.GET)
+        self.form.is_valid()
+        if self.form.cleaned_data['student']:
+            queryset = queryset.filter(student__in=self.form.cleaned_data['student'])
+        if self.form.cleaned_data['group']:
+            queryset = queryset.filter(group__in=self.form.cleaned_data['group'])
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_search'] = EnrollSearchForm(self.request.GET)
+        return context
+
+
+@permission_required('matricula.add_enroll')
+def create_enroll(request):
+    context = {}
+    if request.method == 'POST':
+        form = EnrollCreateForm(request.POST)
+        context['form'] = form
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Matricula guardada con éxito")
+            return HttpResponseRedirect(reverse('enrolls'))
+        else:
+            messages.error(request, "Error al guardar Matricula")
+    else:
+        context['form'] = EnrollCreateForm()
+    return render(request, 'enrolls/enroll_create.html', context)
+
+
+@permission_required('matricula.change_enroll')
+def edit_enroll(request, pk=None):
+    context = {}
+    if pk is not None:
+        if request.method == "POST":
+            instance = Enroll.objects.get(pk=pk)
+            form = EnrollCreateForm(request.POST, instance=instance)
+            if form.is_valid():
+                messages.success(request, "Matricula guardada con éxito")
+                form.save()
+                return HttpResponseRedirect(reverse('enrolls'))
+            else:
+                messages.error(request, "Error al actualizar")
+                return render(request, 'enrolls/enroll_update.html', {'form': form})
+        else:
+            if request.method == "GET":
+                instance = Enroll.objects.get(pk=pk)
+                form = EnrollCreateForm(initial=instance.__dict__)
+                return render(request, 'enrolls/enroll_update.html', {'form': form})
+    return HttpResponseRedirect(reverse('enrolls'))
+
+
+@method_decorator(permission_required('matricula.delete_enroll'), name='dispatch')
+class EnrollDelete(DeleteView):
+    model = Enroll
+    success_url = "/matricula/enrrolment/enrolls"
+    success_message = "Matricula eliminada con éxito"
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(EnrollDelete, self).dispatch(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(EnrollDelete, self).delete(request, *args, **kwargs)
