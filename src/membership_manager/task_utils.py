@@ -75,9 +75,9 @@ def generate_renew(now):
             user_id=utils.get_administrative_user(),
             content_type_id=ContentType.objects.get_for_model(membership).pk,
             object_id= membership.pk,
-            object_repr="Periodo de renovación agregado " ,
+            object_repr="Período de renovación agregado " ,
             action_flag=ADDITION,
-            change_message="Periodo de renovación agregado %s %s"%(str(new_renew), str(renew.membership))
+            change_message="Período de renovación agregado %s %s"%(str(new_renew), str(renew.membership))
         )
         dev += "%s %s %d\n"%(str(new_renew), str(renew.membership), membership.annual_cost)
         if membership.annual_cost == 0:

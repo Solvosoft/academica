@@ -104,7 +104,7 @@ class MembershipForm(GTForm, forms.ModelForm):
         fields = [
             'membership_type', 'contact_type', 'organization', 'contact',
             'annual_cost', 'currency', 'renewal_period', 'state',
-            'apply_fees', 'fees'
+            'apply_fees', 'fees', 'free_membership'
         ]
         widgets = {
             'organization': AutocompleteSelect('organizationbasename'),
@@ -114,7 +114,8 @@ class MembershipForm(GTForm, forms.ModelForm):
             'renewal_period': widget.Select,
             'apply_fees': widget.YesNoInput,
             'state': widget.Select,
-            'fees': widget.NumberInput
+            'fees': widget.NumberInput,
+            'free_membership': widget.YesNoInput
         }
 
     def clean(self):
@@ -444,7 +445,8 @@ class TemplateAddForm(GTForm, forms.ModelForm):
             'annual_cost': widget.NumberInput,
             'state': widget.Select,
             'currency': widget.Select,
-            'description': djgentelella.TextareaWysiwyg
+            'description': djgentelella.TextareaWysiwyg,
+            'free_membership': widget.YesNoInput
         }
 
 

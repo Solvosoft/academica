@@ -141,13 +141,6 @@ class EditMembership(UpdateView):
         membership.save()
         add_logentry("membership_manager", "membership", membership.pk, str(membership), self.request.user, 2)
 
-        if not membership.renews.exists() and membership.membership_type != 'Streaming.la':
-            now = timezone.localdate(timezone.now())
-            MembershipRenew.objects.create(membership=membership, creation_date=now,
-                                           start_date=now,
-                                           encobro=True,
-                                           end_date=now + relativedelta(months=+membership.renewal_period.months))
-
         formset = modelformset_factory(
             Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
             can_delete=True, extra=1, can_order=True)
@@ -218,14 +211,14 @@ def create_membership(request):
                 renewal_period=form.cleaned_data['renewal_period'],
                 state=form.cleaned_data['state'],
                 apply_fees=form.cleaned_data['apply_fees'],
-                fees=form.cleaned_data['fees']
+                fees=form.cleaned_data['fees'],
+                free_membership=form.cleaned_data['free_membership']
             )
 
             membership.save()
             add_logentry("membership_manager", "membership", membership.pk, str(membership), request.user, 1)
 
-
-            if not membership.renews.exists() and membership.membership_type != 'Streaming.la':
+            if not membership.renews.exists() and not membership.free_membership:
                 create_renew(membership)
 
             instances = fset.save(commit=False)
