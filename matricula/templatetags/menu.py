@@ -9,7 +9,7 @@ from django.utils.safestring import mark_safe
 from django import template
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-
+from django.utils.html import strip_tags
 from matricula.models import MenuItem
 
 register = template.Library()
@@ -95,7 +95,7 @@ def print_menu_item(request, menues, is_list=False):
     for key, menu in items_menu:
         ref, ref_display = get_ref_and_ref_display(request, menu['obj'])
         if not menu['children']:
-            dev += '<li><a href="%s"> %s</a>' % (ref, ref_display)
+            dev += '<li><a href="%s"> %s</a>' % (ref, strip_tags(ref_display))
         if menu['children']:
             dev += '<li><a>'+ ref_display +'<span class="fa fa-chevron-down"></span></a>'+\
             '<ul class="nav child_menu">' + print_menu_item(request, menu['children'], True) + "</ul>"
