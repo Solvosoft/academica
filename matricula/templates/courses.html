@@ -36,6 +36,10 @@
 						</div>
 						<div class="clearfix"></div>
 					</div>
+				{% empty %}
+					<div class="alert alert-info" role="alert">
+						No hay cursos disponibles
+					</div>
 				{%endfor%}
 				{% if messages %}
 					<ul class="messages">
