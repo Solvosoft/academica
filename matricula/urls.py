@@ -20,7 +20,7 @@ from .views.admin_views import CategoryList, create_category,show_category,\
     CourseDelete, edit_course, MenuItemList, create_menuitem, MenuItemDelete,\
     edit_menuitem, PeriodList, create_period, edit_period, PeriodDelete,\
     GroupList, create_group, edit_group, GroupDelete, EnrollList, create_enroll,\
-    edit_enroll, EnrollDelete
+    edit_enroll, EnrollDelete, StudentList, create_student, edit_student, StudentDelete
 
 urlpatterns = [
     url('^create_user$', create_user, name="create_user"),
@@ -65,4 +65,8 @@ urlpatterns = [
     url('enrrolment/create_enroll', create_enroll, name="create_enroll"),
     path('enrrolment/delete_enroll/<int:pk>/', EnrollDelete.as_view() , name="delete_enroll"),
     path('enrrolment/edit_enroll/<int:pk>/', edit_enroll, name="edit_enroll"),
+     url('enrrolment/students', StudentList.as_view(), name="students"),
+    url('enrrolment/create_student', create_student, name="create_student"),
+    path('enrrolment/delete_student/<int:pk>/', StudentDelete.as_view() , name="delete_student"),
+    path('enrrolment/edit_student/<int:pk>/', edit_student, name="edit_student"),
 ]

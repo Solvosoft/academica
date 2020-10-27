@@ -283,3 +283,31 @@ class EnrollCreateForm(forms.ModelForm, GTForm):
                 self.fields['group'].initial = kwargs['initial']['group_id']
             if 'student_id' in kwargs['initial']:
                 self.fields['student'].initial = kwargs['initial']['student_id']
+
+
+class StudentSearchForm(GTForm, forms.Form):
+    student = forms.ModelMultipleChoiceField(
+        queryset=Student.objects.filter(user__is_active=True, user__is_superuser=False), 
+        label="Usuario", widget=djgentelella.SelectMultiple, required=False
+    )
+
+
+class StudentAdminCreateForm(forms.ModelForm, GTForm):
+    user = forms.ModelChoiceField(
+        queryset=User.objects.filter(is_active=True, is_superuser=False), 
+        label="Usuario", widget=djgentelella.Select, required=True
+    )
+    class Meta:
+        model = Student
+        fields = [
+            'user', 'confirmed_at', 'expired_at'
+        ]
+        widgets = {
+            'confirmed_at': djgentelella.DateInput,
+            'expired_at': djgentelella.DateInput
+        }
+    def __init__(self, *args, **kwargs):
+        super(StudentAdminCreateForm, self).__init__(*args, **kwargs)
+        if 'initial' in kwargs:
+            if 'user_id' in kwargs['initial']:
+                self.fields['user'].initial = kwargs['initial']['user_id']
