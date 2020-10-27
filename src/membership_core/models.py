@@ -49,7 +49,7 @@ class MembershipTemplate(models.Model):
     STATES = (
         ("active", "Activa"),
         ("inactive", "Inactiva"),
-        ("graceperiod", "Periodo de gracia"),
+        ("graceperiod", "Período de gracia"),
     )
     name = models.CharField(max_length=300, verbose_name="Nombre")
     annual_cost = models.FloatField(verbose_name="Costo")
@@ -57,7 +57,7 @@ class MembershipTemplate(models.Model):
                                  verbose_name="Moneda")
     description = models.TextField(null=True, blank=True, verbose_name="Descripción")
     renewal_period = models.ForeignKey(RenewalPeriod, on_delete=models.CASCADE,
-                                       verbose_name="Periodo de renovación")
+                                       verbose_name="Período de renovación")
     state = models.CharField(max_length=15, choices=STATES, default="active",
                              verbose_name="Estado")
 
@@ -74,7 +74,7 @@ class ServiceMT(models.Model):
                                    verbose_name="Membresía", null=True, blank=True)
     servicetype = models.ForeignKey(ServiceType, on_delete=models.DO_NOTHING,
                                     verbose_name="Tipo de servicio")
-    description = models.CharField(max_length=250, verbose_name="Descripción")
+    description = models.CharField(max_length=250, verbose_name="Descripción", default="Sin descripción")
     observations = models.CharField(max_length=500, null=True, blank=True,
                                     verbose_name="Observaciones")
 

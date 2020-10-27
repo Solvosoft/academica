@@ -11,6 +11,9 @@ class OrganizationGModelLookup(BaseSelect2View):
     model = Organization
     fields = ['name', 'initials']
 
+    def get_text_display(self, obj):
+        return str(obj)
+
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(type=False)

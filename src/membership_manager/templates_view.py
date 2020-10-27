@@ -1,11 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
+from django.forms import modelformset_factory
 from django.shortcuts import redirect
 from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, UpdateView
+<<<<<<< HEAD
 from membership_manager.forms import OrganizationAddForm,\
     ContactOrganizationForm, TemplateSearchForm, TemplateAddForm,\
     MembershipServiceForm, TemplateServiceAddForm
@@ -14,6 +16,15 @@ from membership_core.models import MembershipTemplate, ServiceMT, ServiceType
 from membership_manager.models import Organization, Service
 from django.forms import modelformset_factory
 from djgentelella.forms.forms import GTBaseModelFormSet
+=======
+from djgentelella.forms.forms import GTBaseModelFormSet
+
+from membership_core.models import MembershipTemplate
+from membership_core.models import ServiceMT
+from membership_manager.forms import TemplateSearchForm, TemplateAddForm
+from membership_manager.forms import TemplateServiceAddForm
+from membership_manager.utils import add_logentry
+>>>>>>> 94b0b3db5f236cecba2758dbb4ed17ff63e02af1
 
 
 @method_decorator(permission_required('membership_core.view_membershiptemplate'), name='dispatch')
@@ -48,13 +59,14 @@ class TemplateListView(ListView):
 
 @permission_required('membership_core.add_membershiptemplate')
 def create_template(request):
+
     formset = modelformset_factory(
         ServiceMT, form=TemplateServiceAddForm, formset=GTBaseModelFormSet,
         can_delete=True, extra=1, can_order=True)
+
     if request.method == 'POST':
         form = TemplateAddForm(request.POST)
-        fset = formset(
-            request.POST, queryset=Service.objects.none(), prefix="mts")
+        fset = formset(request.POST, queryset=ServiceMT.objects.none(), prefix="mts")
         if form.is_valid() and fset.is_valid():
             template = MembershipTemplate(
                 name=form.cleaned_data['name'],
@@ -65,18 +77,20 @@ def create_template(request):
                 description=form.cleaned_data['description'],
             )
             template.save()
-            add_logentry("membership_core", "membershiptemplate", template.pk, str(template), request.user, 1)
             instances = fset.save(commit=False)
             for instance in instances:
                 instance.membership = template
                 instance.save()
+            add_logentry("membership_core", "membershiptemplate", template.pk, str(template), request.user, 1)
             messages.success(request, "Plantilla registrada con éxito")
             return redirect('templates')
         else:
             messages.error(request, "Error al guardar la plantilla")
     else:
-        fset = formset(queryset=Service.objects.none(), prefix='mts')
+
+        fset = formset(queryset=ServiceMT.objects.none(), prefix='mts')
         form = TemplateAddForm()
+
     context = {
         'form': form,
         'formset': fset
@@ -95,11 +109,47 @@ class EditTemplate(UpdateView):
         context = super().get_context_data(**kwargs)
         template = context['object']
         context['template_form'] = TemplateAddForm(instance=template)
-        context['membershiptemplate'] = template.pk
+        extra = template.servicemt_set.all().count()
+        if extra == 0:
+            extra = 1
+        else:
+            extra = 0
+        formset = modelformset_factory(
+            ServiceMT, form=TemplateServiceAddForm, formset=GTBaseModelFormSet,
+            can_delete=True, extra=extra, can_order=True)
+        if self.request.POST:
+            fset = formset(
+                self.request.POST, queryset=ServiceMT.objects.filter(
+                    membership=template), prefix='mts')
+        else:
+            fset = formset(queryset=ServiceMT.objects.filter(
+                membership=template), prefix='mts')
+        context['formset'] = fset
         return context
 
     def form_valid(self, form):
-        template = form.save(commit=False)
+        template = self.object
+        template.state = form.cleaned_data['state']
+        template.currency = form.cleaned_data['currency']
+        template.annual_cost = form.cleaned_data['annual_cost']
+        template.renewal_period = form.cleaned_data['renewal_period']
+        template.save()
+        formset = modelformset_factory(
+            ServiceMT, form=TemplateServiceAddForm, formset=GTBaseModelFormSet,
+            can_delete=True, extra=1, can_order=True)
+        fset = formset(self.request.POST, queryset=ServiceMT.objects.filter(
+            membership=template), prefix="mts")
+
+        if fset.is_valid():
+            instances = fset.save(commit=False)
+            for delinst in fset.deleted_objects:
+                delinst.delete()
+            for instance in instances:
+                instance.membership = template
+                instance.save()
+        else:
+            messages.error(self.request, "Error al guardar plantilla")
+            return reverse('edit_template', args=(template.pk,))
         add_logentry("membership_core", "membershiptemplate", template.pk, str(template), self.request.user, 2)
         messages.success(self.request, "Plantilla actualizada con éxito")
         return super().form_valid(form)

@@ -65,7 +65,7 @@ class Organization(GeneralContactInfo):
 
     def __str__(self):
         mstr = self.name[:80]
-        if self.initials:
+        if self.initials and self.initials != " ":
             mstr = mstr +' (' + self.initials +')'
 
         return mstr

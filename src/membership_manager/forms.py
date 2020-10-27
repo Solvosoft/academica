@@ -1,11 +1,11 @@
 from ajax_select.fields import AutoCompleteSelectField
 from django import forms
 from django.contrib.auth.models import User, Group
-from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets import core as widget
+from djgentelella.widgets import wysiwyg as djgentelella
 from djgentelella.widgets.selects import AutocompleteSelect
 
 from membership_core.models import MembershipTemplate, Country, ServiceType, SystemCurrency, RenewalPeriod, ServiceMT
@@ -13,8 +13,6 @@ from membership_manager.models import Invoice, ActivityReport
 from membership_manager.models import Membership, Service, Organization, \
     Report, ReportType
 from membership_manager.reports.registro import REPORTES_TITULOS
-from djgentelella.widgets import wysiwyg as djgentelella
-
 from membership_manager.utils import get_contentype_choices
 
 
@@ -431,7 +429,7 @@ class TemplateSearchForm(GTForm, forms.Form):
         required=False, label="Moneda", widget=widget.SelectMultiple,
         queryset=SystemCurrency.objects.all())
     renewal_period = forms.ModelMultipleChoiceField(
-        required=False, label="Perido de renovación", widget=widget.SelectMultiple,
+        required=False, label="Período de renovación", widget=widget.SelectMultiple,
         queryset=RenewalPeriod.objects.all())
 
 
@@ -461,7 +459,5 @@ class TemplateServiceAddForm(GTForm, forms.ModelForm):
             'observations': widget.Textarea,
         }
 
-
 class LogEntryFilterForm(GTForm, forms.Form):
-
     category = forms.ChoiceField(widget=genwidgets.Select, choices=get_contentype_choices(), label="Categoría", required=True)
