@@ -7,24 +7,12 @@ from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, UpdateView
-<<<<<<< HEAD
-from membership_manager.forms import OrganizationAddForm,\
-    ContactOrganizationForm, TemplateSearchForm, TemplateAddForm,\
-    MembershipServiceForm, TemplateServiceAddForm
-from membership_manager.utils import add_logentry
-from membership_core.models import MembershipTemplate, ServiceMT, ServiceType
-from membership_manager.models import Organization, Service
-from django.forms import modelformset_factory
+from membership_manager.forms import OrganizationAddForm, ContactOrganizationForm, MembershipServiceForm
 from djgentelella.forms.forms import GTBaseModelFormSet
-=======
-from djgentelella.forms.forms import GTBaseModelFormSet
-
-from membership_core.models import MembershipTemplate
-from membership_core.models import ServiceMT
+from membership_core.models import MembershipTemplate, ServiceMT
 from membership_manager.forms import TemplateSearchForm, TemplateAddForm
 from membership_manager.forms import TemplateServiceAddForm
 from membership_manager.utils import add_logentry
->>>>>>> 94b0b3db5f236cecba2758dbb4ed17ff63e02af1
 
 
 @method_decorator(permission_required('membership_core.view_membershiptemplate'), name='dispatch')
