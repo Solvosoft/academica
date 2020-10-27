@@ -116,25 +116,20 @@ organization_payments_history.short_description = "Historial de pagos"
 @staff_member_required
 def generate_invoice(request, pk):
     renew = get_object_or_404(MembershipRenew, pk=pk)
-
-    if renew.membership.membership_type != 'Streaming.la':
-        invoice = create_invoice(renew)
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="'+invoice.code+'.pdf"'
-        response.write(invoice.pdf_invoice.read())
-        return response
+    invoice = create_invoice(renew)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="'+invoice.code+'.pdf"'
+    response.write(invoice.pdf_invoice.read())
+    return response
 
 @staff_member_required
 def build_pdf_invoice_view(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk)
-
-    if invoice.membership.membership_type != 'Streaming.la':
-
-        build_pdf_invoice(invoice.membership, invoice)
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="'+invoice.code+'.pdf"'
-        response.write(invoice.pdf_invoice.read())
-        return response
+    build_pdf_invoice(invoice.membership, invoice)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="'+invoice.code+'.pdf"'
+    response.write(invoice.pdf_invoice.read())
+    return response
 
 @method_decorator(staff_member_required, name='dispatch')
 class MembInvoices(ListView):

@@ -16,23 +16,19 @@ def create_invoice(renew, startdate=None, buildpdf=True):
     if startdate is None:
         startdate =  timezone.localdate(timezone.now())
     expiration = startdate + timedelta(days=60)
-
-    if renew.membership.membership_type != 'Streaming.la':
-
-        invoice = Invoice.objects.create(creation_date=timezone.localtime(timezone.now()),
-                                         expiration_date=expiration,
-                                         membership=renew.membership,
-                                         renewal_period=renew,
-                                         description=f'{renew.membership.name} expira al {renew.end_date}. Debe ser pagada.',
-                                         amount=renew.membership.annual_cost,
-                                         currency=renew.membership.currency,
-                                         status='pending')
-        string_code = stringcode_generator()
-        invoice.code = f'%s-%s' % (string_code, str(invoice.pk).rjust(6, "0"))
-        if buildpdf:
-            build_pdf_invoice(renew.membership, invoice)
-
-        return invoice
+    invoice = Invoice.objects.create(creation_date=timezone.localtime(timezone.now()),
+                                     expiration_date=expiration,
+                                     membership=renew.membership,
+                                     renewal_period=renew,
+                                     description=f'{renew.membership.name} expira al {renew.end_date}. Debe ser pagada.',
+                                     amount=renew.membership.annual_cost,
+                                     currency=renew.membership.currency,
+                                     status='pending')
+    string_code = stringcode_generator()
+    invoice.code = f'%s-%s' % (string_code, str(invoice.pk).rjust(6, "0"))
+    if buildpdf:
+        build_pdf_invoice(renew.membership, invoice)
+    return invoice
 
 
 def pay_invoice(invoice):
