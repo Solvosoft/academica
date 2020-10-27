@@ -79,18 +79,19 @@
             //set trigger to collapse the formset content
             $('.formset').on('click', '.btncollapse', function() {
                 if($(this).parent().parent().parent().next().is(':visible')){
-                    $(this).parent().parent().parent().next().hide();   
+                    $(this).parent().parent().parent().next().hide();  
                 }else{
-                    $(this).parent().parent().parent().next().show()
+                    $(this).parent().parent().parent().next().show(); 
                 }
             });
             
             //set trigger to collapse all formset to display the new one.
             $('.formsetadd').click(function(){
-                $('.x_content').hide().last().show();
+                $('.formset .x_content').hide().last().show();
+                 $('.select2-container').width('100%');
             });
 
-            $('.x_content').last().show(); 
+            $('.formset .x_content').last().show(); 
         });
     </script>
 
