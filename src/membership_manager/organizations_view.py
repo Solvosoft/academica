@@ -6,7 +6,7 @@ from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, UpdateView
 
-from membership_manager.forms import OrganizationSearchForm, OrganizationAddForm, ContactOrganizationForm
+from membership_manager.forms import OrganizationSearchForm, OrganizationAddForm, ContactOrganizationForm, ContactsForm
 from membership_manager.models import Organization, Membership
 from membership_manager.utils import add_logentry
 
@@ -45,10 +45,16 @@ def create_organization(request):
 
         # create a new organization object
         form = OrganizationAddForm(request.POST)
+        contactsForm = ContactsForm(request.POST)
 
         # We save the form
         if form.is_valid():
             organization = form.save()
+
+            if contactsForm.is_valid():
+                if contactsForm.cleaned_data['contacts']:
+                    organization.contacts.add(*contactsForm.cleaned_data['contacts'])
+
             add_logentry("membership_manager", "organization", organization.pk, str(organization), request.user, 1)
             messages.success(request, "Organización registrada con éxito")
             return redirect('organizations')
@@ -59,13 +65,14 @@ def create_organization(request):
                 request,
                 "Error al intentar guardar la organización")
 
-    # We display new contact form
-    if request.method == 'GET':
 
+    else:
         form = OrganizationAddForm(initial={'type':False})
+        contactsForm = ContactsForm()
 
     context = {
-        'form': form
+        'form': form,
+        'contactsForm': contactsForm
     }
     return render(request, 'organization/create.html', context=context)
 
@@ -80,9 +87,7 @@ class EditOrganization(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         organization = context['object']
-        context['contact_form'] = ContactOrganizationForm(pk=organization.pk)
-        context['url_contact'] = reverse('api_organization', args=(organization.pk,))
-        context['contact_list'] = [{'pk': x.pk, 'name': str(x)} for x in organization.contacts.all()]
+        context['contactsForm'] = ContactsForm(initial={'contacts': organization.contacts.all()})
         context['organization'] = organization.pk
         return context
 
@@ -95,6 +100,14 @@ class EditOrganization(UpdateView):
             Membership.objects.filter(organization=self.object).update(state="inactive")
 
         organization = form.save()
+
+        contactsForm = ContactsForm(self.request.POST)
+
+        if contactsForm.is_valid():
+            if contactsForm.cleaned_data['contacts']:
+                organization.contacts.remove(*organization.contacts.all())
+                organization.contacts.add(*contactsForm.cleaned_data['contacts'])
+
         add_logentry("membership_manager", "organization", organization.pk, str(organization), self.request.user, 2)
         messages.success(self.request, "Organización actualizada con éxito")
         return super().form_valid(form)

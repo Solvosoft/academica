@@ -1,12 +1,13 @@
 from ajax_select.fields import AutoCompleteSelectField
 from django import forms
+from django.contrib.admin.widgets import AutocompleteSelectMultiple
 from django.contrib.auth.models import User, Group
 from django.urls import reverse
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets import core as widget
 from djgentelella.widgets import wysiwyg as djgentelella
-from djgentelella.widgets.selects import AutocompleteSelect
+from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 
 from membership_core.models import MembershipTemplate, Country, ServiceType, SystemCurrency, RenewalPeriod, ServiceMT
 from membership_manager.models import Invoice, ActivityReport
@@ -463,3 +464,7 @@ class TemplateServiceAddForm(GTForm, forms.ModelForm):
 class LogEntryFilterForm(GTForm, forms.Form):
     category = forms.ChoiceField(widget=genwidgets.Select, choices=get_contentype_choices(), label="Categoría", required=True)
 
+class ContactsForm(GTForm, forms.Form):
+
+    contacts = forms.ModelMultipleChoiceField(widget=AutocompleteSelectMultiple('contactbasename'),
+                                  queryset=Organization.objects.filter(type=True), label="Contactos", required=False)

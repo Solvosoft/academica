@@ -7,24 +7,50 @@
 
 {% block content %}
 <div class="row">
-    <div class='col-md-8 col-md-offset-2 col-xs-12'>
-        <div class="x_panel">
-            <div class="x_title">
-                <h1 class="text-center">Nueva organización</h1>
-                <div class="clearfix"></div>
-            </div>
-            <div class="x_content">
-                <form method="post">
-                    {% csrf_token %}
-                    {{form.as_horizontal}}
-                    <br>
-                    <div class="form-group" style="text-align:center">
-                        <a class="btn btn-danger" type="button" href="{% url 'organizations' %}">Cancelar</a>
-                        <button class="btn btn-success" type="submit">Guardar</button>
-                    </div>
-                </form>
+    <form method="post">
+        <div class='col-md-8'>
+            <div class="x_panel">
+                <div class="x_title">
+                    <h1 class="text-center">Nueva organización</h1>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                        {% csrf_token %}
+                        {{form.as_horizontal}}
+                        <br>
+                        <div class="form-group" style="text-align:center">
+                            <a class="btn btn-danger" type="button" href="{% url 'organizations' %}">Cancelar</a>
+                            <button class="btn btn-success" type="submit">Guardar</button>
+                        </div>
+
+                </div>
             </div>
         </div>
-    </div>
+        <div class='col-md-4'>
+            <div class="x_panel">
+                <div class="x_title">
+                    <h1 class="text-center">Contactos</h1>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    {{contactsForm.contacts}}
+                    {{ contactsForm.contacts.errors }}
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
 {% endblock content %}
+{% block js %}
+<script>
+    $(document).ready(function(){
+
+        //Button add contact
+        bntNewContact = "<div class='text-right' style='margin-top:5px'>"+
+            "<a title='Nuevo contacto' href='/contacts/create'" +
+            " style='font-size:2em' target='_blank'><i class='fa fa-plus-square'></i></a></div>";
+        $('#id_contacts').parent().append(bntNewContact);
+        });
+
+</script>
+{% endblock %}
