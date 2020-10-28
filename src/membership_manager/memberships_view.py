@@ -241,6 +241,7 @@ def create_membership(request):
             m_template = MembershipTemplate.objects.filter(pk=template).first()
 
             form = MembershipForm(initial={
+                'membership_type': m_template.membership_type,
                 'state': m_template.state,
                 'contact_type': 'organization',
                 'currency': m_template.currency,

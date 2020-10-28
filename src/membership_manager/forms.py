@@ -440,6 +440,7 @@ class TemplateAddForm(GTForm, forms.ModelForm):
         fields = '__all__'
         widgets = {
             'name': widget.TextInput,
+            'membership_type': widget.Select,
             'state': widget.Select,
             'renewal_period': widget.Select,
             'annual_cost': widget.NumberInput,
