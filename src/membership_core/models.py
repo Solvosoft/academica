@@ -45,13 +45,23 @@ class ServiceType(models.Model):
         verbose_name = "Servicio"
         verbose_name_plural = "Servicios"
 
+
 class MembershipTemplate(models.Model):
     STATES = (
         ("active", "Activa"),
         ("inactive", "Inactiva"),
         ("graceperiod", "Período de gracia"),
     )
+    TYPES = (("Personal", "Personal"),
+             ("Radial", "Radial"),
+             ("Organizacional", "Organizacional"),
+             ("Global", "Global"),
+             ("Honoraria", "Honoraria"),
+             ('Básica', 'Básica'),
+             ('Streaming.la', 'Streaming.la')
+             )
     name = models.CharField(max_length=300, verbose_name="Nombre")
+    membership_type = models.CharField(max_length=50, choices=TYPES, verbose_name="Tipo de membresía")
     annual_cost = models.FloatField(verbose_name="Costo")
     currency = models.ForeignKey(SystemCurrency, on_delete=models.CASCADE,
                                  verbose_name="Moneda")
@@ -60,6 +70,7 @@ class MembershipTemplate(models.Model):
                                        verbose_name="Período de renovación")
     state = models.CharField(max_length=15, choices=STATES, default="active",
                              verbose_name="Estado")
+    free_membership = models.BooleanField(default=False, verbose_name="¿Membresía gratuita sin factura?")
 
     def __str__(self):
         return self.name

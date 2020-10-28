@@ -7,10 +7,9 @@ from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, UpdateView
+from membership_manager.forms import OrganizationAddForm, ContactOrganizationForm, MembershipServiceForm
 from djgentelella.forms.forms import GTBaseModelFormSet
-
-from membership_core.models import MembershipTemplate
-from membership_core.models import ServiceMT
+from membership_core.models import MembershipTemplate, ServiceMT
 from membership_manager.forms import TemplateSearchForm, TemplateAddForm
 from membership_manager.forms import TemplateServiceAddForm
 from membership_manager.utils import add_logentry
@@ -56,7 +55,6 @@ def create_template(request):
     if request.method == 'POST':
         form = TemplateAddForm(request.POST)
         fset = formset(request.POST, queryset=ServiceMT.objects.none(), prefix="mts")
-
         if form.is_valid() and fset.is_valid():
             template = MembershipTemplate(
                 name=form.cleaned_data['name'],
@@ -65,15 +63,13 @@ def create_template(request):
                 renewal_period=form.cleaned_data['renewal_period'],
                 state=form.cleaned_data['state'],
                 description=form.cleaned_data['description'],
+                free_membership=form.cleaned_data['free_membership'],
             )
             template.save()
-
             instances = fset.save(commit=False)
-
             for instance in instances:
                 instance.membership = template
                 instance.save()
-
             add_logentry("membership_core", "membershiptemplate", template.pk, str(template), request.user, 1)
             messages.success(request, "Plantilla registrada con éxito")
             return redirect('templates')

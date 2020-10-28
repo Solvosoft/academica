@@ -1,18 +1,17 @@
 from dateutil.relativedelta import relativedelta
-from django.db.models import Q
-
-from async_notifications.utils import send_email_from_template
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.contenttypes.models import ContentType
+
+from async_notifications.utils import send_email_from_template
 from membership_manager import renew_utils as renewutils
 from membership_manager import utils
 from membership_manager.invoice_utils import create_invoice
 from membership_manager.models import Membership, MembershipRenew, Invoice
 from membership_manager.render_pdf import generate_invoice, build_pdf_invoice
 from membership_manager.utils import get_emails
-
-from membership_telbot_manager.views import send_notification_message, send_deactivated_message
 from membership_telbot_manager.models import TelGroup
+from membership_telbot_manager.views import send_notification_message, send_deactivated_message
+
 
 def get_telegram_group(membership):
     if membership.organization:
@@ -26,6 +25,7 @@ def notify_invoice_expiration(now):
     total = notify_qset.count()
     dev = ''
     for invoice in notify_qset:
+
         emails=utils.get_emails(invoice.membership)
         delta = invoice.expiration_date - now
         send_email_from_template('notification_mail', emails,
@@ -75,9 +75,9 @@ def generate_renew(now):
             user_id=utils.get_administrative_user(),
             content_type_id=ContentType.objects.get_for_model(membership).pk,
             object_id= membership.pk,
-            object_repr="Periodo de renovación agregado " ,
+            object_repr="Período de renovación agregado " ,
             action_flag=ADDITION,
-            change_message="Periodo de renovación agregado %s %s"%(str(new_renew), str(renew.membership))
+            change_message="Período de renovación agregado %s %s"%(str(new_renew), str(renew.membership))
         )
         dev += "%s %s %d\n"%(str(new_renew), str(renew.membership), membership.annual_cost)
         if membership.annual_cost == 0:
@@ -161,28 +161,32 @@ def membership_deactivating(now):
 
 def membership_deactivating_membership(id_membresia, email=True):
     membership = Membership.objects.get(pk=id_membresia)
-    renews = membership.renews.filter(encobro=True, active=True).order_by('end_date')
-    for renew in renews:
-        invoice = renew.inv_m_renews.first()
-        if not invoice:
-            invoice = create_invoice(renew)
-        generate_invoice(membership, invoice, email_template='expiration_mail',
-                         enqueued=True, send_email=email)
 
-        if membership.organization and email:
-            telgroup = get_telegram_group(membership)
-            if telgroup:
-                send_deactivated_message(telgroup.chat_id, membership.organization)
+    if not membership.free_membership:
+        renews = membership.renews.filter(encobro=True, active=True).order_by('end_date')
+        for renew in renews:
+            invoice = renew.inv_m_renews.first()
+            if not invoice:
+                invoice = create_invoice(renew)
+            generate_invoice(membership, invoice, email_template='expiration_mail',
+                             enqueued=True, send_email=email)
+
+            if membership.organization and email:
+                telgroup = get_telegram_group(membership)
+                if telgroup:
+                    send_deactivated_message(telgroup.chat_id, membership.organization)
 
 def create_invoice_tool(id_renew):
     renew = MembershipRenew.objects.get(pk=id_renew)
     invoice = renew.inv_m_renews.first()
-    if invoice is None:
-        invoice = create_invoice(renew)
-    else:
-        if invoice.pdf_invoice:
-            invoice.pdf_invoice.delete(False)
-    build_pdf_invoice(renew.membership, invoice)
+
+    if not renew.membership.free_membership:
+        if invoice is None:
+            invoice = create_invoice(renew)
+        else:
+            if invoice.pdf_invoice:
+                invoice.pdf_invoice.delete(False)
+        build_pdf_invoice(renew.membership, invoice)
     return invoice
 
 def send_welcome_notification(id_membership):

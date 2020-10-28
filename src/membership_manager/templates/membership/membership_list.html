@@ -187,7 +187,7 @@
                             <div>Renovación: {{membership.renewal_period}}</div>
                             <div>Estado: {% if membership.state == 'active' %} Activa {% else %} Inactiva {% endif %}</div>
                             <div>Número de facturas:{{membership.mem_inv.all.count}}</div>
-                            <div>Fecha de renovación: {% if membership.last_renew %} {{ membership.last_renew|date:"Y-m-d" }} {% else %} ----- {% endif %}</div>
+                            <div>Fecha de renovación: {% if membership.last_renew_start_date %} {{ membership.last_renew_start_date|date:"Y-m-d" }} {% else %} ----- {% endif %}</div>
                             <div>Moneda: {{ membership.currency.currency }}</div>
                             <div>Contactar: 
                                 {% if membership.organization.telgroup.chat_id != "" %}
