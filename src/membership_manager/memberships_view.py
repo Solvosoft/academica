@@ -219,6 +219,11 @@ def create_membership(request):
             )
 
             membership.save()
+
+            if membership.free_membership:
+                membership.last_renew_start_date = membership.creation_date
+                membership.save()
+
             add_logentry("membership_manager", "membership", membership.pk, str(membership), request.user, 1)
 
             if not membership.renews.exists() and not membership.free_membership:
