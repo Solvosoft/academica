@@ -311,3 +311,16 @@ class StudentAdminCreateForm(forms.ModelForm, GTForm):
         if 'initial' in kwargs:
             if 'user_id' in kwargs['initial']:
                 self.fields['user'].initial = kwargs['initial']['user_id']
+
+
+class PageSearchForm(GTForm, forms.Form):
+    slug = forms.CharField(label="Nombre", widget=djgentelella.TextInput, required=False)
+
+
+class PageCreateForm(forms.ModelForm, GTForm):  
+    class Meta:
+        model = Page
+        fields = '__all__'
+        widgets = {
+            'slug': djgentelella.TextInput
+        }

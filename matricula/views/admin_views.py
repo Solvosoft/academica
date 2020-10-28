@@ -6,11 +6,12 @@ Created on 18/10/2020
 '''
 from django.views.generic import ListView, DeleteView
 from django.shortcuts import render, get_object_or_404
-from matricula.models import Category, Course, MenuItem, Period, Group, Enroll, Student
+from matricula.models import Category, Course, MenuItem, Period, Group, Enroll, Student, Page
 from matricula.forms import CategoryCreateForm, CategorySearchForm,\
     CourseSearchForm, CourseCreateForm, MenuItemSearchForm,\
     MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, GroupSearchForm,\
-    EnrollSearchForm, EnrollCreateForm, StudentSearchForm, StudentAdminCreateForm
+    EnrollSearchForm, EnrollCreateForm, StudentSearchForm, StudentAdminCreateForm, PageCreateForm,\
+    PageSearchForm
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -569,7 +570,6 @@ class EnrollDelete(DeleteView):
         return super(EnrollDelete, self).delete(request, *args, **kwargs)
 
 
-
 @method_decorator(permission_required('matricula.view_student'), name='dispatch')
 class StudentList(ListView):
     template_name = "students/student_list.html"
@@ -652,3 +652,84 @@ class StudentDelete(DeleteView):
         user.save()
         messages.success(self.request, self.success_message)
         return super(StudentDelete, self).delete(request, *args, **kwargs)
+
+
+@method_decorator(permission_required('matricula.view_page'), name='dispatch')
+class PageList(ListView):
+    template_name = "pages/page_list.html"
+    model = Page
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(PageList, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.form = PageSearchForm(self.request.GET)
+        self.form.is_valid()
+        if self.form.cleaned_data['slug']:
+            queryset = queryset.filter(slug=self.form.cleaned_data['slug'])
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_search'] = PageSearchForm(self.request.GET)
+        return context
+
+
+@permission_required('matricula.add_page')
+def create_page(request):
+    context = {}
+    if request.method == 'POST':
+        form = PageCreateForm(request.POST)
+        context['form'] = form
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Página guardada con éxito")
+            return HttpResponseRedirect(reverse('pages'))
+        else:
+            messages.error(request, "Error al guardar la página")
+    else:
+        context['form'] = PageCreateForm()
+    return render(request, 'pages/page_create.html', context)
+
+
+@permission_required('matricula.change_page')
+def edit_page(request, pk=None):
+    context = {}
+    if pk is not None:
+        if request.method == "POST":
+            instance = Page.objects.get(pk=pk)
+            form = PageCreateForm(request.POST, instance=instance)
+            if form.is_valid():
+                messages.success(request, "Página guardada con éxito")
+                form.save()
+                return HttpResponseRedirect(reverse('pages'))
+            else:
+                messages.error(request, "Error al actualizar")
+                return render(request, 'pages/page_update.html', {'form': form})
+        else:
+            if request.method == "GET":
+                instance = Page.objects.get(pk=pk)
+                form = PageCreateForm(initial=instance.__dict__)
+                return render(request, 'pages/page_update.html', {'form': form})
+    return HttpResponseRedirect(reverse('pages'))
+
+
+@method_decorator(permission_required('matricula.delete_page'), name='dispatch')
+class PageDelete(DeleteView):
+    model = Page
+    success_url = "/matricula/enrrolment/pages"
+    success_message = "Página eliminada con éxito"
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(PageDelete, self).dispatch(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(PageDelete, self).delete(request, *args, **kwargs)
+
