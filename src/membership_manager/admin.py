@@ -269,7 +269,7 @@ class MemberShipAdmin(AjaxSelectAdmin, admin.ModelAdmin):
     def save_related(self,request, form, formsets, change):
         super(MemberShipAdmin, self).save_related(request, form, formsets, change)
         instance = form.instance
-        if not instance.renews.exists():
+        if not instance.renews.exists() and not instance.free_membership:
             create_renew(instance)
         elif not change:
             today = timezone.localdate(timezone.now())

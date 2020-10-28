@@ -140,6 +140,10 @@ class EditMembership(UpdateView):
         membership.save()
         add_logentry("membership_manager", "membership", membership.pk, str(membership), self.request.user, 2)
 
+        if membership.free_membership:
+            if membership.renews.exists():
+                membership.renews.update(active=False)
+
         formset = modelformset_factory(
             Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
             can_delete=True, extra=1, can_order=True)

@@ -8,7 +8,6 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.db.models import Q
 from django.http import QueryDict
 from django.utils import timezone
 
@@ -89,7 +88,7 @@ def invoice_expiration_filter_queryset(now=None):
             status='pending',
             membership__state="active",
             creation_date__in=dates_list,
-            renewal_period__encobro=True, amount__gt=0 )
+            renewal_period__encobro=True, amount__gt=0, membership__free_membership=False)
     return queryset
 
 
