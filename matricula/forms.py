@@ -25,17 +25,19 @@ class StudentCreateForm(GTForm, forms.ModelForm):
                                       _('Enter a valid username. '
                                         'This value may contain only letters, numbers '
                                         'and @/./+/-/_ characters.'), 'invalid'),
-        ], required=True)
+        ], required=True, widget=djgentelella.TextInput)
     
     first_name = forms.CharField(
         label=_('first name'), max_length=30, required=True,
         widget=djgentelella.TextInput)
-    last_name = forms.CharField(label=_('last name'), max_length=30, required=True)
-    email = forms.EmailField(required=True)
-    password = forms.CharField(widget=forms.PasswordInput(), required=True, label=_("Password"))
-    password_check = forms.CharField(widget=forms.PasswordInput(), required=True, label=_("Repeat password"))
+    last_name = forms.CharField(label=_('last name'), max_length=30, required=True, widget=djgentelella.TextInput)
+    email = forms.EmailField(required=True, widget=djgentelella.EmailMaskInput)
+    password = forms.CharField(required=True, label=_("Password"), widget=djgentelella.PasswordInput)
+    password_check = forms.CharField(widget=djgentelella.PasswordInput, required=True, label=_("Repeat password"))
 
     class Meta:
+        model = Student
+        fields = ['name', 'first_name', 'last_name', 'email', 'password', 'password_check']
         widgets = {
             'last_name': djgentelella.TextInput,
             'email': djgentelella.EmailInput
