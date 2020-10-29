@@ -143,13 +143,14 @@ class CourseList(ListView):
         return super(CourseList, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
-        queryset = Course.objects.all()
-        name = self.request.GET.get('name', None)
-        if name is not None:
-            queryset = queryset.filter(Q(name__icontains=name) | Q(content__icontains=name))
-        category = self.request.GET.get('category', None)
-        if category is not None:
-             queryset = queryset.filter(Q(category__in=category))
+        queryset = super().get_queryset()
+        self.form = CourseSearchForm(self.request.GET)
+        self.form.is_valid()
+        if self.form.cleaned_data['name']:
+            queryset = queryset.filter(Q(name__icontains=self.form.cleaned_data['name']) | 
+            Q(content__icontains=self.form.cleaned_data['name']))
+        if self.form.cleaned_data['category']:
+             queryset = queryset.filter(Q(category__in=self.form.cleaned_data['category']))
         return queryset
 
     def get_context_data(self, **kwargs):

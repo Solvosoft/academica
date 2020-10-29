@@ -108,7 +108,7 @@ class CategorySearchForm(forms.ModelForm, GTForm):
         fields = ['name']
 
 
-class CourseSearchForm(forms.ModelForm, GTForm):  
+class CourseSearchForm(GTForm, forms.Form):  
     name = forms.CharField(
         label='Término de búsqueda', required=False,
         widget=djgentelella.TextInput(
@@ -119,9 +119,6 @@ class CourseSearchForm(forms.ModelForm, GTForm):
     category = forms.ModelMultipleChoiceField(
         queryset=Category.objects.all(), widget=djgentelella.SelectMultiple,
         required=False, label="Categoría")
-    class Meta:
-        model = Course
-        fields = ['name','category']
 
 
 class CourseCreateForm(forms.ModelForm, GTForm):  
