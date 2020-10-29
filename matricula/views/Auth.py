@@ -25,6 +25,8 @@ from django.contrib.auth.models import User
 from simple_email_confirmation.models import EmailAddress, EmailAddressManager
 from datetime import datetime
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
+from django.http import HttpResponseRedirect
 
 
 def create_user(request):
@@ -146,23 +148,23 @@ def recover_password(request):
         key = request.POST.get('key', '')
         id = request.POST.get('id', -1)
         new_pass = request.POST.get('password', '')
-
-    user = get_object_or_404(Student, pk=id)
-    if user.confirmation_key == key:
+    student = get_object_or_404(Student, pk=id)
+    if str(student.key) == str(key):
         if new_pass:
-            user.set_password(new_pass)
-            user.save()
-            message = _("Password changed")
-            form_message = "success"
+            student.user.set_password(new_pass)
+            student.save()
+            student.user.save()
+            return render(request, 'messages.html',
+                          {'message': "La contraseña ha sido cambiada con éxito.",
+                           'mtype': 'success'}
+                          )
         if not new_pass and request.method == 'POST':
-            message = _("Wrong password")
-            form_message = "warning"
-
-        return render(request, 'recover_password.html', {'user': user, 'change': 'form',
+            messages.error(request, _("Wrong password"))
+        return render(request, 'recover_password.html', {'student': student, 'change': 'form',
                                                          'message': message,
                                                          'form_message': form_message})
     else:
-        return render(request, 'recover_password.html', {'user': user, 'change': 'error',
+        return render(request, 'recover_password.html', {'student': student, 'change': 'error',
                                                          'message': _("Wrong confirmation key") 
                                                          })
 
@@ -170,20 +172,21 @@ def recover_password(request):
 @ajax
 def mail_recover_pass(request):
     email = request.POST.get('email', 'no-email')
-    user = Student.objects.filter(email=email)
-    if user.exists():
-        user = user[0]
+    students = Student.objects.filter(user__email__exact=email)
+    if students:
+        student = students[0] 
         mail_body = render_to_string("email_recovery.html",
                 {
                  'url': request.build_absolute_uri(reverse('recover_password')),
-                 'user': user,
+                 'user': student.user,
+                 'student': student
                 })
         send_mail(_('Password recovery'),
                       'Url for recover %s?id=%d&key=%s' % (request.build_absolute_uri(reverse('recover_password')),
-                                               user.pk,
-                                               user.confirmation_key
+                                               student.user.pk,
+                                               student.key
                                                ),
-                      settings.DEFAULT_FROM_EMAIL, [user.email],
+                      settings.DEFAULT_FROM_EMAIL, [student.user.email],
                       html_message=mail_body)
         recover_message_type = 'success'
         recover_message = _('You will recive a message soon, check your email')
@@ -192,8 +195,7 @@ def mail_recover_pass(request):
         recover_message = _('User not found')
 
     return {'inner-fragments': {'#recover_pass': render_to_string('recover.html', context={'recover_message_type': recover_message_type,
-                                 'recover_message': recover_message
-                                 }, context_instance=RequestContext(request))
+                                'recover_message': recover_message})
                         }
             }
 
@@ -225,9 +227,8 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
         if self.request.user.is_superuser:
             return redirect(reverse('home'))
         else:
-            return super(MyModelUpdateView, self).get(request,*args, **kwargs)
-            # context = self.get_context_data(object=self.object)
-            # return self.render_to_response(context)
+            return super(StudentEdit, self).get(request,*args, **kwargs)
+
 
 def login_user(request):
     if not request.user.is_anonymous and not request.user.is_staff:

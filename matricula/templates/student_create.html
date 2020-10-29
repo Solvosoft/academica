@@ -1,41 +1,45 @@
-{% extends 'matricula_base.html'%}
-
-{%block content%}
+{% extends 'gentelella/base.html'%}
 {% load socialaccount static i18n %}
-
-
-<link rel="stylesheet" href="{% static 'css/auth-buttons.css'%}">
-
-
-<div class="panel panel-default">
-  <div class="panel-heading">{% trans 'Sign up by email' %} </div>
-  <div class="panel-body">
-
-<div class="row">
-<div class="table-responsive col-md-6" style="border-right-style: solid;">
-	<h2> {% trans 'Your data' %}</h2>
-	<form method="post" id="{% url 'create_user'%}" class="form">
-		<table class="table table-striped">
-			{% csrf_token %}
-			{{form.as_table}}
-	<td></td><td>
-		<button type="submit" class="btn btn-success" value="Save" >
-		<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
-		{% trans 'Send' %}
-		 </button>
-	</td>
-		</table>
-		
-	</form>
-</div>
-
-<div class="col-md-1"></div>
-<div class="col-md-5" id="recover_pass">
- {% include 'recover.html' %}
-
-</div>
-</div>
-</div>
-</div>
+{% block extra_css%}
+	<link rel="stylesheet" href="{% static 'css/auth-buttons.css'%}">
 {%endblock%}
-
+{%block content%}
+	<h1>Registro de usuarios</h1>
+	<div class="col-md-6">
+		<div class="x_panel">
+			<div class="x_title">
+				<h2 class="green"> {% trans 'Your data' %}</h2>
+				<ul></ul>
+				<div class="clearfix"></div>
+			</div>
+			<div class="x_content">
+				<div class="row">
+					<div>
+						<form method="post" id="{% url 'create_user' %}">
+								{% csrf_token %}
+								{{form.as_table}}
+							<div style="margin-top:10px; text-align:right;">
+								<button type="submit" class="btn btn-success" value="Save" >
+									<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Registar
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6" id="recover_pass">
+		<div class="x_panel">
+			<div class="clearfix"></div>
+			<div class="x_content">
+				{% include 'recover.html' %}
+			</div>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+{%endblock%}
+{% block js %}
+	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
+{% endblock %}
