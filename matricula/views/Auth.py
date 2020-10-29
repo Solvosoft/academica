@@ -228,6 +228,9 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
             return redirect(reverse('home'))
         else:
             return super(StudentEdit, self).get(request,*args, **kwargs)
+    
+    def get_object(self):
+        return self.request.user
 
 
 def login_user(request):
