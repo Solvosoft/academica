@@ -15,7 +15,8 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import auth
 from django.http.response import HttpResponse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.decorators import method_decorator
 from django_ajax.decorators import ajax
 from django.template.loader import render_to_string
 from django.template.context import RequestContext
@@ -196,11 +197,12 @@ def mail_recover_pass(request):
                         }
             }
 
-
+@login_required
 def get_profile(request):
     return redirect(reverse('myprofile', kwargs={'pk': request.user.pk}))
 
 
+@method_decorator(login_required, name='dispatch')
 class StudentEdit(SuccessMessageMixin, UpdateView):
     model = User
     form_class = StudentEditForm
@@ -215,12 +217,19 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
         return context
 
     def get_success_url(self):
-          pk=self.kwargs['pk']
-          return reverse_lazy('myprofile', kwargs={'pk': pk}) 
+        pk=self.kwargs['pk']
+        return reverse_lazy('myprofile', kwargs={'pk': pk}) 
 
+    def get(self, request, *args, **kwargs):
+        # self.object = self.get_object()
+        if self.request.user.is_superuser:
+            return redirect(reverse('home'))
+        else:
+            return super(MyModelUpdateView, self).get(request,*args, **kwargs)
+            # context = self.get_context_data(object=self.object)
+            # return self.render_to_response(context)
 
 def login_user(request):
-
     if not request.user.is_anonymous and not request.user.is_staff:
         messages.info(request, _('Your user have not permission for see this page'))
         return redirect(reverse('index'))

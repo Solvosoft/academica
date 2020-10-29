@@ -21,7 +21,7 @@ from .views.admin_views import CategoryList, create_category,show_category,\
     edit_menuitem, PeriodList, create_period, edit_period, PeriodDelete,\
     GroupList, create_group, edit_group, GroupDelete, EnrollList, create_enroll,\
     edit_enroll, EnrollDelete, StudentList, create_student, edit_student, StudentDelete,\
-    PageList, create_page, edit_page, PageDelete
+    PageList, create_page, edit_page, PageDelete, home
 
 urlpatterns = [
     url('^create_user$', create_user, name="create_user"),
@@ -74,4 +74,5 @@ urlpatterns = [
     url('enrrolment/create_page', create_page, name="create_page"),
     path('enrrolment/delete_page/<int:pk>/', PageDelete.as_view() , name="delete_page"),
     path('enrrolment/edit_page/<int:pk>/', edit_page, name="edit_page"),
+     path('home/', home, name="home"),
 ]

@@ -16,7 +16,7 @@ from matricula.forms import CategoryCreateForm, CategorySearchForm,\
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.utils.decorators import method_decorator
 from django.db.models import Q
 from django.contrib.auth.models import User
@@ -801,3 +801,6 @@ class PageDelete(DeleteView):
         messages.success(self.request, self.success_message)
         return super(PageDelete, self).delete(request, *args, **kwargs)
 
+@login_required
+def home(request):
+    return render(request, 'home.html')
