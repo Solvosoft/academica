@@ -66,11 +66,16 @@
 				<div class="x_content">
 					<div class="row">
 						<div class="col-md-12 col-sm-12 col-xs-12">
-							<ul class="list-unstyled user_data">
-								<li>
-									<strong>here data: </strong> here info
-								</li>
-							</ul>
+							{% for obj in object.multilingualcontent_set.all %}
+								<ul class="list-unstyled user_data">
+									<li><strong>Idioma: </strong>{{obj.language}}</li>
+									<li><strong>Título: </strong>{{obj.title}}</li>
+								</ul>
+							{% empty %}
+								<ul class="list-unstyled user_data">
+									<li><strong>Sin traducciones:</strong></li>
+								</ul>
+							{% endfor %}
 						</div>
 					</div>
 				</div>

@@ -1,0 +1,21 @@
+<div class="x_panel">
+    <div class="x_title">
+        <h2>{{form.title.value|title|truncatechars:30}}</h2>
+        <ul class="nav navbar-right panel_toolbox">
+            {% if formset.can_order %}
+                <li><a class="btndown" title="Mover hacia abajo"><i class="fa fa-chevron-down"></i></a></li>
+                <li><a class="btnup" title="Mover hacia arriba"><i class="fa fa-chevron-up"></i></a></li>
+            {% endif %}
+            <li><a class="btncollapse" title="Expandir/Contraer"><i class="fa fa-eye"></i></a></li>
+            {% if formset.can_delete %}
+                <li><a class="deletebtn" title="Eliminar"><i class="fa fa-close"></i></a></li>
+            {% endif %}
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+        <div class="form-group" style="text-align:center;">
+            {{ form.as_inline}}
+        </div>
+    </div>
+</div>

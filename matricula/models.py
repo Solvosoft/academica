@@ -243,7 +243,7 @@ class MultilingualContent(models.Model):
                                 default=settings.LANGUAGE_CODE,
                                 verbose_name=_("Language"))
     title = models.CharField(max_length=300, null=True, blank=True)
-    content = RichTextField(verbose_name=_("Content"))
+    content = models.TextField(verbose_name=_("Content"))
     page = models.ForeignKey(Page, on_delete=models.CASCADE)
 
     def __str__(self):

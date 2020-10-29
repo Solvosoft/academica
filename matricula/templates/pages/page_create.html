@@ -1,13 +1,12 @@
 {% extends 'gentelella/base.html'%}
 {% load static %}
 {%block content%}
-	<h1>Formulario de Páginas</h1>
-	<div div class="col-sm-12 col-md-10 col-lg-10 col-xs-12 col-md-offset-1">
-		<div class="x_panel">
-			<form method="POST">
+	<form method="POST">
+		<div div class="col-md-4">
+			<h3>Formulario de Páginas</h3>
+			<div class="x_panel">
 				{% csrf_token %}
 				<div class="x_title">
-					<h3 class="green">Formulario Página</h3>
 					<div class="clearfix"></div>
 				</div>
 				<div class="x_content">
@@ -20,8 +19,67 @@
 					</div>
 					<div class="clearfix"></div>
 				</div>
-			</form>
+			</div>
 		</div>
-	</div>
+		<div class="col-md-8">
+			<h3 class="green">Traducciones</h3>
+			<div class="row formset">
+				<div class="col-xs-12 col-sm-12 col-md-12 formlist">
+					{% for form in formset %}
+						{% include 'formset_form.html' %}
+					{% endfor %}
+				</div>
+				<div class="hidden formsetcontrol"
+					data-delete="{% if formset.can_delete %}1{% else %}0{% endif %}"
+					data-order="{% if formset.can_order %}1{% else %}0{% endif %}"
+					data-validate-min="{% if formset.validate_min %}1{% else %}0{% endif %}"
+					data-validate-max="{% if formset.validate_max %}1{% else %}0{% endif %}"
+					data-extra="{{formset.extra}}"  data-prefix="{{formset.prefix}}">
+					{{ formset.management_form }}
+					{% spaceless %}
+					<div class="hidden formsettemplate">
+						<!-- {% include 'formset_form.html' with form=formset.empty_form %} -->
+					</div>
+					{% endspaceless %}
+				</div>
+				<div class="text-right">
+					<button type="button" class="btn btn-primary formsetadd" >Nuevo servicio</button>
+				</div>
+			</div>
+		</div>
+	</form>
 	<div class="clearfix"></div>
+	<style>
+		.formset .x_content{
+			display: none;
+		}
+	</style>
+{%endblock%}
+{%block js%}
+	<script>
+		$(document).ready(function(){
+			//set trigger to update title
+            $('.formset').on('blur', 'input[name$="title"]', function() {
+                title = $(this).val();
+               $(this).parent().parent().parent().parent().find('.x_title h2').html(title);
+            });
+
+            //set trigger to collapse the formset content
+            $('.formset').on('click', '.btncollapse', function() {
+                if($(this).parent().parent().parent().next().is(':visible')){
+                    $(this).parent().parent().parent().next().hide();   
+                }else{
+                    $(this).parent().parent().parent().next().show()
+                }
+            });
+            
+            //set trigger to collapse all formset to display the new one.
+            $('.formsetadd').click(function(){
+                $('.formset .x_content').hide().last().show();
+                $('.select2-container').width('100%');
+            });
+			$('.select2-container').width('100%');
+            $('.formset .x_content').last().show();
+		});
+	</script>
 {%endblock%}

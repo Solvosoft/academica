@@ -6,12 +6,13 @@ Created on 18/10/2020
 '''
 from django.views.generic import ListView, DeleteView
 from django.shortcuts import render, get_object_or_404
-from matricula.models import Category, Course, MenuItem, Period, Group, Enroll, Student, Page
+from matricula.models import Category, Course, MenuItem, Period, Group, Enroll, Student, Page,\
+    MultilingualContent
 from matricula.forms import CategoryCreateForm, CategorySearchForm,\
     CourseSearchForm, CourseCreateForm, MenuItemSearchForm,\
     MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, GroupSearchForm,\
     EnrollSearchForm, EnrollCreateForm, StudentSearchForm, StudentAdminCreateForm, PageCreateForm,\
-    PageSearchForm
+    PageSearchForm, MultilingualContentAddForm
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -19,6 +20,8 @@ from django.contrib.auth.decorators import permission_required
 from django.utils.decorators import method_decorator
 from django.db.models import Q
 from django.contrib.auth.models import User
+from django.forms import modelformset_factory
+from djgentelella.forms.forms import GTForm, GTBaseModelFormSet
 
 
 @method_decorator(permission_required('matricula.view_category'), name='dispatch')
@@ -680,16 +683,26 @@ class PageList(ListView):
 @permission_required('matricula.add_page')
 def create_page(request):
     context = {}
+    formset = modelformset_factory(
+        MultilingualContent, form=MultilingualContentAddForm, formset=GTBaseModelFormSet,
+        can_delete=True, extra=1, can_order=True)
     if request.method == 'POST':
         form = PageCreateForm(request.POST)
+        fset = formset(request.POST, queryset=MultilingualContent.objects.none(), prefix="pags")
         context['form'] = form
-        if form.is_valid():
-            form.save()
+        context['formset'] = fset
+        if form.is_valid() and fset.is_valid():
+            page = form.save()
+            instances = fset.save(commit=False)
+            for instance in instances:
+                instance.page = page
+                instance.save()
             messages.success(request, "Página guardada con éxito")
             return HttpResponseRedirect(reverse('pages'))
         else:
             messages.error(request, "Error al guardar la página")
     else:
+        context['formset'] = formset(queryset=MultilingualContent.objects.none(), prefix='pags')
         context['form'] = PageCreateForm()
     return render(request, 'pages/page_create.html', context)
 
@@ -698,12 +711,34 @@ def create_page(request):
 def edit_page(request, pk=None):
     context = {}
     if pk is not None:
+        page = Page.objects.get(pk=pk)
+        extra = page.multilingualcontent_set.all().count()
+        if extra == 0:
+            extra = 1
+        else:
+            extra = 0
+        formset = modelformset_factory(
+            MultilingualContent, form=MultilingualContentAddForm, formset=GTBaseModelFormSet,
+            can_delete=True, extra=extra, can_order=True)
         if request.method == "POST":
+            fset = formset(
+                request.POST, queryset=MultilingualContent.objects.filter(
+                    page=page), prefix='pags')
             instance = Page.objects.get(pk=pk)
             form = PageCreateForm(request.POST, instance=instance)
             if form.is_valid():
                 messages.success(request, "Página guardada con éxito")
-                form.save()
+                page = form.save()
+                if fset.is_valid():
+                    instances = fset.save(commit=False)
+                    for delinst in fset.deleted_objects:
+                        delinst.delete()
+                    for instance in instances:
+                        instance.page = page
+                        instance.save()
+                else:
+                    messages.error(self.request, "Error al guardar la página")
+                    return reverse('edit_page', args=(template.pk,))
                 return HttpResponseRedirect(reverse('pages'))
             else:
                 messages.error(request, "Error al actualizar")
@@ -711,8 +746,10 @@ def edit_page(request, pk=None):
         else:
             if request.method == "GET":
                 instance = Page.objects.get(pk=pk)
-                form = PageCreateForm(initial=instance.__dict__)
-                return render(request, 'pages/page_update.html', {'form': form})
+                context['form'] = PageCreateForm(initial=instance.__dict__)
+                context['formset'] = formset(queryset=MultilingualContent.objects.filter(
+                page=instance), prefix='pags')
+                return render(request, 'pages/page_update.html', context)
     return HttpResponseRedirect(reverse('pages'))
 
 
