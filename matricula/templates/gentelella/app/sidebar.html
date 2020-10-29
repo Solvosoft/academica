@@ -13,7 +13,7 @@
                     <li>
                         <a>
                             <i class="fa fa-credit-card"></i>
-                            Matricula
+                            Matrícula
                             <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">
@@ -38,16 +38,16 @@
                                 <li><a href="{% url 'enrrolment_courses' %}">Cursos</a></li>
                             {% endif %}
                             {% if perms.matricula.view_course %}
-                                <li><a href="{% url 'menuitems' %}">Elementos del Menú</a></li>
+                                <li><a href="{% url 'menuitems' %}">Elementos del menú</a></li>
                             {% endif %}
                             {% if perms.matricula.view_course %}
                                 <li><a href="{% url 'groups' %}">Grupos</a></li>
                             {% endif %}
                             {% if perms.matricula.view_course %}
-                                <li><a href="{% url 'enrolls' %}">Matriculas</a></li>
+                                <li><a href="{% url 'enrolls' %}">Matrículas</a></li>
                             {% endif %}
                             {% if perms.matricula.view_period %}
-                                <li><a href="{% url 'periods' %}">Periodos</a></li>
+                                <li><a href="{% url 'periods' %}">Períodos</a></li>
                             {% endif %}
                             {% if perms.matricula.view_course %}
                                 <li><a href="{% url 'pages' %}">Páginas</a></li>
