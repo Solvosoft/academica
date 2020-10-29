@@ -555,10 +555,10 @@ def create_enroll(request):
         context['form'] = form
         if form.is_valid():
             form.save()
-            messages.success(request, "Matricula guardada con éxito")
+            messages.success(request, "Matrícula guardada con éxito")
             return HttpResponseRedirect(reverse('enrolls'))
         else:
-            messages.error(request, "Error al guardar Matricula")
+            messages.error(request, "Error al guardar matrícula")
     else:
         context['form'] = EnrollCreateForm()
     return render(request, 'enrolls/enroll_create.html', context)
@@ -572,7 +572,7 @@ def edit_enroll(request, pk=None):
             instance = Enroll.objects.get(pk=pk)
             form = EnrollCreateForm(request.POST, instance=instance)
             if form.is_valid():
-                messages.success(request, "Matricula guardada con éxito")
+                messages.success(request, "Matrícula guardada con éxito")
                 form.save()
                 return HttpResponseRedirect(reverse('enrolls'))
             else:
@@ -590,7 +590,7 @@ def edit_enroll(request, pk=None):
 class EnrollDelete(DeleteView):
     model = Enroll
     success_url = "/matricula/enrrolment/enrolls"
-    success_message = "Matricula eliminada con éxito"
+    success_message = "Matrícula eliminada con éxito"
 
     def dispatch(self, *args, **kwargs):
         """ Permission check for this class """

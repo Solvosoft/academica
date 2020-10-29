@@ -1,7 +1,7 @@
 {% extends 'gentelella/base.html'%}
 {% load static utils %}
 {%block content %}
-	<h1>Matriculas</h1>
+	<h1>Matrículas</h1>
 	<div class="row">
 		{% if perms.matricula.add_enroll %}
 			<div class="col-sm-12 col-xs-12 col-lg-10 col-md-9">
@@ -27,7 +27,7 @@
 		</div>
 		<div class="col-sm-12 col-xs-12 col-lg-2 col-md-3">
 			{% if perms.matricula.add_enroll %}
-				<a class="btn btn-primary" href="{% url 'create_enroll' %}">Crear Matricula</a>
+				<a class="btn btn-primary" href="{% url 'create_enroll' %}">Crear Matrícula</a>
 			{% endif %}
 		</div>
 	</div>
@@ -38,7 +38,7 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title">¿Está segura que desea eliminar esta matricula?</h4>
+						<h4 class="modal-title">¿Está segura que desea eliminar esta matrícula?</h4>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
@@ -90,7 +90,7 @@
 									<strong>¿Matricula finalizada?: </strong>{{object.enroll_finished}}
 								</li>
 								<li>
-									<strong>¿Activa para matricula?: </strong>{{object.enroll_activate}}
+									<strong>¿Activa para matrícula?: </strong>{{object.enroll_activate}}
 								</li>
 							</ul>
 						</div>
