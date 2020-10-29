@@ -6,7 +6,7 @@ Created on 7/4/2015
 @author: luisza
 '''
 from django import forms
-from matricula.models import Student, Page, MenuItem, Category, Course, Period, Group, Enroll, MultilingualContent
+from matricula.models import Student, Page, MenuItem, Category, Course, Period, Group, Enroll, MultilingualContent, MenuTranslations
 from django.utils.translation import ugettext_lazy as _
 from django.core import validators
 from django.contrib.auth.models import User
@@ -166,7 +166,17 @@ class MenuItemCreateForm(forms.ModelForm, GTForm):
             'parent': djgentelella.Select,
             'publicated': djgentelella.YesNoInput,
             'is_index': djgentelella.YesNoInput
+        }
 
+
+class MenuTranslationAddForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = MenuTranslations
+        fields = ['language', 'name']
+
+        widgets = {
+            'language': djgentelella.Select,
+            'name': djgentelella.TextInput,
         }
 
 

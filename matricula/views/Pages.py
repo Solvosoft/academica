@@ -11,9 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class PageDetail(DetailView):
-    # context_object_name = 'obj'
     model = Page
-
     def get_context_data(self, **kwargs):
         context = super(PageDetail, self).get_context_data(**kwargs)
         content = MultilingualContent.objects.filter(page=context['object'],
