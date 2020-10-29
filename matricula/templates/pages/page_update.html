@@ -1,14 +1,14 @@
 {% extends 'gentelella/base.html'%}
 {% load static %}
 {%block content%}
+	<h1>Páginas</h1>
 	<div class="row">
 		<form method="POST">
 			<div class="col-md-4">
-				<h1>Editar Página</h1>
 				<div class="x_panel">
 					{% csrf_token %}
 					<div class="x_title">
-						<h2 class="green">Editar Página</h2>
+						<h2 class="green">Editar página</h2>
 						<ul class="nav navbar-right panel_toolbox">
 						</ul>
 						<div class="clearfix"></div>
@@ -23,8 +23,8 @@
 				</div>
 			</div>
 			<div class="col-md-8">
+				<h2 class="green">Traducciones</h2>
 				<div class="row formset">
-					<h3>Traducciones</h3>
 					<div class="col-xs-12 col-sm-12 col-md-12 formlist">
 						{% for form in formset %}
 							{% include 'formset_form.html' %}
