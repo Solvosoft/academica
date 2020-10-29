@@ -101,7 +101,7 @@ class Group(models.Model):
     )
 
     period = models.ForeignKey(
-        Period, verbose_name=_("Period"), on_delete=models.CASCADE)
+        Period, verbose_name="Período", on_delete=models.CASCADE)
     course = models.ForeignKey(
         Course, verbose_name=_("Course"), on_delete=models.CASCADE)
     name = models.CharField(max_length=50, verbose_name=_("Name"))
