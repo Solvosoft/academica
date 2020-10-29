@@ -22,7 +22,7 @@
                     </li>
                 </ul>
             {% endif %}
-            {% if request.user.is_authenticated%}
+            {% if request.user.is_authenticated and not request.user.student %}
                 <ul class="nav side-menu">
                     <li>
                         <a>
