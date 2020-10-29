@@ -15,7 +15,6 @@ pytz==2016.6.1
 reportlab==3.3.0
 requests==2.11.0
 requests-oauthlib==0.6.2
-six==1.10.0
 webencodings==0.5.1
 xhtml2pdf==0.2.4
 psycopg2==2.8.6

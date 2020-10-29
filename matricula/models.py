@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from simple_email_confirmation.models import AbstractEmailAddress, EmailAddress,\
     SimpleEmailConfirmationUserMixin, EmailAddressManager
 from ckeditor.fields import RichTextField
-from six import python_2_unicode_compatible
 from django.utils.encoding import smart_text
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -39,8 +38,6 @@ class Student(models.Model):
         return self.user.username
     
 
-
-@python_2_unicode_compatible
 class Period(models.Model):
     name = models.CharField(max_length=50, verbose_name=_("Name"))
     start_date = models.DateField(verbose_name=_("Period start date"))
@@ -54,7 +51,6 @@ class Period(models.Model):
         verbose_name_plural = _("Periods")
 
 
-@python_2_unicode_compatible
 class Category(models.Model):
     name = models.CharField(max_length=300, verbose_name=_("Name"))
     description = models.TextField(verbose_name=_("Description"))
@@ -67,7 +63,6 @@ class Category(models.Model):
         verbose_name_plural = _("Categories")
 
 
-@python_2_unicode_compatible
 class Course(models.Model):
     category = models.ForeignKey(
         Category, verbose_name=_("Category"), on_delete=models.CASCADE)
@@ -82,7 +77,6 @@ class Course(models.Model):
         verbose_name_plural = _("Courses")
 
 
-@python_2_unicode_compatible
 class Group(models.Model):
 
     NORMAL = 0
@@ -143,7 +137,6 @@ class Group(models.Model):
         verbose_name_plural = _("Groups")
 
 
-@python_2_unicode_compatible
 class Enroll(models.Model):
     enroll_finished = models.BooleanField(
         default=False, verbose_name=_("Is enroll finished?"))
@@ -167,7 +160,6 @@ class Enroll(models.Model):
         verbose_name_plural = _("Enrollments")
 
 
-@python_2_unicode_compatible
 class MenuItem(models.Model):
     TYPES = (
              (0, _("Internal")),
@@ -211,7 +203,6 @@ class MenuItem(models.Model):
         verbose_name_plural = _("Menu Items")
 
 
-@python_2_unicode_compatible
 class MenuTranslations(models.Model):
     language = models.CharField(max_length=3,
                                 choices=settings.LANGUAGES,
@@ -224,7 +215,6 @@ class MenuTranslations(models.Model):
         return self.name
 
 
-@python_2_unicode_compatible
 class Page(models.Model):
     slug = models.SlugField()
 
@@ -236,7 +226,6 @@ class Page(models.Model):
         verbose_name_plural = _("Pages")
 
 
-@python_2_unicode_compatible
 class MultilingualContent(models.Model):
     language = models.CharField(max_length=3,
                                 choices=settings.LANGUAGES,
