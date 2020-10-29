@@ -8,7 +8,7 @@
 
     <div class="main_menu_side hidden-print main_menu" id="sidebar-menu">
         <div class="menu_section">
-            {% if not request.user.is_superuser%}
+            {% if request.user.student%}
                 <ul class="nav side-menu">
                     <li>
                         <a>
@@ -22,7 +22,7 @@
                     </li>
                 </ul>
             {% endif %}
-            {% if request.user.is_authenticated and not request.user.student %}
+            {% if perms.matricula.view_category or perms.matricula.view_course or perms.matricula.view_menuitem or  perms.matricula.view_group or perms.matricula.view_enroll or perms.matricula.view_period or perms.matricula.view_page or perms.matricula.view_student %}
                 <ul class="nav side-menu">
                     <li>
                         <a>
@@ -37,22 +37,22 @@
                             {% if perms.matricula.view_course %}
                                 <li><a href="{% url 'enrrolment_courses' %}">Cursos</a></li>
                             {% endif %}
-                            {% if perms.matricula.view_course %}
+                            {% if perms.matricula.view_menuitem %}
                                 <li><a href="{% url 'menuitems' %}">Elementos del menú</a></li>
                             {% endif %}
-                            {% if perms.matricula.view_course %}
+                            {% if perms.matricula.view_group %}
                                 <li><a href="{% url 'groups' %}">Grupos</a></li>
                             {% endif %}
-                            {% if perms.matricula.view_course %}
+                            {% if perms.matricula.view_enroll %}
                                 <li><a href="{% url 'enrolls' %}">Matrículas</a></li>
                             {% endif %}
                             {% if perms.matricula.view_period %}
                                 <li><a href="{% url 'periods' %}">Períodos</a></li>
                             {% endif %}
-                            {% if perms.matricula.view_course %}
+                            {% if perms.matricula.view_page %}
                                 <li><a href="{% url 'pages' %}">Páginas</a></li>
                             {% endif %}
-                            {% if perms.matricula.view_course %}
+                            {% if perms.matricula.view_student %}
                                 <li><a href="{% url 'students' %}">Estudiantes</a></li>
                             {% endif %}
                         </ul>
