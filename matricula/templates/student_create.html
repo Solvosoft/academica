@@ -5,7 +5,7 @@
 {%endblock%}
 {%block content%}
 	<h1>Registro de usuarios</h1>
-	<div class="col-md-6">
+	<div class="col-md-8 col-md-offset-2">
 		<div class="x_panel">
 			<div class="x_title">
 				<h2 class="green"> {% trans 'Your data' %}</h2>
@@ -28,15 +28,6 @@
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="col-md-6" id="recover_pass">
-		<div class="x_panel">
-			<div class="clearfix"></div>
-			<div class="x_content">
-				{% include 'recover.html' %}
-			</div>
-		</div>
-		<div class="clearfix"></div>
 	</div>
 {%endblock%}
 {% block js %}
