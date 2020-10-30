@@ -22,7 +22,6 @@ from django.template.loader import render_to_string
 from django.template.context import RequestContext
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.models import User
-from simple_email_confirmation.models import EmailAddress, EmailAddressManager
 from datetime import datetime
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
