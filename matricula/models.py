@@ -1,8 +1,6 @@
 # encoding: utf-8
 from django.db import models
 from django.contrib.auth.models import User
-from simple_email_confirmation.models import AbstractEmailAddress, EmailAddress,\
-    SimpleEmailConfirmationUserMixin, EmailAddressManager
 from ckeditor.fields import RichTextField
 from django.utils.encoding import smart_text
 from django.utils import timezone
