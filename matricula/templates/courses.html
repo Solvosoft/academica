@@ -7,6 +7,11 @@
 	<div class="row">
 		<h1> {% trans 'List of available courses' %} </h1>
 		<div id="group_message"></div>
+		{% if request.user.is_authenticated and not request.user.student %}
+			<div class="text-right">
+				<a class="btn btn-primary" href="{% url 'add_student' %}">Crear estudiante</a>
+			</div>
+		{% endif %}
 		<div class="x_panel">
 			<div class="x_content">
 				{% for pk, course in courses.items %}

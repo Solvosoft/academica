@@ -22,7 +22,7 @@
                 </li>
                 <li></li>
                 <li>
-                    {% if request.user.is_authenticated and group.in_enrollment%}
+                    {% if request.user.is_authenticated and group.in_enrollment and request.user.student %}
                         <a class="btn btn-primary btn-sm" data-href="{% url 'enrollme' group.pk%}"  data-ajax="true">
                             {% if group.flow == group.AUTO_ENROLL%}
                                 {% trans 'Enroll me' %}

@@ -9,7 +9,7 @@ from django.conf.urls import url
 from django.urls import path
 from matricula.views.Auth import recover_password,\
     mail_recover_pass, authenticate, create_user, login_user,\
-    confirm_email, logout, StudentEdit
+    confirm_email, logout, StudentEdit, add_student
 from matricula.views.Courses import list_courses, view_course
 from .admin import admin_site
 from matricula.views.Pages import PageDetail
@@ -25,6 +25,7 @@ from .views.admin_views import CategoryList, create_category,show_category,\
 
 urlpatterns = [
     url('^create_user$', create_user, name="create_user"),
+    url('^add_student$', add_student, name="add_student"),
     url('^login_user$', login_user, name="login_user"),
     url('^confirm_email$', confirm_email, name="confirm_email"),
     url('^authenticate$', authenticate, name="authenticate"),
@@ -74,5 +75,5 @@ urlpatterns = [
     url('enrrolment/create_page', create_page, name="create_page"),
     path('enrrolment/delete_page/<int:pk>/', PageDelete.as_view() , name="delete_page"),
     path('enrrolment/edit_page/<int:pk>/', edit_page, name="edit_page"),
-     path('home/', home, name="home"),
+    path('home/', home, name="home"),
 ]

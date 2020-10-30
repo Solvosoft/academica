@@ -27,6 +27,7 @@ from datetime import datetime
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from django.utils.timezone import now
 
 
 def create_user(request):
@@ -67,6 +68,29 @@ def create_user(request):
         return redirect(reverse('index'))
 
     return render(request, 'student_create.html', {'form': form})
+
+
+@login_required
+def add_student(request):
+    if request.method == 'POST':
+        if not hasattr(request.user, "student"):
+            student = Student(user=request.user, confirmed_at=now())
+            student.save()
+            mail_body = render_to_string("email_confirmation.html",
+                     {
+                      "url": request.build_absolute_uri(reverse('courses')),
+                      "user": request.user,
+                      })
+            send_mail(_('Email confirmation'),
+                      'Url confirmation %s' % (request.build_absolute_uri(reverse('courses')),),
+                      settings.DEFAULT_FROM_EMAIL, [request.user.email],
+                      html_message=mail_body)
+            return render(request, 'messages.html',
+                          {'message': _('Thank you, We will send you an email soon'),
+                           'mtype': 'success'})
+        else:
+            return redirect(reverse('index'))
+    return render(request, 'student_add.html')
 
 
 def confirm_email(request):

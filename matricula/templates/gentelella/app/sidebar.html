@@ -8,20 +8,18 @@
 
     <div class="main_menu_side hidden-print main_menu" id="sidebar-menu">
         <div class="menu_section">
-            {% if request.user.student%}
-                <ul class="nav side-menu">
-                    <li>
-                        <a>
-                            <i class="fa fa-credit-card"></i>
-                            Matrícula
-                            <span class="fa fa-chevron-down"></span>
-                        </a>
-                        <ul class="nav child_menu">
-                            {% show_menu request.user.is_authenticated request.user.is_superuser%}
-                        </ul>
-                    </li>
-                </ul>
-            {% endif %}
+            <ul class="nav side-menu">
+                <li>
+                    <a>
+                        <i class="fa fa-credit-card"></i>
+                        Matrícula
+                        <span class="fa fa-chevron-down"></span>
+                    </a>
+                    <ul class="nav child_menu">
+                        {% show_menu request.user.is_authenticated request.user.student%}
+                    </ul>
+                </li>
+            </ul>
             {% if perms.matricula.view_category or perms.matricula.view_course or perms.matricula.view_menuitem or  perms.matricula.view_group or perms.matricula.view_enroll or perms.matricula.view_period or perms.matricula.view_page or perms.matricula.view_student %}
                 <ul class="nav side-menu">
                     <li>

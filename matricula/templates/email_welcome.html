@@ -1,0 +1,22 @@
+{%load i18n %}
+
+<h1>{% trans 'Welcome to Academica' %}  </h1>
+
+{% trans 'Dear' %}: {{user.get_full_name}},
+
+
+<p>
+Gracias por registrarse en nuestra plataforma de cursos, se confirma que el estudiante ha sido creado, 
+puedes iniciar sesión e inscribirte a cualquiera de nuestros cursos.
+</p>
+<p style="color: #FF0000;">
+
+Accede a los cursos en el siguiente enlace:
+<a href="{{url}}"></a>Acceder</p>
+
+<p>
+{% blocktrans %}if your email service block links  then copy and paste this url in a new tab{% endblocktrans %}
+<br>{{url}}</p> 
+
+<br><br>
+{% trans 'Best regards' %}
