@@ -76,13 +76,13 @@ def add_student(request):
         if not hasattr(request.user, "student"):
             student = Student(user=request.user, confirmed_at=now())
             student.save()
-            mail_body = render_to_string("email_confirmation.html",
+            mail_body = render_to_string("email_welcome.html",
                      {
                       "url": request.build_absolute_uri(reverse('courses')),
                       "user": request.user,
                       })
             send_mail(_('Email confirmation'),
-                      'Url confirmation %s' % (request.build_absolute_uri(reverse('courses')),),
+                      'Url confirmation %s' % (request.build_absolute_uri(reverse('courses'))),
                       settings.DEFAULT_FROM_EMAIL, [request.user.email],
                       html_message=mail_body)
             return render(request, 'messages.html',
@@ -248,8 +248,8 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
 
     def get(self, request, *args, **kwargs):
         # self.object = self.get_object()
-        if self.request.user.is_superuser:
-            return redirect(reverse('home'))
+        if not hasattr(self.request.user, 'student'):
+            return redirect(reverse('courses'))
         else:
             return super(StudentEdit, self).get(request,*args, **kwargs)
     

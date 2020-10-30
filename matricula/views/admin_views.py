@@ -801,7 +801,3 @@ class PageDelete(DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super(PageDelete, self).delete(request, *args, **kwargs)
-
-@login_required
-def home(request):
-    return render(request, 'home.html')
