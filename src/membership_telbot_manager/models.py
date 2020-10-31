@@ -35,3 +35,11 @@ class TelegramUser(models.Model):
         return "%s - %s %s" % (
             self.username,self.first_name,self.last_name
         )
+
+class TelegramNotificationTemplate(models.Model):
+
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(verbose_name="Descripción")
+
+    def __str__(self):
+        return self.name
