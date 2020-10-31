@@ -51,17 +51,23 @@ def enrollme(request, pk):
 
 @login_required
 def list_enroll(request):
-    print(request.user.pk)
-    student = Student.objects.get(pk=request.user.pk)
-    list_enroll = Enroll.objects.filter(student=student, enroll_activate=True, enroll_finished=False,
-      group__enroll_start__lte=timezone.now(),
-      group__enroll_finish__gte=timezone.now()).order_by("-enroll_date")
+    if hasattr(request.user, 'student'):
+        student = Student.objects.get(pk=request.user.pk)
+        list_enroll = Enroll.objects.filter(student=student, enroll_activate=True, enroll_finished=False,
+        group__enroll_start__lte=timezone.now(),
+        group__enroll_finish__gte=timezone.now()).order_by("-enroll_date")
 
-    finished_enroll = Enroll.objects.filter(student=student, enroll_finished=True).order_by("-enroll_date")
+        finished_enroll = Enroll.objects.filter(student=student, enroll_finished=True).order_by("-enroll_date")
 
-    return render(request, 'enroll.html', {'list_enroll': list_enroll,
-                                           'finished_enroll': finished_enroll}
-                  )
+        return render(request, 'enroll.html', {'list_enroll': list_enroll,
+                                            'finished_enroll': finished_enroll,
+                                            'student': True}
+                    )
+    else:
+        return render(request, 'enroll.html', {'list_enroll': Enroll.objects.none(),
+                                            'finished_enroll': Enroll.objects.none(),
+                                            'student': False}
+                    )
 
 
 @login_required

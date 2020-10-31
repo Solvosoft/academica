@@ -1,64 +1,77 @@
 {% extends 'gentelella/base.html'%}
 {%load i18n %}
 {%block content%}
-<div class="x_panel">
-	<h3>{% trans 'List of courses to enroll' %}</h3>
-	{% for enroll in list_enroll%}
-        <div class="x_panel">
-			<!-- end of user messages -->
-			<ul class="messages">
-				<li>
-					<div class="message_date">
-						<h3 class="date text-info green" style="text-align:left;">{{enroll.group.schedule}}</h3>
-						<a class="btn-sm btn-primary" href="{% url 'finish_enroll' enroll.pk %}">
-							{% trans 'Enrollme' %}
-						</a>
-					</div>
-					<div style="margin-left:0" class="message_wrapper">
-						<h4 class="heading green">{{enroll.group }}</h4>
-						<blockquote class="message">{{enroll.group.course.content|striptags|truncatechars:300|safe}}</blockquote>
-						<br />
-					</div>
-					<div class="clearfix"></div>
+	<div class="x_panel">
+		<h3>{% trans 'List of courses to enroll' %}</h3>
+		{% if student %}
+			{% for enroll in list_enroll%}
+				<div class="x_panel">
+					<!-- end of user messages -->
+					<ul class="messages">
+						<li>
+							<div class="message_date">
+								<h3 class="date text-info green" style="text-align:left;">{{enroll.group.schedule}}</h3>
+								<a class="btn-sm btn-primary" href="{% url 'finish_enroll' enroll.pk %}">
+									{% trans 'Enrollme' %}
+								</a>
+							</div>
+							<div style="margin-left:0" class="message_wrapper">
+								<h4 class="heading green">{{enroll.group }}</h4>
+								<blockquote class="message">{{enroll.group.course.content|striptags|truncatechars:300|safe}}</blockquote>
+								<br />
+							</div>
+							<div class="clearfix"></div>
+						</li>
+					</ul>
+					<!-- end of user messages -->
+				</div>
+				<li class="list-group-item">
+					<span class="badge">
+						
+					</span>
+					{{enroll.group }} {{enroll.group.schedule}}
 				</li>
-			</ul>
-			<!-- end of user messages -->
-		</div>
-		<li class="list-group-item">
-			<span class="badge">
-				
-			</span>
-			{{enroll.group }} {{enroll.group.schedule}}
-		</li>
-	{%empty%}
-		<div class="alert alert-info" role="alert">
-			{% trans "You don't have any courses to enroll"%} 
-		</div>
-	{%endfor%}
-</div>
-<div class="x_panel">
-	<h3>{% trans "Enrolled courses"%}</h3>
-	{% for enroll in finished_enroll%}
-		<div class="x_panel">
-			<!-- end of user messages -->
-			<ul class="messages">
-				<li>
-					<div class="message_date">
-						<h3 class="date text-info green">{{enroll.group.schedule}}</h3>
-					</div>
-					<div style="margin-left:0" class="message_wrapper">
-						<h4 class="heading green">{{enroll.group }}</h4>
-						<blockquote class="message">{{enroll.group.course.content|striptags|truncatechars:300|safe}}</blockquote>
-						<br />
-					</div>
-				</li>
-			</ul>
-			<!-- end of user messages -->
-		</div>
-	{%empty%}
-	<div class="alert alert-info" role="alert">
-		{% trans "You don't have any enrolled courses"%}
+			{%empty%}
+				<div class="alert alert-info" role="alert">
+					{% trans "You don't have any courses to enroll"%} 
+				</div>
+			{%endfor%}
+		{%else%}
+			{% if request.user.is_authenticated and not request.user.student %}
+				<div class="text-right">
+					<a class="btn btn-primary" href="{% url 'add_student' %}">Crear estudiante</a>
+				</div>
+			{% endif %}
+			<div class="alert alert-info" role="alert">
+				Usted no cuenta con el rol de estudiante para tomar cursos.
+			</div>
+		{%endif%}
 	</div>
-	{%endfor%}
-</div>
+	{% if student %}
+		<div class="x_panel">
+			<h3>{% trans "Enrolled courses"%}</h3>
+			{% for enroll in finished_enroll%}
+				<div class="x_panel">
+					<!-- end of user messages -->
+					<ul class="messages">
+						<li>
+							<div class="message_date">
+								<h3 class="date text-info green">{{enroll.group.schedule}}</h3>
+							</div>
+							<div style="margin-left:0" class="message_wrapper">
+								<h4 class="heading green">{{enroll.group }}</h4>
+								<blockquote class="message">{{enroll.group.course.content|striptags|truncatechars:300|safe}}</blockquote>
+								<br />
+							</div>
+						</li>
+					</ul>
+					<!-- end of user messages -->
+				</div>
+			{%empty%}
+			<div class="alert alert-info" role="alert">
+				{% trans "You don't have any enrolled courses"%}
+			</div>
+			{%endfor%}
+		</div>
+	{%endif%}
 {%endblock%}
