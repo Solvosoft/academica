@@ -64,7 +64,7 @@ def create_user(request):
         form = StudentCreateForm()
     if request.user.is_authenticated and not request.user.is_staff:
         messages.info(request, _('Your user have not permission for see this page'))
-        return redirect(reverse('index'))
+        return redirect(reverse('courses'))
 
     return render(request, 'student_create.html', {'form': form})
 
@@ -88,7 +88,7 @@ def add_student(request):
                           {'message': _('Thank you, We will send you an email soon'),
                            'mtype': 'success'})
         else:
-            return redirect(reverse('index'))
+            return redirect(reverse('courses'))
     return render(request, 'student_add.html')
 
 
@@ -143,7 +143,7 @@ def authenticate(request):
             },
                 }
 
-    return redirect(reverse('index'))
+    return redirect(reverse('courses'))
 
 
 @login_required
@@ -153,7 +153,7 @@ def logout(request):
         del sistema (la de autenticación)
     '''
     auth.logout(request)
-    return redirect(reverse('index'))
+    return redirect(reverse('courses'))
 
 
 def login(request):
@@ -259,7 +259,7 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
 def login_user(request):
     if not request.user.is_anonymous and not request.user.is_staff:
         messages.info(request, _('Your user have not permission for see this page'))
-        return redirect(reverse('index'))
+        return redirect(reverse('courses'))
 
     else:
         return render(request, 'student_login.html')
