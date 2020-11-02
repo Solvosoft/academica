@@ -91,7 +91,7 @@ class CategoryCreateForm(forms.ModelForm, GTForm):
         fields = '__all__'
         widgets = {
             'name': djgentelella.TextInput(attrs={'placeholder':"Nombre categoría"}),
-            'description': widget.TextareaWysiwyg,
+            'description': djgentelella.Textarea,
         }
 
 
@@ -159,7 +159,7 @@ class MenuItemCreateForm(forms.ModelForm, GTForm):
         widgets = {
             'name': djgentelella.TextInput,
             'type': djgentelella.Select,
-            'description': widget.TextareaWysiwyg,
+            'description': djgentelella.Textarea,
             'require_authentication': djgentelella.YesNoInput,
             'order': djgentelella.NumberInput,
             'parent': djgentelella.Select,
