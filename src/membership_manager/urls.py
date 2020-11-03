@@ -75,4 +75,6 @@ urlpatterns = [
     path('logentry/', base_views.logentry_filter_view, name="logentry_filter"),
     path('logentry/<str:app>/<str:model>/<int:pk>', base_views.logentry_object, name="logentry_object"),
     path('renewals_list/<int:pk>/', memberships_view.renewals_list, name="renewals_list"),
+    path('messagestelegram_list/', base_views.telegram_message_list, name="telegram_message_list"),
+    path('messagestelegram/edit/<int:pk>', base_views.EditTelegramMessage.as_view(), name="edit_telegram_message"),
 ]

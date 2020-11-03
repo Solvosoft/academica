@@ -59,13 +59,17 @@ def create_organization(request):
                     organization.contacts.add(*contactsForm.cleaned_data['contacts'])
 
             if telgroupForm.is_valid():
-                telgroup = TelGroup(
-                    organization=organization,
-                    title=telgroupForm.cleaned_data['title'],
-                    chat_id=telgroupForm.cleaned_data['chat_id'],
-                    invite_link=telgroupForm.cleaned_data['invite_link']
-                )
-                telgroup.save()
+                title = telgroupForm.cleaned_data['title']
+                chat_id = telgroupForm.cleaned_data['chat_id']
+
+                if title and chat_id:
+                    telgroup = TelGroup(
+                        organization=organization,
+                        title=title,
+                        chat_id=chat_id,
+                        invite_link=telgroupForm.cleaned_data['invite_link']
+                    )
+                    telgroup.save()
 
             add_logentry("membership_manager", "organization", organization.pk, str(organization), request.user, 1)
             messages.success(request, "Organización registrada con éxito")
@@ -142,13 +146,17 @@ class EditOrganization(UpdateView):
                telgroup.invite_link = telgroupForm.cleaned_data['invite_link']
                telgroup.save()
            else:
-               telgroup = TelGroup(
-                   organization=organization,
-                   title=telgroupForm.cleaned_data['title'],
-                   chat_id=telgroupForm.cleaned_data['chat_id'],
-                   invite_link=telgroupForm.cleaned_data['invite_link']
-               )
-               telgroup.save()
+               title = telgroupForm.cleaned_data['title']
+               chat_id = telgroupForm.cleaned_data['chat_id']
+
+               if title and chat_id:
+                   telgroup = TelGroup(
+                       organization=organization,
+                       title=title,
+                       chat_id=chat_id,
+                       invite_link=telgroupForm.cleaned_data['invite_link']
+                   )
+                   telgroup.save()
 
 
         add_logentry("membership_manager", "organization", organization.pk, str(organization), self.request.user, 2)
@@ -160,7 +168,14 @@ class EditOrganization(UpdateView):
 def delete_organization(request, pk):
     organization = Organization.objects.filter(pk=pk).first()
 
+
+
     if organization:
+
+        telgroup = TelGroup.objects.filter(organization=organization).first()
+        if telgroup:
+            telgroup.delete()
+
         object_repr = str(organization)
         object_pk = organization.pk
         organization.delete()

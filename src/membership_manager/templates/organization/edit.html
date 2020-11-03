@@ -30,41 +30,6 @@
         <div class='col-md-4'>
             <div class="x_panel">
                 <div class="x_title">
-                    <h1 class="text-center">Grupo de telegram</h1>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="x_content">
-                    <div class="form-group row">
-                      <div class="col-sm-4">
-                        {{ telgroupForm.title.label_tag }}
-                      </div>
-                      <div class="col-sm-8 col-xs-12">
-                        {{telgroupForm.title}}
-                        {{telgroupForm.title.errors}}
-                      </div>
-                  </div>
-                    <div class="form-group row">
-                      <div class="col-sm-4">
-                        {{ telgroupForm.chat_id.label_tag }}
-                      </div>
-                      <div class="col-sm-8 col-xs-12">
-                        {{telgroupForm.chat_id}}
-                        {{telgroupForm.chat_id.errors}}
-                      </div>
-                  </div>
-                    <div class="form-group row">
-                      <div class="col-sm-4">
-                        {{ telgroupForm.invite_link.label_tag }}
-                      </div>
-                      <div class="col-sm-8 col-xs-12">
-                        {{telgroupForm.invite_link}}
-                        {{telgroupForm.invite_link.errors}}
-                      </div>
-                  </div>
-                </div>
-            </div>
-            <div class="x_panel">
-                <div class="x_title">
                     <h1 class="text-center">Contactos</h1>
                     <div class="clearfix"></div>
                 </div>
@@ -72,6 +37,29 @@
                     {{contactsForm.contacts}}
                     {{ contactsForm.contacts.errors }}
                 </div>
+                <a target="_blank" id="show_contacts" style="display:none; text-align: center;"><strong>Ver información de contactos</strong></a>
+            </div>
+            <div class="x_panel">
+                <div class="x_title">
+                    <h1 class="text-center">Grupo de telegram</h1>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    {% include 'field_group.html' with field=telgroupForm.title  %}
+                    {% include 'field_group.html' with field=telgroupForm.chat_id  %}
+                    {% include 'field_group.html' with field=telgroupForm.invite_link  %}
+                </div>
+
+                <h5><strong>Pasos para crear un grupo en telegram</strong></h5>
+
+                <p>1 - En telegram dirijase a la esquina superior izquierda en el menú representado por 3 barras e ingrese en la opción
+                    "Nuevo grupo".</p>
+                <p>2 - Busque y agregue el bot llamado "@snmcs_bot" y todos los miembros que desee incluir en el grupo y presione el boton "Siguiente".</p>
+                <p>3 - Ingrese el nombre del grupo, seguidamente click en el botón "Crear grupo".</p>
+                <p>4 - Escriba el comando "/ayuda" para consultar el Id del grupo.</p>
+                <p>5 - Para conseguir el enlace de invitación ingrese al chat del grupo, de click en el nombre del grupo y podra
+                    observar la opción "Invitar al grupo mediante un enlace"</p>
+
             </div>
         </div>
     </form>
@@ -80,6 +68,30 @@
 
 {% block js %}
 <script>
+
+    function show_contacts(){
+        var contacts = $('#id_contacts').val();
+
+        if(contacts != null){
+            $('#show_contacts').css('display', 'block');
+            var length = contacts.length;
+            url = {% url 'contacts' %} + '?';
+
+            $(contacts).each(function(index,obj){
+
+                if (index === (length - 1)) {
+                    url = url + "contact=" + obj
+                }else{
+                url = url + "contact=" + obj + "&"
+                }
+            });
+
+            $('#show_contacts').attr('href', url);
+        }else{
+            $('#show_contacts').css('display', 'none');
+        }
+    }
+
     $(document).ready(function(){
 
         //Button add contact
@@ -87,7 +99,13 @@
             "<a title='Nuevo contacto' href='/contacts/create'" +
             " style='font-size:2em' target='_blank'><i class='fa fa-plus-square'></i></a></div>";
         $('#id_contacts').parent().append(bntNewContact);
-        });
+
+        show_contacts();
+    });
+
+    $('#id_contacts').on('change', function() {
+        show_contacts();
+    });
 
 </script>
 {% endblock %}
