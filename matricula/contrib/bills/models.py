@@ -5,7 +5,7 @@ from six import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from matricula.models import Student
 
-@python_2_unicode_compatible
+
 class Colon_Exchange(models.Model):
     is_dolar = models.DecimalField(
         max_digits=10, decimal_places=4, verbose_name=_("Amount"))
@@ -14,7 +14,6 @@ class Colon_Exchange(models.Model):
         return "%.4f" % self.is_dolar
 
 
-@python_2_unicode_compatible
 class Bill(models.Model):
     short_description = models.CharField(
         max_length=300, verbose_name=_("Short description"))
