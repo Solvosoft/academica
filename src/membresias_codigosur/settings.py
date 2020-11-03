@@ -111,9 +111,9 @@ WSGI_APPLICATION = 'membresias_codigosur.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'memb2',
-        'USER': 'memb2',
-        'PASSWORD': 'memb2',
+        'NAME': 'codigosur',
+        'USER': 'codigosur',
+        'PASSWORD': 'codigosur',
         'HOST': 'localhost',
         'PORT': '',
     }
