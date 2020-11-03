@@ -140,6 +140,9 @@ class Membership(models.Model):
         verbose_name = "Membresía"
         verbose_name_plural = "Membresías"
         ordering = ('state', 'organization', )
+        permissions = [
+            ("can_show_dashboard", "Can show dashboard"),
+        ]
 
 
 class Service(models.Model):

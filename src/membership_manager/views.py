@@ -33,13 +33,16 @@ def country_stats():
 
 @login_required
 def index(request):
-    context = {'topstat': TopStats(),
-               'vencimientoanual_url': reverse('vencimientoanual-list'),
-               'pagoanual_url': reverse('pagoanual-list'),
-               'countries': country_stats(),
-               'servicios_stats': servicios_stats()
-               }
-    return render(request, 'membership/home.html', context=context)
+    if request.user.has_perm('membership_manager.can_show_dashboard'):
+        context = {'topstat': TopStats(),
+                'vencimientoanual_url': reverse('vencimientoanual-list'),
+                'pagoanual_url': reverse('pagoanual-list'),
+                'countries': country_stats(),
+                'servicios_stats': servicios_stats()
+                }
+        return render(request, 'membership/home.html', context=context)
+    return redirect(reverse('courses'))
+
 
 def email_template(request, pk):
 
