@@ -84,9 +84,8 @@ def add_student(request):
                       'Url confirmation %s' % (request.build_absolute_uri(reverse('courses'))),
                       settings.DEFAULT_FROM_EMAIL, [request.user.email],
                       html_message=mail_body)
-            return render(request, 'messages.html',
-                          {'message': _('Thank you, We will send you an email soon'),
-                           'mtype': 'success'})
+            messages.success(request,_('Thank you, We will send you an email soon'))
+            return redirect(reverse('courses'))
         else:
             return redirect(reverse('courses'))
     return render(request, 'student_add.html')

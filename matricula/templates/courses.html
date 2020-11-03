@@ -8,9 +8,13 @@
 		<h1> {% trans 'List of available courses' %} </h1>
 		<div id="group_message"></div>
 		{% if request.user.is_authenticated and not request.user.student %}
-			<div class="text-right">
-				<a class="btn btn-primary" href="{% url 'add_student' %}">Crear estudiante</a>
-			</div>
+			<form method="post" action="{% url 'add_student' %}">
+				{% csrf_token %}
+				<div class="alert alert-warning alert-dismissible" role="alert">
+					<strong>Advertencia!</strong> Para tomar cursos usted debe tener rol de estudiante. 
+					<button type="submit" class="btn btn-sm btn-primary">Crear</button>
+				</div>
+			</form>
 		{% endif %}
 		<div class="x_panel">
 			<div class="x_content">
@@ -46,13 +50,6 @@
 						No hay cursos disponibles
 					</div>
 				{%endfor%}
-				{% if messages %}
-					<ul class="messages">
-						{% for message in messages %}
-						<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-						{% endfor %}
-					</ul>
-				{% endif %}
 			</div>
 		</div>
 	</div>
