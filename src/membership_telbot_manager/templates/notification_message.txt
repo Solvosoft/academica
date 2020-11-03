@@ -1,7 +1,6 @@
 Pago pendiente:
-Estimado {{organization.name}}
+Estimada {{organization.name}}:
 
-Por este medio se le recuerda que su membresía está próxima a vencer y tiene un pendiente de pago. Sería una pena para Código Sur no poder renovar nuestros servicios, por favor evite esta situación cancelando su deuda antes de la fecha límite.
+Por este medio se le recuerda que su membresía está proxima a vencer y tiene pendiente realizar el pago. Esperamos contar con su apoyo para seguir manteniendo la infraestructura comunitaria donde se encuentran alojados los datos y aplicaciones.
 
-Gracias por seguir con nosotros.
-Codigo Sur
+Gracias por ser parte de CódigoSur
