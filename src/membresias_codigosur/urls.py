@@ -28,6 +28,7 @@ from membership_manager.urls import urlpatterns as url_manager
 from membership_telbot_manager.views import UpdateBot
 from django.conf import settings
 from djgentelella.urls import urlpatterns as djgentelellaurls
+from matricula.urls import urlpatterns as enrollurls
 
 urlpatterns = djgentelellaurls + [
     path('', RedirectView.as_view(url="/home/")),
@@ -46,5 +47,4 @@ urlpatterns = djgentelellaurls + [
             ),
     re_path(r'^markitup/preview/$', login_required(preview_newsletter), name="markitup_preview"),
     url(r'^froala_editor/', include('froala_editor.urls')),
-    ] + url_manager
-
+    ] + url_manager + enrollurls

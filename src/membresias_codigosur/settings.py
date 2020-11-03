@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from django.utils.translation import ugettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,6 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = [c for c in os.getenv('ALLOWED_HOSTS', '').split(',') if DEBUG and c]
 if not ALLOWED_HOSTS:
     ALLOWED_HOSTS=['*']
+SITE_ID = 1
 
 ADMINS = [('support', 'sitio@solvosoft.com') ]
 ASYNC_TEMPLATES_NOTIFICATION = os.path.join(BASE_NOCODE_DIR, 'news_templates/')
@@ -43,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'membership_core',
     'membership_manager',
     'membership_telbot_manager',
@@ -57,6 +60,14 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'django_celery_results',
     'django_celery_beat',
+    'matricula',
+    'matricula.contrib.bills',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
 ]
 
 MIDDLEWARE = [
@@ -99,9 +110,9 @@ WSGI_APPLICATION = 'membresias_codigosur.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'codigosur',
-        'USER': 'codigosur',
-        'PASSWORD': 'codigosur',
+        'NAME': 'memb2',
+        'USER': 'memb2',
+        'PASSWORD': 'memb2',
         'HOST': 'localhost',
         'PORT': '',
     }
@@ -128,11 +139,20 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Set in weeks to academic app
+TOKEN_CONFIRMATION_EXPIRE_DAYS = 15
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
 LANGUAGE_CODE = 'es'
+
+# Set languages to academic app
+LANGUAGES = (
+    ('es', _('Spanish')),
+    ('en', _('English')),
+)
 
 TIME_ZONE = 'America/Costa_Rica'
 
