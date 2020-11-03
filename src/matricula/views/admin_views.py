@@ -475,7 +475,7 @@ def create_group(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Grupo guardado con éxito")
-            return HttpResponseRedirect(reverse('groups'))
+            return HttpResponseRedirect(reverse('groups_enroll'))
         else:
             messages.error(request, "Error al guardar grupo")
     else:
@@ -511,7 +511,7 @@ def edit_group(request, pk=None):
             if form.is_valid():
                 messages.success(request, "Grupo guardado con éxito")
                 form.save()
-                return HttpResponseRedirect(reverse('groups'))
+                return HttpResponseRedirect(reverse('groups_enroll'))
             else:
                 messages.error(request, "Error al actualizar")
                 return render(request, 'groups/group_update.html', {'form': form})
@@ -520,7 +520,7 @@ def edit_group(request, pk=None):
                 instance = Group.objects.get(pk=pk)
                 form = GroupCreateForm(initial=instance.__dict__)
                 return render(request, 'groups/group_update.html', {'form': form})
-    return HttpResponseRedirect(reverse('groups'))
+    return HttpResponseRedirect(reverse('groups_enroll'))
 
 
 @method_decorator(permission_required('matricula.view_enroll'), name='dispatch')
