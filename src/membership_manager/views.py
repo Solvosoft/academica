@@ -198,7 +198,7 @@ def send_telegram_notification(request, pk):
     group = TelGroup.objects.get(organization=organization)
     form = TelegramNotificationTemplateForm(request.POST)
     form.is_valid()
-    template = form.cleaned_data['template']
+    template = form.cleaned_data['template_telegram']
 
     if template:
 
