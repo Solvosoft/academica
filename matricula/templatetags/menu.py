@@ -29,7 +29,7 @@ def insert_in_item(item, menu):
     return dev
 
 
-def get_menu_items(user_auth, is_student):
+def get_menu_items(user_auth):
     # FIXME do cache for this 
     menues = MenuItem.objects.filter(publicated=True).order_by('order')
     no_root = []
@@ -105,8 +105,8 @@ def print_menu_item(request, menues, is_list=False):
 
 
 @register.simple_tag(takes_context=True)
-def show_menu(context, user_auth, is_student):
-    menues = get_menu_items(user_auth, is_student)
+def show_menu(context, user_auth):
+    menues = get_menu_items(user_auth)
     dev = '<ul><li class="nav child_menu">' + print_menu_item(context['request'], menues) + "</li></ul>"
     dev = print_menu_item(context['request'], menues)
     return mark_safe(dev)
