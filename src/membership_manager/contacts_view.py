@@ -9,6 +9,8 @@ from django.views.generic import ListView, UpdateView
 from membership_manager.forms import ContactSearchForm, ContactAddForm
 from membership_manager.models import Organization, Membership
 from membership_manager.utils import add_logentry
+from membership_telbot_manager.forms import TelGroupForm
+from membership_telbot_manager.models import TelGroup
 
 
 @method_decorator(permission_required('membership_manager.view_organization'), name='dispatch')
@@ -45,10 +47,25 @@ def create_contacts(request):
 
         # create a new contact object
         form = ContactAddForm(request.POST)
+        telgroupForm = TelGroupForm(request.POST)
 
         # We save the form and the formset
         if form.is_valid():
             contact = form.save()
+
+            if telgroupForm.is_valid():
+                title = telgroupForm.cleaned_data['title']
+                chat_id = telgroupForm.cleaned_data['chat_id']
+
+                if title and chat_id:
+                    telgroup = TelGroup(
+                        organization=contact,
+                        title=title,
+                        chat_id=chat_id,
+                        invite_link=telgroupForm.cleaned_data['invite_link']
+                    )
+                    telgroup.save()
+
             add_logentry("membership_manager", "organization", contact.pk, str(contact), request.user, 1)
             messages.success(request, "Contacto registrado con éxito")
             return redirect('contacts')
@@ -60,11 +77,13 @@ def create_contacts(request):
                 "Error al intentar guardar el contacto")
 
     # We display new contact form
-    if request.method == 'GET':
+    else:
         form = ContactAddForm(initial={'type':True, 'active': True})
+        telgroupForm = TelGroupForm()
 
     context = {
-        'form': form
+        'form': form,
+        'telgroupForm': telgroupForm
     }
     return render(request, 'contact/create.html', context=context)
 
@@ -80,6 +99,16 @@ class EditContact(UpdateView):
         context = super().get_context_data(**kwargs)
         contact = context['object']
         context['contact'] = contact.pk
+        telgroup = TelGroup.objects.filter(organization=contact).first()
+        if telgroup:
+            telgroupForm = TelGroupForm(initial={'title': telgroup.title,
+                                                 'chat_id': telgroup.chat_id,
+                                                 'invite_link': telgroup.invite_link})
+        else:
+            telgroupForm = TelGroupForm()
+
+        context['telgroupForm'] = telgroupForm
+
         return context
 
     def form_valid(self, form):
@@ -91,6 +120,30 @@ class EditContact(UpdateView):
             Membership.objects.filter(organization=self.object).update(state="inactive")
 
         contact = form.save()
+        telgroupForm = TelGroupForm(self.request.POST)
+
+        if telgroupForm.is_valid():
+           telgroup = TelGroup.objects.filter(organization=contact).first()
+           if telgroup:
+               telgroup.title = telgroupForm.cleaned_data['title']
+               telgroup.chat_id = telgroupForm.cleaned_data['chat_id']
+               telgroup.invite_link = telgroupForm.cleaned_data['invite_link']
+               telgroup.save()
+           else:
+
+               title = telgroupForm.cleaned_data['title']
+               chat_id = telgroupForm.cleaned_data['chat_id']
+
+               if title and chat_id:
+
+                   telgroup = TelGroup(
+                       organization=contact,
+                       title=title,
+                       chat_id=chat_id,
+                       invite_link=telgroupForm.cleaned_data['invite_link']
+                   )
+                   telgroup.save()
+
         add_logentry("membership_manager", "organization", contact.pk, str(contact), self.request.user, 2)
         messages.success(self.request, "Contacto actualizado con éxito")
         return super().form_valid(form)
@@ -101,6 +154,11 @@ def delete_contacts(request, pk):
     contact = Organization.objects.filter(pk=pk).first()
 
     if contact:
+
+        telgroup = TelGroup.objects.filter(organization=contact).first()
+        if telgroup:
+            telgroup.delete()
+
         object_repr = str(contact)
         object_pk = contact.pk
         contact.delete()
