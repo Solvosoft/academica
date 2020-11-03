@@ -2,10 +2,14 @@
 {% load static %}
 {%block content%}
 	<h1>Detalles del Curso</h1>
-	{% if not request.user.student %}
-		<div class="text-right">
-			<a class="btn btn-primary" href="{% url 'add_student' %}">Crear estudiante</a>
-		</div>
+	{% if request.user.is_authenticated and not request.user.student %}
+		<form method="post" action="{% url 'add_student' %}">
+			{% csrf_token %}
+			<div class="alert alert-warning alert-dismissible" role="alert">
+				<strong>Advertencia!</strong> Para tomar cursos usted debe tener rol de estudiante. 
+				<button type="submit" class="btn btn-sm btn-primary">Crear</button>
+			</div>
+		</form>
 	{% endif %}
 	<div id="group_message"></div>
 	<div class="x_panel">
