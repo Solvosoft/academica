@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from matricula.models import Student
 
 
-class Colon_Exchange(models.Model):
+class ColonExchange(models.Model):
     is_dolar = models.DecimalField(
         max_digits=10, decimal_places=4, verbose_name=_("Amount"))
 

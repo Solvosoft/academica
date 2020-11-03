@@ -57,6 +57,25 @@
                     </li>
                 </ul>
             {% endif %}
+            {% if perms.matricula.view_category or perms.matricula.view_course or perms.matricula.view_menuitem or  perms.matricula.view_group or perms.matricula.view_enroll or perms.matricula.view_period or perms.matricula.view_page or perms.matricula.view_student %}
+                <ul class="nav side-menu">
+                    <li>
+                        <a>
+                            <i class="fa fa-credit-card"></i>
+                            Facturas
+                            <span class="fa fa-chevron-down"></span>
+                        </a>
+                        <ul class="nav child_menu">
+                            {% if perms.matricula.view_page %}
+                                <li><a href="{% url 'pages' %}">Intercambio de Moneda</a></li>
+                            {% endif %}
+                            {% if perms.matricula.view_student %}
+                                <li><a href="{% url 'students' %}">Facturas</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                </ul>
+            {% endif %}
         </div>
     </div>
     <div class="sidebar-footer hidden-print hidden-small">

@@ -8,7 +8,7 @@ Created on 17/5/2015
 from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
 from django.shortcuts import render
-from matricula.contrib.bills.models import Bill, Colon_Exchange
+from matricula.contrib.bills.models import Bill, ColonExchange
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 def get_amount(bill):
     if bill.currency == 'CRC':
-        colon = Colon_Exchange.objects.all().first()
+        colon = ColonExchange.objects.all().first()
         return (colon.is_dolar * bill.amount, "USD")
     return (bill.amount, bill.currency)
 
