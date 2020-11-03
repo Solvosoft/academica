@@ -38,13 +38,14 @@
 			{%endfor%}
 		{%else%}
 			{% if request.user.is_authenticated and not request.user.student %}
-				<div class="text-right">
-					<a class="btn btn-primary" href="{% url 'add_student' %}">Crear estudiante</a>
-				</div>
+				<form method="post" action="{% url 'add_student' %}">
+					{% csrf_token %}
+					<div class="alert alert-warning alert-dismissible" role="alert">
+						<strong>Advertencia!</strong> Para tomar cursos usted debe tener rol de estudiante. 
+						<button type="submit" class="btn btn-sm btn-primary">Crear</button>
+					</div>
+				</form>
 			{% endif %}
-			<div class="alert alert-info" role="alert">
-				Usted no cuenta con el rol de estudiante para tomar cursos.
-			</div>
 		{%endif%}
 	</div>
 	{% if student %}
