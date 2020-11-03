@@ -63,17 +63,47 @@
     </div>
 {% endblock content %}
 {% block js %}
-    <script type="text/javascript">
+<script type="text/javascript">
+
+        function set_url_orgacontact(){
+
+            var pk_contact = $('#id_contact').val();
+            var pk_organization = $('#id_organization').val();
+            var radioValue = $('input[name="contact_type"]:checked').val();
+            url_orga = {% url 'organizations' %} + '?organization=';
+            url_contact = {% url 'contacts' %} + '?contact=';
+
+            if(radioValue == 'organization' ){
+
+                if(pk_organization != ''){
+                    $('#show_organization').css('display', 'block');
+                    $('#show_contact').css('display', 'none');
+                    $('#show_organization').attr('href', url_orga+pk_organization);
+                }
+
+            }else{
+
+                if(pk_contact != ''){
+                    $('#show_organization').css('display', 'none');
+                    $('#show_contact').css('display', 'block');
+                    $('#show_contact').attr('href', url_contact+pk_contact);
+                }
+            }
+        }
+
+
         $(document).ready(function(){
             
            //Button add organization
             btnNewOrg = "<div class='text-right' style='margin-top:5px'>"+
+                "<a target='_blank' id='show_organization' style='display:none; text-align: center;'><strong>Ver información de la organización</strong></a>"+
                 "<a title='Nueva organización' href='/organizations/create'" +
                 " style='font-size:2em' target='_blank'><i class='fa fa-plus-square'></i></a></div>";
             $('#id_organization').parent().append(btnNewOrg);
 
             //Button add contact
             bntNewContact = "<div class='text-right' style='margin-top:5px'>"+
+                "<a target='_blank' id='show_contact' style='display:none; text-align: center;'><strong>Ver información del contacto</strong></a>"+
                 "<a title='Nuevo contacto' href='/contacts/create'" +
                 " style='font-size:2em' target='_blank'><i class='fa fa-plus-square'></i></a></div>";
             $('#id_contact').parent().append(bntNewContact);
@@ -100,9 +130,20 @@
             });
 
             $('.formset .x_content').last().show();
-        });
-    </script>
 
+            set_url_orgacontact();
+
+        });
+
+        $('#id_contact').on('change', function() {
+            set_url_orgacontact();
+        });
+
+        $('#id_organization').on('change', function() {
+            set_url_orgacontact();
+        });
+
+    </script>
 
 <script>
 
@@ -116,9 +157,19 @@
     if(radioValue == 'organization' ){
         $("#id_organization").parent().parent().show();
         $("#id_contact").parent().parent().hide();
+        $('#show_contact').css('display', 'none');
+
+        if($('#id_organization').val() != ''){
+            $('#show_organization').css('display', 'block');
+        }
     }else{
         $("#id_organization").parent().parent().hide();
         $("#id_contact").parent().parent().show();
+        $('#show_organization').css('display', 'none');
+
+        if($('#id_contact').val() != ''){
+            $('#show_contact').css('display', 'block');
+        }
     }
 }
 
