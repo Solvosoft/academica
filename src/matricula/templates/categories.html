@@ -1,0 +1,22 @@
+{% extends 'matricula_base.html'%}
+{%load i18n %}
+{%block content%}
+
+<h1 class="text-center"> {% trans 'List of categories with available courses' %} </h1>
+
+<div id="group_message"> </div>
+<ul class="list-group">
+{% for category in categories%}
+
+  <li class="list-group-item">
+  		<a href="{% url 'courses' %}?cat={{category.pk}}" >
+  		<h3 class="list-group-item-heading text-center">{{category.name}}</h3></a>
+  		<br>
+    	<p class="list-group-item-text text-justify">{{category.description|safe}}</p>
+    	<a class= "btn btn-success" href="{% url 'courses' %}?cat={{category.pk}}" > Ver </a>
+  </li>
+
+{%endfor%}
+</ul>
+
+{%endblock content%}

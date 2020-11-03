@@ -1,0 +1,132 @@
+{% extends 'gentelella/base.html'%}
+{% load static utils %}
+{%block content %}
+	<h1>Grupos</h1>
+	<div class="row">
+		{% if perms.matricula.add_course %}
+			<div class="col-sm-12 col-xs-12 col-lg-10 col-md-9">
+		{% else %}
+			<div class="col-sm-12 col-xs-12 col-lg-12 col-md-12">
+		{% endif %}
+			<div class="x_panel">
+				<div class="x_content">
+					<form method="GET">
+						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+							{% include 'field.html' with field=form_search.period %}
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+							{% include 'field.html' with field=form_search.currency %}
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+							{% include 'field.html' with field=form_search.category %}
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+							{% include 'field.html' with field=form_search.open %}
+						</div>
+						<div style="text-align:right">
+							<a href="{% url 'groups' %}" class="btn btn-dark">Limpiar</a>
+							<button class="btn btn-success" type="submit">Buscar</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-12 col-xs-12 col-lg-2 col-md-3">
+			{% if perms.matricula.add_group %}
+				<a class="btn btn-primary" href="{% url 'create_group' %}">Crear Grupo</a>
+			{% endif %}
+		</div>
+	</div>
+	{% if perms.matricula.delete_group %}
+		<!-- modal delete category -->
+		<div id="modaldeleteitem" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">¿Está segura que desea eliminar este grupo?</h4>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+						<a class="btn btn-danger" id="deleteitem">Eliminar</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end delete modal-->
+	{% endif %}
+	{% for object in object_list %}
+		<div class="col-md-6 col-lg-4 col-sm-6 col-xs-12">
+			<div class="x_panel">
+				<div class="x_title">
+					<h2 class="green">{{object.period|safe|striptags}}</h2>
+					<ul class="nav navbar-right panel_toolbox" style="min-width:none;">
+						{% if perms.matricula.change_group %}
+							<li>
+								<a href="{% url 'edit_group' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
+							</li>
+						{% endif %}
+						{% if perms.matricula.delete_menuitem %}
+							<li><a data-url="{% url 'delete_group' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+						{% endif %}
+					</ul>
+					<div class="clearfix"></div>
+				</div>
+				<div class="x_content">
+					<div class="row">
+						<div class="col-md-6 col-sm-6 col-xs-6">
+							<ul class="list-unstyled user_data">
+								<li>
+									<strong>Nombre: </strong>{{object.name}}
+								</li>
+								<li>
+									<strong>Curso: </strong>{{object.course}}
+								</li>
+								<li>
+									<strong>Matricula Inicio: </strong>{{object.enroll_start}}
+								</li>
+								<li>
+									<strong>Matricula Fin: </strong>{{object.enroll_finish}}
+								</li>
+								<li>
+									<strong>Inversión: </strong>{{object.cost}}
+								</li>
+							</ul>
+						</div>
+						<div class="col-md-6 col-sm-6 col-xs-6">
+							<ul class="list-unstyled user_data">
+								<li>
+									<strong>Máximo estudiantes: </strong>{{object.maximum}}
+								</li>
+								<li>
+									<strong>Moneda: </strong>{{object.currency}}
+								</li>
+								<li>
+									<strong>Pre-matricula Inicio: </strong>{{object.pre_enroll_start}}
+								</li>
+								<li>
+									<strong>Pre-matricula Fin: </strong>{{object.pre_enroll_finish}}
+								</li>
+							</ul>
+						</div>
+						<div class='col-md-12'><strong>Flujo del curso: </strong>{{object.FLOWS|index:object.flow|index:1}}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+	<div class="clearfix"></div>
+{%endblock%}
+{% if perms.matricula.delete_menuitem %}
+	{% block js %}
+		<script type="text/javascript">
+			function deleteitem(element){
+				$(function(){
+					$("#deleteitem").attr("href", $(element).data('url'));
+					$("#modaldeleteitem").modal();
+				});
+				return false
+			}
+		</script>
+	{% endblock js%}
+{% endif %}

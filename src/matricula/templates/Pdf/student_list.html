@@ -1,0 +1,71 @@
+{%load i18n %}
+<html>
+<head>
+<style>
+    @page {
+        size: a4 portrait;
+        @frame header_frame {           /* Static Frame */
+            -pdf-frame-content: header_content;
+            left: 50pt; width: 512pt; top: 50pt; height: 40pt;
+        }
+        @frame content_frame {          /* Content Frame */
+            left: 50pt; width: 512pt; top: 90pt; height: 632pt;
+        }
+        @frame footer_frame {           /* Another static Frame */
+            -pdf-frame-content: footer_content;
+            left: 50pt; width: 512pt; top: 772pt; height: 20pt;
+        }
+    }
+    
+    table{
+    	border-bottom-style: solid;
+    	border-bottom-color: #000;
+    }
+    
+    td {
+    	padding: 5px 2px;
+    	text-align: center;
+    }
+    #table_footer{
+    	border-bottom-color: #FFF;
+    }
+    #table_footer_total{
+    	border-bottom-style: solid;
+    	border-bottom-color: blue;
+    }
+</style>
+</head>
+
+<body>
+    <!-- Content for Static Frame 'header_frame' -->
+    <div id="header_content">Academica</div>
+
+    <!-- Content for Static Frame 'footer_frame' -->
+    <div id="footer_content">(c) - page <pdf:pagenumber> of <pdf:pagecount>
+    </div>
+
+    <!-- HTML Content -->
+<table>
+	<tr >
+		<th>{% trans 'Name' %}</th>
+		<th>{% trans 'Email' %}</th>
+		<th></th>
+	</tr>
+{% for enroll in student_list%}
+<tr>
+	<td>{{enroll.student.get_full_name}} </td>
+	<td>{{enroll.student.email}}</td>
+
+</tr>
+{%endfor%}
+
+<tr id="table_footer">
+	<td> </td>
+	<td></td>
+	<td id="table_footer_total"> Total: {{student_list.count}}</td>
+</tr>
+</table>
+
+
+</body>
+</html>

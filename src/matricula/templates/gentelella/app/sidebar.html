@@ -1,0 +1,110 @@
+{% load static menu %}
+<div class="left_col scroll-view">
+    <div class="navbar nav_title" style="border: 0;">
+        <a href="{% url 'courses' %}"  class="site_title">Membresías de Código Sur</a>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="main_menu_side hidden-print main_menu" id="sidebar-menu">
+        <div class="menu_section">
+            <ul class="nav side-menu">
+                <li>
+                    <a>
+                        <i class="fa fa-credit-card"></i>
+                        Matrícula
+                        <span class="fa fa-chevron-down"></span>
+                    </a>
+                    <ul class="nav child_menu">
+                        {% show_menu request.user.is_authenticated%}
+                    </ul>
+                </li>
+            </ul>
+            {% if perms.matricula.view_category or perms.matricula.view_course or perms.matricula.view_menuitem or  perms.matricula.view_group or perms.matricula.view_enroll or perms.matricula.view_period or perms.matricula.view_page or perms.matricula.view_student %}
+                <ul class="nav side-menu">
+                    <li>
+                        <a>
+                            <i class="fa fa-credit-card"></i>
+                            Acádemica
+                            <span class="fa fa-chevron-down"></span>
+                        </a>
+                        <ul class="nav child_menu">
+                            {% if perms.matricula.view_category %}
+                                <li><a href="{% url 'categories' %}">Categorías</a></li>
+                            {% endif %}
+                            {% if perms.matricula.view_course %}
+                                <li><a href="{% url 'enrrolment_courses' %}">Cursos</a></li>
+                            {% endif %}
+                            {% if perms.matricula.view_menuitem %}
+                                <li><a href="{% url 'menuitems' %}">Elementos del menú</a></li>
+                            {% endif %}
+                            {% if perms.matricula.view_group %}
+                                <li><a href="{% url 'groups' %}">Grupos</a></li>
+                            {% endif %}
+                            {% if perms.matricula.view_enroll %}
+                                <li><a href="{% url 'enrolls' %}">Matrículas</a></li>
+                            {% endif %}
+                            {% if perms.matricula.view_period %}
+                                <li><a href="{% url 'periods' %}">Períodos</a></li>
+                            {% endif %}
+                            {% if perms.matricula.view_page %}
+                                <li><a href="{% url 'pages' %}">Páginas</a></li>
+                            {% endif %}
+                            {% if perms.matricula.view_student %}
+                                <li><a href="{% url 'students' %}">Estudiantes</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                </ul>
+            {% endif %}
+            {% if perms.matricula.view_category or perms.matricula.view_course or perms.matricula.view_menuitem or  perms.matricula.view_group or perms.matricula.view_enroll or perms.matricula.view_period or perms.matricula.view_page or perms.matricula.view_student %}
+                <ul class="nav side-menu">
+                    <li>
+                        <a>
+                            <i class="fa fa-credit-card"></i>
+                            Facturas
+                            <span class="fa fa-chevron-down"></span>
+                        </a>
+                        <ul class="nav child_menu">
+                            {% if perms.matricula.view_page %}
+                                <li><a href="{% url 'pages' %}">Intercambio de Moneda</a></li>
+                            {% endif %}
+                            {% if perms.matricula.view_student %}
+                                <li><a href="{% url 'students' %}">Facturas</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+    <div class="sidebar-footer hidden-print hidden-small">
+        {% if request.user.is_authenticated %}
+            <a title="" href="{% url 'profile' %}">
+                <span class="fa fa-user" aria-hidden="true"></span>
+            </a>
+            <a id="fsb_50" title="" href="{% url 'logout' %}">
+                <span class="fa fa-power-off" aria-hidden="true"></span>
+            </a>
+        {% else %}
+            <a title="" href="#">
+                <span class="fa" aria-hidden="true"></span>
+            </a>
+            <a title="" href="#">
+                <span class="fa" aria-hidden="true"></span>
+            </a>
+        {% endif %}
+        <a title="" href="#">
+            <span class="fa fa-expand" aria-hidden="true"></span>
+        </a>
+        <a title="" href="#">
+            <span class="fa fa-eye-slash" aria-hidden="true"></span>
+        </a>
+    </div>
+</div>
+<style>
+    /** Set to the default gentelella color**/
+    h1{
+        color:  #73879C;
+    }
+</style>

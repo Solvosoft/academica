@@ -1,0 +1,38 @@
+{%load i18n %}
+<ul class="stats-overview">
+    {% for group in course.groups%}
+        <div class="course">
+            <li>
+                <span class="name">Groups</span>
+                <span class="value green">{{group.name}}</span>
+            </li>
+            <li>
+                <span class="name">Maximum Students</span>
+                <span class="value green">{{ group.maximum }}</span>
+            </li>
+            <li>
+                <span class="name">Enrrollment</span>
+                <span  id="count_{{group.pk}}" class="value green">{{group.enroll_set.count}}</span>
+            </li>
+            <div style="margin:5px;">
+                <li>
+                    {%if add_schedule%}
+                        <span>{{group.schedule}}</span>
+                    {% endif %}
+                </li>
+                <li></li>
+                <li>
+                    {% if request.user.is_authenticated and group.in_enrollment and request.user.student %}
+                        <a class="btn btn-primary btn-sm" data-href="{% url 'enrollme' group.pk%}"  data-ajax="true">
+                            {% if group.flow == group.AUTO_ENROLL%}
+                                {% trans 'Enroll me' %}
+                            {% else %}
+                                {% trans 'Pre-enroll me' %}
+                            {% endif%}
+                        </a>
+                    {% endif %}
+                </li>
+            </div>
+        </div>
+    {% endfor %}
+</ul>
