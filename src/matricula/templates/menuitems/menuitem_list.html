@@ -1,5 +1,5 @@
 {% extends 'gentelella/base.html'%}
-{% load static utils %}
+{% load static utils membership_code %}
 {%block content %}
 	<h1>Elementos del menú</h1>
 	<div class="row">
@@ -95,6 +95,29 @@
 		</div>
 	{% endfor %}
 	<div class="clearfix"></div>
+	<div class="paginator_container text-center">
+		{% if is_paginated %}
+			<ul class="pagination">
+				{% if paginator.has_previous %}
+					<li><a href="?{% url_replace request 'page' paginator.previous_page_number %}">&laquo;</a></li>
+				{% else %}
+					<li class="disabled"><span>&laquo;</span></li>
+				{% endif %}
+				{% for i in paginator.page_range %}
+					{% if page_obj.number == i %}
+						<li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+					{% else %}
+						<li><a href="?{% url_replace request 'page' i %}">{{ i }}</a></li>
+					{% endif %}
+				{% endfor %}
+				{% if paginator.has_next %}
+					<li><a href="?{% url_replace request 'page' paginator.next_page_number %}">&raquo;</a></li>
+				{% else %}
+					<li class="disabled"><span>&raquo;</span></li>
+				{% endif %}
+			</ul>
+		{% endif %}
+	</div>
 {%endblock%}
 {% if perms.matricula.delete_menuitem %}
 	{% block js %}

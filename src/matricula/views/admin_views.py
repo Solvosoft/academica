@@ -223,6 +223,7 @@ def edit_course(request, pk=None):
 class MenuItemList(ListView):
     template_name = "menuitems/menuitem_list.html"
     model = MenuItem
+    paginate_by = 30
 
     def dispatch(self, *args, **kwargs):
         """ Permission check for this class """
@@ -233,7 +234,7 @@ class MenuItemList(ListView):
         self.form = MenuItemSearchForm(self.request.GET)
         self.form.is_valid()
         if self.form.cleaned_data['name']:
-           queryset = queryset.filter(
+            queryset = queryset.filter(
                 Q(name__icontains=self.form.cleaned_data['name']) | 
                 Q(description__icontains=self.form.cleaned_data['name']))
         if self.form.cleaned_data['parent']:
