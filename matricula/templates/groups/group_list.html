@@ -24,7 +24,7 @@
 							{% include 'field.html' with field=form_search.open %}
 						</div>
 						<div style="text-align:right">
-							<a href="{% url 'groups' %}" class="btn btn-dark">Limpiar</a>
+							<a href="{% url 'groups_enroll' %}" class="btn btn-dark">Limpiar</a>
 							<button class="btn btn-success" type="submit">Buscar</button>
 						</div>
 					</form>
@@ -33,7 +33,7 @@
 		</div>
 		<div class="col-sm-12 col-xs-12 col-lg-2 col-md-3">
 			{% if perms.matricula.add_group %}
-				<a class="btn btn-primary" href="{% url 'create_group' %}">Crear Grupo</a>
+				<a class="btn btn-primary" href="{% url 'create_group_enroll' %}">Crear Grupo</a>
 			{% endif %}
 		</div>
 	</div>
@@ -63,11 +63,11 @@
 					<ul class="nav navbar-right panel_toolbox" style="min-width:none;">
 						{% if perms.matricula.change_group %}
 							<li>
-								<a href="{% url 'edit_group' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
+								<a href="{% url 'edit_group_enroll' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
 							</li>
 						{% endif %}
 						{% if perms.matricula.delete_menuitem %}
-							<li><a data-url="{% url 'delete_group' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+							<li><a data-url="{% url 'delete_group_enroll' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
 						{% endif %}
 					</ul>
 					<div class="clearfix"></div>

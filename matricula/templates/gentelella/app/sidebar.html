@@ -39,7 +39,7 @@
                                 <li><a href="{% url 'menuitems' %}">Elementos del menú</a></li>
                             {% endif %}
                             {% if perms.matricula.view_group %}
-                                <li><a href="{% url 'groups' %}">Grupos</a></li>
+                                <li><a href="{% url 'groups_enroll' %}">Grupos</a></li>
                             {% endif %}
                             {% if perms.matricula.view_enroll %}
                                 <li><a href="{% url 'enrolls' %}">Matrículas</a></li>
