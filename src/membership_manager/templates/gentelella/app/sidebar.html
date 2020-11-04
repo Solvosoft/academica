@@ -196,6 +196,25 @@
                     </li>
                 </ul>
             {% endif %}
+            {% if perms.bills.view_colonexchange %}
+                <ul class="nav side-menu">
+                    <li>
+                        <a>
+                            <i class="fa fa-credit-card"></i>
+                            Facturas
+                            <span class="fa fa-chevron-down"></span>
+                        </a>
+                        <ul class="nav child_menu">
+                            {% if perms.bills.view_colonexchange %}
+                                <li><a href="{% url 'colonexchange' %}">Intercambio de Moneda</a></li>
+                            {% endif %}
+                            {% if perms.bills.view_bill %}
+                                <li><a href="{% url 'listbills' %}">Facturas</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                </ul>
+            {% endif %}
         </div>
     </div>
     <div class="sidebar-footer hidden-print hidden-small">
