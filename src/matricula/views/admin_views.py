@@ -5,7 +5,7 @@ Created on 18/10/2020
 @author: allexiusw
 '''
 from django.views.generic import ListView, DeleteView
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from matricula.models import Category, Course, MenuItem, Period, Group, Enroll, Student, Page,\
     MultilingualContent, MenuTranslations
 from matricula.forms import CategoryCreateForm, CategorySearchForm,\
@@ -16,12 +16,12 @@ from matricula.forms import CategoryCreateForm, CategorySearchForm,\
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
-from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import permission_required
 from django.utils.decorators import method_decorator
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.forms import modelformset_factory
-from djgentelella.forms.forms import GTForm, GTBaseModelFormSet
+from djgentelella.forms.forms import GTBaseModelFormSet
 from django.core.paginator import Paginator
 
 
@@ -90,7 +90,7 @@ class CategoryDelete(DeleteView):
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
-    
+
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super(CategoryDelete, self).delete(request, *args, **kwargs)
@@ -98,7 +98,6 @@ class CategoryDelete(DeleteView):
 
 @permission_required('matricula.change_category')
 def edit_category(request, pk=None):
-    context = {}
     categories = Category.objects.all()
     paginator = Paginator(categories, 30)
     page_number = request.GET.get('page') or 1
@@ -145,10 +144,11 @@ class CourseList(ListView):
         self.form = CourseSearchForm(self.request.GET)
         self.form.is_valid()
         if self.form.cleaned_data['name']:
-            queryset = queryset.filter(Q(name__icontains=self.form.cleaned_data['name']) | 
-            Q(content__icontains=self.form.cleaned_data['name']))
+            queryset = queryset.filter(
+                Q(name__icontains=self.form.cleaned_data['name']) |
+                Q(content__icontains=self.form.cleaned_data['name']))
         if self.form.cleaned_data['category']:
-             queryset = queryset.filter(Q(category__in=self.form.cleaned_data['category']))
+            queryset = queryset.filter(Q(category__in=self.form.cleaned_data['category']))
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -190,7 +190,7 @@ class CourseDelete(DeleteView):
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
-    
+
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super(CourseDelete, self).delete(request, *args, **kwargs)
@@ -198,7 +198,6 @@ class CourseDelete(DeleteView):
 
 @permission_required('matricula.change_course')
 def edit_course(request, pk=None):
-    context = {}
     if pk is not None:
         if request.method == "POST":
             course = Course.objects.get(pk=pk)
@@ -392,7 +391,7 @@ class PeriodDelete(DeleteView):
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
-    
+
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super(PeriodDelete, self).delete(request, *args, **kwargs)
@@ -490,7 +489,7 @@ class GroupDelete(DeleteView):
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
-    
+
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super(GroupDelete, self).delete(request, *args, **kwargs)
@@ -498,7 +497,6 @@ class GroupDelete(DeleteView):
 
 @permission_required('matricula.change_group')
 def edit_group(request, pk=None):
-    context = {}
     if pk is not None:
         if request.method == "POST":
             instance = Group.objects.get(pk=pk)
@@ -563,7 +561,6 @@ def create_enroll(request):
 
 @permission_required('matricula.change_enroll')
 def edit_enroll(request, pk=None):
-    context = {}
     if pk is not None:
         if request.method == "POST":
             instance = Enroll.objects.get(pk=pk)
@@ -655,12 +652,14 @@ def edit_student(request, pk=None):
                 return HttpResponseRedirect(reverse('students'))
             else:
                 messages.error(request, "Error al actualizar")
-                return render(request, 'students/student_update.html', {'form': form})
+                return render(
+                    request, 'students/student_update.html', {'form': form})
         else:
             if request.method == "GET":
                 instance = Student.objects.get(pk=pk)
                 form = StudentAdminCreateForm(initial=instance.__dict__)
-                return render(request, 'students/student_update.html', {'form': form})
+                return render(
+                    request, 'students/student_update.html', {'form': form})
     return HttpResponseRedirect(reverse('students'))
 
 
@@ -676,11 +675,11 @@ class StudentDelete(DeleteView):
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
-    
+
     def delete(self, request, *args, **kwargs):
         student = self.get_object()
         user = User.objects.get(pk=student.user.pk)
-        user.is_active=False
+        user.is_active = False
         user.save()
         messages.success(self.request, self.success_message)
         return super(StudentDelete, self).delete(request, *args, **kwargs)
@@ -767,8 +766,8 @@ def edit_page(request, pk=None):
                         instance.page = page
                         instance.save()
                 else:
-                    messages.error(self.request, "Error al guardar la página")
-                    return reverse('edit_page', args=(template.pk,))
+                    messages.error(request, "Error al guardar la página")
+                    return reverse('edit_page', args=(page.pk,))
                 return HttpResponseRedirect(reverse('pages'))
             else:
                 messages.error(request, "Error al actualizar")
@@ -777,8 +776,8 @@ def edit_page(request, pk=None):
             if request.method == "GET":
                 instance = Page.objects.get(pk=pk)
                 context['form'] = PageCreateForm(initial=instance.__dict__)
-                context['formset'] = formset(queryset=MultilingualContent.objects.filter(
-                page=instance), prefix='pags')
+                context['formset'] = formset(
+                    queryset=MultilingualContent.objects.filter(page=instance), prefix='pags')
                 return render(request, 'pages/page_update.html', context)
     return HttpResponseRedirect(reverse('pages'))
 
@@ -795,7 +794,7 @@ class PageDelete(DeleteView):
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
-    
+
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super(PageDelete, self).delete(request, *args, **kwargs)
