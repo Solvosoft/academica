@@ -595,7 +595,7 @@ class EnrollDelete(DeleteView):
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
-    
+
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super(EnrollDelete, self).delete(request, *args, **kwargs)
@@ -605,6 +605,7 @@ class EnrollDelete(DeleteView):
 class StudentList(ListView):
     template_name = "students/student_list.html"
     model = Student
+    paginate_by = 30
 
     def dispatch(self, *args, **kwargs):
         """ Permission check for this class """
