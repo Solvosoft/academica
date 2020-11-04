@@ -178,16 +178,6 @@ def create_course(request):
     return render(request, 'courses/course_create.html', context)
 
 
-@permission_required('matricula.view_course')
-def show_course(request, pk=None):
-    context = {}
-    if pk is not None:
-        course = Course.objects.get(pk=pk)
-        return render(request, 'courses/course_show.html', {
-                                'object': course,})
-    return HttpResponseRedirect(reverse(request, 'enrrolment_courses'))
-
-
 @method_decorator(permission_required('matricula.delete_course'), name='dispatch')
 class CourseDelete(DeleteView):
     model = Course

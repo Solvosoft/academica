@@ -54,11 +54,8 @@
 			<div class="col-md-6 col-lg-4 col-sm-12">
 				<div class="x_panel">
 					<div class="x_title">
-						<h2>{{course.name}}</h2>
+						<h2 class="green">{{course.name}}</h2>
 						<ul class="nav navbar-right panel_toolbox">
-							<li>
-								<a href="{% url 'show_course' course.pk %}" class="none-link"><i class="fa fa-eye"></i></a>
-							</li>
 							{% if perms.matricula.change_course %}
 								<li>
 									<a href="{% url 'edit_course' course.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
@@ -69,6 +66,16 @@
 							{% endif %}
 						</ul>
 						<div class="clearfix"></div>
+					</div>
+					<div class="x_content">
+						<ul class="list-unstyled user_data">
+							<li>
+								<strong>Categoría: </strong>{{course.category.name}}
+							</li>
+							<li>
+								<strong>Contenido: </strong>{{course.content|safe|striptags}}
+							</li>
+						</ul>
 					</div>
 				</div>
 			</div>
