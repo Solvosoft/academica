@@ -3,7 +3,7 @@
 {%block content %}
 	<h1>Facturas</h1>
 	<div class="row">
-		{% if perms.matricula.add_course %}
+		{% if perms.bills.add_bill %}
 			<div class="col-sm-12 col-xs-12 col-lg-10 col-md-9">
 		{% else %}
 			<div class="col-sm-12 col-xs-12 col-lg-12 col-md-12">
@@ -26,12 +26,12 @@
 			</div>
 		</div>
 		<div class="col-sm-12 col-xs-12 col-lg-2 col-md-3">
-			{% if perms.matricula.add_group %}
+			{% if perms.bills.add_bill %}
 				<a class="btn btn-primary" href="{% url 'create_bill' %}">Crear Factura</a>
 			{% endif %}
 		</div>
 	</div>
-	{% if perms.matricula.delete_group %}
+	{% if perms.bills.delete_bill %}
 		<!-- modal delete category -->
 		<div id="modaldeleteitem" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
 			<div class="modal-dialog" role="document">
