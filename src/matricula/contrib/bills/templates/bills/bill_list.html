@@ -50,10 +50,16 @@
 		<!-- end delete modal-->
 	{% endif %}
 	{% for object in object_list %}
-		<div class="col-md-6 col-lg-4 col-sm-6 col-xs-12">
+		<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
 			<div class="x_panel">
 				<div class="x_title">
-					<h2 class="green">{{object.short_description}}</h2>
+					<h2 class="green">
+						{%if object.student.user.first_name or object.student.user.last_name%}
+							{{object.student.user.first_name}} {{object.student.user.last_name}}
+						{%else%}
+							{{object.student}}
+						{%endif%}
+					</h2>
 					<ul class="nav navbar-right panel_toolbox" style="min-width:none;">
 						{% if perms.bills.change_bill %}
 							<li>
@@ -71,13 +77,13 @@
 						<div class="col-md-6 col-sm-6 col-xs-6">
 							<ul class="list-unstyled user_data">
 								<li>
+									<strong>Descripción: </strong>{{object.short_description}}
+								</li>
+								<li>
 									<strong>Monto: </strong>{{object.amount}}
 								</li>
 								<li>
 									<strong>Estudiante: </strong>{{object.student.user.first_name}} {{object.student.user.last_name}}
-								</li>
-								<li>
-									<strong>Pagada: </strong>{% if object.is_paid %}Si{%else%}No{%endif%}
 								</li>
 							</ul>
 						</div>
@@ -88,6 +94,9 @@
 								</li>
 								<li>
 									<strong>Id de la transación: </strong>{% if object.transaction_id %}{{object.transaction_id}}{%else%}No especificado{%endif%}
+								</li>
+								<li>
+									<strong>Pagada: </strong>{% if object.is_paid %}Si{%else%}No{%endif%}
 								</li>
 							</ul>
 						</div>
