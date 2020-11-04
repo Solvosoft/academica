@@ -164,7 +164,7 @@ class MenuItem(models.Model):
              (1, _("Page")),
              (2, _("Do not used "))
              )
-    name = models.CharField(max_length=50, verbose_name=_("Name"))
+    name = models.CharField(max_length=50, verbose_name="Nombre")
     type = models.SmallIntegerField(
         choices=TYPES, default=0, verbose_name=_("Type"))
     description = models.CharField(
@@ -180,18 +180,7 @@ class MenuItem(models.Model):
     is_index = models.BooleanField(default=False, verbose_name=_("Index page"))
 
     def get_title_menu(self, request):
-        name = MenuTranslations.objects.filter(
-            menu=self, language=request.LANGUAGE_CODE)
-        if not name:
-            name = MenuTranslations.objects.filter(
-                menu=self, language=settings.LANGUAGE_CODE)
-
-        if not name:
-            name = self.description
-        else:
-            name = name[0].name
-
-        return name
+        return self.description
 
     def __str__(self):
         return strip_tags(self.description)
@@ -199,18 +188,6 @@ class MenuItem(models.Model):
     class Meta:
         verbose_name = _("Menu Item")
         verbose_name_plural = _("Menu Items")
-
-
-class MenuTranslations(models.Model):
-    language = models.CharField(max_length=3,
-                                choices=settings.LANGUAGES,
-                                default=settings.LANGUAGE_CODE,
-                                verbose_name=_("Language"))
-    name = models.CharField(max_length=50, verbose_name=_("Description"))
-    menu = models.ForeignKey(MenuItem, null=True, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.name
 
 
 class Page(models.Model):

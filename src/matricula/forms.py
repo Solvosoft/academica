@@ -6,7 +6,7 @@ Created on 7/4/2015
 @author: luisza
 '''
 from django import forms
-from matricula.models import Student, Page, MenuItem, Category, Course, Period, Group, Enroll, MultilingualContent, MenuTranslations
+from matricula.models import Student, Page, MenuItem, Category, Course, Period, Group, Enroll, MultilingualContent
 from django.utils.translation import ugettext_lazy as _
 from django.core import validators
 from django.contrib.auth.models import User
@@ -168,24 +168,13 @@ class MenuItemCreateForm(forms.ModelForm, GTForm):
         }
 
 
-class MenuTranslationAddForm(GTForm, forms.ModelForm):
-    class Meta:
-        model = MenuTranslations
-        fields = ['language', 'name']
-
-        widgets = {
-            'language': djgentelella.Select,
-            'name': djgentelella.TextInput,
-        }
-
-
-class PeriodSearchForm(GTForm, forms.Form):  
+class PeriodSearchForm(GTForm, forms.Form):
     name = forms.CharField(
         required=False, widget=djgentelella.TextInput,
         label="Nombre")
 
 
-class PeriodCreateForm(forms.ModelForm, GTForm):  
+class PeriodCreateForm(forms.ModelForm, GTForm):
     class Meta:
         model = Period
         fields = '__all__'
@@ -201,7 +190,6 @@ class PeriodCreateForm(forms.ModelForm, GTForm):
         if finish_date < start_date:
             msg = u"La fecha final es menor a la inicial"
             self._errors["finish_date"] = self.error_class([msg])
-
 
 
 class GroupSearchForm(GTForm, forms.Form):
@@ -253,6 +241,7 @@ class GroupCreateForm(forms.ModelForm, GTForm):
             'flow': djgentelella.Select
 
         }
+
     def __init__(self, *args, **kwargs):
         super(GroupCreateForm, self).__init__(*args, **kwargs)
         if 'initial' in kwargs:
@@ -285,6 +274,7 @@ class EnrollCreateForm(forms.ModelForm, GTForm):
             'enroll_finished': djgentelella.YesNoInput,
             'enroll_activate': djgentelella.YesNoInput
         }
+
     def __init__(self, *args, **kwargs):
         super(EnrollCreateForm, self).__init__(*args, **kwargs)
         if 'initial' in kwargs:
@@ -306,6 +296,7 @@ class StudentAdminCreateForm(forms.ModelForm, GTForm):
         queryset=User.objects.filter(is_active=True, is_superuser=False), 
         label="Usuario", widget=djgentelella.Select, required=True
     )
+
     class Meta:
         model = Student
         fields = [
@@ -315,6 +306,7 @@ class StudentAdminCreateForm(forms.ModelForm, GTForm):
             'confirmed_at': djgentelella.DateInput,
             'expired_at': djgentelella.DateInput
         }
+
     def __init__(self, *args, **kwargs):
         super(StudentAdminCreateForm, self).__init__(*args, **kwargs)
         if 'initial' in kwargs:
@@ -326,7 +318,7 @@ class PageSearchForm(GTForm, forms.Form):
     slug = forms.CharField(label="Nombre", widget=djgentelella.TextInput, required=False)
 
 
-class PageCreateForm(forms.ModelForm, GTForm):  
+class PageCreateForm(forms.ModelForm, GTForm):
     class Meta:
         model = Page
         fields = '__all__'

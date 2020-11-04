@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 from matricula.models import Student, Course, Group, Enroll, Period, Category, \
-    MenuItem, Page, MultilingualContent, MenuTranslations
+    MenuItem, Page, MultilingualContent
 from django.utils.translation import ugettext_lazy as _
 from django.conf.urls import url
 from django.urls import reverse
@@ -11,7 +11,6 @@ from matricula.admins import BaseGroup
 from django_ajax.decorators import ajax
 
 from django.contrib.admin import AdminSite
-from django.contrib.auth.admin import UserAdmin
 from matricula.forms import MenuItemFormPage
 
 # Register your models here.
@@ -107,15 +106,8 @@ class GroupAdmin(admin.ModelAdmin, BaseGroup):
         return my_urls + urls
 
 
-
-class MenuInline(admin.StackedInline):
-    model = MenuTranslations
-    extra = 1
-
-
 class MenuItemAdmin(admin.ModelAdmin):
     obj = None
-    inlines = [MenuInline]
 
     def get_form(self, request, obj=None, **kwargs):
         self.obj = obj
@@ -136,8 +128,6 @@ class PageInline(admin.TabularInline):
 class PageAdmin(admin.ModelAdmin):
     inlines = [PageInline]
 
-class MenuAdmin(admin.ModelAdmin):
-    inlines = [MenuInline]
 
 admin.site.register(Student)
 admin.site.register(Course)
@@ -145,7 +135,7 @@ admin.site.register(Group, GroupAdmin)
 admin.site.register(Enroll, EnrollAdmin)
 admin.site.register(Period)
 admin.site.register(Category)
-admin.site.register(MenuItem, MenuAdmin)
+admin.site.register(MenuItem)
 admin.site.register(Page, PageAdmin)
 
 admin.site.site_header = _("Academica administrator site")

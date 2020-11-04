@@ -7,12 +7,12 @@ Created on 18/10/2020
 from django.views.generic import ListView, DeleteView
 from django.shortcuts import render
 from matricula.models import Category, Course, MenuItem, Period, Group, Enroll, Student, Page,\
-    MultilingualContent, MenuTranslations
+    MultilingualContent
 from matricula.forms import CategoryCreateForm, CategorySearchForm,\
     CourseSearchForm, CourseCreateForm, MenuItemSearchForm,\
     MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, GroupSearchForm,\
     EnrollSearchForm, EnrollCreateForm, StudentSearchForm, StudentAdminCreateForm, PageCreateForm,\
-    PageSearchForm, MultilingualContentAddForm, MenuTranslationAddForm
+    PageSearchForm, MultilingualContentAddForm
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -251,27 +251,16 @@ class MenuItemList(ListView):
 @permission_required('matricula.add_menuitem')
 def create_menuitem(request):
     context = {}
-    formset = modelformset_factory(
-        MenuTranslations, form=MenuTranslationAddForm, formset=GTBaseModelFormSet,
-        can_delete=True, extra=1, can_order=True)
     if request.method == 'POST':
-        fset = formset(request.POST, queryset=MultilingualContent.objects.none(), prefix="mns")
         form = MenuItemCreateForm(request.POST)
         context['form'] = form
-        context['formset'] = fset
-        if form.is_valid() and fset.is_valid():
-            menu = form.save()
-            instances = fset.save(commit=False)
-            for instance in instances:
-                instance.menu = menu
-                instance.save()
+        if form.is_valid():
             form.save()
             messages.success(request, "Elemento del menú guardado con éxito")
             return HttpResponseRedirect(reverse('menuitems'))
         else:
             messages.error(request, "Error al guardar elemento del menú")
     else:
-        context['formset'] = formset(queryset=MenuTranslations.objects.none(), prefix='mns')
         context['form'] = MenuItemCreateForm()
     return render(request, 'menuitems/menuitem_create.html', context)
 
@@ -299,29 +288,11 @@ def edit_menuitem(request, pk=None):
     context = {}
     if pk is not None:
         menu = MenuItem.objects.get(pk=pk)
-        extra = menu.menutranslations_set.all().count()
-        if extra == 0:
-            extra = 1
-        else:
-            extra = 0
-        formset = modelformset_factory(
-            MenuTranslations, form=MenuTranslationAddForm, formset=GTBaseModelFormSet,
-            can_delete=True, extra=extra, can_order=True)
         if request.method == "POST":
-            fset = formset(
-                request.POST, queryset=MenuTranslations.objects.filter(
-                    menu=menu), prefix='men')
             form = MenuItemCreateForm(request.POST, instance=menu)
-            context['formset'] = fset
             context['form'] = form
-            if form.is_valid() and fset.is_valid():
-                menu = form.save()
-                instances = fset.save(commit=False)
-                for delinst in fset.deleted_objects:
-                    delinst.delete()
-                for instance in instances:
-                    instance.menu = menu
-                    instance.save()
+            if form.is_valid():
+                form.save()
                 messages.success(request, "Elemento del menú guardado con éxito")
                 return HttpResponseRedirect(reverse('menuitems'))
             else:
@@ -330,8 +301,6 @@ def edit_menuitem(request, pk=None):
         else:
             if request.method == "GET":
                 context['form'] = MenuItemCreateForm(initial=menu.__dict__)
-                context['formset'] = formset(queryset=MenuTranslations.objects.filter(
-                    menu=menu), prefix='men')
                 return render(request, 'menuitems/menuitem_update.html', context)
     return HttpResponseRedirect(reverse('menuitems'))
 
