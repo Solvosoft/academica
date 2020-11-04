@@ -20,6 +20,7 @@ from django.utils.decorators import method_decorator
 class ColonExchangeList(ListView):
     template_name = "colonexchange/colonexchange_list.html"
     model = ColonExchange
+    paginate_by = 30
 
     def dispatch(self, *args, **kwargs):
         """ Permission check for this class """
@@ -55,7 +56,7 @@ class ColonExchangeDelete(DeleteView):
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
-    
+
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super(ColonExchangeDelete, self).delete(request, *args, **kwargs)
@@ -63,7 +64,6 @@ class ColonExchangeDelete(DeleteView):
 
 @permission_required('bills.change_colonexchange')
 def edit_colonexchange(request, pk=None):
-    context = {}
     if pk is not None:
         if request.method == "POST":
             instance = ColonExchange.objects.get(pk=pk)
@@ -87,6 +87,7 @@ def edit_colonexchange(request, pk=None):
 class BillList(ListView):
     template_name = "bills/bill_list.html"
     model = Bill
+    paginate_by = 30
 
     def dispatch(self, *args, **kwargs):
         """ Permission check for this class """
