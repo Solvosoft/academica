@@ -47,11 +47,8 @@
 				{% endif %}
 					<div class="x_panel">
 						<div class="x_title">
-							<h2>{{category.name}}</h2>
+							<h2 class="green">{{category.name}}</h2>
 							<ul class="nav navbar-right panel_toolbox">
-								<li>
-									<a href="{% url 'show_category' category.pk %}" class="none-link"><i class="fa fa-eye"></i></a>
-								</li>
 								{% if perms.matricula.change_category %}
 									<li>
 										<a href="{% url 'edit_category' category.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
@@ -62,6 +59,9 @@
 								{% endif %}
 							</ul>
 							<div class="clearfix"></div>
+						</div>
+						<div class="x_content">
+							{{category.description|safe|striptags}}
 						</div>
 					</div>
 				</div>

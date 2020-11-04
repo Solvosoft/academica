@@ -77,16 +77,6 @@ def create_category(request):
         return HttpResponseRedirect(reverse('categories'))
 
 
-@permission_required('matricula.view_category')
-def show_category(request, pk=None):
-    context = {}
-    if pk is not None:
-        category = Category.objects.get(pk=pk)
-        return render(request, 'categories/category_show.html', {
-                                'object': category,})
-    return HttpResponseRedirect(reverse(request, 'categories'))
-
-
 @method_decorator(permission_required('matricula.delete_category'), name='dispatch')
 class CategoryDelete(DeleteView):
     model = Category

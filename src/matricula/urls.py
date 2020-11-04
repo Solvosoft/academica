@@ -15,7 +15,7 @@ from .admin import admin_site
 from matricula.views.Pages import PageDetail
 from matricula.views.Enrollments import list_enroll, enrollme,\
     finish_enroll
-from .views.admin_views import CategoryList, create_category,show_category,\
+from .views.admin_views import CategoryList, create_category,\
     CategoryDelete, edit_category, CourseList, create_course, show_course,\
     CourseDelete, edit_course, MenuItemList, create_menuitem, MenuItemDelete,\
     edit_menuitem, PeriodList, create_period, edit_period, PeriodDelete,\
@@ -44,7 +44,6 @@ urlpatterns = [
     url(r'^pages/(?P<pk>\d+)$', PageDetail.as_view(), name="academica_pages"),
     url('enrrolment/categories', CategoryList.as_view(), name="categories"),
     url('enrrolment/create_category', create_category, name="create_category"),
-    path('enrrolment/show_category/<int:pk>/', show_category, name="show_category"),
     path('enrrolment/delete_category/<int:pk>/', CategoryDelete.as_view() , name="delete_category"),
     path('enrrolment/edit_category/<int:pk>/', edit_category, name="edit_category"),
     url('enrrolment/courses', CourseList.as_view(), name="enrrolment_courses"),
