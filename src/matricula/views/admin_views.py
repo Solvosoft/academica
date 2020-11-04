@@ -27,6 +27,7 @@ from djgentelella.forms.forms import GTForm, GTBaseModelFormSet
 @method_decorator(permission_required('matricula.view_category'), name='dispatch')
 class CategoryList(ListView):
     template_name = "categories/category_list.html"
+    paginate_by = 30
 
     def dispatch(self, *args, **kwargs):
         """ Permission check for this class """
