@@ -522,6 +522,7 @@ def edit_group(request, pk=None):
 class EnrollList(ListView):
     template_name = "enrolls/enroll_list.html"
     model = Enroll
+    paginate_by = 30
 
     def dispatch(self, *args, **kwargs):
         """ Permission check for this class """
