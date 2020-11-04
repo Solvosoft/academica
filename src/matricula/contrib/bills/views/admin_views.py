@@ -6,7 +6,6 @@ Created on 18/10/2020
 '''
 from django.views.generic import ListView, DeleteView
 from django.shortcuts import render
-from matricula.models import Student
 from ..models import ColonExchange, Bill
 from ..forms import ColonExchangeCreateForm, BillSearchForm, BillCreateForm
 from django.contrib import messages
