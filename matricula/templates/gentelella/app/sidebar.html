@@ -25,7 +25,7 @@
                     <li>
                         <a>
                             <i class="fa fa-credit-card"></i>
-                            Acádemica
+                            Académica
                             <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">
@@ -67,10 +67,10 @@
                         </a>
                         <ul class="nav child_menu">
                             {% if perms.matricula.view_page %}
-                                <li><a href="{% url 'pages' %}">Intercambio de Moneda</a></li>
+                                <li><a href="{% url 'colonexchange' %}">Intercambio de Moneda</a></li>
                             {% endif %}
                             {% if perms.matricula.view_student %}
-                                <li><a href="{% url 'students' %}">Facturas</a></li>
+                                <li><a href="{% url 'invoices_enroll' %}">Facturas</a></li>
                             {% endif %}
                         </ul>
                     </li>
