@@ -1,7 +1,6 @@
 # encoding: utf-8
 from django.db import models
 from django.contrib.auth.models import User
-from ckeditor.fields import RichTextField
 from django.utils.encoding import smart_text
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -31,10 +30,10 @@ class Student(models.Model):
             self.save()
             return True
         return False
-    
+
     def __str__(self):
         return self.user.username
-    
+
 
 class Period(models.Model):
     name = models.CharField(max_length=50, verbose_name=_("Name"))
@@ -192,6 +191,9 @@ class MenuItem(models.Model):
 
 class Page(models.Model):
     slug = models.SlugField()
+    title = models.CharField(
+        max_length=300, null=True, blank=True, verbose_name="Título")
+    content = models.TextField(verbose_name=_("Content"))
 
     def __str__(self):
         return self.slug
@@ -199,16 +201,3 @@ class Page(models.Model):
     class Meta:
         verbose_name = _("Page")
         verbose_name_plural = _("Pages")
-
-
-class MultilingualContent(models.Model):
-    language = models.CharField(max_length=3,
-                                choices=settings.LANGUAGES,
-                                default=settings.LANGUAGE_CODE,
-                                verbose_name=_("Language"))
-    title = models.CharField(max_length=300, null=True, blank=True)
-    content = models.TextField(verbose_name=_("Content"))
-    page = models.ForeignKey(Page, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.language

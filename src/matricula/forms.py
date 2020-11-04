@@ -6,7 +6,8 @@ Created on 7/4/2015
 @author: luisza
 '''
 from django import forms
-from matricula.models import Student, Page, MenuItem, Category, Course, Period, Group, Enroll, MultilingualContent
+from matricula.models import Student, Page, MenuItem, Category, Course,\
+    Period, Group, Enroll
 from django.utils.translation import ugettext_lazy as _
 from django.core import validators
 from django.contrib.auth.models import User
@@ -323,17 +324,7 @@ class PageCreateForm(forms.ModelForm, GTForm):
         model = Page
         fields = '__all__'
         widgets = {
-            'slug': djgentelella.TextInput
-        }
-
-
-class MultilingualContentAddForm(GTForm, forms.ModelForm):
-    class Meta:
-        model = MultilingualContent
-        fields = ['language', 'title', 'content']
-
-        widgets = {
-            'language': djgentelella.Select,
+            'slug': djgentelella.TextInput,
             'title': djgentelella.TextInput,
-            'content': widget.TextareaWysiwyg,
+            'content': widget.TextareaWysiwyg
         }

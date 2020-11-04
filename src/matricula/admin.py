@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 from matricula.models import Student, Course, Group, Enroll, Period, Category, \
-    MenuItem, Page, MultilingualContent
+    MenuItem, Page
 from django.utils.translation import ugettext_lazy as _
 from django.conf.urls import url
 from django.urls import reverse
@@ -120,15 +120,6 @@ class MenuItemAdmin(admin.ModelAdmin):
         return dev
 
 
-class PageInline(admin.TabularInline):
-    model = MultilingualContent
-    extra = 1
-
-
-class PageAdmin(admin.ModelAdmin):
-    inlines = [PageInline]
-
-
 admin.site.register(Student)
 admin.site.register(Course)
 admin.site.register(Group, GroupAdmin)
@@ -136,7 +127,7 @@ admin.site.register(Enroll, EnrollAdmin)
 admin.site.register(Period)
 admin.site.register(Category)
 admin.site.register(MenuItem)
-admin.site.register(Page, PageAdmin)
+admin.site.register(Page)
 
 admin.site.site_header = _("Academica administrator site")
 
@@ -152,4 +143,4 @@ admin_site.register(Enroll, EnrollAdmin)
 admin_site.register(Period)
 admin_site.register(Category)
 admin_site.register(MenuItem, MenuItemAdmin)
-admin_site.register(Page, PageAdmin)
+admin_site.register(Page)
