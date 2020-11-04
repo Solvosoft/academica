@@ -60,7 +60,7 @@ def create_category(request):
         if name is not None:
             context['form_search'] = CategorySearchForm(request.GET)
             context['object_list'] = Category.objects.filter(name__icontains=name)
-        else: 
+        else:
             context['form_search'] = CategorySearchForm()
             context['object_list'] = Category.objects.all()
 
@@ -134,6 +134,7 @@ def edit_category(request, pk=None):
 class CourseList(ListView):
     template_name = "courses/course_list.html"
     model = Course
+    paginate_by = 30
 
     def dispatch(self, *args, **kwargs):
         """ Permission check for this class """
