@@ -22,7 +22,7 @@ def create_bill(sender, **kwargs):
         Bill.objects.create(
             short_description=_("Enroll in %s") % (instance.group),
             description=render_to_string(
-                'invoice.html',
+                'invoice_enroll.html',
                 {
                     'student': instance.student,
                     'enroll': smart_text(instance.group),
