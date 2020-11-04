@@ -43,7 +43,7 @@ def create_colonexchange(request):
     return render(request, 'colonexchange/colonexchange_create.html', context)
 
 
-@method_decorator(permission_required('bills.delete_colonexchnage'), name='dispatch')
+@method_decorator(permission_required('bills.delete_colonexchange'), name='dispatch')
 class ColonExchangeDelete(DeleteView):
     model = ColonExchange
     success_url = "/matricula_bills/colonexchanges"
