@@ -3,15 +3,15 @@
     {% for group in course.groups%}
         <div class="course">
             <li>
-                <span class="name">Groups</span>
+                <span class="name">Grupo</span>
                 <span class="value green">{{group.name}}</span>
             </li>
             <li>
-                <span class="name">Maximum Students</span>
+                <span class="name">Máximo de estudiantes</span>
                 <span class="value green">{{ group.maximum }}</span>
             </li>
             <li>
-                <span class="name">Enrrollment</span>
+                <span class="name">Inscritos</span>
                 <span  id="count_{{group.pk}}" class="value green">{{group.enroll_set.count}}</span>
             </li>
             <div style="margin:5px;">
