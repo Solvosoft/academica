@@ -690,6 +690,7 @@ class StudentDelete(DeleteView):
 class PageList(ListView):
     template_name = "pages/page_list.html"
     model = Page
+    paginate_by = 30
 
     def dispatch(self, *args, **kwargs):
         """ Permission check for this class """
