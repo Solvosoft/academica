@@ -432,6 +432,7 @@ def edit_period(request, pk=None):
 class GroupList(ListView):
     template_name = "groups/group_list.html"
     model = Group
+    paginate_by = 2
 
     def dispatch(self, *args, **kwargs):
         """ Permission check for this class """
