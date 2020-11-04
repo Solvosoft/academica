@@ -22,6 +22,7 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.forms import modelformset_factory
 from djgentelella.forms.forms import GTForm, GTBaseModelFormSet
+from django.core.paginator import Paginator
 
 
 @method_decorator(permission_required('matricula.view_category'), name='dispatch')
@@ -99,7 +100,11 @@ class CategoryDelete(DeleteView):
 def edit_category(request, pk=None):
     context = {}
     categories = Category.objects.all()
+    paginator = Paginator(categories, 30)
+    page_number = request.GET.get('page') or 1
+    page_obj = paginator.get_page(page_number)
     search_form = CategorySearchForm()
+    is_paginated = True if paginator.num_pages > 1 else False
     if pk is not None:
         if request.method == "POST":
             category = Category.objects.get(pk=pk)
@@ -118,8 +123,9 @@ def edit_category(request, pk=None):
                 form = CategoryCreateForm()
         return render(request, 'categories/category_update.html', {
                                     'form': form,
-                                    'object_list': categories,
-                                    'form_search': search_form
+                                    'form_search': search_form,
+                                    'paginator': page_obj,
+                                    'is_paginated': is_paginated
                                     })
     return HttpResponseRedirect(reverse(request, 'categories'))
 
