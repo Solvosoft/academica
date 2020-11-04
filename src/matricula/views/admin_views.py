@@ -485,7 +485,7 @@ def create_group(request):
 
 @method_decorator(permission_required('matricula.delete_group'), name='dispatch')
 class GroupDelete(DeleteView):
-    model = MenuItem
+    model = Group
     success_url = "/matricula/enrrolment/groups"
     success_message = "Grupo eliminado con éxito"
 
