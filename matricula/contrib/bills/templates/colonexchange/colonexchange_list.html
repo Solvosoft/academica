@@ -1,0 +1,66 @@
+{% extends 'gentelella/base.html'%}
+{% load static utils %}
+{%block content %}
+	<h1>Moneda de intercambio</h1>
+	<div class="row">
+		<div class="col-sm-12 col-xs-12 col-lg-12 col-md-12 text-right">
+			{% if perms.bills.add_colonexchange %}
+				<a class="btn btn-primary" href="{% url 'create_colonexchange' %}">Crear moneda de intercambio</a>
+			{% endif %}
+		</div>
+	</div>
+	{% if perms.bills.delete_colonexchange %}
+		<!-- modal delete category -->
+		<div id="modaldeleteitem" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">¿Está segura que desea eliminar esta moneda de intercambio?</h4>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+						<a class="btn btn-danger" id="deleteitem">Eliminar</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end delete modal-->
+	{% endif %}
+	{% for object in object_list %}
+		<div class="col-md-6 col-lg-4 col-sm-6 col-xs-12">
+			<div class="x_panel">
+				<div class="x_title">
+					<h2 class="green">{{object.is_dolar}}</h2>
+					<ul class="nav navbar-right panel_toolbox" style="min-width:none;">
+						{% if perms.bills.change_colonexchange %}
+							<li>
+								<a href="{% url 'edit_colonexchange' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
+							</li>
+						{% endif %}
+						{% if perms.bills.delete_colonexchange %}
+							<li><a data-url="{% url 'delete_colonexchange' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+						{% endif %}
+					</ul>
+					<div class="clearfix"></div>
+				</div>
+				<div class="x_content">
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+	<div class="clearfix"></div>
+{%endblock%}
+{% if perms.bills.delete_colonexchange %}
+	{% block js %}
+		<script type="text/javascript">
+			function deleteitem(element){
+				$(function(){
+					$("#deleteitem").attr("href", $(element).data('url'));
+					$("#modaldeleteitem").modal();
+				});
+				return false
+			}
+		</script>
+	{% endblock js%}
+{% endif %}

@@ -8,6 +8,8 @@ from django.conf.urls import url, include
 from matricula.contrib.bills.views.Bills import get_my_bills
 from django.urls import path
 from matricula.views.admin_views import GroupList, create_group, GroupDelete, edit_group
+from .views.admin_views import ColonExchangeList, create_colonexchange, ColonExchangeDelete,\
+    edit_colonexchange
 
 
 urlpatterns = [
@@ -17,8 +19,8 @@ urlpatterns = [
     url('create_bill', create_group, name="create_bill"),
     path('delete_bill/<int:pk>/', GroupDelete.as_view() , name="delete_bill"),
     path('edit_bill/<int:pk>/', edit_group, name="edit_bill"),
-    url('colonexchanges', GroupList.as_view(), name="colonexchange"),
-    url('create_colonexchange', create_group, name="create_colonexchange"),
-    path('delete_colonexchange/<int:pk>/', GroupDelete.as_view() , name="delete_colonexchange"),
-    path('edit_colonexchange/<int:pk>/', edit_group, name="edit_colonexchange"),
+    url('colonexchanges', ColonExchangeList.as_view(), name="colonexchange"),
+    url('create_colonexchange', create_colonexchange, name="create_colonexchange"),
+    path('delete_colonexchange/<int:pk>/', ColonExchangeDelete.as_view() , name="delete_colonexchange"),
+    path('edit_colonexchange/<int:pk>/', edit_colonexchange, name="edit_colonexchange"),
 ]
