@@ -87,10 +87,11 @@
 						<div class="col-md-6 col-sm-6 col-xs-6">
 							<ul class="list-unstyled user_data">
 								<li>
-									<strong>¿Matricula finalizada?: </strong>{{object.enroll_finished}}
+									<strong>¿Matrícula finalizada?: </strong>{% if object.enroll_finished %}Si{%else%}No{%endif%}
+									
 								</li>
 								<li>
-									<strong>¿Activa para matrícula?: </strong>{{object.enroll_activate}}
+									<strong>¿Activa para matrícula?: </strong>{% if object.enroll_activate%}Si{%else%}No{%endif%}
 								</li>
 							</ul>
 						</div>
