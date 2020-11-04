@@ -289,7 +289,7 @@ class MenuItemDelete(DeleteView):
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
-    
+
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super(MenuItemDelete, self).delete(request, *args, **kwargs)
@@ -341,6 +341,7 @@ def edit_menuitem(request, pk=None):
 class PeriodList(ListView):
     template_name = "periods/period_list.html"
     model = Period
+    paginate_by = 30
 
     def dispatch(self, *args, **kwargs):
         """ Permission check for this class """
@@ -352,7 +353,7 @@ class PeriodList(ListView):
         self.form.is_valid()
         queryset = Period.objects.all()
         if self.form.cleaned_data['name']:
-           queryset = queryset.filter(name__icontains=self.form.cleaned_data['name'])
+            queryset = queryset.filter(name__icontains=self.form.cleaned_data['name'])
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -402,6 +403,11 @@ def edit_period(request, pk=None):
     context = {}
     if pk is not None:
         context = {}
+        periods = Period.objects.all()
+        paginator = Paginator(periods, 30)
+        page_number = request.GET.get('page') or 1
+        context['paginator'] = paginator.get_page(page_number)
+        context['is_paginated'] = True if paginator.num_pages > 1 else False
         if request.method == "POST":
             instance = Period.objects.get(pk=pk)
             form = PeriodCreateForm(request.POST, instance=instance)
@@ -416,7 +422,6 @@ def edit_period(request, pk=None):
         else:
             if request.method == "GET":
                 instance = Period.objects.get(pk=pk)
-                context['object_list'] = Period.objects.all()
                 context['form'] = PeriodCreateForm(initial=instance.__dict__)
                 context['form_search'] = PeriodSearchForm()
                 return render(request, 'periods/period_update.html', context)
