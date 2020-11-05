@@ -8,43 +8,54 @@
 {% endblock %}
 {%block content%}
 	{% load i18n %}
-	<h1> {% trans 'Unpaid bills' %}</h1>
-	<div class="x_panel">
-		{% for bill in not_paid%}
-			<div class="product_price">
-				<h1 class="price green">{{bill.obj.short_drescription}}</h1>
-				<div class="col-md-6 col-lg-6 col-sm-12">
-					<div class="price-tax">
-						{{bill.obj.description|safe}}
-					</div>
-				</div>
-				<div class="col-lg-6 col-md-6 col-sm-12">
-					<div style="margin-top:50px;" class="price-tax text-center">
-						{{bill.form.render}}
-					</div>
-				</div>
-				<div class="clearfix"></div>
+	{% if request.user.is_authenticated and not request.user.student %}
+		<h1>Facturas</h1>
+		<form method="post" action="{% url 'add_student' %}">
+			{% csrf_token %}
+			<div class="alert alert-warning alert-dismissible" role="alert">
+				<strong>Advertencia!</strong> Para tomar cursos usted debe tener rol de estudiante. 
+				<button type="submit" class="btn btn-sm btn-primary">Crear</button>
 			</div>
-		{%empty%}
-			<div class="alert alert-info" role="alert">
-				{% trans "You don't have Unpaid bills" %}
-			</div>
-		{%endfor%}
-		<div class="clearfix"></div>
-	</div>
+		</form>
+	{% else %}
+		<h1> {% trans 'Unpaid bills' %}</h1>
+		<div class="x_panel">
+			{% for bill in not_paid%}
+				<div class="product_price">
+					<h1 class="price green">{{bill.obj.short_drescription}}</h1>
+					<div class="col-md-6 col-lg-6 col-sm-12">
+						<div class="price-tax">
+							{{bill.obj.description|safe}}
+						</div>
+					</div>
+					<div class="col-lg-6 col-md-6 col-sm-12">
+						<div style="margin-top:50px;" class="price-tax text-center">
+							{{bill.form.render}}
+						</div>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+			{%empty%}
+				<div class="alert alert-info" role="alert">
+					{% trans "You don't have Unpaid bills" %}
+				</div>
+			{%endfor%}
+			<div class="clearfix"></div>
+		</div>
 
-	<h1> Facturas pagadas </h1>
-	<div class="x_panel">
-		{% for bill in paid %}
-			<div class="product_price">
-				<div class="price-tax">
-					{{bill.description|safe}}
+		<h1> Facturas pagadas </h1>
+		<div class="x_panel">
+			{% for bill in paid %}
+				<div class="product_price">
+					<div class="price-tax">
+						{{bill.description|safe}}
+					</div>
 				</div>
-			</div>
-		{%empty%}
-			<div class="alert alert-info" role="alert">
-				No tiene facturas pagadas
-			</div>
-		{%endfor%}
-	</div>
+			{%empty%}
+				<div class="alert alert-info" role="alert">
+					No tiene facturas pagadas
+				</div>
+			{%endfor%}
+		</div>
+	{%endif%}
 {%endblock%}

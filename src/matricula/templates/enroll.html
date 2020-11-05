@@ -1,9 +1,9 @@
 {% extends 'gentelella/base.html'%}
 {%load i18n %}
 {%block content%}
-	<div class="x_panel">
-		<h3>{% trans 'List of courses to enroll' %}</h3>
-		{% if student %}
+	<h1>{% trans 'List of courses to enroll' %}</h1>
+	{% if student %}
+		<div class="x_panel">
 			{% for enroll in list_enroll%}
 				<div class="x_panel">
 					<!-- end of user messages -->
@@ -36,18 +36,18 @@
 					{% trans "You don't have any courses to enroll"%} 
 				</div>
 			{%endfor%}
-		{%else%}
-			{% if request.user.is_authenticated and not request.user.student %}
-				<form method="post" action="{% url 'add_student' %}">
-					{% csrf_token %}
-					<div class="alert alert-warning alert-dismissible" role="alert">
-						<strong>Advertencia!</strong> Para tomar cursos usted debe tener rol de estudiante. 
-						<button type="submit" class="btn btn-sm btn-primary">Crear</button>
-					</div>
-				</form>
-			{% endif %}
-		{%endif%}
-	</div>
+		</div>
+	{%else%}
+		{% if request.user.is_authenticated and not request.user.student %}
+			<form method="post" action="{% url 'add_student' %}">
+				{% csrf_token %}
+				<div class="alert alert-warning alert-dismissible" role="alert">
+					<strong>Advertencia!</strong> Para tomar cursos usted debe tener rol de estudiante. 
+					<button type="submit" class="btn btn-sm btn-primary">Crear</button>
+				</div>
+			</form>
+		{% endif %}
+	{%endif%}
 	{% if student %}
 		<div class="x_panel">
 			<h3>{% trans "Enrolled courses"%}</h3>
