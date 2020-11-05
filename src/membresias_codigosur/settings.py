@@ -28,7 +28,6 @@ DEBUG = True
 ALLOWED_HOSTS = [c for c in os.getenv('ALLOWED_HOSTS', '').split(',') if DEBUG and c]
 if not ALLOWED_HOSTS:
     ALLOWED_HOSTS=['*']
-SITE_ID = 1
 
 ADMINS = [('support', 'sitio@solvosoft.com') ]
 ASYNC_TEMPLATES_NOTIFICATION = os.path.join(BASE_NOCODE_DIR, 'news_templates/')
@@ -249,3 +248,27 @@ ASYNC_NEWSLETTER_SEVER_CONFIGS={
     #use_tls=my_use_tls
 }
 """
+
+# allauth configurations
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+#end allauth configurations

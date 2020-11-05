@@ -32,6 +32,7 @@ from matricula.urls import urlpatterns as enrollurls
 
 urlpatterns = djgentelellaurls + [
     path('', RedirectView.as_view(url="/home/")),
+    path('accounts/', include('allauth.urls')),
     path('async_notifications/', include('async_notifications.urls')),
     path('api/', include('api.urls')),
     path('admin/', admin.site.urls),
