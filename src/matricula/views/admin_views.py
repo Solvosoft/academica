@@ -20,9 +20,9 @@ from django.contrib.auth.decorators import permission_required
 from django.utils.decorators import method_decorator
 from django.db.models import Q
 from django.contrib.auth.models import User
-from django.forms import modelformset_factory
-from djgentelella.forms.forms import GTBaseModelFormSet
 from django.core.paginator import Paginator
+import csv
+from django.http import HttpResponse
 
 
 @method_decorator(permission_required('matricula.view_category'), name='dispatch')
@@ -482,6 +482,33 @@ def edit_group(request, pk=None):
                 instance = Group.objects.get(pk=pk)
                 form = GroupCreateForm(initial=instance.__dict__)
                 return render(request, 'groups/group_update.html', {'form': form})
+    return HttpResponseRedirect(reverse('groups_enroll'))
+
+
+@permission_required('matricula.can_export_group')
+def export_group(request, pk=None):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="students_list.csv"'
+    writer = csv.writer(response)
+    if pk is not None:
+        group = Group.objects.get(pk=pk)
+        enrolls = group.enroll_set.all()
+        writer.writerow([
+                'username',
+                'firstname',
+                'lastname',
+                'email',
+                "course1"])
+        for enroll in enrolls:
+            first_name = enroll.student.user.first_name if enroll.student.user.first_name != "" else "default"
+            last_name = enroll.student.user.last_name if enroll.student.user.last_name != "" else "default"
+            writer.writerow([
+                enroll.student.user.username,
+                first_name,
+                last_name,
+                enroll.student.user.email,
+                group.name])
+        return response
     return HttpResponseRedirect(reverse('groups_enroll'))
 
 

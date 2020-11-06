@@ -109,7 +109,12 @@
 								</li>
 							</ul>
 						</div>
-						<div class='col-md-12'><strong>Flujo del curso: </strong>{{object.FLOWS|index:object.flow|index:1}}</div>
+						<div class="col-md-12">
+							<ul class="list-unstyled user_data">
+								<li><strong>Flujo del curso: </strong>{{object.FLOWS|index:object.flow|index:1}}</li>
+								<li><strong>Lista de estudiantes: </strong>{{object.enroll_set.all.count}} <a href="{% url 'export_group' object.pk%}"><i class="fa fa-file-text-o"></i></a></li>
+							</ul>
+						</div>
 					</div>
 				</div>
 			</div>
