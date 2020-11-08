@@ -7,7 +7,7 @@
 
 {% block content %}
 <div class="row">
-    <div class='col-md-8 col-md-offset-2 col-xs-12'>
+    <div class='col-md-8'>
         <div class="x_panel">
             <div class="x_title">
                 <h1 class="text-center">Editar contacto</h1>
@@ -26,5 +26,29 @@
             </div>
         </div>
     </div>
+    <div class='col-md-4'>
+            <div class="x_panel">
+                <div class="x_title">
+                    <h1 class="text-center">Grupo de Telegram</h1>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    {% include 'field_group.html' with field=telgroupForm.title  %}
+                    {% include 'field_group.html' with field=telgroupForm.chat_id  %}
+                    {% include 'field_group.html' with field=telgroupForm.invite_link  %}
+                </div>
+
+                <h5><strong>Pasos para crear un grupo en telegram</strong></h5>
+
+                <p>1 - En Telegram diríjase a la esquina superior izquierda en el menú representado por 3 barras e ingrese en la opción
+                    "Nuevo grupo".</p>
+                <p>2 - Busque y agregue el bot llamado "@snmcs_bot" y todos los miembros que desee incluir en el grupo y presione el botón "Siguiente".</p>
+                <p>3 - Ingrese el nombre del grupo, seguidamente click en el botón "Crear grupo".</p>
+                <p>4 - Escriba el comando "/ayuda" para consultar el Id del grupo.</p>
+                <p>5 - Para conseguir el enlace de invitación ingrese al chat del grupo, de click en el nombre del grupo y podra
+                    observar la opción "Invitar al grupo mediante un enlace"</p>
+
+            </div>
+        </div>
 </div>
 {% endblock content %}

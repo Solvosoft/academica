@@ -135,12 +135,17 @@
                         {% endif %}
                         {% if perms.auth.view_group %}
                         <li>
-                            <a href="{% url 'groups_list' %}">Grupos</a>
+                            <a href="{% url 'groups_list' %}">Grupos de usuarias</a>
                         </li>
                         {% endif %}
                         {% if perms.admin.view_logentry %}
                         <li>
                             <a href="{% url 'logentry_filter' %}">Bitácora</a>
+                        </li>
+                        {% endif %}
+                        {% if perms.membership_telbot_manager.view_telegramnotificationtemplate %}
+                        <li>
+                            <a href="{% url 'telegram_message_list' %}">Mensajes de Telegram</a>
                         </li>
                         {% endif %}
                     </ul>

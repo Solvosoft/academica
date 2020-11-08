@@ -5,7 +5,6 @@ from django.urls import reverse
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets import core as widget
-from djgentelella.widgets import wysiwyg as djgentelella
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 
 from membership_core.models import MembershipTemplate, Country, ServiceType, SystemCurrency, RenewalPeriod, ServiceMT
@@ -446,7 +445,7 @@ class TemplateAddForm(GTForm, forms.ModelForm):
             'annual_cost': widget.NumberInput,
             'state': widget.Select,
             'currency': widget.Select,
-            'description': djgentelella.TextareaWysiwyg,
+            'description': widget.Textarea,
             'free_membership': widget.YesNoInput
         }
 

@@ -1,0 +1,45 @@
+{% extends 'gentelella/base.html' %}
+{% load static %}
+{% load gtsettings %}
+{% block pre_head %}
+    {% define_true "use_datatables" as use_datatables %}
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class='col-md-8 col-md-offset-2 col-xs-12'>
+            <h1 class="text-center"> Mensajes de telegram </h1>
+            <div class="x_panel">
+                <div class="x_content" style="display: block;">
+                    <div class="dashboard-widget-content">
+                        <table class="table table-striped table-bordered" style="width:100%; text-align: center;">
+                            <thead>
+                                <tr style="text-align: center;">
+                                    <th style="text-align: center;">Nombre</th>
+                                    <th style="text-align: center;">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for message in messages_list %}
+                            <tr>
+                                <td>{{ message.name }} </td>
+                                <td>
+                                    <a title="Editar mensaje" class="btn btn-sm" href="{% url 'edit_telegram_message' pk=message.pk %}"><i class="fa fa-edit fa-2x"></i> </a>
+                                    {% if perms.admin.view_logentry %}
+                                        <a title="Ver historial" href="{% url 'logentry_object' app='membership_telbot_manager' model='telegramnotificationtemplate' pk=message.pk %}" class="edit-link"><i class="fa fa-history green fa-2x"></i></a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock content %}

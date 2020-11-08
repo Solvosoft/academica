@@ -5,3 +5,4 @@ from membership_telbot_manager import models
 
 admin.site.register(models.TelegramUser)
 admin.site.register(models.TelGroup)
+admin.site.register(models.TelegramNotificationTemplate)

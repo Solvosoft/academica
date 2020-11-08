@@ -191,7 +191,7 @@
                             <div>Moneda: {{ membership.currency.currency }}</div>
                             <div>Contactar: 
                                 {% if membership.organization.telgroup.chat_id != "" %}
-                                    <a href="https://t.me/joingroup/{{ membership.organization.telgroup.chat_id }}"><span class="telegram_icon"><i class="fa fa-send" aria-hidden="true"></i></span></a>
+                                    <a title="Notificación de telegram" type="button" data-url="{% url 'telegram_notification' pk=membership.organization.pk %}" onclick="telegram_membership(this)"><span class="telegram_icon"><i class="fa fa-send" aria-hidden="true"></i></span></a>
                                 {% endif %}
 
                                 <a title="Notificación de correo electrónico" type="button" data-url="{% url 'email_template' pk=membership.pk %}" onclick="email_membership(this)"><span class="mail"><i class="fa fa-envelope" aria-hidden="true"></i></span></a>
@@ -256,6 +256,28 @@
     </div>
 </div>
 
+<div id="modaltelegramtemplate" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Seleccione la plantilla de notificación de telegram.</h4>
+            </div>
+            <form method="post" id="telegramform">
+            <div class="modal-body">
+                {% csrf_token %}
+                {{ form_telegram_notification.as_horizontal }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                <button class="btn btn-success" type="submit">Continuar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {% endblock content %}
 {% block js %}
 <script>
@@ -273,6 +295,11 @@
     function email_membership(element){
         $("#emailform").attr("action", $(element).data('url'));
         $("#modalemailtemplate").modal();
+    }
+
+    function telegram_membership(element){
+        $("#telegramform").attr("action", $(element).data('url'));
+        $("#modaltelegramtemplate").modal();
     }
 
     $(window).load(function() {
