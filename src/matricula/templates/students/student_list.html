@@ -46,7 +46,7 @@
 		<div class="col-md-6 col-lg-4 col-sm-6 col-xs-12">
 			<div class="x_panel">
 				<div class="x_title">
-					<h2 class="green">{{object.user.get_username}}</h2>
+					<h2 class="green">{{object}}</h2>
 					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
 						{% if perms.matricula.change_student %}
 							<li>
@@ -75,6 +75,9 @@
 								<li>
 									<strong>Estado: </strong>{% if object.user.is_active %}Activo <i class="fa fa-check"></i>{%else%}Inactivo <i class="fa fa-times"></i>{%endif%}
 								</li>
+								<li>
+									<strong>Usuario: </strong>{{object.user}}
+								</li>
 							</ul>
 						</div>
 						<div class="col-md-6 col-sm-6 col-xs-6">
@@ -84,6 +87,9 @@
 								</li>
 								<li>
 									<strong>Fecha de expiración: </strong>{{object.expired_at}}
+								</li>
+								<li>
+									<strong>Administrador: </strong>{% if object.user.is_superuser %}Si{%else%}No</i>{%endif%}
 								</li>
 							</ul>
 						</div>
