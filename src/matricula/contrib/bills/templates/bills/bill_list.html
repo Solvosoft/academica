@@ -60,7 +60,7 @@
 							{{object.student}}
 						{%endif%}
 					</h2>
-					<ul class="nav navbar-right panel_toolbox" style="min-width:none;">
+					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
 						{% if perms.bills.change_bill %}
 							<li>
 								<a href="{% url 'edit_bill' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>

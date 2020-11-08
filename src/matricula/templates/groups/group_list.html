@@ -60,7 +60,7 @@
 			<div class="x_panel">
 				<div class="x_title">
 					<h2 class="green">{{object.period|safe|striptags}}</h2>
-					<ul class="nav navbar-right panel_toolbox" style="min-width:none;">
+					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
 						{% if perms.matricula.change_group %}
 							<li>
 								<a href="{% url 'edit_group_enroll' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>

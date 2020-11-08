@@ -57,7 +57,7 @@
 			<div class="x_panel">
 				<div class="x_title">
 					<h2 class="green">{{menuitem.name}}--{{menuitem.description|safe|striptags}}</h2>
-					<ul class="nav navbar-right panel_toolbox" style="min-width:none;">
+					<ul class="nav navbar-right panel_toolbox" style="min-width: unset;">
 						{% if perms.matricula.change_menuitem %}
 							<li>
 								<a href="{% url 'edit_menuitem' menuitem.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>

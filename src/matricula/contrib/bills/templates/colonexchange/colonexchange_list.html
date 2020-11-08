@@ -32,7 +32,7 @@
 			<div class="x_panel">
 				<div class="x_title">
 					<h2 class="green">{{object.is_dolar}}</h2>
-					<ul class="nav navbar-right panel_toolbox" style="min-width:none;">
+					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
 						{% if perms.bills.change_colonexchange %}
 							<li>
 								<a href="{% url 'edit_colonexchange' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
