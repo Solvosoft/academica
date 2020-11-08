@@ -3,21 +3,14 @@
 {%block content %}
 	<h1 class="text-center">Estudiantes</h1>
 	<div class="row">
-		{% if perms.matricula.add_student %}
-			<div class="col-sm-12 col-xs-12 col-lg-10 col-md-9">
-		{% else %}
-			<div class="col-sm-12 col-xs-12 col-lg-12 col-md-12">
-		{% endif %}
+		<div class="col-sm-12 col-xs-12 col-md-8 col-md-offset-2">
 			<div class="x_panel">
 				<div class="x_content">
 					<form method="GET">
-						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+						<div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
 							{% include 'field.html' with field=form_search.student %}
 						</div>
-						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-							{% include 'field.html' with field=form_search.group %}
-						</div>
-						<div style="text-align:right">
+						<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 text-center">
 							<a href="{% url 'students' %}" class="btn btn-dark">Limpiar</a>
 							<button class="btn btn-success" type="submit">Buscar</button>
 						</div>
@@ -25,7 +18,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-12 col-xs-12 col-lg-2 col-md-3">
+		<div class="col-sm-12 col-xs-12 col-md-2">
 			{% if perms.matricula.add_student %}
 				<a class="btn btn-primary" href="{% url 'create_student' %}">Crear estudiante</a>
 			{% endif %}
@@ -53,7 +46,7 @@
 		<div class="col-md-6 col-lg-4 col-sm-6 col-xs-12">
 			<div class="x_panel">
 				<div class="x_title">
-					<h2 class="green">{{object.username|wordwrap:100}}</h2>
+					<h2 class="green">{{object.user.get_username}}</h2>
 					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
 						{% if perms.matricula.change_student %}
 							<li>
@@ -71,13 +64,16 @@
 						<div class="col-md-6 col-sm-6 col-xs-6">
 							<ul class="list-unstyled user_data">
 								<li>
-									<strong>Estudiante: </strong>{{object.user.first_name}} {{object.user.last_name}}
+									<strong>Nombres: </strong>{% if object.user.first_name %}{{object.user.first_name}}{%else%}Sin definir{%endif%}
 								</li>
 								<li>
-									<strong>Usuario: </strong>{{object.user.username}}
+									<strong>Apellidos: </strong>{% if object.user.last_name %}{{object.user.last_name}}{%else%}Sin definir{%endif%}
 								</li>
 								<li>
 									<strong>Correo: </strong>{{object.user.email}}
+								</li>
+								<li>
+									<strong>Estado: </strong>{% if object.user.is_active %}Activo <i class="fa fa-check"></i>{%else%}Inactivo <i class="fa fa-times"></i>{%endif%}
 								</li>
 							</ul>
 						</div>

@@ -14,36 +14,41 @@ from django.contrib.auth.models import User
 from djgentelella.widgets import core as djgentelella
 from djgentelella.widgets import wysiwyg as widget
 from djgentelella.forms.forms import GTForm
-from djgentelella.widgets.selects import AutocompleteSelect, SelectMultiple
+from djgentelella.widgets.selects import AutocompleteSelect
 
 
 class StudentCreateForm(GTForm, forms.ModelForm):
-    name = forms.CharField(label=_('Your username'), max_length=30,
+    name = forms.CharField(
+        label=_('Your username'), max_length=30,
         help_text=_('Required. 30 characters or fewer. Letters, digits and '
                     '@/./+/-/_ only.'),
         validators=[
             validators.RegexValidator(r'^[\w.@+-]+$',
-                                      _('Enter a valid username. '
-                                        'This value may contain only letters, numbers '
-                                        'and @/./+/-/_ characters.'), 'invalid'),
+                _('Enter a valid username. '
+                    'This value may contain only letters, numbers '
+                    'and @/./+/-/_ characters.'), 'invalid'),
         ], required=True, widget=djgentelella.TextInput)
-    
     first_name = forms.CharField(
         label=_('first name'), max_length=30, required=True,
         widget=djgentelella.TextInput)
-    last_name = forms.CharField(label=_('last name'), max_length=30, required=True, widget=djgentelella.TextInput)
+    last_name = forms.CharField(
+        label=_('last name'), max_length=30, required=True,
+        widget=djgentelella.TextInput)
     email = forms.EmailField(required=True, widget=djgentelella.EmailMaskInput)
-    password = forms.CharField(required=True, label=_("Password"), widget=djgentelella.PasswordInput)
-    password_check = forms.CharField(widget=djgentelella.PasswordInput, required=True, label=_("Repeat password"))
+    password = forms.CharField(
+        required=True, label=_("Password"), widget=djgentelella.PasswordInput)
+    password_check = forms.CharField(
+        widget=djgentelella.PasswordInput, required=True,
+        label=_("Repeat password"))
 
     class Meta:
         model = Student
-        fields = ['name', 'first_name', 'last_name', 'email', 'password', 'password_check']
+        fields = [
+            'name', 'first_name', 'last_name', 'email', 'password', 'password_check']
         widgets = {
             'last_name': djgentelella.TextInput,
             'email': djgentelella.EmailInput
         }
-
 
     def clean(self):
         cleaned_data = super(StudentCreateForm, self).clean()
@@ -54,8 +59,7 @@ class StudentCreateForm(GTForm, forms.ModelForm):
             raise forms.ValidationError(_("Password not match "))
 
 
-
-class StudentEditForm(GTForm, forms.ModelForm):  
+class StudentEditForm(GTForm, forms.ModelForm):
     class Meta:
         model = User
         fields = ['last_name', 'first_name', 'email']
@@ -72,7 +76,9 @@ class MenuItemFormPage(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(MenuItemFormPage, self).__init__(*args, **kwargs)
         if 'instance' in kwargs and kwargs['instance']:
-            self.fields['name'] = forms.ModelChoiceField(queryset=Page.objects.all(), label=_("Page"), initial=kwargs['instance'].name)
+            self.fields['name'] = forms.ModelChoiceField(
+                queryset=Page.objects.all(), label=_("Page"),
+                initial=kwargs['instance'].name)
 
     def save(self, *args, **kwargs):
         dev = super(MenuItemFormPage, self).save(*args, **kwargs)
@@ -86,7 +92,7 @@ class MenuItemFormPage(forms.ModelForm):
                   'order', 'parent', 'publicated', 'is_index']
 
 
-class CategoryCreateForm(forms.ModelForm, GTForm):  
+class CategoryCreateForm(forms.ModelForm, GTForm):
     class Meta:
         model = Category
         fields = '__all__'
@@ -96,25 +102,24 @@ class CategoryCreateForm(forms.ModelForm, GTForm):
         }
 
 
-class CategorySearchForm(forms.ModelForm, GTForm):  
+class CategorySearchForm(forms.ModelForm, GTForm):
     name = forms.CharField(
         label='Término de búsqueda', required=False,
-            widget=djgentelella.TextInput(attrs={
-                'placeholder':"Ingrese el término de búsqueda",
-            }
-        )
-    )
+        widget=djgentelella.TextInput(attrs={
+            'placeholder': "Ingrese el término de búsqueda",
+        }))
+
     class Meta:
         model = Category
         fields = ['name']
 
 
-class CourseSearchForm(GTForm, forms.Form):  
+class CourseSearchForm(GTForm, forms.Form):
     name = forms.CharField(
         label='Término de búsqueda', required=False,
         widget=djgentelella.TextInput(
             attrs={
-                'placeholder':"Ingrese el término de búsqueda",
+                'placeholder': "Ingrese el término de búsqueda",
             })
     )
     category = forms.ModelMultipleChoiceField(
@@ -122,12 +127,13 @@ class CourseSearchForm(GTForm, forms.Form):
         required=False, label="Categoría")
 
 
-class CourseCreateForm(forms.ModelForm, GTForm):  
+class CourseCreateForm(forms.ModelForm, GTForm):
     class Meta:
         model = Course
         fields = '__all__'
         widgets = {
-            'name': djgentelella.TextInput(attrs={'placeholder':"Nombre curso"}),
+            'name': djgentelella.TextInput(
+                attrs={'placeholder': "Nombre curso"}),
             'content': widget.TextareaWysiwyg,
             'category': AutocompleteSelect('categorybasename'),
         }
@@ -139,7 +145,7 @@ class CourseCreateForm(forms.ModelForm, GTForm):
                 self.fields['category'].initial = kwargs['initial']['category_id']
 
 
-class MenuItemSearchForm(GTForm, forms.Form):  
+class MenuItemSearchForm(GTForm, forms.Form):
     name = forms.CharField(
         required=False, widget=djgentelella.TextInput,
         label="Nombre")
@@ -153,7 +159,7 @@ class MenuItemSearchForm(GTForm, forms.Form):
     )
 
 
-class MenuItemCreateForm(forms.ModelForm, GTForm):  
+class MenuItemCreateForm(forms.ModelForm, GTForm):
     class Meta:
         model = MenuItem
         fields = '__all__'
@@ -220,12 +226,13 @@ class GroupSearchForm(GTForm, forms.Form):
     )
 
 
-class GroupCreateForm(forms.ModelForm, GTForm):  
+class GroupCreateForm(forms.ModelForm, GTForm):
     class Meta:
         model = Group
         fields = [
-            'name', 'period', 'course', 'schedule', 'pre_enroll_start', 'pre_enroll_finish',
-            'enroll_start', 'enroll_finish', 'currency', 'cost', 'maximum', 'flow'
+            'name', 'period', 'course', 'schedule', 'pre_enroll_start',
+            'pre_enroll_finish', 'enroll_start', 'enroll_finish', 'currency',
+            'cost', 'maximum', 'flow'
         ]
         widgets = {
             'name': djgentelella.TextInput,
@@ -254,16 +261,16 @@ class GroupCreateForm(forms.ModelForm, GTForm):
 
 class EnrollSearchForm(GTForm, forms.Form):
     student = forms.ModelMultipleChoiceField(
-        queryset=Student.objects.all(), label="Estudiante", widget=djgentelella.SelectMultiple,
-        required=False
+        queryset=Student.objects.all(), label="Estudiante",
+        widget=djgentelella.SelectMultiple, required=False
     )
     group = forms.ModelMultipleChoiceField(
-        queryset=Group.objects.all(), widget=djgentelella.SelectMultiple, label="Grupo",
-        required=False
+        queryset=Group.objects.all(), widget=djgentelella.SelectMultiple,
+        label="Grupo", required=False
     )
 
 
-class EnrollCreateForm(forms.ModelForm, GTForm):  
+class EnrollCreateForm(forms.ModelForm, GTForm):
     class Meta:
         model = Enroll
         fields = [
@@ -287,22 +294,21 @@ class EnrollCreateForm(forms.ModelForm, GTForm):
 
 class StudentSearchForm(GTForm, forms.Form):
     student = forms.ModelMultipleChoiceField(
-        queryset=Student.objects.filter(user__is_active=True, user__is_superuser=False), 
-        label="Usuario", widget=djgentelella.SelectMultiple, required=False
+        queryset=Student.objects.all(),
+        label="Nombre estudiate", widget=djgentelella.SelectMultiple,
+        required=False
     )
 
 
 class StudentAdminCreateForm(forms.ModelForm, GTForm):
     user = forms.ModelChoiceField(
-        queryset=User.objects.filter(is_active=True, is_superuser=False), 
+        queryset=User.objects.filter(is_active=True),
         label="Usuario", widget=djgentelella.Select, required=True
     )
 
     class Meta:
         model = Student
-        fields = [
-            'user', 'confirmed_at', 'expired_at'
-        ]
+        fields = ['user', 'confirmed_at', 'expired_at']
         widgets = {
             'confirmed_at': djgentelella.DateInput,
             'expired_at': djgentelella.DateInput
@@ -316,7 +322,8 @@ class StudentAdminCreateForm(forms.ModelForm, GTForm):
 
 
 class PageSearchForm(GTForm, forms.Form):
-    slug = forms.CharField(label="Nombre", widget=djgentelella.TextInput, required=False)
+    slug = forms.CharField(
+        label="Nombre", widget=djgentelella.TextInput, required=False)
 
 
 class PageCreateForm(forms.ModelForm, GTForm):

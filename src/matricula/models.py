@@ -32,7 +32,10 @@ class Student(models.Model):
         return False
 
     def __str__(self):
-        return self.user.username
+        dev = self.user.username
+        if self.user.get_full_name():
+            dev = self.user.get_full_name()
+        return dev
 
 
 class Period(models.Model):
