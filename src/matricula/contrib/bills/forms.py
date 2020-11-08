@@ -44,13 +44,16 @@ class BillSearchForm(GTForm, forms.Form):
 class BillCreateForm(forms.ModelForm, GTForm):  
     class Meta:
         model = Bill
-        fields = '__all__'
+        fields = [
+                'short_description', 'description', 'amount', 'currency', 'student',
+                'is_paid', 'transaction_id'
+            ]
         widgets = {
             'short_description': djgentelella.TextInput,
             'description': djgentelella.Textarea,
             'amount': djgentelella.NumberInput,
-            'student': djgentelella.Select,
             'currency': djgentelella.Select(choices=Group.COURRENCY_CHOICES),
+            'student': djgentelella.Select,
             'is_paid': djgentelella.YesNoInput,
             'transaction_id': djgentelella.Textarea,
         }
