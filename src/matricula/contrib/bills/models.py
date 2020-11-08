@@ -1,7 +1,5 @@
 # encoding: utf-8
 from django.db import models
-from django.conf import settings
-from six import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from matricula.models import Student
 
@@ -21,8 +19,7 @@ class Bill(models.Model):
     amount = models.DecimalField(
         max_digits=10, decimal_places=2, verbose_name=_("Amount"))
     student = models.ForeignKey(
-        Student, verbose_name=_("Student"),
-        on_delete=models.CASCADE)
+        Student, verbose_name=_("Student"), on_delete=models.CASCADE)
     currency = models.CharField(
         max_length=3, verbose_name=_("Currency"), default="CRC")
     is_paid = models.BooleanField(default=False)

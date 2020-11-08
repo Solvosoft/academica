@@ -81,9 +81,9 @@ class Group(models.Model):
     AUTO_ENROLL = 2
 
     COURRENCY_CHOICES = (
-        ("USD", "US Dollar"),
+        ("USD", "Dolar"),
         ("EUR", "Euro"),
-        ("CRC", "Costa Rican Colon"),
+        ("CRC", "Colon Costa Rica"),
     )
 
     FLOWS = (
