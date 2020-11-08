@@ -45,8 +45,8 @@ class BillCreateForm(forms.ModelForm, GTForm):
     class Meta:
         model = Bill
         fields = [
-                'short_description', 'description', 'amount', 'currency', 'student',
-                'is_paid', 'transaction_id'
+                'short_description', 'description', 'amount', 'currency',
+                'student', 'is_paid', 'transaction_id'
             ]
         widgets = {
             'short_description': djgentelella.TextInput,
