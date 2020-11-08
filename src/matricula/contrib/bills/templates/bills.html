@@ -9,7 +9,7 @@
 {%block content%}
 	{% load i18n %}
 	{% if request.user.is_authenticated and not request.user.student %}
-		<h1>Facturas</h1>
+		<h1 class="text-center">Facturas</h1>
 		<form method="post" action="{% url 'add_student' %}">
 			{% csrf_token %}
 			<div class="alert alert-warning alert-dismissible" role="alert">
@@ -18,7 +18,7 @@
 			</div>
 		</form>
 	{% else %}
-		<h1> {% trans 'Unpaid bills' %}</h1>
+		<h1 class="text-center"> {% trans 'Unpaid bills' %}</h1>
 		<div class="x_panel">
 			{% for bill in not_paid%}
 				<div class="product_price">
@@ -43,7 +43,7 @@
 			<div class="clearfix"></div>
 		</div>
 
-		<h1> Facturas pagadas </h1>
+		<h1 class="text-center"> Facturas pagadas </h1>
 		<div class="x_panel">
 			{% for bill in paid %}
 				<div class="product_price">

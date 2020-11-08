@@ -1,8 +1,8 @@
 {% extends 'gentelella/base.html'%}
 {% load membership_code static %}
 {%block content%}
-	<h1>Categorías</h1>
 	<div class="row">
+		<h1 class="text-center">Categorías</h1>
 		<div class="col-md-6 col-sm-12 col-lg-8">
 			<div class="x_panel">
 				<div class="x_content">
@@ -88,12 +88,12 @@
 				<form method="POST">
 					{% csrf_token %}
 					<div class="x_title">
-						<h2 class="green">Editar categoría</h2>
+						<h2 class="text-center green">Editar categoría</h3>
 						<ul class="nav navbar-right panel_toolbox">
 						</ul>
 						<div class="clearfix"></div>
 					</div>
-					<div class="x_content">
+					<div class="x_content edit_item">
 						{{form}}
 					</div>
 					<div class="text-right">
@@ -104,4 +104,11 @@
 			</div>
 		</div>
 	</div>
+{%endblock%}
+{%block extra_css%}
+	<style>
+		.edit_item input[type=text], .edit_item textarea{
+			border: 1px solid red !important;
+		}
+	</style>
 {%endblock%}

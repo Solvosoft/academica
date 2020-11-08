@@ -11,7 +11,7 @@ from matricula.models import Course, Category, Group
 
 def list_courses(request):
 
-    cat = request.GET.get('cat', '')
+    cat = request.GET.get('cat', None)
     period = get_active_period()
 
     category = Category.objects.filter(course__group__period=period).distinct()

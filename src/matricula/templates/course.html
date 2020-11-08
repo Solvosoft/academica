@@ -1,7 +1,7 @@
 {% extends 'gentelella/base.html'%}
 {% load static %}
 {%block content%}
-	<h1>Detalles del Curso</h1>
+	<h1 class="text-center">Detalles del Curso</h1>
 	{% if request.user.is_authenticated and not request.user.student %}
 		<form method="post" action="{% url 'add_student' %}">
 			{% csrf_token %}

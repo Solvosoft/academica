@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 menu_sort = False
 main_menu = [
     (_("Courses"), 'courses', False, 0, True),
-    (_("Enrollment"), 'enrollment', True, 2, True),
+    ("Matricula", 'enrollment', True, 2, True),
 ]
 
 

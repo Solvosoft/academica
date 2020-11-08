@@ -1,8 +1,8 @@
 {% extends 'gentelella/base.html'%}
 {% load membership_code static %}
 {%block content%}
-	<h1>Categorías</h1>
 	<div class="row">
+		<h1 class="text-center">Categorías</h1>
 		{% if perms.matricula.add_category %}
 			<div class="col-md-6 col-sm-12 col-lg-8">
 		{% else %}
@@ -97,9 +97,8 @@
 					<form method="POST" action="{% url 'create_category' %}">
 						{% csrf_token %}
 						<div class="x_title">
-							<h2 class="green">Nueva categoría</h2>
-							<ul class="nav navbar-right panel_toolbox">
-							</ul>
+							<h2 class="green text-center">Nueva categoría</h2>
+							<ul></ul>
 							<div class="clearfix"></div>
 						</div>
 						<div class="x_content">
