@@ -1,7 +1,7 @@
 {% extends 'gentelella/base.html'%}
 {% load static utils membership_code %}
 {%block content %}
-	<h1 class="text-center">Facturas</h1>
+	<h1 class="text-center">Pagos</h1>
 	<div class="row">
 		{% if perms.bills.add_bill %}
 			<div class="col-sm-12 col-xs-12 col-lg-10 col-md-9">
@@ -27,7 +27,7 @@
 		</div>
 		<div class="col-sm-12 col-xs-12 col-lg-2 col-md-3">
 			{% if perms.bills.add_bill %}
-				<a class="btn btn-primary" href="{% url 'create_bill' %}">Crear Factura</a>
+				<a class="btn btn-primary" href="{% url 'create_bill' %}">Nuevo pago</a>
 			{% endif %}
 		</div>
 	</div>
@@ -38,7 +38,7 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title">¿Está segura que desea eliminar esta factura?</h4>
+						<h4 class="modal-title">¿Está segura que desea eliminar este pago?</h4>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
