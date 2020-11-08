@@ -12,20 +12,15 @@ from django.core.mail import send_mail
 from django.urls import reverse, reverse_lazy
 from django.conf import settings
 from django.contrib import messages
-from django.utils.translation import ugettext_lazy as _
 from django.contrib import auth
 from django.http.response import HttpResponse
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django_ajax.decorators import ajax
 from django.template.loader import render_to_string
-from django.template.context import RequestContext
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.models import User
-from datetime import datetime
 from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib import messages
-from django.http import HttpResponseRedirect
 from django.utils.timezone import now
 
 
@@ -196,7 +191,7 @@ def mail_recover_pass(request):
     email = request.POST.get('email', 'no-email')
     students = Student.objects.filter(user__email__exact=email)
     if students:
-        student = students[0] 
+        student = students[0]
         mail_body = render_to_string("email_recovery.html",
                 {
                  'url': request.build_absolute_uri(reverse('recover_password')),

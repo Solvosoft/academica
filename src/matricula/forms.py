@@ -301,24 +301,19 @@ class StudentSearchForm(GTForm, forms.Form):
 
 
 class StudentAdminCreateForm(forms.ModelForm, GTForm):
-    user = forms.ModelChoiceField(
-        queryset=User.objects.filter(is_active=True),
-        label="Usuario", widget=djgentelella.Select, required=True
+    username = forms.CharField(
+        label="Nombre de usuario", widget=djgentelella.TextInput, required=True
     )
+    first_name = forms.CharField(
+        label="Nombres", widget=djgentelella.TextInput, required=True)
+    last_name = forms.CharField(
+        label="Apellidos", widget=djgentelella.TextInput, required=True)
+    email = forms.CharField(
+        label="Correo", widget=djgentelella.EmailMaskInput, required=True)
 
     class Meta:
-        model = Student
-        fields = ['user', 'confirmed_at', 'expired_at']
-        widgets = {
-            'confirmed_at': djgentelella.DateInput,
-            'expired_at': djgentelella.DateInput
-        }
-
-    def __init__(self, *args, **kwargs):
-        super(StudentAdminCreateForm, self).__init__(*args, **kwargs)
-        if 'initial' in kwargs:
-            if 'user_id' in kwargs['initial']:
-                self.fields['user'].initial = kwargs['initial']['user_id']
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email']
 
 
 class PageSearchForm(GTForm, forms.Form):

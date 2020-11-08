@@ -19,9 +19,10 @@ from .views.admin_views import CategoryList, create_category,\
     CategoryDelete, edit_category, CourseList, create_course,\
     CourseDelete, edit_course, MenuItemList, create_menuitem, MenuItemDelete,\
     edit_menuitem, PeriodList, create_period, edit_period, PeriodDelete,\
-    GroupList, create_group, edit_group, GroupDelete, EnrollList, create_enroll,\
-    edit_enroll, EnrollDelete, StudentList, create_student, edit_student, StudentDelete,\
-    PageList, create_page, edit_page, PageDelete, export_group
+    GroupList, create_group, edit_group, GroupDelete, EnrollList,\
+    create_enroll, edit_enroll, EnrollDelete, StudentList, create_student,\
+    edit_student, StudentDelete, PageList, create_page, edit_page, PageDelete,\
+    export_group, recovery_pass_student
 from matricula.contrib.bills.urls import urlpatterns as billurls
 
 urlpatterns = [
@@ -68,6 +69,7 @@ urlpatterns = [
     path('enrrolment/delete_enroll/<int:pk>/', EnrollDelete.as_view() , name="delete_enroll"),
     path('enrrolment/edit_enroll/<int:pk>/', edit_enroll, name="edit_enroll"),
     url('enrrolment/students', StudentList.as_view(), name="students"),
+    path('enrrolment/recovery_pass_student/<int:pk>/', recovery_pass_student, name="recovery_pass_student"),
     url('enrrolment/create_student', create_student, name="create_student"),
     path('enrrolment/delete_student/<int:pk>/', StudentDelete.as_view() , name="delete_student"),
     path('enrrolment/edit_student/<int:pk>/', edit_student, name="edit_student"),

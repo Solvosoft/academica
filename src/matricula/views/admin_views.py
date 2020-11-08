@@ -4,15 +4,17 @@ Created on 18/10/2020
 
 @author: allexiusw
 '''
+from django.conf import settings
 from django.views.generic import ListView, DeleteView
+from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render
 from matricula.models import Category, Course, MenuItem, Period, Group,\
     Enroll, Student, Page
 from matricula.forms import CategoryCreateForm, CategorySearchForm,\
     CourseSearchForm, CourseCreateForm, MenuItemSearchForm,\
-    MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, GroupSearchForm,\
-    EnrollSearchForm, EnrollCreateForm, StudentSearchForm, StudentAdminCreateForm, PageCreateForm,\
-    PageSearchForm
+    MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm,\
+    GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentSearchForm,\
+    StudentAdminCreateForm, PageCreateForm, PageSearchForm
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -23,7 +25,9 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 import csv
 from django.http import HttpResponse
-
+from django.utils.timezone import now
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
 
 @method_decorator(permission_required('matricula.view_category'), name='dispatch')
 class CategoryList(ListView):
@@ -625,7 +629,28 @@ def create_student(request):
         form = StudentAdminCreateForm(request.POST)
         context['form'] = form
         if form.is_valid():
-            form.save()
+            user = User(
+                username=form.cleaned_data['username'],
+                first_name=form.cleaned_data['first_name'],
+                last_name=form.cleaned_data['last_name'],
+                email=form.cleaned_data['email'],
+                is_active=True)
+            user.save()
+            student = Student(user=user, created_at=now(), confirmed_at=now())
+            student.save()
+            mail_body = render_to_string("set_email_first.html", {
+                'url': request.build_absolute_uri(
+                    reverse('recover_password')),
+                'user': user, 'student': student})
+            send_mail(
+                "Configurar contraseña inicial",
+                'Url for recover %s?id=%d&key=%s' % (
+                    request.build_absolute_uri(
+                        reverse('recover_password')),
+                    user.pk,
+                    student.key),
+                settings.DEFAULT_FROM_EMAIL, [user.email],
+                html_message=mail_body)
             messages.success(request, "Estudiante guardada con éxito")
             return HttpResponseRedirect(reverse('students'))
         else:
@@ -637,10 +662,10 @@ def create_student(request):
 
 @permission_required('matricula.change_student')
 def edit_student(request, pk=None):
-    context = {}
     if pk is not None:
         if request.method == "POST":
-            instance = Student.objects.get(pk=pk)
+            instance = User.objects.get(pk=pk)
+            print(request.POST)
             form = StudentAdminCreateForm(request.POST, instance=instance)
             if form.is_valid():
                 messages.success(request, "Estudiante guardada con éxito")
@@ -652,7 +677,7 @@ def edit_student(request, pk=None):
                     request, 'students/student_update.html', {'form': form})
         else:
             if request.method == "GET":
-                instance = Student.objects.get(pk=pk)
+                instance = User.objects.get(pk=pk)
                 form = StudentAdminCreateForm(initial=instance.__dict__)
                 return render(
                     request, 'students/student_update.html', {'form': form})
@@ -679,6 +704,30 @@ class StudentDelete(DeleteView):
         user.save()
         messages.success(self.request, self.success_message)
         return super(StudentDelete, self).delete(request, *args, **kwargs)
+
+
+@permission_required('matricula.can_recovery_pass_student')
+def recovery_pass_student(request, pk=None):
+    if(pk is not None):
+        student = Student.objects.get(pk=pk)
+        if student:
+            mail_body = render_to_string("email_recovery.html",
+                    {
+                    'url': request.build_absolute_uri(reverse('recover_password')),
+                    'user': student.user,
+                    'student': student
+                    })
+            send_mail(_('Password recovery'),
+                        'Url for recover %s?id=%d&key=%s' % (request.build_absolute_uri(reverse('recover_password')),
+                                                student.user.pk,
+                                                student.key
+                                                ),
+                        settings.DEFAULT_FROM_EMAIL, [student.user.email],
+                        html_message=mail_body)
+            messages.success(request, "Se ha enviado correo de recuperación de contraseña.")
+        else:
+            messages.error(request, "El usuario no fue encontrado")
+    return HttpResponseRedirect(reverse('students'))
 
 
 @method_decorator(permission_required('matricula.view_page'), name='dispatch')
