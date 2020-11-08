@@ -200,8 +200,8 @@
                 <ul class="nav side-menu">
                     <li>
                         <a>
-                            <i class="fa fa-credit-card"></i>
-                            Facturas
+                            <i class="fa fa-money"></i>
+                            Pagos
                             <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">
@@ -209,7 +209,7 @@
                                 <li><a href="{% url 'colonexchange' %}">Intercambio de Moneda</a></li>
                             {% endif %}
                             {% if perms.bills.view_bill %}
-                                <li><a href="{% url 'listbills' %}">Facturas</a></li>
+                                <li><a href="{% url 'listbills' %}">Lista de pagos</a></li>
                             {% endif %}
                         </ul>
                     </li>
