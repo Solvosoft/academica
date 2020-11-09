@@ -50,7 +50,7 @@
 		<div class="col-md-6 col-lg-4 col-sm-6 col-xs-12">
 			<div class="x_panel">
 				<div class="x_title">
-					<h2 class="green">{{object.slug|wordwrap:100}}</h2>
+					<h2 class="green">{{object.title|wordwrap:100}}</h2>
 					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
 						{% if perms.matricula.change_enroll %}
 							<li>
@@ -65,17 +65,11 @@
 				</div>
 				<div class="x_content">
 					<div class="row">
-						<div class="col-md-12 col-sm-12 col-xs-12">
-							{% for obj in object.multilingualcontent_set.all %}
-								<ul class="list-unstyled user_data">
-									<li><strong>Idioma: </strong>{{obj.language}}</li>
-									<li><strong>Título: </strong>{{obj.title}}</li>
-								</ul>
-							{% empty %}
-								<ul class="list-unstyled user_data">
-									<li><strong>Sin traducciones:</strong></li>
-								</ul>
-							{% endfor %}
+						<div>
+							<ul class="list-unstyled user_data">
+								<li><strong>Slug: </strong>{{object.slug}}</li>
+								<li><strong>Contenido: </strong>{{object.content|safe|striptags}}</li>
+							</ul>
 						</div>
 					</div>
 				</div>
