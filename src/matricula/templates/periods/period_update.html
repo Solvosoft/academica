@@ -94,7 +94,7 @@
 						</ul>
 						<div class="clearfix"></div>
 					</div>
-					<div class="x_content">
+					<div class="x_content edit_item">
 						{{form}}
 					</div>
 					<div class="text-right">
@@ -105,4 +105,11 @@
 			</div>
 		</div>
 	</div>
+{%endblock%}
+{%block extra_css%}
+	<style>
+		.edit_item #id_name, .edit_item .input-group.date{
+			border: 1px solid red !important;
+		}
+	</style>
 {%endblock%}
