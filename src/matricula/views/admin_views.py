@@ -775,8 +775,9 @@ def create_page(request):
                 slug=form.cleaned_data['slug'])
             page.save()
             if form.cleaned_data['create_menu']:
+                menu_form.is_valid()
                 menu = MenuItem(
-                    name=page.slug,
+                    name=page.pk,
                     description=menu_form.cleaned_data['description'],
                     order=menu_form.cleaned_data['order'],
                     is_index=menu_form.cleaned_data['is_index'],
