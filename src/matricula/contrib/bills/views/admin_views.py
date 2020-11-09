@@ -7,7 +7,8 @@ Created on 18/10/2020
 from django.views.generic import ListView, DeleteView
 from django.shortcuts import render
 from ..models import ColonExchange, Bill
-from ..forms import ColonExchangeCreateForm, BillSearchForm, BillCreateForm
+from ..forms import ColonExchangeCreateForm, BillSearchForm, BillCreateForm,\
+    ColonExchangeSearchForm
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -24,6 +25,19 @@ class ColonExchangeList(ListView):
     def dispatch(self, *args, **kwargs):
         """ Permission check for this class """
         return super(ColonExchangeList, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.form = ColonExchangeSearchForm(self.request.GET)
+        self.form.is_valid()
+        if self.form.cleaned_data['is_dolar']:
+            queryset = queryset.filter(is_dolar=self.form.cleaned_data['is_dolar'])
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_search'] = ColonExchangeSearchForm(self.request.GET)
+        return context
 
 
 @permission_required('bills.add_colonexchange')

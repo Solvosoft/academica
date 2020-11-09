@@ -12,6 +12,12 @@ from djgentelella.widgets import core as djgentelella
 from djgentelella.forms.forms import GTForm
 
 
+class ColonExchangeSearchForm(GTForm, forms.Form):
+    is_dolar = forms.CharField(
+        required=False, widget=djgentelella.TextInput,
+        label="Monto")
+
+
 class ColonExchangeCreateForm(forms.ModelForm, GTForm):
     class Meta:
         model = ColonExchange
