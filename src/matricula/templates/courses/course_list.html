@@ -4,19 +4,18 @@
 	<h1 class="text-center">Cursos</h1>
 	<div class="row">
 		{% if perms.matricula.add_course %}
-			<div class="col-sm-12 col-lg-10 col-md-9">
+			<div class="col-sm-12 col-md-9 col-md-offset-1">
 		{% else %}
-			<div class="col-sm-12 col-lg-12 col-md-12">
+			<div class="col-sm-12 col-md-10 col-md-offset-1">
 		{% endif %}
 			<div class="x_panel">
 				<div class="x_content">
 					<form method="GET" action="{% url 'enrrolment_courses'%}">
 						<div class="col-lg-6 col-md-6 col-sm-12">
-							<label>Nombre:</label> {{form_search.name}}
+							{% include 'field.html' with field=form_search.name %}
 						</div>
 						<div class="col-lg-6 col-md-6 col-sm-12">
-							<label>Categoría</label>
-							{{form_search.category}}
+							{% include 'field.html' with field=form_search.category %}
 						</div>
 						<div class="text-right">
 							<a style="margin-top:10px;" href="{% url 'enrrolment_courses' %}" class="btn btn-dark">Limpiar</a>
