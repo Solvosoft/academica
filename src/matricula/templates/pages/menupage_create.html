@@ -4,11 +4,11 @@
 	<h1 class="text-center">Páginas</h1>
 	<div class="row">
 		<form method="POST">
-			<div div class="col-md-8">
+			<div div class="col-md-8 col-md-offset-2">
 				<div class="x_panel">
 					{% csrf_token %}
 					<div class="x_title">
-						<h2 class="green">Crear página</h2>
+						<h2 class="green">Crear menú</h2>
 						<div class="clearfix"></div>
 					</div>
 					<div class="x_content">
@@ -20,17 +20,6 @@
 							<input class="btn btn-primary" value="Guardar" type="submit"/>
 						</div>
 						<div class="clearfix"></div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="x_panel">
-					<div class="x_title">
-						<h2 class="green text-center">Agregar página al menú</h2>
-						<div class="clearfix"></div>
-					</div>
-					<div id="create_menu_form" class="x_content">
-						{{menu_form.as_horizontal}}
 					</div>
 				</div>
 			</div>

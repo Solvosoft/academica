@@ -46,6 +46,24 @@
 		</div>
 		<!-- end delete modal-->
 	{% endif %}
+	{% if perms.matricula.delete_page %}
+		<!-- modal delete category -->
+		<div id="modaldeletemenu" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">¿Está segura que desea eliminar el menú?</h4>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+						<a class="btn btn-danger" id="deletemenu">Eliminar</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end delete modal-->
+	{% endif %}
 	{% for object in object_list %}
 		<div class="col-md-6 col-lg-4 col-sm-6 col-xs-12">
 			<div class="x_panel">
@@ -69,6 +87,14 @@
 							<ul class="list-unstyled user_data">
 								<li><strong>Slug: </strong>{{object.slug}}</li>
 								<li><strong>Contenido: </strong>{{object.content|safe|striptags}}</li>
+								<li>
+									<strong>Menú: </strong>
+									{% if object.menu %}
+										<a href="#" data-url="{% url 'delete_menupage' pk=object.menu.pk %}" onclick="deletemenu(this)"><i class="fa fa-close"></i></a>
+									{% else %}
+										<a href="{% url 'create_menupage' pk=object.pk %}" ><i class="fa fa-plus"></i></a>
+									{% endif %}
+								</li>
 							</ul>
 						</div>
 					</div>
@@ -102,16 +128,27 @@
 	</div>
 	<div class="clearfix"></div>
 {%endblock%}
+{% block js %}
 {% if perms.matricula.delete_enroll %}
-	{% block js %}
-		<script type="text/javascript">
-			function deleteitem(element){
-				$(function(){
-					$("#deleteitem").attr("href", $(element).data('url'));
-					$("#modaldeleteitem").modal();
-				});
-				return false
-			}
-		</script>
-	{% endblock js%}
+	<script type="text/javascript">
+		function deleteitem(element){
+			$(function(){
+				$("#deleteitem").attr("href", $(element).data('url'));
+				$("#modaldeleteitem").modal();
+			});
+			return false
+		}
+	</script>
 {% endif %}
+{% if perms.matricula.delete_enroll %}
+	<script type="text/javascript">
+		function deletemenu(element){
+			$(function(){
+				$("#deletemenu").attr("href", $(element).data('url'));
+				$("#modaldeletemenu").modal();
+			});
+			return false
+		}
+	</script>
+{% endif %}
+	{% endblock js%}

@@ -315,9 +315,10 @@ class PageSearchForm(GTForm, forms.Form):
 
 class PageCreateForm(forms.ModelForm, GTForm):
     create_menu = forms.BooleanField(
-        required=True, widget=djgentelella.YesNoInput(
+        required=False, widget=djgentelella.YesNoInput(
             attrs={'rel': ['#create_menu_form']}, shparent='.x_panel'),
-        label="Agregar al menú?")
+        label="¿Agregar página al menú?")
+    content = forms.CharField(required=False, widget=widget.TextareaWysiwyg)
 
     class Meta:
         model = Page
@@ -325,11 +326,13 @@ class PageCreateForm(forms.ModelForm, GTForm):
         widgets = {
             'slug': djgentelella.TextInput,
             'title': djgentelella.TextInput,
-            'content': widget.TextareaWysiwyg
         }
 
 
 class MenuItemAddForm(forms.ModelForm, GTForm):
+    description = forms.CharField(required=False, widget=djgentelella.Textarea)
+    order = forms.IntegerField(required=False, widget=djgentelella.NumberInput)
+
     class Meta:
         model = MenuItem
         fields = [
@@ -337,9 +340,7 @@ class MenuItemAddForm(forms.ModelForm, GTForm):
             'parent', 'publicated', 'is_index'
         ]
         widgets = {
-            'description': djgentelella.Textarea,
             'require_authentication': djgentelella.YesNoInput,
-            'order': djgentelella.NumberInput,
             'parent': djgentelella.Select,
             'publicated': djgentelella.YesNoInput,
             'is_index': djgentelella.YesNoInput

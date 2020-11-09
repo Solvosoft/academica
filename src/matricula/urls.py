@@ -22,7 +22,7 @@ from .views.admin_views import CategoryList, create_category,\
     GroupList, create_group, edit_group, GroupDelete, EnrollList,\
     create_enroll, edit_enroll, EnrollDelete, StudentList, create_student,\
     edit_student, StudentDelete, PageList, create_page, edit_page, PageDelete,\
-    export_group, recovery_pass_student
+    export_group, recovery_pass_student, MenuPageDelete, create_menupage
 from matricula.contrib.bills.urls import urlpatterns as billurls
 
 urlpatterns = [
@@ -75,6 +75,8 @@ urlpatterns = [
     path('enrrolment/edit_student/<int:pk>/', edit_student, name="edit_student"),
     url('enrrolment/pages', PageList.as_view(), name="pages"),
     url('enrrolment/create_page', create_page, name="create_page"),
+    path('enrrolment/create_menupage/<int:pk>/', create_menupage, name="create_menupage"),
+    path('enrrolment/delete_menu_page/<int:pk>/', MenuPageDelete.as_view(), name="delete_menupage"),
     path('enrrolment/delete_page/<int:pk>/', PageDelete.as_view() , name="delete_page"),
     path('enrrolment/edit_page/<int:pk>/', edit_page, name="edit_page"),
 ] + billurls

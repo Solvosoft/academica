@@ -751,6 +751,12 @@ class PageList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form_search'] = PageSearchForm(self.request.GET)
+        pages = []
+        for page in self.get_queryset():
+            page.menu = MenuItem.objects.filter(
+                type=1, name=page.slug).first()
+            pages.append(page)
+        context['object_list'] = pages
         return context
 
 
@@ -762,23 +768,24 @@ def create_page(request):
         context['form'] = form
         menu_form = MenuItemAddForm(request.POST)
         context['menu_form'] = menu_form
-        if form.is_valid() and menu_form.is_valid():
+        if form.is_valid():
             page = Page(
                 title=form.cleaned_data['title'],
                 content=form.cleaned_data['content'],
                 slug=form.cleaned_data['slug'])
             page.save()
-            menu = MenuItem(
-                name=page.slug,
-                description=menu_form.cleaned_data['description'],
-                order=menu_form.cleaned_data['order'],
-                is_index=menu_form.cleaned_data['is_index'],
-                type=1,
-                require_authentication=menu_form.cleaned_data['require_authentication'],
-                parent=menu_form.cleaned_data['parent'],
-                publicated=menu_form.cleaned_data['publicated']
-            )
-            menu.save()
+            if form.cleaned_data['create_menu']:
+                menu = MenuItem(
+                    name=page.slug,
+                    description=menu_form.cleaned_data['description'],
+                    order=menu_form.cleaned_data['order'],
+                    is_index=menu_form.cleaned_data['is_index'],
+                    type=1,
+                    require_authentication=menu_form.cleaned_data['require_authentication'],
+                    parent=menu_form.cleaned_data['parent'],
+                    publicated=menu_form.cleaned_data['publicated']
+                )
+                menu.save()
             messages.success(request, "Página guardada con éxito")
             return HttpResponseRedirect(reverse('pages'))
         else:
@@ -787,6 +794,37 @@ def create_page(request):
         context['form'] = PageCreateForm()
         context['menu_form'] = MenuItemAddForm()
     return render(request, 'pages/page_create.html', context)
+
+
+@permission_required('matricula.add_page')
+def create_menupage(request, pk=None):
+    context = {}
+    if pk is not None:
+        if request.method == 'POST':
+            form = MenuItemAddForm(request.POST)
+            if form.is_valid():
+                page = Page.objects.get(pk=pk)
+                menu = MenuItem(
+                    name=page.slug,
+                    description=form.cleaned_data['description'],
+                    order=form.cleaned_data['order'],
+                    is_index=form.cleaned_data['is_index'],
+                    type=1,
+                    require_authentication=form.cleaned_data['require_authentication'],
+                    parent=form.cleaned_data['parent'],
+                    publicated=form.cleaned_data['publicated']
+                )
+                menu.save()
+                messages.success(request, "Menú guardado con éxito")
+                return HttpResponseRedirect(reverse('pages'))
+            else:
+                messages.error(request, "Error al guardar el menú")
+        else:
+            context['form'] = MenuItemAddForm()
+    else:
+        messages.error("Página no encontrada")
+        return HttpResponseRedirect(reverse('pages'))
+    return render(request, 'pages/menupage_create.html', context)
 
 
 @permission_required('matricula.change_page')
@@ -827,3 +865,21 @@ class PageDelete(DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super(PageDelete, self).delete(request, *args, **kwargs)
+
+
+@method_decorator(permission_required('matricula.delete_page'), name='dispatch')
+class MenuPageDelete(DeleteView):
+    model = MenuItem
+    success_url = "/matricula/enrrolment/pages"
+    success_message = "Menú eliminado con éxito"
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(MenuPageDelete, self).dispatch(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(MenuPageDelete, self).delete(request, *args, **kwargs)
