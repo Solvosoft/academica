@@ -293,3 +293,6 @@ SOCIALACCOUNT_PROVIDERS = {
     },
 }
 # end allauth configurations
+PAYPAL_TEST = True
+PAYPAL_RECEIVER_EMAIL = "luisza14-buyer@gmail.com"
+MY_PAYPAL_HOST = "http://academica.ngrok.io"
