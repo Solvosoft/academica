@@ -162,10 +162,9 @@ class Enroll(models.Model):
 
 class MenuItem(models.Model):
     TYPES = (
-             (0, _("Internal")),
-             (1, _("Page")),
-             (2, _("Do not used "))
-             )
+        (0, _("Internal")),
+        (1, _("Page")),
+        (2, "No utilizar"))
     name = models.CharField(max_length=50, verbose_name="Nombre")
     type = models.SmallIntegerField(
         choices=TYPES, default=0, verbose_name=_("Type"))

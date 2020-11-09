@@ -30,7 +30,7 @@
 		</div>
 		<div class="col-sm-12 col-xs-12 col-lg-2 col-md-3">
 			{% if perms.matricula.add_menuitem %}
-				<a class="btn btn-primary" href="{% url 'create_menuitem' %}">Crear elemento del menú</a>
+				<a class="btn btn-primary" href="{% url 'create_menuitem' %}">Crear menú</a>
 			{% endif %}
 		</div>
 	</div>
@@ -87,7 +87,7 @@
 						<div class="col-md-6 col-sm-6 col-xs-6">
 							<p><strong>Tipo: </strong>{{ menuitem.TYPES|index:menuitem.type|index:1}}</p>
 							<p><strong>Orden: </strong>{{menuitem.order}}</p>
-							<p><strong>Padre: </strong>{{menuitem.parent}}</p>
+							<p><strong>Padre: </strong>{% if menuitem.parent %}{{menuitem.parent}}{%else%}Ninguno{%endif%}</p>
 						</div>
 					</div>
 				</div>
