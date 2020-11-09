@@ -8,7 +8,7 @@
 				<div class="x_content">
 					<form method="GET" action="{% url 'categories'%}">
 						<div>
-							{{form_search.as_inline}}
+							{% include 'field.html' with field=form_search.name %}
 						</div>
 						<div class="text-right">
 							<a style="margin-top:10px;" href="{% url 'categories' %}" class="btn btn-dark">Limpiar</a>

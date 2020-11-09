@@ -44,7 +44,8 @@ class StudentCreateForm(GTForm, forms.ModelForm):
     class Meta:
         model = Student
         fields = [
-            'name', 'first_name', 'last_name', 'email', 'password', 'password_check']
+            'name', 'first_name', 'last_name', 'email',
+            'password', 'password_check']
         widgets = {
             'last_name': djgentelella.TextInput,
             'email': djgentelella.EmailInput
@@ -88,8 +89,9 @@ class MenuItemFormPage(forms.ModelForm):
     class Meta:
         model = MenuItem
         exclude = ("name",)
-        fields = ["name", 'type', 'description', 'require_authentication',
-                  'order', 'parent', 'publicated', 'is_index']
+        fields = [
+            "name", 'type', 'description', 'require_authentication',
+            'order', 'parent', 'publicated', 'is_index']
 
 
 class CategoryCreateForm(forms.ModelForm, GTForm):
@@ -102,23 +104,16 @@ class CategoryCreateForm(forms.ModelForm, GTForm):
         }
 
 
-class CategorySearchForm(forms.ModelForm, GTForm):
+class CategorySearchForm(GTForm, forms.Form):
     name = forms.CharField(
         label='Término de búsqueda', required=False,
-        widget=djgentelella.TextInput(attrs={
-            'placeholder': "Ingrese el término de búsqueda",
-        }))
-
-    class Meta:
-        model = Category
-        fields = ['name']
+        widget=djgentelella.TextInput)
 
 
 class CourseSearchForm(GTForm, forms.Form):
     name = forms.CharField(
         label='Término de búsqueda', required=False,
-        widget=djgentelella.TextInput
-    )
+        widget=djgentelella.TextInput)
     category = forms.ModelMultipleChoiceField(
         queryset=Category.objects.all(), widget=djgentelella.SelectMultiple,
         required=False, label="Categoría")
