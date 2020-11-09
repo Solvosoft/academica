@@ -97,7 +97,7 @@ class CategoryCreateForm(forms.ModelForm, GTForm):
         model = Category
         fields = '__all__'
         widgets = {
-            'name': djgentelella.TextInput(attrs={'placeholder':"Nombre categoría"}),
+            'name': djgentelella.TextInput,
             'description': djgentelella.Textarea,
         }
 
