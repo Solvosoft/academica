@@ -9,8 +9,6 @@
             {% if not request.user.is_authenticated %}
 			    <li><a href="{% url "login" %}">Iniciar sesión</a><li>
 				<li><a href="{% url "create_user" %}">Registrarme</a><li>
-            {% else %}
-                <li><a href="{% url "logout" %}">Cerrar sesión</a><li>
             {% endif %}
 		</ul>
 	</div>
