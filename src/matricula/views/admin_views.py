@@ -14,7 +14,7 @@ from matricula.forms import CategoryCreateForm, CategorySearchForm,\
     CourseSearchForm, CourseCreateForm, MenuItemSearchForm,\
     MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm,\
     GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentSearchForm,\
-    StudentAdminCreateForm, PageCreateForm, PageSearchForm
+    StudentAdminCreateForm, PageCreateForm, PageSearchForm, MenuItemAddForm
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -760,14 +760,32 @@ def create_page(request):
     if request.method == 'POST':
         form = PageCreateForm(request.POST)
         context['form'] = form
-        if form.is_valid():
-            form.save()
+        menu_form = MenuItemAddForm(request.POST)
+        context['menu_form'] = menu_form
+        if form.is_valid() and menu_form.is_valid():
+            page = Page(
+                title=form.cleaned_data['title'],
+                content=form.cleaned_data['content'],
+                slug=form.cleaned_data['slug'])
+            page.save()
+            menu = MenuItem(
+                name=page.slug,
+                description=menu_form.cleaned_data['description'],
+                order=menu_form.cleaned_data['order'],
+                is_index=menu_form.cleaned_data['is_index'],
+                type=1,
+                require_authentication=menu_form.cleaned_data['require_authentication'],
+                parent=menu_form.cleaned_data['parent'],
+                publicated=menu_form.cleaned_data['publicated']
+            )
+            menu.save()
             messages.success(request, "Página guardada con éxito")
             return HttpResponseRedirect(reverse('pages'))
         else:
             messages.error(request, "Error al guardar la página")
     else:
         context['form'] = PageCreateForm()
+        context['menu_form'] = MenuItemAddForm()
     return render(request, 'pages/page_create.html', context)
 
 
