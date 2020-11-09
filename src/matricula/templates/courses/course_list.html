@@ -51,7 +51,7 @@
 		{% endif %}
 		{% for course in object_list %}
 			<div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
-				<div class="x_panel">
+				<div class="x_panel" style="height:175px;word-break: break-all;">
 					<div class="x_title">
 						<h2 class="green">{{course.category.name|wordwrap:20}}</h2>
 						<ul class="nav navbar-right panel_toolbox" style="min-width: unset;">
@@ -72,7 +72,7 @@
 								<strong>Curso: </strong>{{course.name}}
 							</li>
 							<li>
-								<strong>Contenido: </strong>{{course.content|safe|striptags}}
+								<strong>Contenido: </strong>{{course.content|safe|striptags|truncatechars:200}}
 							</li>
 						</ul>
 					</div>
