@@ -51,10 +51,10 @@
 			<!-- end delete modal-->
 		{% endif %}
 		{% for course in object_list %}
-			<div class="col-md-6 col-lg-4 col-sm-12">
+			<div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
 				<div class="x_panel">
 					<div class="x_title">
-						<h2 class="green">{{course.name}}</h2>
+						<h2 class="green">{{course.category.name|wordwrap:20}}</h2>
 						<ul class="nav navbar-right panel_toolbox" style="min-width: unset;">
 							{% if perms.matricula.change_course %}
 								<li>
@@ -70,7 +70,7 @@
 					<div class="x_content">
 						<ul class="list-unstyled user_data">
 							<li>
-								<strong>Categoría: </strong>{{course.category.name}}
+								<strong>Curso: </strong>{{course.name}}
 							</li>
 							<li>
 								<strong>Contenido: </strong>{{course.content|safe|striptags}}
