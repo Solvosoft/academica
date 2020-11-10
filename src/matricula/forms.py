@@ -266,14 +266,13 @@ class EnrollCreateForm(forms.ModelForm, GTForm):
     class Meta:
         model = Enroll
         fields = [
-            'student', 'group', 'enroll_finished', 'enroll_activate', 'bill_created'
+            'student', 'group', 'enroll_finished', 'enroll_activate',
         ]
         widgets = {
             'student': djgentelella.Select,
             'group': djgentelella.Select,
             'enroll_finished': djgentelella.YesNoInput,
             'enroll_activate': djgentelella.YesNoInput,
-            'bill_created': djgentelella.YesNoInput
         }
 
     def __init__(self, *args, **kwargs):
@@ -328,6 +327,12 @@ class PageCreateForm(forms.ModelForm, GTForm):
             'slug': djgentelella.TextInput,
             'title': djgentelella.TextInput,
         }
+
+    def __init__(self, *args, **kwargs):
+        edit_page = kwargs.pop('edit_page', False)
+        super(PageCreateForm, self).__init__(*args, **kwargs)
+        if edit_page:
+            del self.fields['create_menu']
 
 
 class MenuItemAddForm(forms.ModelForm, GTForm):
