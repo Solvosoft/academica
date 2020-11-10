@@ -873,7 +873,7 @@ def edit_page(request, pk=None):
         else:
             if request.method == "GET":
                 instance = Page.objects.get(pk=pk)
-                context['form'] = PageCreateForm(initial=instance.__dict__)
+                context['form'] = PageCreateForm(initial=instance.__dict__, edit_page=True)
                 return render(request, 'pages/page_update.html', context)
     return HttpResponseRedirect(reverse('pages'))
 
