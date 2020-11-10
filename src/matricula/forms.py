@@ -318,7 +318,8 @@ class PageCreateForm(forms.ModelForm, GTForm):
         required=False, widget=djgentelella.YesNoInput(
             attrs={'rel': ['#create_menu_form']}, shparent='.x_panel'),
         label="¿Agregar página al menú?")
-    content = forms.CharField(required=False, widget=widget.TextareaWysiwyg)
+    content = forms.CharField(
+        required=False, widget=widget.TextareaWysiwyg, label="Contenido")
 
     class Meta:
         model = Page
