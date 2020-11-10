@@ -328,6 +328,12 @@ class PageCreateForm(forms.ModelForm, GTForm):
             'title': djgentelella.TextInput,
         }
 
+    def __init__(self, *args, **kwargs):
+        edit_page = kwargs.pop('edit_page', False)
+        super(PageCreateForm, self).__init__(*args, **kwargs)
+        if edit_page:
+            del self.fields['create_menu']
+
 
 class MenuItemAddForm(forms.ModelForm, GTForm):
     description = forms.CharField(required=False, widget=djgentelella.Textarea)
