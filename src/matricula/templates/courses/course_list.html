@@ -1,5 +1,8 @@
 {% extends 'gentelella/base.html'%}
 {% load membership_code static %}
+{% block pre_head%}
+	<meta charset="UTF-8">
+{% endblock%}
 {%block content%}
 	<h1 class="text-center">Cursos</h1>
 	<div class="row">
@@ -51,7 +54,7 @@
 		{% endif %}
 		{% for course in object_list %}
 			<div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
-				<div class="x_panel" style="height:175px;word-break: break-all;">
+				<div class="x_panel" style="height:200px;word-break: break-all;">
 					<div class="x_title">
 						<h2 class="green">{{course.category.name|wordwrap:20}}</h2>
 						<ul class="nav navbar-right panel_toolbox" style="min-width: unset;">
@@ -72,7 +75,9 @@
 								<strong>Curso: </strong>{{course.name}}
 							</li>
 							<li>
-								<strong>Contenido: </strong>{{course.content|safe|striptags|truncatechars:200}}
+								<a href="#" style="cursor:pointer; display:inline-block;" data-placement="top" data-toggle="tooltip" data-original-title="{{course.content|safe|striptags}}">
+									<strong>Contenido: </strong>{{course.content|safe|striptags|truncatechars:175}}
+								</a>
 							</li>
 						</ul>
 					</div>
@@ -105,16 +110,25 @@
 		</div>
 	</div>
 {%endblock%}
-{% if perms.matricula.delete_course %}
-	{% block js %}
+{% block js %}
+	{% if perms.matricula.delete_course %}
 		<script type="text/javascript">
-			function deleteitem(element){
-				$(function(){
+			$(document).ready(function(){
+				function deleteitem(element){
 					$("#deleteitem").attr("href", $(element).data('url'));
 					$("#modaldeleteitem").modal();
-				});
-				return false
-			}
+					return false
+				}
+			});
 		</script>
-	{% endblock js%}
-{% endif %}
+	{% endif %}
+	<script>
+		// Tooltip
+		$(document).ready(function () {
+			$('[data-toggle="tooltip"]').tooltip({
+				container: 'body'
+			});
+		});
+		// /Tooltip
+	</script>
+{% endblock js%}
