@@ -444,16 +444,10 @@ def pre_enroll_group(request, pk=None):
             if group:
                 form = PreEnrollAddGroupForm(request.POST)
                 if form.is_valid():
-                    print(form.cleaned_data)
                     enroll = Enroll.objects.filter(pk__in=form.cleaned_data['students'])
-                    if form.cleaned_data['action'] == "Matricular":
-                        for instance in enroll:
-                            instance.enroll_finished = True
-                            instance.save()
-                    else:
-                        for instance in enroll:
-                            instance.bill_created = True
-                            instance.save()
+                    for instance in enroll:
+                        instance.enroll_finished = True
+                        instance.save()
                     messages.success(request, "Estudiantes inscritos con éxito")
                     return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
             messages.error(request, "Error al realizar la acción")
