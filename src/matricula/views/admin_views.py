@@ -754,7 +754,7 @@ class PageList(ListView):
         pages = []
         for page in self.get_queryset():
             page.menu = MenuItem.objects.filter(
-                type=1, name=page.slug).first()
+                type=1, name=page.pk).first()
             pages.append(page)
         context['object_list'] = pages
         return context
@@ -806,7 +806,7 @@ def create_menupage(request, pk=None):
             if form.is_valid():
                 page = Page.objects.get(pk=pk)
                 menu = MenuItem(
-                    name=page.slug,
+                    name=page.pk,
                     description=form.cleaned_data['description'],
                     order=form.cleaned_data['order'],
                     is_index=form.cleaned_data['is_index'],
