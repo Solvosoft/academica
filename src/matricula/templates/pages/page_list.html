@@ -66,7 +66,7 @@
 	{% endif %}
 	{% for object in object_list %}
 		<div class="col-md-6 col-lg-4 col-sm-6 col-xs-12">
-			<div class="x_panel">
+			<div class="x_panel" style="height:220px;">
 				<div class="x_title">
 					<h2 class="green">{{object.title|wordwrap:100}}</h2>
 					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
@@ -86,7 +86,11 @@
 						<div>
 							<ul class="list-unstyled user_data">
 								<li><strong>Slug: </strong>{{object.slug}}</li>
-								<li><strong>Contenido: </strong>{{object.content|safe|striptags}}</li>
+								<li>
+									<a href="#" style="display:inline-block" data-placement="top" data-toggle="tooltip" data-original-title="{{object.content|safe|striptags}}">
+										<strong>Contenido: </strong>{{object.content|safe|striptags|truncatechars:150}}
+									</a>
+								</li>
 								<li>
 									<strong>Menú: </strong>
 									{% if object.menu %}
@@ -151,4 +155,13 @@
 		}
 	</script>
 {% endif %}
-	{% endblock js%}
+<script>
+	// Tooltip
+	$(document).ready(function () {
+		$('[data-toggle="tooltip"]').tooltip({
+			container: 'body'
+		});
+	});
+	// /Tooltip
+</script>
+{% endblock js%}
