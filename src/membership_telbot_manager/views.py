@@ -1,12 +1,12 @@
 import telebot
 from django.conf import settings
-from django.db.models import Q
 from django.http import JsonResponse
-from django.template.loader import render_to_string
+from django.template import Context, Template
 from django.views.generic.base import View
 
 from membership_manager.models import Invoice, Membership
-from membership_telbot_manager.models import TelGroup, TelegramUser
+from membership_telbot_manager.models import TelGroup, TelegramUser, TelegramNotificationTemplate
+from membership_telbot_manager.utils import expiration_message, notification_message
 
 bot = telebot.TeleBot(settings.TELEGRAM_BOT_API)
 
@@ -42,9 +42,10 @@ def help(message):
     :return:
     """
     chat_id = message.chat.id
-
-    rendered = render_to_string('help_dialog.txt', context={'chat_id': str(chat_id)})
-    bot.send_message(chat_id, reply_to_message_id=message.message_id, text=rendered)
+    template = TelegramNotificationTemplate.objects.filter(name="Diálogo de ayuda").first()
+    description = Template(template.description)
+    msgg = description.render(Context({'chat_id': str(chat_id)}))
+    bot.send_message(chat_id, reply_to_message_id=message.message_id, text=msgg)
 
 
 @bot.message_handler(commands=['estado', 'state', 'ESTADO', 'STATE'])
@@ -63,10 +64,11 @@ def state(message):
             membership__organization=telgroup.organization,
             status='pending')
 
-        msgg = render_to_string('invoices.txt',  {'invoices': invoices,
-                 'memberships': Membership.objects.filter(state="active", organization=telgroup.organization)
-                     })
-
+        template = TelegramNotificationTemplate.objects.filter(name="Facturas").first()
+        description = Template(template.description)
+        msgg = description.render(Context({'invoices': invoices,
+             'memberships': Membership.objects.filter(state="active", organization=telgroup.organization)
+                 }))
         bot.send_message(chat_id, reply_to_message_id=message.message_id, text=msgg)
 
 
@@ -82,13 +84,14 @@ def memberships_list(message):
     if telgroup:
         memberships = telgroup.organization.membership_set.all()
         if memberships:
-            msgg = render_to_string('memberships.txt', {'memberships': memberships, 'option': "membresias",
-                                                        'title': telgroup.organization.name})
+            context = {'memberships': memberships, 'option': "membresias", 'title': telgroup.organization.name}
         else:
             new_text = "No cuenta con membresias.\n"
-            msgg = render_to_string('memberships.txt',
-                                    {'memberships': new_text, 'option': "none", 'title': telgroup.organization.name})
+            context = {'memberships': new_text, 'option': "none", 'title': telgroup.organization.name}
 
+        template = TelegramNotificationTemplate.objects.filter(name="Membresías").first()
+        description = Template(template.description)
+        msgg = description.render(Context(context))
         bot.send_message(chat_id, reply_to_message_id=message.message_id, text=msgg)
 
 
@@ -104,13 +107,14 @@ def memberships_services_list(message):
     if telgroup:
         memberships = telgroup.organization.membership_set.filter(state='active')
         if memberships:
-            msgg = render_to_string('memberships.txt', {'memberships': memberships, 'option': "services",
-                                                        'title': telgroup.organization.name})
+            context = {'memberships': memberships, 'option': "services", 'title': telgroup.organization.name}
         else:
             new_text = "No cuenta con membresias.\n"
-            msgg = render_to_string('memberships.txt',
-                                    {'memberships': new_text, 'option': "none", 'title': telgroup.organization.name})
+            context = {'memberships': new_text, 'option': "none", 'title': telgroup.organization.name}
 
+        template = TelegramNotificationTemplate.objects.filter(name="Membresías").first()
+        description = Template(template.description)
+        msgg = description.render(Context(context))
         bot.send_message(chat_id, reply_to_message_id=message.message_id, text=msgg)
 
 @bot.message_handler(content_types=['migrate_to_chat_id'])
@@ -200,8 +204,9 @@ def send_notification_message(chat_id,organization):
     :param organization:  Organization object, to pick up the organization info.
     :return: Nothing, Sends the notification.
     """
-    rendered = render_to_string('notification_message.txt',{'organization':organization})
-    bot.send_message(chat_id, rendered)
+
+    notification_message(organization, chat_id)
+
 
 def send_deactivated_message(chat_id,organization):
     """
@@ -212,5 +217,5 @@ def send_deactivated_message(chat_id,organization):
     :param organization:  Organization object, to pick up the organization info.
     :return: Nothing, Sends the notification.
     """
-    rendered = render_to_string('expiration_message.txt',{'organization':organization})
-    bot.send_message(chat_id, rendered)
+
+    expiration_message(organization, chat_id)

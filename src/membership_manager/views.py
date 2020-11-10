@@ -13,8 +13,12 @@ from async_notifications.models import EmailTemplate, EmailNotification
 from async_notifications.tasks import send_email
 from membership_core.models import Country, ServiceType
 from membership_manager.dashboard import TopStats
-from membership_manager.models import Membership, Service
+from membership_manager.models import Membership, Service, Organization
 from membership_manager.newsletterform import EmailTemplateForm, EmailNotificationForm
+from membership_telbot_manager.forms import TelegramNotificationTemplateForm, TelegramNotificationTemplateEdit
+from membership_telbot_manager.models import TelGroup, TelegramNotificationTemplate
+from membership_telbot_manager.utils import expiration_message, memberships, help_dialog, invoices, notification_message
+from membership_telbot_manager.views import help, state
 from .forms import ServiceTypeForm, LogEntryFilterForm
 from .utils import add_logentry
 
@@ -189,3 +193,52 @@ def logentry_object(request, app, model, pk):
     object_n = get_object_or_404(model_n, pk=pk)
     logentry_list = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(object_n).pk, object_id=pk)
     return render(request, 'logentry_list.html', context={'logentry_list': logentry_list})
+
+
+def send_telegram_notification(request, pk):
+
+    organization = get_object_or_404(Organization, pk=pk)
+    group = TelGroup.objects.get(organization=organization)
+    form = TelegramNotificationTemplateForm(request.POST)
+    form.is_valid()
+    template = form.cleaned_data['template_telegram']
+
+    if template:
+
+        if template.name == "Facturas":
+            invoices(group.chat_id)
+
+        if template.name == "Membresías":
+            memberships(group.chat_id)
+
+        if template.name == "Diálogo de ayuda":
+            help_dialog(group.chat_id)
+
+        if template.name == "Mensaje de expiración":
+            expiration_message(organization, group.chat_id)
+
+        if template.name == "Mensaje de notificación":
+            notification_message(organization, group.chat_id)
+
+        messages.success(request, "Notificación enviada con éxito")
+
+        return redirect('memberships')
+
+
+def telegram_message_list(request):
+    messages_list = TelegramNotificationTemplate.objects.all()
+    return render(request, 'membership/telegram_messages_list.html', context={'messages_list': messages_list})
+
+class EditTelegramMessage(UpdateView):
+
+    model = TelegramNotificationTemplate
+    template_name = 'membership/edit_telegram_message.html'
+    form_class = TelegramNotificationTemplateEdit
+    success_url = reverse_lazy('telegram_message_list')
+
+
+    def form_valid(self, form):
+        template = form.save()
+        add_logentry("membership_telbot_manager", "telegramnotificationtemplate", template.pk, str(template), self.request.user, 2)
+        messages.success(self.request, "Mensaje actualizado con éxito")
+        return super().form_valid(form)

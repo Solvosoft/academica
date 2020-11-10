@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Matricula Bills\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-02 21:03-0600\n"
-"PO-Revision-Date: 2015-08-02 21:08-0600\n"
+"POT-Creation-Date: 2020-11-10 09:58-0600\n"
+"PO-Revision-Date: 2020-11-10 12:17-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: ES <es@solvosoft.com>\n"
 "Language: es\n"
@@ -16,35 +16,35 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 2.2.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: contrib/bills/admin.py:12 contrib/bills/models.py:32
+#: contrib/bills/admin.py:11 contrib/bills/models.py:34
 msgid "Bills"
 msgstr "Facturas"
 
-#: contrib/bills/models.py:11 contrib/bills/models.py:20
-#: contrib/bills/templates/invoice.html:13
+#: contrib/bills/models.py:9 contrib/bills/models.py:20
+#: contrib/bills/templates/invoice_enroll.html:13
 msgid "Amount"
 msgstr "Monto"
 
-#: contrib/bills/models.py:18
+#: contrib/bills/models.py:17
 msgid "Short description"
 msgstr "Descripción Corta"
 
-#: contrib/bills/models.py:19
+#: contrib/bills/models.py:18
 msgid "Description"
 msgstr "Descripción"
 
-#: contrib/bills/models.py:21 contrib/bills/templates/invoice.html:5
+#: contrib/bills/models.py:22 contrib/bills/templates/invoice_enroll.html:5
 msgid "Student"
 msgstr "Estudiante"
 
-#: contrib/bills/models.py:22
+#: contrib/bills/models.py:24
 msgid "Currency"
 msgstr "Moneda"
 
-#: contrib/bills/models.py:31
+#: contrib/bills/models.py:33
 msgid "Bill"
 msgstr "Factura"
 
@@ -53,29 +53,21 @@ msgstr "Factura"
 msgid "Enroll in %s"
 msgstr "Matriculado en %s"
 
-#: contrib/bills/signals.py:53
+#: contrib/bills/signals.py:55
 msgid "Academica Invoice paid"
 msgstr "Factura de Académica pagada"
 
-#: contrib/bills/signals.py:54
+#: contrib/bills/signals.py:56
 msgid "Go to Academica"
 msgstr "Ir a Académica"
 
-#: contrib/bills/templates/bills.html:12
+#: contrib/bills/templates/bills.html:21
 msgid "Unpaid bills"
 msgstr "Facturas sin pagar"
 
-#: contrib/bills/templates/bills.html:33
+#: contrib/bills/templates/bills.html:40
 msgid "You don't have Unpaid bills"
 msgstr "No tiene facturas sin pagar"
-
-#: contrib/bills/templates/bills.html:38
-msgid "Paid bills"
-msgstr "Facturas pagas"
-
-#: contrib/bills/templates/bills.html:47
-msgid "You don't have paid bills"
-msgstr "No tiene facturas pagas"
 
 #: contrib/bills/templates/email_invoice.html:16
 msgid "Invoice paid"
@@ -93,17 +85,22 @@ msgstr "ID único de transacción"
 msgid "Paid Date"
 msgstr "Fecha de pago"
 
-#: contrib/bills/templates/invoice.html:2
+#: contrib/bills/templates/invoice_enroll.html:2
 msgid "Academica Invoice"
 msgstr "Factura de Académica"
 
-#: contrib/bills/templates/invoice.html:9
-msgid "Enrollment description"
-msgstr "Descripción de matricula"
-
-#: contrib/bills/templates/invoice.html:17
+#: contrib/bills/templates/invoice_enroll.html:17
 msgid "Date"
 msgstr "Fecha"
+
+#~ msgid "Paid bills"
+#~ msgstr "Facturas pagas"
+
+#~ msgid "You don't have paid bills"
+#~ msgstr "No tiene facturas pagas"
+
+#~ msgid "Enrollment description"
+#~ msgstr "Descripción de matricula"
 
 #~ msgid ""
 #~ "\n"
