@@ -1,0 +1,217 @@
+{% extends 'gentelella/base.html'%}
+{% load static utils membership_code %}
+{%block extra_css%}
+	<style>
+		.dropdown-item {
+			width: 100%;
+			padding: 12px 20px; 
+		}
+		.dropdown-item {
+			display: block;
+			width: 100%;
+			padding: .25rem 1.5rem;
+			clear: both;
+			font-weight: 400;
+			color: #212529;
+			text-align: inherit;
+			white-space: nowrap;
+			background-color: transparent;
+			border: 0;
+		}
+		.panel_toolbox {
+			float: right;
+			min-width: 70px;
+		}
+		.panel_toolbox > li {
+			float: left;
+			cursor: pointer; 
+		}
+		.panel_toolbox > li > a {
+			padding: 5px;
+			color: #C5C7CB;
+			font-size: 14px; 
+		}
+
+		.panel_toolbox > li > a:hover {
+			background: #F5F7FA; 
+		}
+
+	</style>
+{%endblock%}
+{%block content %}
+	<h1 class="text-center">Lista de estudiantes pre-inscritos</h1>
+	<div class="col-md-10 col-sm-12 col-md-offset-1">
+		<div class="x_panel">
+			<div class="x_title">
+				<h2 class="green">{{object.name}}</h2>
+				<ul class="nav navbar-right panel_toolbox">
+					<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+							<a class="dropdown-item" href="#">Settings 1</a>
+							<a class="dropdown-item" href="#">Settings 2</a>
+						</div>
+					</li>
+					<li><a class="close-link"><i class="fa fa-close"></i></a></li>
+				</ul>
+				<div class="clearfix"></div>
+			</div>
+			<div class="x_content">
+				<form method="POST">
+					<div class="table-responsive">
+						{% csrf_token %}
+						<table class="table table-striped jambo_table bulk_action">
+							<thead>
+								<tr class="headings">
+								<th>
+									<input type="checkbox" id="check-all" class="flat">
+								</th>
+								<th class="column-title">Nombre Completo </th>
+								<th class="column-title">Fecha de inscripción</th>
+								<th class="column-title">Para matricular</th>
+								<th class="column-title">Matriculado</th>
+								<th class="column-title">Factura Generada</th>
+								<th class="column-title no-link last"><span class="nobr">Acciones</span>
+								</th>
+								<th class="bulk-actions" colspan="7">
+									<a class="antoo" style="color:#fff; font-weight:500;">Acciones masivas ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+								</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for enroll in object.enroll_set.all %}
+									<tr class="{% cycle 'odd' 'even' %} pointer">
+										<td class="a-center ">
+											<input type="checkbox" value="{{enroll.pk}}" class="flat" name="students">
+										</td>
+										<td class="">{{enroll.student}}</td>
+										<td class="">{{enroll.enroll_date}}</td>
+										<td class="">{% if enroll.enroll_activate%}Si{%else%}No{%endif%}</td>
+										<td class="">{% if enroll.enroll_finished%}Si{%else%}No{%endif%}</td>
+										<td class="">{% if enroll.bill_created %}Si{%else%}No{%endif%}</td>
+										<td class="last"><a href="#">Matricular</a></td>
+									</tr>
+								{%endfor%}
+							</tbody>
+						</table>	
+					</div>
+					<div class="text-center">
+						<a class="btn btn-dark" href="{% url 'groups_enroll' %}">Atras</a>
+						<input class="btn btn-primary" type="submit" name="action" value="Matricular">
+						<input class="btn btn-success" type="submit" name="action" value="Generar Facturas">
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+	<div class="clearfix"></div>
+	<div class="paginator_container text-center">
+		{% if is_paginated %}
+			<ul class="pagination">
+				{% if paginator.has_previous %}
+					<li><a href="?{% url_replace request 'page' paginator.previous_page_number %}">&laquo;</a></li>
+				{% else %}
+					<li class="disabled"><span>&laquo;</span></li>
+				{% endif %}
+				{% for i in paginator.page_range %}
+					{% if page_obj.number == i %}
+						<li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+					{% else %}
+						<li><a href="?{% url_replace request 'page' i %}">{{ i }}</a></li>
+					{% endif %}
+				{% endfor %}
+				{% if paginator.has_next %}
+					<li><a href="?{% url_replace request 'page' paginator.next_page_number %}">&raquo;</a></li>
+				{% else %}
+					<li class="disabled"><span>&raquo;</span></li>
+				{% endif %}
+			</ul>
+		{% endif %}
+	</div>
+	<div class="clearfix"></div>
+{%endblock%}
+{%block js%}
+	<script>
+		// iCheck
+		$(document).ready(function () {
+			if ($("input.flat")[0]) {
+				$(document).ready(function () {
+					$('input.flat').iCheck({
+						checkboxClass: 'icheckbox_flat-green',
+						radioClass: 'iradio_flat-green'
+					});
+				});
+			}
+		});
+		// /iCheck
+
+		// Table
+		$('table input').on('ifChecked', function () {
+			checkState = '';
+			$(this).parent().parent().parent().addClass('selected');
+			countChecked();
+		});
+		$('table input').on('ifUnchecked', function () {
+			checkState = '';
+			$(this).parent().parent().parent().removeClass('selected');
+			countChecked();
+		});
+
+		var checkState = '';
+
+		$('.bulk_action input').on('ifChecked', function () {
+			checkState = '';
+			$(this).parent().parent().parent().addClass('selected');
+			countChecked();
+		});
+		$('.bulk_action input').on('ifUnchecked', function () {
+			checkState = '';
+			$(this).parent().parent().parent().removeClass('selected');
+			countChecked();
+		});
+		$('.bulk_action input#check-all').on('ifChecked', function () {
+			checkState = 'all';
+			countChecked();
+		});
+		$('.bulk_action input#check-all').on('ifUnchecked', function () {
+			checkState = 'none';
+			countChecked();
+		});
+
+		function countChecked() {
+			if (checkState === 'all') {
+				$(".bulk_action input[name='students']").iCheck('check');
+			}
+			if (checkState === 'none') {
+				$(".bulk_action input[name='students']").iCheck('uncheck');
+			}
+
+			var checkCount = $(".bulk_action input[name='students']:checked").length;
+
+			if (checkCount) {
+				$('.column-title').hide();
+				$('.bulk-actions').show();
+				$('.action-cnt').html(checkCount + ' Registros Seleccionados');
+			} else {
+				$('.column-title').show();
+				$('.bulk-actions').hide();
+			}
+		}
+
+		// Accordion
+		$(document).ready(function () {
+			$(".expand").on("click", function () {
+				$(this).next().slideToggle(200);
+				$expand = $(this).find(">:first-child");
+
+				if ($expand.text() == "+") {
+					$expand.text("-");
+				} else {
+					$expand.text("+");
+				}
+			});
+		});
+	</script>
+{%endblock%}

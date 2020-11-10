@@ -22,7 +22,8 @@ from .views.admin_views import CategoryList, create_category,\
     GroupList, create_group, edit_group, GroupDelete, EnrollList,\
     create_enroll, edit_enroll, EnrollDelete, StudentList, create_student,\
     edit_student, StudentDelete, PageList, create_page, edit_page, PageDelete,\
-    export_group, recovery_pass_student, MenuPageDelete, create_menupage
+    export_group, recovery_pass_student, MenuPageDelete, create_menupage,\
+    pre_enroll_group
 from matricula.contrib.bills.urls import urlpatterns as billurls
 
 urlpatterns = [
@@ -60,8 +61,9 @@ urlpatterns = [
     path('enrrolment/delete_period/<int:pk>/', PeriodDelete.as_view() , name="delete_period"),
     path('enrrolment/edit_period/<int:pk>/', edit_period, name="edit_period"),
     url('enrrolment/groups', GroupList.as_view(), name="groups_enroll"),
+    path('enrrolment/pre_enroll_group/<int:pk>/', pre_enroll_group, name="pre_enroll_group"),
     url('enrrolment/create_group', create_group, name="create_group_enroll"),
-    path('enrrolment/delete_group/<int:pk>/', GroupDelete.as_view() , name="delete_group_enroll"),
+    path('enrrolment/delete_group/<int:pk>/', GroupDelete.as_view(), name="delete_group_enroll"),
     path('enrrolment/edit_group/<int:pk>/', edit_group, name="edit_group_enroll"),
     path('enrrolment/export_group/<int:pk>/', export_group, name="export_group"),
     url('enrrolment/enrolls', EnrollList.as_view(), name="enrolls"),

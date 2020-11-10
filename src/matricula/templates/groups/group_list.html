@@ -57,7 +57,7 @@
 	{% endif %}
 	{% for object in object_list %}
 		<div class="col-md-6 col-lg-4 col-sm-6 col-xs-12">
-			<div class="x_panel" style="height:330px;word-break: break-all;">
+			<div class="x_panel" style="height:400px;word-break: break-all;">
 				<div class="x_title">
 					<h2 class="green">{{object.period|safe|striptags}}</h2>
 					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
@@ -113,6 +113,7 @@
 							<ul class="list-unstyled user_data">
 								<li><strong>Flujo del curso: </strong>{{object.FLOWS|index:object.flow|index:1}}</li>
 								<li><strong>Lista de estudiantes: </strong>{{object.enroll_set.all.count}} <a href="{% url 'export_group' object.pk%}"><i class="fa fa-file-text-o"></i></a></li>
+								<li><strong>Lista de estudiantes prematriculados: </strong><a href="{% url 'pre_enroll_group' object.pk%}"><i class="fa fa-filter"></i></a></li>
 							</ul>
 						</div>
 					</div>

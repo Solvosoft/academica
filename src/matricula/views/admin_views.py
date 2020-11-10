@@ -5,7 +5,7 @@ Created on 18/10/2020
 @author: allexiusw
 '''
 from django.conf import settings
-from django.views.generic import ListView, DeleteView
+from django.views.generic import ListView, DeleteView, UpdateView
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render
 from matricula.models import Category, Course, MenuItem, Period, Group,\
@@ -14,7 +14,8 @@ from matricula.forms import CategoryCreateForm, CategorySearchForm,\
     CourseSearchForm, CourseCreateForm, MenuItemSearchForm,\
     MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm,\
     GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentSearchForm,\
-    StudentAdminCreateForm, PageCreateForm, PageSearchForm, MenuItemAddForm
+    StudentAdminCreateForm, PageCreateForm, PageSearchForm, MenuItemAddForm,\
+    PreEnrollAddGroupForm
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -431,6 +432,39 @@ class GroupList(ListView):
         context = super().get_context_data(**kwargs)
         context['form_search'] = GroupSearchForm(self.request.GET)
         return context
+
+
+@permission_required('matricula.view_group')
+def pre_enroll_group(request, pk=None):
+    context = {}
+    if pk is not None:
+        context = {}
+        if request.method == "POST":
+            group = Group.objects.get(pk=pk)
+            if group:
+                form = PreEnrollAddGroupForm(request.POST)
+                if form.is_valid():
+                    print(form.cleaned_data)
+                    enroll = Enroll.objects.filter(pk__in=form.cleaned_data['students'])
+                    if form.cleaned_data['action'] == "Matricular":
+                        for instance in enroll:
+                            instance.enroll_finished = True
+                            instance.save()
+                    else:
+                        for instance in enroll:
+                            instance.bill_created = True
+                            instance.save()
+                    messages.success(request, "Estudiantes inscritos con éxito")
+                    return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
+            messages.error(request, "Error al realizar la acción")
+            return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
+        else:
+            if request.method == "GET":
+                instance = Group.objects.get(pk=pk)
+                context['object'] = instance
+                return render(
+                    request, 'groups/pre_enroll_group_list.html', context)
+    return HttpResponseRedirect(reverse('periods'))
 
 
 @permission_required('matricula.add_group')

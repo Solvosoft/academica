@@ -266,13 +266,14 @@ class EnrollCreateForm(forms.ModelForm, GTForm):
     class Meta:
         model = Enroll
         fields = [
-            'student', 'group', 'enroll_finished', 'enroll_activate'
+            'student', 'group', 'enroll_finished', 'enroll_activate', 'bill_created'
         ]
         widgets = {
             'student': djgentelella.Select,
             'group': djgentelella.Select,
             'enroll_finished': djgentelella.YesNoInput,
-            'enroll_activate': djgentelella.YesNoInput
+            'enroll_activate': djgentelella.YesNoInput,
+            'bill_created': djgentelella.YesNoInput
         }
 
     def __init__(self, *args, **kwargs):
@@ -345,3 +346,10 @@ class MenuItemAddForm(forms.ModelForm, GTForm):
             'publicated': djgentelella.YesNoInput,
             'is_index': djgentelella.YesNoInput
         }
+
+
+class PreEnrollAddGroupForm(GTForm, forms.Form):
+    students = forms.ModelMultipleChoiceField(
+        queryset=Enroll.objects.all(), widget=djgentelella.SelectMultiple,
+        required=False, label="Matrícula")
+    action = forms.CharField(required=True)
