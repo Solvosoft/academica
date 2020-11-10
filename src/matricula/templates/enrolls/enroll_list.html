@@ -1,0 +1,144 @@
+{% extends 'gentelella/base.html'%}
+{% load static utils membership_code %}
+{%block content %}
+	<h1 class="text-center">Matrículas</h1>
+	<div class="row">
+		{% if perms.matricula.add_enroll %}
+			<div class="col-sm-12 col-xs-12 col-md-8 col-md-offset-2">
+		{% else %}
+			<div class="col-sm-12 col-xs-12 col-md-10 col-md-offset-1">
+		{% endif %}
+			<div class="x_panel">
+				<div class="x_content">
+					<form method="GET">
+						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+							{% include 'field.html' with field=form_search.student %}
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+							{% include 'field.html' with field=form_search.group %}
+						</div>
+						<div style="text-align:right">
+							<a href="{% url 'enrolls' %}" class="btn btn-dark">Limpiar</a>
+							<button class="btn btn-success" type="submit">Buscar</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-12 col-xs-12 col-lg-2 col-md-3">
+			{% if perms.matricula.add_enroll %}
+				<a class="btn btn-primary" href="{% url 'create_enroll' %}">Crear Matrícula</a>
+			{% endif %}
+		</div>
+	</div>
+	{% if perms.matricula.delete_group %}
+		<!-- modal delete category -->
+		<div id="modaldeleteitem" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">¿Está segura que desea eliminar esta matrícula?</h4>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+						<a class="btn btn-danger" id="deleteitem">Eliminar</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end delete modal-->
+	{% endif %}
+	{% for object in object_list %}
+		<div class="col-md-6 col-lg-4 col-sm-6 col-xs-12">
+			<div class="x_panel">
+				<div class="x_title">
+					<h2 class="green">{{object.student|wordwrap:100}}</h2>
+					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
+						{% if perms.matricula.change_enroll %}
+							<li>
+								<a href="{% url 'edit_enroll' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
+							</li>
+						{% endif %}
+						{% if perms.matricula.delete_enroll %}
+							<li><a data-url="{% url 'delete_enroll' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+						{% endif %}
+					</ul>
+					<div class="clearfix"></div>
+				</div>
+				<div class="x_content">
+					<div class="row">
+						<div class="col-md-6 col-sm-6 col-xs-6">
+							<ul class="list-unstyled user_data">
+								<li>
+									<strong>Nombre: </strong>{{object.student.user.first_name}} {{object.student.user.last_name}}
+								</li>
+								<li>
+									<strong>Usuario: </strong>{{object.student.user.username}}
+								</li>
+								<li>
+									<strong>Correo: </strong>{{object.student.user.email}}
+								</li>
+								<li>
+									<strong>Grupo: </strong>{{object.group.name}}
+								</li>
+							</ul>
+						</div>
+						<div class="col-md-6 col-sm-6 col-xs-6">
+							<ul class="list-unstyled user_data">
+								<li>
+									<strong>¿Matrícula finalizada?: </strong>{% if object.enroll_finished %}Si{%else%}No{%endif%}
+									
+								</li>
+								<li>
+									<strong>¿Activa para matrícula?: </strong>{% if object.enroll_activate%}Si{%else%}No{%endif%}
+								</li>
+								<li>
+									<strong>Factura generada?: </strong>{% if object.bill_created%}Si{%else%}No{%endif%}
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+	<div class="clearfix"></div>
+	<div class="paginator_container text-center">
+		{% if is_paginated %}
+			<ul class="pagination">
+				{% if paginator.has_previous %}
+					<li><a href="?{% url_replace request 'page' paginator.previous_page_number %}">&laquo;</a></li>
+				{% else %}
+					<li class="disabled"><span>&laquo;</span></li>
+				{% endif %}
+				{% for i in paginator.page_range %}
+					{% if page_obj.number == i %}
+						<li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+					{% else %}
+						<li><a href="?{% url_replace request 'page' i %}">{{ i }}</a></li>
+					{% endif %}
+				{% endfor %}
+				{% if paginator.has_next %}
+					<li><a href="?{% url_replace request 'page' paginator.next_page_number %}">&raquo;</a></li>
+				{% else %}
+					<li class="disabled"><span>&raquo;</span></li>
+				{% endif %}
+			</ul>
+		{% endif %}
+	</div>
+	<div class="clearfix"></div>
+{%endblock%}
+{% if perms.matricula.delete_enroll %}
+	{% block js %}
+		<script type="text/javascript">
+			function deleteitem(element){
+				$(function(){
+					$("#deleteitem").attr("href", $(element).data('url'));
+					$("#modaldeleteitem").modal();
+				});
+				return false
+			}
+		</script>
+	{% endblock js%}
+{% endif %}

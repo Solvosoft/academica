@@ -1,4 +1,4 @@
-
+{% load static menu %}
 <div class="left_col scroll-view">
     <div class="navbar nav_title" style="border: 0;">
         <a href="{% url 'home' %}"  class="site_title" style="font-size: 17px;">Membresías de Código Sur</a>
@@ -37,7 +37,7 @@
                         </ul>
                     </li>
                 {% endif %}
-
+                {% if perms.membership_manager.view_membership or perms.membership_core.view_servicetype or perms.membership_core.view_membershiptemplate or perms.membership_manager.view_activityreport%}
                     <li>
                         <a>
                             <i class="fa fa-list-alt"></i>
@@ -67,6 +67,7 @@
                             {% endif %}
                         </ul>
                     </li>
+                {% endif %}
                 {% if perms.membership_manager.view_invoice %}
                 <li>
                     <a>
@@ -97,7 +98,7 @@
                 </li>
 
                 {% endif %}
-
+                {% if perms.membership_manager.add_report or perms.membership_manager.view_report%}
                 <li>
                     <a>
                         <i class="fa fa-list"></i>
@@ -117,7 +118,8 @@
                         {% endif %}
                     </ul>
                 </li>
-
+                {% endif %}
+                {%if perms.auth.view_user or perms.auth.view_group or perms.admin.view_logentry %}
                 <li>
                     <a>
                         <i class="fa fa-book"></i>
@@ -147,8 +149,76 @@
                         {% endif %}
                     </ul>
                 </li>
-
+                {% endif %}
             </ul>
+             <ul class="nav side-menu">
+                <li>
+                    <a>
+                        <i class="fa fa-list-ul"></i>
+                        Matrícula
+                        <span class="fa fa-chevron-down"></span>
+                    </a>
+                    <ul class="nav child_menu">
+                        {% show_menu request.user.is_authenticated%}
+                    </ul>
+                </li>
+            </ul>
+            {% if perms.matricula.view_category or perms.matricula.view_course or perms.matricula.view_menuitem or  perms.matricula.view_group or perms.matricula.view_enroll or perms.matricula.view_period or perms.matricula.view_page or perms.matricula.view_student %}
+                <ul class="nav side-menu">
+                    <li>
+                        <a>
+                            <i class="fa fa-university"></i>
+                            Académica
+                            <span class="fa fa-chevron-down"></span>
+                        </a>
+                        <ul class="nav child_menu">
+                            {% if perms.matricula.view_category %}
+                                <li><a href="{% url 'categories' %}">Categorías</a></li>
+                            {% endif %}
+                            {% if perms.matricula.view_course %}
+                                <li><a href="{% url 'enrrolment_courses' %}">Cursos</a></li>
+                            {% endif %}
+                            {% if perms.matricula.view_menuitem %}
+                                <li><a href="{% url 'menuitems' %}">Elementos del menú</a></li>
+                            {% endif %}
+                            {% if perms.matricula.view_group %}
+                                <li><a href="{% url 'groups_enroll' %}">Grupos</a></li>
+                            {% endif %}
+                            {% if perms.matricula.view_enroll %}
+                                <li><a href="{% url 'enrolls' %}">Matrículas</a></li>
+                            {% endif %}
+                            {% if perms.matricula.view_period %}
+                                <li><a href="{% url 'periods' %}">Períodos</a></li>
+                            {% endif %}
+                            {% if perms.matricula.view_page %}
+                                <li><a href="{% url 'pages' %}">Páginas</a></li>
+                            {% endif %}
+                            {% if perms.matricula.view_student %}
+                                <li><a href="{% url 'students' %}">Estudiantes</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                </ul>
+            {% endif %}
+            {% if perms.bills.view_colonexchange %}
+                <ul class="nav side-menu">
+                    <li>
+                        <a>
+                            <i class="fa fa-money"></i>
+                            Pagos
+                            <span class="fa fa-chevron-down"></span>
+                        </a>
+                        <ul class="nav child_menu">
+                            {% if perms.bills.view_colonexchange %}
+                                <li><a href="{% url 'colonexchange' %}">Moneda de intercambio</a></li>
+                            {% endif %}
+                            {% if perms.bills.view_bill %}
+                                <li><a href="{% url 'listbills' %}">Lista de pagos</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                </ul>
+            {% endif %}
         </div>
     </div>
     <div class="sidebar-footer hidden-print hidden-small">

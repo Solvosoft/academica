@@ -1,0 +1,15 @@
+{% extends 'matricula_base.html'%}
+{%load i18n %}
+
+{%block content%}
+    	
+<form class="form-inline">
+  <div class="form-group">
+        	{% csrf_token %}
+          <input type="text" class="form-control" name='username' placeholder="Username">
+          <input type="password" class="form-control" name='password' placeholder="Password">
+        </div>
+        <button type="submit" class="btn btn-default">{% trans 'Login' %}</button>
+</form>
+
+{%endblock%}

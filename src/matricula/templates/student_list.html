@@ -1,0 +1,82 @@
+{% extends "admin/base_site.html" %}
+{%load static i18n %}
+
+
+{% block breadcrumbs %}
+     <div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>&rsaquo;
+ <a href="{% url 'admin:matricula_group_changelist'%}">Group</a>
+{% if title %} &rsaquo; {{ title }}{% endif %}
+</div>
+
+{% endblock %}
+
+{% block extrastyle %}
+<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+
+{% block content %}
+
+<div id="message" ></div>
+
+<div class="well">
+	<div id="status" class="pull-right">
+		<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+		  </div>
+<h1 class="text-center">{{group }}</h1>
+
+<div class="row">
+  <p class="list-group-item col-md-4">
+    <span class="badge"> {{enrolls.count}}</span>
+    Total:
+  </p>
+</div>
+
+<br>
+<ul class="list-group ">
+{% for enroll in enrolls%}
+<li class="list-group-item row">
+	<div class="col-md-6">{{enroll.student.get_full_name}} </div>
+	<div class="col-md-4">{{enroll.student.email}}</div>
+	<div class="col-md-2"><span class="glyphicon glyphicon-{% if enroll.enroll_finished%}ok{%else%}asterisk{%endif%}" aria-hidden="true"></span></div>
+	</li>
+{%endfor%}
+</ul>
+
+</div>
+<a class="btn btn-default" href="{% url 'admin:matricula_group_changelist'%}">{% trans 'back' %}</a>
+
+<div class="btn-group " role="group" aria-label="...">
+<a data-ajax="true" href="{% url 'admin:open_group' group.pk %}" class="btn btn-default"> {% trans 'Open Group' %}</a>
+<a data-ajax="true" href="{% url 'admin:open_group' group.pk %}?sendemail=1" class="btn btn-default"> {% trans 'Open Group and notify' %} </a>
+</div>
+
+<div class="btn-group " role="group" aria-label="...">
+<a data-ajax="true" href="{% url 'admin:close_group' group.pk %}" class="btn btn-default"> {% trans 'Close Group' %} </a>
+<a data-ajax="true" href="{% url 'admin:close_group' group.pk %}?sendemail=1" class="btn btn-default"> {% trans 'Close Group and notify' %} </a>
+</div>
+
+
+<div class="btn-group pull-right">
+  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+    PDF<span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu">
+    <li><a href="{% url 'admin:export_pdf' group.pk %}?finished=1" >{% trans 'All Enrollments' %}</a></li>
+    <li><a href="{% url 'admin:export_pdf' group.pk %}">{% trans 'All Pre-enrollments' %} </a></li>
+    <li><a href="{% url 'admin:export_pdf' group.pk %}?finished=2&activate=1">{% trans 'Pre-enroll but not enroll' %}</a></li>
+  </ul>
+</div>
+
+
+{% endblock %}
+
+{% block footer %}<div id="footer"></div>
+
+	<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"> </script>	
+	<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"> </script>
+	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
+
+{% endblock %}

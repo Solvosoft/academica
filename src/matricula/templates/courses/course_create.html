@@ -1,0 +1,25 @@
+{% extends 'gentelella/base.html'%}
+{% load static %}
+{%block content%}
+	<h1 class="text-center">Cursos</h1>
+	<div class="col-md-10 col-md-offset-1">
+		<div class="x_panel">
+			<form method="POST">
+				{% csrf_token %}
+				<div class="x_title">
+					<h2 class="green">Crear curso</h2>
+					<div class="clearfix"></div>
+				</div>
+				<div class="x_content">
+					<div>
+						{{form.as_inline}}
+					</div>
+					<div class="text-right">
+						<a class="btn btn-dark" href="{% url 'enrrolment_courses' %}">Cancelar</a>
+						<input class="btn btn-primary" value="Guardar" type="submit"/>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+{%endblock%}

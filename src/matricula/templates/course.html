@@ -1,0 +1,32 @@
+{% extends 'gentelella/base.html'%}
+{% load static %}
+{%block content%}
+	<h1 class="text-center">Detalles del Curso</h1>
+	{% if request.user.is_authenticated and not request.user.student %}
+		<form method="post" action="{% url 'add_student' %}">
+			{% csrf_token %}
+			<div class="alert alert-warning alert-dismissible" role="alert">
+				<strong>Advertencia!</strong> Para tomar cursos usted debe tener rol de estudiante. 
+				<button type="submit" class="btn btn-sm btn-primary">Crear</button>
+			</div>
+		</form>
+	{% endif %}
+	<div id="group_message"></div>
+	<div class="x_panel">
+		<div class="x_title">
+			<h3 class="green">{{course.course.name}}</h3>
+		</div>
+		<div class="x_content">
+			<div class="col-lg-6 col-md-6 col-sm-12">
+				{{course.course.content|safe}}
+			</div>
+			<div class="col-lg-6 col-md-6 col-sm-12">
+				{% include 'groups.html' %}
+			</div>
+		</div>
+	</div>
+{%endblock%}
+{% block js %}
+	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
+{% endblock %}

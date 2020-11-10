@@ -1,9 +1,17 @@
+from django.utils.translation import ugettext_lazy as _
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
-
 from membership_manager.models import Membership, ActivityReport, Invoice, MembershipRenew
 from membership_manager.task_utils import send_welcome_notification
 from membership_manager.tasks import task_create_invoice
+from allauth.account.signals import user_signed_up
+from matricula.models import Student
+from django.utils.timezone import now
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
+from django.conf import settings
+from django.urls import reverse
+
 
 
 @receiver(post_save, sender=Membership)
@@ -37,3 +45,18 @@ def save_attention(sender, instance, **kwargs):
 def remove_invoice_pdf(sender, instance, using,**kwargs):
     if instance.pdf_invoice:
         instance.pdf_invoice.delete(False)
+
+
+@receiver(user_signed_up)
+def user_signed_up_(request, user, **kwargs):
+    student = Student(user=user, created_at=now(), confirmed_at=now())
+    student.save()
+    mail_body = render_to_string("email_welcome.html",
+        {
+        "url": request.build_absolute_uri(reverse('courses')),
+        "user": user,
+        })
+    send_mail(_('Email confirmation'),
+        'Url confirmation %s' % (request.build_absolute_uri(reverse('courses'))),
+        settings.DEFAULT_FROM_EMAIL, [user.email],
+        html_message=mail_body)

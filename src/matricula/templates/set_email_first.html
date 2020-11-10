@@ -1,0 +1,16 @@
+{%load i18n %}
+
+Estimada/o: {{user.get_full_name}}, 
+
+<p>
+Se ha creado su usuaria/o en la plataforma de Académica, para utilizar su cuenta deberá configurar la contraseña en <a href="{{url}}?id={{student.pk}}&key={{student.key}}" > 
+	{% trans 'this link' %}</a>.
+</p>
+
+Bienvenido.
+<p>
+{% blocktrans %}if your email service block links  then copy and paste this url in a new tab{% endblocktrans %}
+<br> {{url}}?id={{student.pk}}&key={{student.key}}</p> 
+
+<br><br>
+{% trans 'Best regards' %}

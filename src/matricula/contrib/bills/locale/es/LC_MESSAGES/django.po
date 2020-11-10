@@ -1,0 +1,119 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Matricula Bills\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-08-02 21:03-0600\n"
+"PO-Revision-Date: 2015-08-02 21:08-0600\n"
+"Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
+"Language-Team: ES <es@solvosoft.com>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.10\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: contrib/bills/admin.py:12 contrib/bills/models.py:32
+msgid "Bills"
+msgstr "Facturas"
+
+#: contrib/bills/models.py:11 contrib/bills/models.py:20
+#: contrib/bills/templates/invoice.html:13
+msgid "Amount"
+msgstr "Monto"
+
+#: contrib/bills/models.py:18
+msgid "Short description"
+msgstr "Descripción Corta"
+
+#: contrib/bills/models.py:19
+msgid "Description"
+msgstr "Descripción"
+
+#: contrib/bills/models.py:21 contrib/bills/templates/invoice.html:5
+msgid "Student"
+msgstr "Estudiante"
+
+#: contrib/bills/models.py:22
+msgid "Currency"
+msgstr "Moneda"
+
+#: contrib/bills/models.py:31
+msgid "Bill"
+msgstr "Factura"
+
+#: contrib/bills/signals.py:23
+#, python-format
+msgid "Enroll in %s"
+msgstr "Matriculado en %s"
+
+#: contrib/bills/signals.py:53
+msgid "Academica Invoice paid"
+msgstr "Factura de Académica pagada"
+
+#: contrib/bills/signals.py:54
+msgid "Go to Academica"
+msgstr "Ir a Académica"
+
+#: contrib/bills/templates/bills.html:12
+msgid "Unpaid bills"
+msgstr "Facturas sin pagar"
+
+#: contrib/bills/templates/bills.html:33
+msgid "You don't have Unpaid bills"
+msgstr "No tiene facturas sin pagar"
+
+#: contrib/bills/templates/bills.html:38
+msgid "Paid bills"
+msgstr "Facturas pagas"
+
+#: contrib/bills/templates/bills.html:47
+msgid "You don't have paid bills"
+msgstr "No tiene facturas pagas"
+
+#: contrib/bills/templates/email_invoice.html:16
+msgid "Invoice paid"
+msgstr "Factura pagada"
+
+#: contrib/bills/templates/email_invoice.html:16
+msgid "Invoice unpaid"
+msgstr "Factura no pagada"
+
+#: contrib/bills/templates/email_invoice.html:17
+msgid "Unique Transaction ID"
+msgstr "ID único de transacción"
+
+#: contrib/bills/templates/email_invoice.html:22
+msgid "Paid Date"
+msgstr "Fecha de pago"
+
+#: contrib/bills/templates/invoice.html:2
+msgid "Academica Invoice"
+msgstr "Factura de Académica"
+
+#: contrib/bills/templates/invoice.html:9
+msgid "Enrollment description"
+msgstr "Descripción de matricula"
+
+#: contrib/bills/templates/invoice.html:17
+msgid "Date"
+msgstr "Fecha"
+
+#~ msgid ""
+#~ "\n"
+#~ "                             User %(username)s \n"
+#~ "                             Enroll in %(enroll)s\n"
+#~ "                             At %(date)s\n"
+#~ "                            "
+#~ msgstr ""
+#~ "\n"
+#~ "                             Usuario %(username)s \n"
+#~ "                             Matriculado en %(enroll)s\n"
+#~ "                             Fecha %(date)s\n"
+#~ "                            "

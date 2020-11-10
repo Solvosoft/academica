@@ -1,0 +1,27 @@
+{% extends 'gentelella/base.html'%}
+{% load static %}
+{%block content%}
+	<h1 class="text-center">Páginas</h1>
+	<div class="row">
+		<form method="POST">
+			<div class="col-md-10 col-md-offset-1">
+				<div class="x_panel">
+					{% csrf_token %}
+					<div class="x_title">
+						<h2 class="green">Editar página</h2>
+						<ul class="nav navbar-right panel_toolbox">
+						</ul>
+						<div class="clearfix"></div>
+					</div>
+					<div class="x_content">
+						{{form.as_inline}}
+					</div>
+					<div class="text-right">
+						<a class="btn btn-dark" href="{% url 'pages' %}">Cancelar</a>
+						<input class="btn btn-primary" value="Guardar" type="submit"/>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+{%endblock%}

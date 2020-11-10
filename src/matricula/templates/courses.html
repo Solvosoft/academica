@@ -1,0 +1,60 @@
+{% extends 'gentelella/base.html'%}
+{%load i18n static %}
+{% block extra_css %} 
+	<link href="{% static 'css/matricula.css' %}" rel="stylesheet">
+{% endblock %}
+{%block content%}
+	<div class="row">
+		<h1 class="text-center"> {% trans 'List of available courses' %} </h1>
+		<div id="group_message"></div>
+		{% if request.user.is_authenticated and not request.user.student %}
+			<form method="post" action="{% url 'add_student' %}">
+				{% csrf_token %}
+				<div class="alert alert-warning alert-dismissible" role="alert">
+					<strong>Advertencia!</strong> Para tomar cursos usted debe tener rol de estudiante. 
+					<button type="submit" class="btn btn-sm btn-primary">Crear</button>
+				</div>
+			</form>
+		{% endif %}
+		<div class="x_panel">
+			<div class="x_content">
+				{% for pk, course in courses.items %}
+					<div class="col-md-6 col-sm-12 profile_details">
+						<div class="well profile_view" style="display:block;">
+							<div class="col-sm-12">
+								<h3 class="green">{{course.course.name}}</h3>
+								<div class="left col-md-5 col-sm-12">
+									<span class="inline-first">{{course.course.content|truncatechars:100|safe}}</span>
+								</div>
+								<div class="right col-md-7 col-sm-12 text-center">
+									<div class="col-md-12">
+										{% include 'groups.html' %}
+									</div>
+								</div>
+							</div>
+							<div class="profile-bottom text-center">
+								<div class=" col-sm-6 emphasis">
+								</div>
+								<div class=" col-sm-6 emphasis" style="text-align:right;">
+									<a class="btn btn-link btn-lg green" href="{% url 'course' course.course.pk%}">
+										<i class="fa fa-eye"> </i> Leer Más...
+									</a>
+								</div>
+							</div>
+							<div class="clearfix"></div>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+				{% empty %}
+					<div class="alert alert-info" role="alert">
+						No hay cursos disponibles
+					</div>
+				{%endfor%}
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block js %}
+	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
+{% endblock %}

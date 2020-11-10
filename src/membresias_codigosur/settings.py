@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from django.utils.translation import ugettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'membership_core',
     'membership_manager',
     'membership_telbot_manager',
@@ -57,6 +59,15 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'django_celery_results',
     'django_celery_beat',
+    'matricula',
+    'matricula.contrib.bills',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
+    'paypal.standard.ipn'
 ]
 
 MIDDLEWARE = [
@@ -67,6 +78,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 
 ]
 
@@ -128,11 +140,20 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Set in weeks to academic app
+TOKEN_CONFIRMATION_EXPIRE_DAYS = 15
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
 LANGUAGE_CODE = 'es'
+
+# Set languages to academic app
+LANGUAGES = (
+    ('es', _('Spanish')),
+    ('en', _('English')),
+)
 
 TIME_ZONE = 'America/Costa_Rica'
 
@@ -227,3 +248,51 @@ ASYNC_NEWSLETTER_SEVER_CONFIGS={
     #use_tls=my_use_tls
 }
 """
+
+# allauth configurations
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    },
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SCOPE': ['email', 'public_profile', 'user_friends'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'FIELDS': [
+            'id',
+            'email',
+            'name',
+            'first_name',
+            'last_name',
+            'verified',
+            'locale',
+            'timezone',
+            'link',
+            'gender',
+            'updated_time'
+        ],
+        'EXCHANGE_TOKEN': True,
+        'LOCALE_FUNC': lambda request: 'en_US',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v2.4'
+    },
+}
+# end allauth configurations
+PAYPAL_TEST = True
+PAYPAL_RECEIVER_EMAIL = "luisza14-buyer@gmail.com"
+MY_PAYPAL_HOST = "http://academica.ngrok.io"

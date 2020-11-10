@@ -1,0 +1,22 @@
+{% extends 'gentelella/base.html'%}
+{%load i18n %}
+{%block content%}
+	<h1 class="text-center"> {% trans 'List of categories with available courses' %} </h1>
+	<div id="group_message"> </div>
+	<div class="row">
+		{% for category in categories%}
+			<div class="col-md-6">
+				<div class="x_panel">
+					<div class="x_title">
+						<a href="{% url 'courses' %}?cat={{category.pk}}" >
+						<h3 class="green text-center">{{category.name}}</h3></a>
+					</div>
+					<div class="x_content">
+						<p>{{category.description|safe|striptags}}</p>
+						<div class="text-right"><a class= "btn btn-sm btn-success" href="{% url 'courses' %}?cat={{category.pk}}" > Ver </a></div>
+					</div>
+				</div>
+			</div>
+		{%endfor%}
+	</div>
+{%endblock content%}
