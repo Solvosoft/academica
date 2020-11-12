@@ -124,7 +124,7 @@ class Group(models.Model):
         verbose_name=_("Maximum number of students"))
     is_open = models.BooleanField(default=True)
     flow = models.SmallIntegerField(
-        choices=FLOWS, default=NORMAL, verbose_name=_("Enrollment behavior"))
+        choices=FLOWS, default=AUTO_ENROLL, verbose_name=_("Enrollment behavior"))
 
     @property
     def in_enrollment(self):

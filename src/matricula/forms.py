@@ -138,6 +138,9 @@ class CourseCreateForm(forms.ModelForm, GTForm):
 
 
 class GroupAddForm(forms.ModelForm, GTForm):
+    schedule = forms.CharField(
+        required=False, max_length=250, widget=djgentelella.TextInput)
+
     class Meta:
         model = Group
         fields = [
@@ -242,6 +245,9 @@ class GroupSearchForm(GTForm, forms.Form):
 
 
 class GroupCreateForm(forms.ModelForm, GTForm):
+    schedule = forms.CharField(
+        required=False, max_length=250, widget=djgentelella.TextInput)
+
     class Meta:
         model = Group
         fields = [
@@ -253,7 +259,6 @@ class GroupCreateForm(forms.ModelForm, GTForm):
             'name': djgentelella.TextInput,
             'period': djgentelella.Select,
             'course': djgentelella.Select,
-            'schedule': djgentelella.TextInput,
             'pre_enroll_start': djgentelella.DateTimeInput,
             'pre_enroll_finish': djgentelella.DateTimeInput,
             'enroll_start': djgentelella.DateTimeInput,
