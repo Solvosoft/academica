@@ -366,8 +366,7 @@ class QualifyStudentForm(GTForm, forms.ModelForm):
 
     class Meta:
         model = Enroll
-        fields = ['course_score', 'course_status']
+        fields = ['course_status']
         widgets = {
-            'course_score': forms.NumberInput,
             'course_status': djgentelella.Select
         }

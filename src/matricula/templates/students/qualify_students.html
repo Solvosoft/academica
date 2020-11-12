@@ -29,13 +29,12 @@
                             <thead>
                                 <tr id="trhead">
                                     <th title="Seleccionar todos" class="text-center" style="padding-right: 6px;" id="selecction">
-                                        <input type="checkbox" id="selectall" class="flat" data-widget="CheckboxInput">
+                                        <input type="checkbox" id="selectall" class="flat" data-widget="CheckboxInput" data-key="0">
                                     </th>
                                     <th class="text-center">Nombre completo</th>
                                     <th class="text-center">Correo electrónico</th>
                                     <th class="text-center">Nota</th>
                                     <th class="text-center">Estado</th>
-                                    <th class="text-center">Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -47,12 +46,18 @@
                                 </td>
                                 <td>{{ enroll.student.user.get_full_name }}</td>
                                 <td>{{ enroll.student.user.email }}</td>
-                                <td>{{ enroll.course_score }}</td>
-                                <td style="
-                                {% if enroll.course_status %}
-                                 {% if enroll.course_status == 'approved' %} color: green {% else %} color: red {% endif %}{% endif %}"><strong>{% if enroll.course_status %} {{ enroll.course_status|capfirst }} {% else %} ----- {% endif %}</strong></td>
-                                <td><a title="Calificar estudiante" class="quality_student_button edit-link" data-element="{{enroll.course_score}}-{{enroll.course_status}}" onclick="save_quality_student(this)" data-url="{% url 'save_quality_student' pk_enroll=enroll.pk pk_group=group.pk %}"><i class="fa fa-pencil-square-o fa-2x"></i></a></td>
-                            </tr>
+                                <td>
+                                    <input type="number" name="course_score" value="{{ enroll.course_score }}" step="0.0000" required id="id_course_score{{enroll.pk}}">
+                                </td>
+                                <td>
+                                    <select name="course_status"  class="select2_single form-control " data-widget="Select" id="id_course_status{{enroll.pk}}">
+                                        <option value="" {% if not enroll.course_status %}selected{% endif %}>---------</option>
+                                        <option value="approved" {% if enroll.course_status %}{% if enroll.course_status == 'approved' %}selected{% endif %}{% endif %}>Aprobado</option>
+                                        <option value="reproved" {% if enroll.course_status %}{% if enroll.course_status == 'reproved' %}selected{% endif %}{% endif %}>Reprobado</option>
+                                    </select>
+
+                                </td>
+                           </tr>
                             {% endfor %}
 
                         </tbody>
@@ -70,7 +75,7 @@
         <form method="post" id="qualifystudentform">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Calificar estudiante</h4>
+        <h4 class="modal-title">Calificar estudiantes</h4>
       </div>
       <div class="modal-body">
           {% csrf_token %}
@@ -94,58 +99,73 @@
 {{ block.super }}
 <script>
 
-function save_quality_student(element){
-        $("#qualifystudentform").attr("action", $(element).data('url'));
-        var info = $(element).data('element').split('-');
-        $("#id_course_score").val(info[0]);
-        $("#id_course_status").val(info[1]).trigger('change');
-        $("#qualifystudentmodal").modal();
-    }
-
-
 function save_quality_students_list(){
-        $("#qualifystudentform").attr("action", $(element).data('url'));
-        $("#qualifystudentmodal").modal();
+
+    var pk_enroll_list =  "";
+
+    $("table").find("td.checkselection").each(function(tdindex, tdelement){
+
+        $(this).children().each(function(index, element){
+
+            if(tdindex == $("table").find("td.checkselection").length-1){
+                if(String($(element)[0].attributes[0].value).includes("checked")){
+                    pk_enroll_list += $(element).children().data('id');
+                }
+            }else{
+                if(String($(element)[0].attributes[0].value).includes("checked")){
+                    pk_enroll_list += $(element).children().data('id') + ",";
+                }
+            }
+        });
+    });
+
+    $("#qualifystudentform").attr("action", "/enrrolment/{{group.pk}}/qualify_students/"+pk_enroll_list+"/");
+    $("#qualifystudentmodal").modal();
+}
+
+
+function select_rows(object_checkbox){
+
+    var list_rows = $('.icheckbox_flat-green').children();
+
+    if(object_checkbox.parent().hasClass("checked")){
+        object_checkbox.parent().removeClass("checked");
+        $('.icheckbox_flat-green').removeClass("checked");
+        $('#formgroupquality').hide();
+
+        $(list_rows).each(function(index, element){
+            if(element.hasAttribute("data-id")){
+                $(element).attr("data-key", "0");
+            }
+        });
+
+    }else{
+        $('.icheckbox_flat-green').addClass("checked");
+
+        $(list_rows).each(function(index, element){
+
+            if(element.hasAttribute("data-id")){
+                $(element).attr("data-key", "1");
+            }
+        });
+        $('#formgroupquality').show();
     }
+}
+
 
 (function(){
     $('#studentstable').DataTable();
     $(window).load(function() {
       $('.select2-container').width('100%');
+      $("#selectall").parent().removeClass("checked");
     });
 
     $("#selectall").on("ifChanged", function(){
-
-        var list_rows = $('.icheckbox_flat-green').children();
-
-        if($(this).parent().hasClass("checked")){
-            $('.icheckbox_flat-green').removeClass("checked");
-            $('.quality_student_button').show();
-            $('#formgroupquality').hide();
-
-            $(list_rows).each(function(index, element){
-
-                if(element.hasAttribute("data-id")){
-                    $(element).removeAttr("checked");
-                }
-            });
-
-        }else{
-            $('.icheckbox_flat-green').addClass("checked");
-
-            $(list_rows).each(function(index, element){
-
-                if(element.hasAttribute("data-id")){
-                    $(element).attr("checked", "True");
-                }
-            });
-            $('.quality_student_button').hide();
-            $('#formgroupquality').show();
-        }
+    select_rows($(this));
     });
 
-    $('#formgroupquality').hide();
 
+    $('#formgroupquality').hide();
 
 })(jQuery);
 </script>

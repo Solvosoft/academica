@@ -29,16 +29,17 @@ def save_quality_student(request, pk_enroll, pk_group):
             enroll = Enroll.objects.filter(pk=pk_enroll).first()
 
             if enroll:
-                enroll.course_score = form.cleaned_data['course_score']
                 enroll.course_status = form.cleaned_data['course_status']
                 enroll.save()
                 messages.success(request, "Datos actualizados exitosamente.")
                 return redirect('qualify_students', pk=pk_group)
 
 
-def save_quality_students(request, pk_enroll_list, pk_group):
+def save_quality_students(request, pk, pk_enroll_list):
 
-    queryset = Enroll.objects.filter(pk__in=list(pk_enroll_list))
+    list_p = [int(i) for i in pk_enroll_list.split(",")]
+
+    queryset = Enroll.objects.filter(pk__in=list_p)
 
     if request.method == "POST":
 
@@ -48,6 +49,6 @@ def save_quality_students(request, pk_enroll_list, pk_group):
 
             if queryset:
 
-                queryset.update(course_score=form.cleaned_data['course_score'], course_status=form.cleaned_data['course_status'])
+                queryset.update(course_status=form.cleaned_data['course_status'])
                 messages.success(request, "Datos actualizados exitosamente.")
-                return redirect('qualify_students', pk=pk_group)
+                return redirect('qualify_students', pk=pk)
