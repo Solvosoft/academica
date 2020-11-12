@@ -232,7 +232,6 @@ def add_group_course(request, pk=None):
             course = Course.objects.get(pk=pk)
             form = GroupAddForm(request.POST)
             if form.is_valid():
-                messages.success(request, "Grupo agregado con éxito")
                 group = Group(
                     name=form.cleaned_data['name'],
                     period=get_active_period(),
@@ -249,14 +248,14 @@ def add_group_course(request, pk=None):
                     flow=form.cleaned_data['flow']
                 )
                 group.save()
+                messages.success(request, "Grupo agregado con éxito")
                 return HttpResponseRedirect(reverse('enrrolment_courses'))
             else:
-                messages.error(request, "Error al actualizar")
-        else:
-            if request.method == "GET":
-                form = GroupAddForm()
+                messages.error(request, "Error al crear grupo")
+                return render(request, 'courses/course_group_create.html', {'form': form})
+        form = GroupAddForm()
         return render(request, 'courses/course_group_create.html', {'form': form})
-    return HttpResponseRedirect(reverse(request, 'enrrolment_courses'))
+    return HttpResponseRedirect(reverse('enrrolment_courses'))
 
 
 @method_decorator(permission_required('matricula.view_menuitem'), name='dispatch')
