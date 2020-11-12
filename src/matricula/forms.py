@@ -137,6 +137,29 @@ class CourseCreateForm(forms.ModelForm, GTForm):
                 self.fields['category'].initial = kwargs['initial']['category_id']
 
 
+class GroupAddForm(forms.ModelForm, GTForm):
+    class Meta:
+        model = Group
+        fields = [
+            'name', 'schedule', 'pre_enroll_start', 'pre_enroll_finish',
+            'enroll_start', 'enroll_finish', 'currency', 'cost', 'maximum',
+            'is_open', 'flow'
+        ]
+        widgets = {
+            "name": djgentelella.TextInput,
+            "schedule": djgentelella.TextInput,
+            "pre_enroll_start": djgentelella.DateTimeInput,
+            "pre_enroll_finish": djgentelella.DateTimeInput,
+            "enroll_start": djgentelella.DateTimeInput,
+            "enroll_finish": djgentelella.DateTimeInput,
+            "currency": djgentelella.Select,
+            "cost": djgentelella.NumberInput,
+            "maximum": djgentelella.NumberInput,
+            "is_open": djgentelella.YesNoInput,
+            "flow": djgentelella.Select
+        }
+
+
 class MenuItemSearchForm(GTForm, forms.Form):
     name = forms.CharField(
         required=False, widget=djgentelella.TextInput,

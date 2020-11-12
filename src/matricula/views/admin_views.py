@@ -5,7 +5,7 @@ Created on 18/10/2020
 @author: allexiusw
 '''
 from django.conf import settings
-from django.views.generic import ListView, DeleteView, UpdateView
+from django.views.generic import ListView, DeleteView
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render
 from matricula.models import Category, Course, MenuItem, Period, Group,\
@@ -15,7 +15,7 @@ from matricula.forms import CategoryCreateForm, CategorySearchForm,\
     MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm,\
     GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentSearchForm,\
     StudentAdminCreateForm, PageCreateForm, PageSearchForm, MenuItemAddForm,\
-    PreEnrollAddGroupForm
+    PreEnrollAddGroupForm, GroupAddForm
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -29,6 +29,8 @@ from django.http import HttpResponse
 from django.utils.timezone import now
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
+from .utils import get_active_period
+
 
 @method_decorator(permission_required('matricula.view_category'), name='dispatch')
 class CategoryList(ListView):
@@ -220,6 +222,40 @@ def edit_course(request, pk=None):
             else:
                 form = CourseCreateForm()
         return render(request, 'courses/course_update.html', {'form': form})
+    return HttpResponseRedirect(reverse(request, 'enrrolment_courses'))
+
+
+@permission_required('matricula.can_add_group_course')
+def add_group_course(request, pk=None):
+    if pk is not None:
+        if request.method == "POST":
+            course = Course.objects.get(pk=pk)
+            form = GroupAddForm(request.POST)
+            if form.is_valid():
+                messages.success(request, "Grupo agregado con éxito")
+                group = Group(
+                    name=form.cleaned_data['name'],
+                    period=get_active_period(),
+                    course=course,
+                    schedule=form.cleaned_data['schedule'],
+                    pre_enroll_start=form.cleaned_data['pre_enroll_start'],
+                    pre_enroll_finish=form.cleaned_data['pre_enroll_finish'],
+                    enroll_start=form.cleaned_data['enroll_start'],
+                    enroll_finish=form.cleaned_data['enroll_finish'],
+                    currency=form.cleaned_data['currency'],
+                    cost=form.cleaned_data['cost'],
+                    maximum=form.cleaned_data['maximum'],
+                    is_open=form.cleaned_data['is_open'],
+                    flow=form.cleaned_data['flow']
+                )
+                group.save()
+                return HttpResponseRedirect(reverse('enrrolment_courses'))
+            else:
+                messages.error(request, "Error al actualizar")
+        else:
+            if request.method == "GET":
+                form = GroupAddForm()
+        return render(request, 'courses/course_group_create.html', {'form': form})
     return HttpResponseRedirect(reverse(request, 'enrrolment_courses'))
 
 

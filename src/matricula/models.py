@@ -75,6 +75,9 @@ class Course(models.Model):
     class Meta:
         verbose_name = _("Course")
         verbose_name_plural = _("Courses")
+        permissions = [
+            ("can_add_group_course", "Can add course to group"),
+        ]
 
 
 class Group(models.Model):
@@ -114,7 +117,7 @@ class Group(models.Model):
     enroll_finish = models.DateTimeField(verbose_name=_("Enroll finish hour"))
     currency = models.CharField(
         max_length=3, verbose_name=_("Currency"), choices=COURRENCY_CHOICES,
-        default="CRC")
+        default="USD")
     cost = models.DecimalField(
         max_digits=10, decimal_places=2, verbose_name=_("Course cost"))
     maximum = models.SmallIntegerField(
