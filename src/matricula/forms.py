@@ -359,3 +359,15 @@ class PreEnrollAddGroupForm(GTForm, forms.Form):
         queryset=Enroll.objects.all(), widget=djgentelella.SelectMultiple,
         required=False, label="Matrícula")
     action = forms.CharField(required=True)
+
+
+class QualifyStudentForm(GTForm, forms.ModelForm):
+
+
+    class Meta:
+        model = Enroll
+        fields = ['course_score', 'course_status']
+        widgets = {
+            'course_score': forms.NumberInput,
+            'course_status': djgentelella.Select
+        }

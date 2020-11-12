@@ -19,7 +19,7 @@ from matricula.forms import MenuItemFormPage
 class EnrollAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
-            'fields': (('enroll_finished', 'enroll_activate'), 'group', 'student', 'bill_created')
+            'fields': (('enroll_finished', 'enroll_activate'), 'group', 'student', 'bill_created', 'course_score', 'course_status')
         }),)
 
     list_display = ('student', 'group', 'enroll_finished', 'enroll_activate')
