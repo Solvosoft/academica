@@ -1,4 +1,6 @@
 # encoding: utf-8
+from decimal import Decimal
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.encoding import smart_text
@@ -30,6 +32,17 @@ class Student(models.Model):
             self.save()
             return True
         return False
+
+    def __str__(self):
+        dev = self.user.username
+        if self.user.get_full_name():
+            dev = self.user.get_full_name()
+        return dev
+
+
+class Professor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    personal_description = models.TextField(max_length=500, null=True, blank=True, verbose_name=_("Personal description"))
 
     def __str__(self):
         dev = self.user.username
@@ -122,6 +135,7 @@ class Group(models.Model):
     is_open = models.BooleanField(default=True)
     flow = models.SmallIntegerField(
         choices=FLOWS, default=NORMAL, verbose_name=_("Enrollment behavior"))
+    professors = models.ManyToManyField(Professor, blank=True, verbose_name=_("Professors"))
 
     @property
     def in_enrollment(self):
@@ -138,6 +152,11 @@ class Group(models.Model):
 
 
 class Enroll(models.Model):
+
+    COURSE_STATUS = (("approved", _("Approved")),
+             ("reproved", _("Reproved"))
+             )
+
     enroll_finished = models.BooleanField(
         default=False, verbose_name=_("Is enroll finished?"))
     enroll_activate = models.BooleanField(
@@ -151,6 +170,9 @@ class Enroll(models.Model):
     # bill field is needed to bill system
     bill_created = models.BooleanField(
         default=False, verbose_name=_("Bill created"))
+    course_score = models.DecimalField(max_digits=6, decimal_places=4, default=Decimal(0.00), verbose_name=_("Note"))
+    course_status = models.CharField(max_length=20, choices=COURSE_STATUS, blank=True, null=True, verbose_name=_("Status"))
+
 
     def __str__(self):
         return self.student.user.username + " -- " + smart_text(self.group)
