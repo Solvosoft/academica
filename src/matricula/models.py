@@ -19,7 +19,7 @@ class Student(models.Model):
         User, on_delete=models.CASCADE, primary_key=True)
     key = models.UUIDField(default=uuid.uuid4)
     confirmed_at = models.DateTimeField(null=True, blank=True)
-    expired_at = models.DateTimeField(default=get_expire_date())
+    expired_at = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def confirm(self, key):
