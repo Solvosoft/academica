@@ -160,6 +160,7 @@
                     </a>
                     <ul class="nav child_menu">
                         {% show_menu request.user.is_authenticated%}
+                        <li><a href="{% url 'bills' %}">Pagos</a></li>
                     </ul>
                 </li>
             </ul>
@@ -178,11 +179,11 @@
                             {% if perms.matricula.view_course %}
                                 <li><a href="{% url 'enrrolment_courses' %}">Cursos</a></li>
                             {% endif %}
-                            {% if perms.matricula.view_menuitem %}
-                                <li><a href="{% url 'menuitems' %}">Elementos del menú</a></li>
-                            {% endif %}
                             {% if perms.matricula.view_group %}
                                 <li><a href="{% url 'groups_enroll' %}">Grupos</a></li>
+                            {% endif %}
+                            {% if perms.matricula.view_menuitem %}
+                                <li><a href="{% url 'menuitems' %}">Elementos del menú</a></li>
                             {% endif %}
                             {% if perms.matricula.view_enroll %}
                                 <li><a href="{% url 'enrolls' %}">Matrículas</a></li>
