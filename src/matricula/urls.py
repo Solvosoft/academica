@@ -25,6 +25,7 @@ from .views.admin_views import CategoryList, create_category,\
     export_group, recovery_pass_student, MenuPageDelete, create_menupage,\
     pre_enroll_group
 from matricula.contrib.bills.urls import urlpatterns as billurls
+from .views.students_views import qualify_students, save_quality_student, save_quality_students
 
 urlpatterns = [
     url('^create_user$', create_user, name="create_user"),
@@ -71,6 +72,9 @@ urlpatterns = [
     path('enrrolment/delete_enroll/<int:pk>/', EnrollDelete.as_view() , name="delete_enroll"),
     path('enrrolment/edit_enroll/<int:pk>/', edit_enroll, name="edit_enroll"),
     url('enrrolment/students', StudentList.as_view(), name="students"),
+    path('enrrolment/<int:pk>/qualify_students', qualify_students, name="qualify_students"),
+    path('enrrolment/<int:pk_enroll>/<int:pk_group>/qualify_student', save_quality_student, name="save_quality_student"),
+    path('enrrolment/<str:pk_enroll_list>/<int:pk_group>/save_quality_students', save_quality_students, name="save_quality_students"),
     path('enrrolment/recovery_pass_student/<int:pk>/', recovery_pass_student, name="recovery_pass_student"),
     url('enrrolment/create_student', create_student, name="create_student"),
     path('enrrolment/delete_student/<int:pk>/', StudentDelete.as_view() , name="delete_student"),

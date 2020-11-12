@@ -1,0 +1,152 @@
+{% extends 'gentelella/base.html'%}
+{% load static %}
+{%load i18n %}
+{% load gtsettings %}
+{% block pre_head %}
+    {% define_true "use_datatables" as use_datatables %}
+{% endblock %}
+{%block content %}
+	<div class="container">
+
+    <div class="row">
+        <div class='col-md-12 col-xs-12'>
+            <h1 class="text-center"> Calificaciones</h1>
+            <h2 class="text-center"><strong>{{group.name}} - {{group.course.name}}</strong></h2>
+            <div class="x_panel">
+                <div class="x_content" style="display: block;">
+                    <div class="dashboard-widget-content">
+                        <div class="form-group row" id="formgroupquality">
+                            <div class="col-sm-2">
+                                <label style="color:red">Calificar estudiantes</label>
+                            </div>
+                            <div class="col-sm-3 col-xs-12">
+                                <a title="Calificar estudiantes" class="edit-link" onclick="save_quality_students_list()" style="color:red"><i class="fa fa-pencil-square-o fa-2x"></i></a>
+                            </div>
+                        </div>
+
+
+                        <table id="studentstable" class="table table-striped table-bordered text-center" style="width:100%">
+                            <thead>
+                                <tr id="trhead">
+                                    <th title="Seleccionar todos" class="text-center" style="padding-right: 6px;" id="selecction">
+                                        <input type="checkbox" id="selectall" class="flat" data-widget="CheckboxInput">
+                                    </th>
+                                    <th class="text-center">Nombre completo</th>
+                                    <th class="text-center">Correo electrónico</th>
+                                    <th class="text-center">Nota</th>
+                                    <th class="text-center">Estado</th>
+                                    <th class="text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for enroll in enroll_list %}
+                            <tr>
+                                <td class="checkselection">
+                                    <input type="checkbox" class="flat" data-widget="CheckboxInput" style="opacity: 0;" data-id="{{enroll.pk}}">
+                                </td>
+                                <td>{{ enroll.student.user.get_full_name }}</td>
+                                <td>{{ enroll.student.user.email }}</td>
+                                <td>{{ enroll.course_score }}</td>
+                                <td style="
+                                {% if enroll.course_status %}
+                                 {% if enroll.course_status == 'approved' %} color: green {% else %} color: red {% endif %}{% endif %}"><strong>{% if enroll.course_status %} {{ enroll.course_status|capfirst }} {% else %} ----- {% endif %}</strong></td>
+                                <td><a title="Calificar estudiante" class="quality_student_button edit-link" data-element="{{enroll.course_score}}-{{enroll.course_status}}" onclick="save_quality_student(this)" data-url="{% url 'save_quality_student' pk_enroll=enroll.pk pk_group=group.pk %}"><i class="fa fa-pencil-square-o fa-2x"></i></a></td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div id="qualifystudentmodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <form method="post" id="qualifystudentform">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Calificar estudiante</h4>
+      </div>
+      <div class="modal-body">
+          {% csrf_token %}
+          {{form.as_horizontal}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+        </form>
+    </div>
+  </div>
+</div>
+<style>
+    #selecction::after{
+        content: "";
+    }
+</style>
+{%endblock%}
+{% block js %}
+{{ block.super }}
+<script>
+
+function save_quality_student(element){
+        $("#qualifystudentform").attr("action", $(element).data('url'));
+        var info = $(element).data('element').split('-');
+        $("#id_course_score").val(info[0]);
+        $("#id_course_status").val(info[1]).trigger('change');
+        $("#qualifystudentmodal").modal();
+    }
+
+
+function save_quality_students_list(){
+        $("#qualifystudentform").attr("action", $(element).data('url'));
+        $("#qualifystudentmodal").modal();
+    }
+
+(function(){
+    $('#studentstable').DataTable();
+    $(window).load(function() {
+      $('.select2-container').width('100%');
+    });
+
+    $("#selectall").on("ifChanged", function(){
+
+        var list_rows = $('.icheckbox_flat-green').children();
+
+        if($(this).parent().hasClass("checked")){
+            $('.icheckbox_flat-green').removeClass("checked");
+            $('.quality_student_button').show();
+            $('#formgroupquality').hide();
+
+            $(list_rows).each(function(index, element){
+
+                if(element.hasAttribute("data-id")){
+                    $(element).removeAttr("checked");
+                }
+            });
+
+        }else{
+            $('.icheckbox_flat-green').addClass("checked");
+
+            $(list_rows).each(function(index, element){
+
+                if(element.hasAttribute("data-id")){
+                    $(element).attr("checked", "True");
+                }
+            });
+            $('.quality_student_button').hide();
+            $('#formgroupquality').show();
+        }
+    });
+
+    $('#formgroupquality').hide();
+
+
+})(jQuery);
+</script>
+{% endblock %}
