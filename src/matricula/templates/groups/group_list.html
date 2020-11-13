@@ -61,7 +61,7 @@
 				<div class="x_title">
 					<h2 class="green">{{object.period|safe|striptags}}</h2>
 					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
-						{% if perms.matricula.change_group %}
+						{% if perms.matricula.can_export_enrolled_group %}
 							<li>
 								<a href="{% url 'list_students_group' object.pk %}" class="edit-link"><i class="fa fa-mortar-board"></i></a>
 							</li>

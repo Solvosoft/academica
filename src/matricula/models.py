@@ -141,6 +141,7 @@ class Group(models.Model):
         verbose_name_plural = _("Groups")
         permissions = [
             ("can_list_students_group", "Can list students"),
+            ("can_export_enrolled_group", "Can export students group"),
         ]
 
     def save(self, *args, **kwargs):
