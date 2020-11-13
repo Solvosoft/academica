@@ -110,8 +110,8 @@ class EditNewsLetter(UpdateView):
         news_letter.subject = form.cleaned_data['subject']
         news_letter.message = form.cleaned_data['message']
         news_letter.file = form.cleaned_data['file']
-        mails = get_emails_news_letter(news_letter)
-        news_letter.recipient = ", ".join(mails)
+        mails = form.cleaned_data['recipient']
+        news_letter.recipient = ", ".join([mails])
         news_letter.save()
         add_logentry("async_notifications", "newsletter", news_letter.pk, str(news_letter), self.request.user, 2)
         messages.success(self.request, "Boletín actualizado con éxito")
