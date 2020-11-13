@@ -644,6 +644,44 @@ def list_students_group(request, pk=None):
     return HttpResponseRedirect(reverse('periods'))
 
 
+@permission_required('matricula.can_open_group')
+def open_group(request, pk):
+    try:
+        group = Group.objects.get(pk=pk)
+    except Exception:
+        messages.error(_("Group Not Found"))
+    enrolls = Enroll.objects.filter(group=group)
+    enrolls.update(enroll_activate=True)
+    if request.GET.get('sendemail', '0') == '1':
+        send_mail(
+            _('%(group)s is open now') % {'group': str(group)},
+            _("Go to academica and enroll you"),
+            settings.DEFAULT_FROM_EMAIL,
+            [enroll.student.user.email for enroll in enrolls],
+            fail_silently=False)
+    messages.success(request, "Grupo aperturado con éxito")
+    return HttpResponseRedirect(reverse('list_students_group', args=[pk, ]))
+
+
+@permission_required('matricula.can_close_group')
+def close_group(request, pk):
+    try:
+        group = Group.objects.get(pk=pk)
+    except Exception:
+        messages.error(_("Group Not Found"))
+    enrolls = Enroll.objects.filter(group=group)
+    enrolls.update(enroll_activate=False)
+    if request.GET.get('sendemail', '0') == '1':
+        send_mail(
+            _('%(group)s was closed') % {'group': str(group)},
+            _("Attention: %(group)s was closed") % {"group": group},
+            settings.DEFAULT_FROM_EMAIL,
+            [enroll.student.user.email for enroll in enrolls],
+            fail_silently=False)
+    messages.success(request, "Grupo cerrado con éxito")
+    return HttpResponseRedirect(reverse('list_students_group', args=[pk, ]))
+
+
 @permission_required('matricula.can_export_enrolled_group')
 def export_enrolled_group(request, pk=None):
     group = get_object_or_404(Group, pk=pk)

@@ -24,7 +24,7 @@ from .views.admin_views import CategoryList, create_category,\
     edit_student, StudentDelete, PageList, create_page, edit_page, PageDelete,\
     export_group, recovery_pass_student, MenuPageDelete, create_menupage,\
     pre_enroll_group, add_group_course, list_students_group,\
-    export_enrolled_group
+    export_enrolled_group, open_group, close_group
 from matricula.contrib.bills.urls import urlpatterns as billurls
 
 urlpatterns = [
@@ -67,17 +67,19 @@ urlpatterns = [
     url('enrrolment/create_group', create_group, name="create_group_enroll"),
     path('enrrolment/delete_group/<int:pk>/', GroupDelete.as_view(), name="delete_group_enroll"),
     path('enrrolment/edit_group/<int:pk>/', edit_group, name="edit_group_enroll"),
+    path('enrrolment/open_group/<int:pk>/', open_group, name="open_group"),
+    path('enrrolment/close_group/<int:pk>/', close_group, name="close_group"),
     path('enrrolment/export_group/<int:pk>/', export_group, name="export_group"),
     path('enrrolment/list_students_group/<int:pk>/', list_students_group, name="list_students_group"),
     path('enrrolment/export_enrolled_group/<int:pk>/', export_enrolled_group, name="export_enrolled_group"),
     url('enrrolment/enrolls', EnrollList.as_view(), name="enrolls"),
     url('enrrolment/create_enroll', create_enroll, name="create_enroll"),
-    path('enrrolment/delete_enroll/<int:pk>/', EnrollDelete.as_view() , name="delete_enroll"),
+    path('enrrolment/delete_enroll/<int:pk>/', EnrollDelete.as_view(), name="delete_enroll"),
     path('enrrolment/edit_enroll/<int:pk>/', edit_enroll, name="edit_enroll"),
     url('enrrolment/students', StudentList.as_view(), name="students"),
     path('enrrolment/recovery_pass_student/<int:pk>/', recovery_pass_student, name="recovery_pass_student"),
     url('enrrolment/create_student', create_student, name="create_student"),
-    path('enrrolment/delete_student/<int:pk>/', StudentDelete.as_view() , name="delete_student"),
+    path('enrrolment/delete_student/<int:pk>/', StudentDelete.as_view(), name="delete_student"),
     path('enrrolment/edit_student/<int:pk>/', edit_student, name="edit_student"),
     url('enrrolment/pages', PageList.as_view(), name="pages"),
     url('enrrolment/create_page', create_page, name="create_page"),
