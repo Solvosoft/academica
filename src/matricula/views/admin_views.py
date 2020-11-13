@@ -507,7 +507,7 @@ class GroupList(ListView):
         return context
 
 
-@permission_required('matricula.view_group')
+@permission_required('matricula.can_view_pre_enroll_group')
 def pre_enroll_group(request, pk=None):
     context = {}
     if pk is not None:

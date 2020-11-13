@@ -140,7 +140,7 @@ class Group(models.Model):
         verbose_name = _("Group")
         verbose_name_plural = _("Groups")
         permissions = [
-            ("can_list_students_group", "Can list students"),
+            ("can_view_pre_enroll_group", "Can view pre-enrolled in group"),
             ("can_export_enrolled_group", "Can export students group"),
         ]
 
