@@ -34,7 +34,8 @@ def create_invoice(renew, startdate=None, buildpdf=True):
 def pay_invoice(invoice):
     membership = invoice.membership
     invoice.status = "paid"
-    invoice.payment_date = timezone.now()
+    if not invoice.payment_date:
+        invoice.payment_date = timezone.now()
     generate_invoice(membership, invoice)
     membership_payment_manager(membership, invoice)
 
