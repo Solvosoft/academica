@@ -376,9 +376,10 @@ class QualifyStudentForm(GTForm, forms.ModelForm):
 
 
 class ProfessorEditForm(GTForm, forms.Form):
-    username = forms.CharField(label="Nombre de usuario", widget=djgentelella.TextInput, required=True)
+    username = forms.CharField(label="Nombre de usuaria", widget=djgentelella.TextInput, required=False)
     first_name = forms.CharField(label="Nombre", widget=djgentelella.TextInput, required=True)
     last_name = forms.CharField(label="Apellidos", widget=djgentelella.TextInput, required=True)
-    email = forms.CharField(label="Correo electrónico", widget=djgentelella.EmailMaskInput, required=True)
-    personal_description = forms.TimeField(widget=djgentelella.Textarea, required=True, label="Descripción personal",
-                                           help_text="Descripción como profesor del curso")
+    email = forms.CharField(label="Correo electrónico como usuaria del sistema", widget=djgentelella.EmailMaskInput, required=True)
+    email_students = forms.CharField(label="Correo electrónico para estudiantes", widget=djgentelella.EmailMaskInput, required=True)
+    description = forms.CharField(widget=djgentelella.Textarea, required=True, label="Descripción",
+                                           help_text="Esta descripción será mostrada en los grupos en los cuales sea asignada como profesora.")

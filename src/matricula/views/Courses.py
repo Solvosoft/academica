@@ -18,8 +18,14 @@ def list_courses(request):
     professor = Professor.objects.filter(user=request.user).first()
 
     if professor:
-        if professor.personal_description:
-            if professor.personal_description == "":
+        if professor.email:
+            if professor.email == "":
+                show_info_modal = 1
+        else:
+            show_info_modal = 1
+
+        if professor.description:
+            if professor.description == "":
                 show_info_modal = 1
         else:
             show_info_modal = 1

@@ -42,7 +42,8 @@ class Student(models.Model):
 
 class Professor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    personal_description = models.TextField(max_length=500, null=True, blank=True, verbose_name=_("Personal description"))
+    email = models.EmailField(blank=True, verbose_name=_("Email for students"))
+    description = models.TextField(max_length=500, null=True, blank=True, verbose_name=_("Description"))
 
     def __str__(self):
         dev = self.user.username
