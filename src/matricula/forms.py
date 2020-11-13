@@ -145,7 +145,7 @@ class GroupAddForm(forms.ModelForm, GTForm):
         model = Group
         fields = [
             'name', 'schedule', 'pre_enroll_start', 'pre_enroll_finish',
-            'enroll_start', 'enroll_finish', 'currency', 'cost', 'maximum',
+            'enroll_start', 'enroll_finish', 'is_paid', 'currency', 'cost', 'maximum',
             'is_open', 'flow'
         ]
         widgets = {
@@ -155,6 +155,8 @@ class GroupAddForm(forms.ModelForm, GTForm):
             "pre_enroll_finish": djgentelella.DateTimeInput,
             "enroll_start": djgentelella.DateTimeInput,
             "enroll_finish": djgentelella.DateTimeInput,
+            'is_paid': djgentelella.YesNoInput(
+                attrs={'rel': ['currency', 'cost']}),
             "currency": djgentelella.Select,
             "cost": djgentelella.NumberInput,
             "maximum": djgentelella.NumberInput,
