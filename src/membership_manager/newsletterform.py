@@ -306,16 +306,20 @@ class TemplateBaseNewsLetterForm(CustomForm, forms.ModelForm):
 
         self.fields['model_base'] = forms.ChoiceField(
             choices=get_basemodels_dict(),
-            widget=genwidgets.Select
+            widget=genwidgets.Select, label="Modelo base"
         )
+
+    field_order = ['name', 'title', 'message', 'model_base']
 
     class Meta:
         model = NewsLetterTemplate
         fields = '__all__'
+        field_order = ['name', 'title', 'message', 'model_base']
         widgets = {
             'title': genwidgets.TextInput,
             'name': genwidgets.TextInput,
-            'message':  wysiwyg.TextareaWysiwyg
+            'message':  wysiwyg.TextareaWysiwyg,
+            'model_base': genwidgets.Select
         }
 
 
