@@ -88,12 +88,6 @@
 									<strong>Curso: </strong>{{object.course}}
 								</li>
 								<li>
-									<strong>Matricula Inicio: </strong>{{object.enroll_start}}
-								</li>
-								<li>
-									<strong>Matricula Fin: </strong>{{object.enroll_finish}}
-								</li>
-								<li>
 									<strong>Inversión: </strong>{{object.cost}}
 								</li>
 							</ul>
@@ -101,21 +95,22 @@
 						<div class="col-md-6 col-sm-6 col-xs-6">
 							<ul class="list-unstyled user_data">
 								<li>
-									<strong>Máximo estudiantes: </strong>{{object.maximum}}
+									<strong>Inscritos: </strong>
+									{{object.enroll_set.all.count}} de {{object.maximum}}
 								</li>
 								<li>
 									<strong>Moneda: </strong>{{object.currency}}
-								</li>
-								<li>
-									<strong>Pre-matricula Inicio: </strong>{{object.pre_enroll_start}}
-								</li>
-								<li>
-									<strong>Pre-matricula Fin: </strong>{{object.pre_enroll_finish}}
 								</li>
 							</ul>
 						</div>
 						<div class="col-md-12">
 							<ul class="list-unstyled user_data">
+								<li>
+									<strong>Rango matrícula: </strong>{{object.enroll_start}} - {{object.enroll_finish}}
+								</li>
+								<li>
+									<strong>Rango pre-matrícula: </strong>{{object.pre_enroll_start}} - {{object.enroll_finish}}
+								</li>
 								<li><strong>Flujo del curso: </strong>{{object.FLOWS|index:object.flow|index:1}}</li>
 								{% if perms.matricula.can_export_enrolled_group %}
 									<li><strong>Exportar estudiantes: </strong>{{object.enroll_set.all.count}} <a href="{% url 'export_group' object.pk%}"><i class="fa fa-file-text-o"></i></a></li>
