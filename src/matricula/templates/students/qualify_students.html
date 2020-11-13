@@ -42,7 +42,7 @@
                             {% for enroll in enroll_list %}
                             <tr>
                                 <td class="checkselection">
-                                    <input type="checkbox" class="flat" data-widget="CheckboxInput" style="opacity: 0;" data-id="{{enroll.pk}}">
+                                    <input type="checkbox" class="flat checkstudent" data-widget="CheckboxInput" style="opacity: 0;" data-id="{{enroll.pk}}" data-key="0">
                                 </td>
                                 <td>{{ enroll.student.user.get_full_name }}</td>
                                 <td>{{ enroll.student.user.email }}</td>
@@ -153,6 +153,32 @@ function select_rows(object_checkbox){
 }
 
 
+function change_key(object_checkbox){
+    $(object_checkbox).removeAttr("data-key");
+    if(object_checkbox.parent().hasClass("checked")){
+        object_checkbox.attr("data-key", "0");
+    }else{
+        object_checkbox.attr("data-key", "1");
+    }
+
+    var checkList = [];
+
+        $("table").find("td.checkselection").each(function(tdindex, tdelement){
+            $(this).children().each(function(index, element){
+               checkList.push($(element).children().data('key'));
+            });
+        });
+
+
+        if ( checkList.indexOf(1) !== -1 ) {
+            $('#formgroupquality').show();
+        }else{
+            $('#formgroupquality').hide();
+        }
+
+}
+
+
 (function(){
     $('#studentstable').DataTable();
     $(window).load(function() {
@@ -161,11 +187,14 @@ function select_rows(object_checkbox){
     });
 
     $("#selectall").on("ifChanged", function(){
-    select_rows($(this));
+        select_rows($(this));
     });
 
-
     $('#formgroupquality').hide();
+
+    $('.checkstudent').on("ifChanged", function(){
+        change_key($(this));
+    });
 
 })(jQuery);
 </script>
