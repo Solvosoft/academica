@@ -682,7 +682,7 @@ def close_group(request, pk):
     return HttpResponseRedirect(reverse('list_students_group', args=[pk, ]))
 
 
-@permission_required('matricula.can_export_enrolled_group')
+@permission_required('matricula.can_view_pdf_enrolled_group')
 def export_enrolled_group(request, pk=None):
     group = get_object_or_404(Group, pk=pk)
     attrs = {'group__pk': pk}
