@@ -590,7 +590,7 @@ def edit_group(request, pk=None):
     return HttpResponseRedirect(reverse('groups_enroll'))
 
 
-@permission_required('matricula.can_export_group')
+@permission_required('matricula.can_export_enrolled_group')
 def export_group(request, pk=None):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="students_list.csv"'
