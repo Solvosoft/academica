@@ -30,6 +30,43 @@ from django.utils.timezone import now
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from .utils import get_active_period
+from xhtml2pdf import pisa
+from django.shortcuts import get_object_or_404
+from django.template.loader import get_template
+from django.contrib.staticfiles import finders
+import os
+
+
+def link_callback(uri, rel):
+    """
+    Convert HTML URIs to absolute system paths so xhtml2pdf can access those
+    resources
+    """
+    result = finders.find(uri)
+    if result:
+        if not isinstance(result, (list, tuple)):
+            result = [result]
+        result = list(os.path.realpath(path) for path in result)
+        path = result[0]
+    else:
+        sUrl = settings.STATIC_URL        # Typically /static/
+        sRoot = settings.STATIC_ROOT      # Typically /home/userX/project_static/
+        mUrl = settings.MEDIA_URL         # Typically /media/
+        mRoot = settings.MEDIA_ROOT       # Typically /home/userX/project_static/media/
+
+        if uri.startswith(mUrl):
+            path = os.path.join(mRoot, uri.replace(mUrl, ""))
+        elif uri.startswith(sUrl):
+            path = os.path.join(sRoot, uri.replace(sUrl, ""))
+        else:
+            return uri
+
+    # make sure that file exists
+    if not os.path.isfile(path):
+        raise Exception(
+                'media URI must start with %s or %s' % (sUrl, mUrl)
+        )
+    return path
 
 
 @method_decorator(permission_required('matricula.view_category'), name='dispatch')
@@ -578,6 +615,56 @@ def export_group(request, pk=None):
                 group.name])
         return response
     return HttpResponseRedirect(reverse('groups_enroll'))
+
+
+@permission_required('matricula.can_list_students_group')
+def list_students_group(request, pk=None):
+    context = {}
+    if pk is not None:
+        context = {}
+        if request.method == "POST":
+            group = Group.objects.get(pk=pk)
+            if group:
+                form = PreEnrollAddGroupForm(request.POST)
+                if form.is_valid():
+                    enroll = Enroll.objects.filter(pk__in=form.cleaned_data['students'])
+                    for instance in enroll:
+                        instance.enroll_finished = True
+                        instance.save()
+                    messages.success(request, "Estudiantes inscritos con éxito")
+                    return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
+            messages.error(request, "Error al realizar la acción")
+            return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
+        else:
+            if request.method == "GET":
+                instance = Group.objects.get(pk=pk)
+                context['object'] = instance
+                return render(
+                    request, 'groups/group_students_list.html', context)
+    return HttpResponseRedirect(reverse('periods'))
+
+
+@permission_required('matricula.can_export_enrolled_group')
+def export_enrolled_group(request, pk=None):
+    group = get_object_or_404(Group, pk=pk)
+    attrs = {'group__pk': pk}
+    if request.GET.get('finished', '0') == '1':
+        attrs['enroll_finished'] = True
+    elif request.GET.get('finished', '0') == '2':
+        attrs['enroll_finished'] = False
+    if request.GET.get('activate', '0') == '1':
+        attrs['enroll_activate'] = True
+    elif request.GET.get('activate', '0') == '2':
+        attrs['enroll_activate'] = False
+    student_list = Enroll.objects.filter(**attrs)
+    template = get_template('Pdf/student_list.html')
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+    html = template.render({'student_list': student_list, 'group': group})
+    pisa_status = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
+    if not pisa_status.err:
+        return response
+    return HttpResponse("Error " + str(pisa_status.err) + "  " + html)
 
 
 @method_decorator(permission_required('matricula.view_enroll'), name='dispatch')

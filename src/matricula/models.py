@@ -139,6 +139,9 @@ class Group(models.Model):
     class Meta:
         verbose_name = _("Group")
         verbose_name_plural = _("Groups")
+        permissions = [
+            ("can_list_students_group", "Can list students"),
+        ]
 
     def save(self, *args, **kwargs):
         if not self.is_paid:

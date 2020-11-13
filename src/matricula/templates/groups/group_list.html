@@ -63,6 +63,11 @@
 					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
 						{% if perms.matricula.change_group %}
 							<li>
+								<a href="{% url 'list_students_group' object.pk %}" class="edit-link"><i class="fa fa-mortar-board"></i></a>
+							</li>
+						{% endif %}
+						{% if perms.matricula.change_group %}
+							<li>
 								<a href="{% url 'edit_group_enroll' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
 							</li>
 						{% endif %}
