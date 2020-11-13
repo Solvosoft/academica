@@ -6,8 +6,8 @@ Created on 7/4/2015
 @author: luisza
 '''
 from django import forms
-from matricula.models import Student, Page, MenuItem, Category, Course,\
-    Period, Group, Enroll
+from matricula.models import Student, Page, MenuItem, Category, Course, \
+    Period, Group, Enroll, Professor
 from django.utils.translation import ugettext_lazy as _
 from django.core import validators
 from django.contrib.auth.models import User
@@ -224,7 +224,7 @@ class GroupCreateForm(forms.ModelForm, GTForm):
         fields = [
             'name', 'period', 'course', 'schedule', 'pre_enroll_start',
             'pre_enroll_finish', 'enroll_start', 'enroll_finish', 'currency',
-            'cost', 'maximum', 'flow'
+            'cost', 'maximum', 'flow', 'professors'
         ]
         widgets = {
             'name': djgentelella.TextInput,
@@ -238,12 +238,15 @@ class GroupCreateForm(forms.ModelForm, GTForm):
             'currency': djgentelella.Select,
             'cost': djgentelella.NumberInput,
             'maximum': djgentelella.NumberInput,
-            'flow': djgentelella.Select
-
+            'flow': djgentelella.Select,
+            'professors': djgentelella.SelectMultiple
         }
 
     def __init__(self, *args, **kwargs):
         super(GroupCreateForm, self).__init__(*args, **kwargs)
+
+        self.fields['professors'].queryset = Professor.objects.all()
+
         if 'initial' in kwargs:
             if 'period_id' in kwargs['initial']:
                 self.fields['period'].initial = kwargs['initial']['period_id']
@@ -370,3 +373,12 @@ class QualifyStudentForm(GTForm, forms.ModelForm):
         widgets = {
             'course_status': djgentelella.Select
         }
+
+
+class ProfessorEditForm(GTForm, forms.Form):
+    username = forms.CharField(label="Nombre de usuario", widget=djgentelella.TextInput, required=True)
+    first_name = forms.CharField(label="Nombre", widget=djgentelella.TextInput, required=True)
+    last_name = forms.CharField(label="Apellidos", widget=djgentelella.TextInput, required=True)
+    email = forms.CharField(label="Correo electrónico", widget=djgentelella.EmailMaskInput, required=True)
+    personal_description = forms.TimeField(widget=djgentelella.Textarea, required=True, label="Descripción personal",
+                                           help_text="Descripción como profesor del curso")

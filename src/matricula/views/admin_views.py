@@ -8,8 +8,8 @@ from django.conf import settings
 from django.views.generic import ListView, DeleteView, UpdateView
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render
-from matricula.models import Category, Course, MenuItem, Period, Group,\
-    Enroll, Student, Page
+from matricula.models import Category, Course, MenuItem, Period, Group, \
+    Enroll, Student, Page, Professor
 from matricula.forms import CategoryCreateForm, CategorySearchForm,\
     CourseSearchForm, CourseCreateForm, MenuItemSearchForm,\
     MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm,\
@@ -413,6 +413,10 @@ class GroupList(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+
+        user = self.request.user
+        professor = Professor.objects.filter(user=user).first()
+
         self.form = GroupSearchForm(self.request.GET)
         self.form.is_valid()
         if self.form.cleaned_data['period']:
@@ -426,6 +430,10 @@ class GroupList(ListView):
                 queryset = queryset.filter(is_open=True)
             else:
                 queryset = queryset.filter(is_open=False)
+
+        if professor:
+            queryset = queryset.filter(professors=professor)
+
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -499,8 +507,8 @@ class GroupDelete(DeleteView):
 @permission_required('matricula.change_group')
 def edit_group(request, pk=None):
     if pk is not None:
+        instance = Group.objects.get(pk=pk)
         if request.method == "POST":
-            instance = Group.objects.get(pk=pk)
             form = GroupCreateForm(request.POST, instance=instance)
             if form.is_valid():
                 messages.success(request, "Grupo guardado con éxito")
@@ -511,8 +519,9 @@ def edit_group(request, pk=None):
                 return render(request, 'groups/group_update.html', {'form': form})
         else:
             if request.method == "GET":
-                instance = Group.objects.get(pk=pk)
-                form = GroupCreateForm(initial=instance.__dict__)
+                info = instance.__dict__
+                info['professors'] = instance.professors.all()
+                form = GroupCreateForm(initial=info)
                 return render(request, 'groups/group_update.html', {'form': form})
     return HttpResponseRedirect(reverse('groups_enroll'))
 
