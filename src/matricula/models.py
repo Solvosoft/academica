@@ -115,6 +115,7 @@ class Group(models.Model):
         verbose_name=_("Pre enroll finish hour"))
     enroll_start = models.DateTimeField(verbose_name=_("Enroll start hour"))
     enroll_finish = models.DateTimeField(verbose_name=_("Enroll finish hour"))
+    is_paid = models.BooleanField(verbose_name="Es pagado", default=True)
     currency = models.CharField(
         max_length=3, verbose_name=_("Currency"), choices=COURRENCY_CHOICES,
         default="USD")
@@ -138,6 +139,11 @@ class Group(models.Model):
     class Meta:
         verbose_name = _("Group")
         verbose_name_plural = _("Groups")
+
+    def save(self, *args, **kwargs):
+        if not self.is_paid:
+            self.cost = 0
+        super().save(*args, **kwargs)
 
 
 class Enroll(models.Model):

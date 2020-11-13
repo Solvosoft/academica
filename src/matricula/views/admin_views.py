@@ -241,6 +241,7 @@ def add_group_course(request, pk=None):
                     pre_enroll_finish=form.cleaned_data['pre_enroll_finish'],
                     enroll_start=form.cleaned_data['enroll_start'],
                     enroll_finish=form.cleaned_data['enroll_finish'],
+                    is_free=form.cleaned_data['is_free'],
                     currency=form.cleaned_data['currency'],
                     cost=form.cleaned_data['cost'],
                     maximum=form.cleaned_data['maximum'],
