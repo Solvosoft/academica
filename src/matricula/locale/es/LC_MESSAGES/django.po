@@ -185,15 +185,15 @@ msgstr "Curso"
 
 #: models.py:93
 msgid "Normal flow (manual enroll activate)"
-msgstr "Flujo normal (activación manual para matricula)"
+msgstr "Flujo normal (activación manual para matrícula)"
 
 #: models.py:96
 msgid "Auto pre-enroll (automatic enroll activate)"
-msgstr "Auto prematricula (Activa para matricula automáticamente)"
+msgstr "Auto prematrícula (Activa para matrícula automáticamente)"
 
 #: models.py:99
 msgid "Auto enroll (automatic enroll finished)"
-msgstr "Matricula automática (pone matricula finalizada al prematricular)"
+msgstr "Matrícula automática (pone matrícula finalizada al prematricular)"
 
 #: models.py:108
 msgid "Schedule"
@@ -201,19 +201,19 @@ msgstr "Horario"
 
 #: models.py:110
 msgid "Pre enroll start hour"
-msgstr "Hora de inicio de Pre-matricula"
+msgstr "Hora de inicio de Pre-matrícula"
 
 #: models.py:112
 msgid "Pre enroll finish hour"
-msgstr "Hora de finalización de Pre-matricula"
+msgstr "Hora de finalización de Pre-matrícula"
 
 #: models.py:113
 msgid "Enroll start hour"
-msgstr "Hora de inicio de matricula"
+msgstr "Hora de inicio de matrícula"
 
 #: models.py:114
 msgid "Enroll finish hour"
-msgstr "Hora de finalización de matricula"
+msgstr "Hora de finalización de matrícula"
 
 #: models.py:116
 msgid "Currency"
@@ -229,7 +229,7 @@ msgstr "Máximo número de estudiantes"
 
 #: models.py:124
 msgid "Enrollment behavior"
-msgstr "Comportamiento de matricula"
+msgstr "Comportamiento de matrícula"
 
 #: models.py:136 models.py:146
 msgid "Group"
@@ -241,11 +241,11 @@ msgstr "Grupos"
 
 #: models.py:142
 msgid "Is enroll finished?"
-msgstr "¿Está finalizada la matricula?"
+msgstr "¿Está finalizada la matrícula?"
 
 #: models.py:144
 msgid "Is active for enroll?"
-msgstr "¿Está activo para la matricula?"
+msgstr "¿Está activo para la matrícula?"
 
 #: models.py:148
 msgid "Student"
@@ -253,7 +253,7 @@ msgstr "Estudiante"
 
 #: models.py:150
 msgid "Enroll date"
-msgstr "Fecha de matricula"
+msgstr "Fecha de matrícula"
 
 #: models.py:153
 msgid "Bill created"
@@ -261,11 +261,11 @@ msgstr "Factura creada"
 
 #: models.py:159 templates/matricula_base.html:6
 msgid "Enrollment"
-msgstr "Matricula"
+msgstr "Matrícula"
 
 #: models.py:160
 msgid "Enrollments"
-msgstr "Matriculas"
+msgstr "Matrículas"
 
 #: models.py:165
 msgid "Internal"
@@ -513,11 +513,11 @@ msgstr "Cerrar grupo y notificar"
 
 #: templates/student_list.html:66
 msgid "All Enrollments"
-msgstr "Matriculas"
+msgstr "Matrículas"
 
 #: templates/student_list.html:67
 msgid "All Pre-enrollments"
-msgstr "Todas las matriculas"
+msgstr "Todas las matrículas"
 
 #: templates/student_list.html:68
 msgid "Pre-enroll but not enroll"
