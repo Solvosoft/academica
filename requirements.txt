@@ -11,7 +11,7 @@ python-dateutil
 django-markitup==4.0.0
 markdown==3.2.2
 psycopg2-binary
-djgentelella==0.1.1
+djgentelella==0.1.2
 djangorestframework==3.11.0
 django-allauth==0.42.0
 django-ckeditor==6.0.0
