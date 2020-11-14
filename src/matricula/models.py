@@ -123,7 +123,8 @@ class Group(models.Model):
         max_digits=10, decimal_places=2, verbose_name=_("Course cost"))
     maximum = models.SmallIntegerField(
         verbose_name=_("Maximum number of students"))
-    is_open = models.BooleanField(default=True)
+    is_open = models.BooleanField(
+        default=True, verbose_name="¿Está abierto?")
     flow = models.SmallIntegerField(
         choices=FLOWS, default=AUTO_ENROLL, verbose_name=_("Enrollment behavior"))
 
