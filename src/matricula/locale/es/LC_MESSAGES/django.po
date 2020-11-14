@@ -193,7 +193,7 @@ msgstr "Auto prematrícula (Activa para matrícula automáticamente)"
 
 #: models.py:99
 msgid "Auto enroll (automatic enroll finished)"
-msgstr "Matrícula automática (pone matrícula finalizada al prematricular)"
+msgstr "Matrícula automática (pone matrícula finalizada al prematrícular)"
 
 #: models.py:108
 msgid "Schedule"
