@@ -124,8 +124,7 @@ class CourseCreateForm(forms.ModelForm, GTForm):
         model = Course
         fields = '__all__'
         widgets = {
-            'name': djgentelella.TextInput(
-                attrs={'placeholder': "Nombre curso"}),
+            'name': djgentelella.TextInput,
             'content': widget.TextareaWysiwyg,
             'category': AutocompleteSelect('categorybasename'),
         }
