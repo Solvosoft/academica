@@ -6,8 +6,7 @@
     {% define_true "use_datatables" as use_datatables %}
 {% endblock %}
 {%block content %}
-	<div class="container">
-
+<div class="container">
     <div class="row">
         <div class='col-md-12 col-xs-12'>
             <h1 class="text-center"> Calificaciones</h1>
@@ -15,12 +14,12 @@
             <div class="x_panel">
                 <div class="x_content" style="display: block;">
                     <div class="dashboard-widget-content">
-                        <div class="form-group row" id="formgroupquality">
+                        <div class="form-group row" id="formgroupquality" style="display:none;">
                             <div class="col-sm-2">
                                 <label style="color:red">Calificar estudiantes</label>
                             </div>
                             <div class="col-sm-3 col-xs-12">
-                                <a title="Calificar estudiantes" class="edit-link" onclick="save_quality_students_list()" style="color:red"><i class="fa fa-pencil-square-o fa-2x"></i></a>
+                                <a title="Calificar estudiantes" class="edit-link" data-toggle="modal" data-target="#qualifystudentmodal" style="color:red;"><i class="fa fa-pencil-square-o fa-2x"></i></a>
                             </div>
                         </div>
 
@@ -62,6 +61,11 @@
 
                         </tbody>
                         </table>
+
+                        <div class="form-group" style="text-align:center">
+                            <a class="btn btn-danger" type="button" href="{% url 'groups_enroll' %}">Cancelar</a>
+                            <button class="btn btn-success" type="button" onclick="json_table()">Guardar</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -83,7 +87,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Guardar</button>
+        <button type="button" onclick="qualify_status()" class="btn btn-primary">Guardar</button>
       </div>
         </form>
     </div>
@@ -97,33 +101,9 @@
 {%endblock%}
 {% block js %}
 {{ block.super }}
+<link href="//cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.js"></script>
 <script>
-
-function save_quality_students_list(){
-
-    var pk_enroll_list =  "";
-
-    $("table").find("td.checkselection").each(function(tdindex, tdelement){
-
-        $(this).children().each(function(index, element){
-
-            if(tdindex == $("table").find("td.checkselection").length-1){
-                if(String($(element)[0].attributes[0].value).includes("checked")){
-                    pk_enroll_list += $(element).children().data('id');
-                }
-            }else{
-                if(String($(element)[0].attributes[0].value).includes("checked")){
-                    pk_enroll_list += $(element).children().data('id') + ",";
-                }
-            }
-        });
-    });
-
-    $("#qualifystudentform").attr("action", "/enrrolment/{{group.pk}}/qualify_students/"+pk_enroll_list+"/");
-    $("#qualifystudentmodal").modal();
-}
-
-
 function select_rows(object_checkbox){
 
     var list_rows = $('.icheckbox_flat-green').children();
@@ -140,6 +120,7 @@ function select_rows(object_checkbox){
         });
 
     }else{
+        object_checkbox.parent().addClass("checked");
         $('.icheckbox_flat-green').addClass("checked");
 
         $(list_rows).each(function(index, element){
@@ -153,6 +134,22 @@ function select_rows(object_checkbox){
 }
 
 
+function base(){
+
+    var checkList = new Array();
+
+    $("tbody tr").each(function () {
+      $(this).find("td div input").each(function(i, v) {
+
+        if(i === 0){
+            checkList.push($(this).children().children().context.dataset['key']);
+        }
+      });
+    });
+
+    return checkList;
+}
+
 function change_key(object_checkbox){
     $(object_checkbox).removeAttr("data-key");
     if(object_checkbox.parent().hasClass("checked")){
@@ -161,20 +158,101 @@ function change_key(object_checkbox){
         object_checkbox.attr("data-key", "1");
     }
 
-    var checkList = [];
+    var list_checkbox = base();
 
-        $("table").find("td.checkselection").each(function(tdindex, tdelement){
-            $(this).children().each(function(index, element){
-               checkList.push($(element).children().data('key'));
-            });
-        });
+    if (list_checkbox.indexOf("1") !== -1 ) {
+        $('#formgroupquality').show();
+    }else{
+        $('#formgroupquality').hide();
+    }
 
+    list_checkbox.splice(0, list_checkbox.length);
+}
 
-        if ( checkList.indexOf(1) !== -1 ) {
-            $('#formgroupquality').show();
+function json_table(){
+
+    var heads = [];
+    $("thead").find("th").each(function () {
+        if($(this).text().trim() === ""){
+            heads.push("pk");
         }else{
-            $('#formgroupquality').hide();
+            heads.push($(this).text().trim());
         }
+    });
+
+    var rows = [];
+    $("tbody tr").each(function () {
+      cur = {};
+      $(this).find("td").each(function(i, v) {
+
+        if(i === 0){
+            cur[heads[i]] = $(this).children().children().data('id')
+        }else{
+
+            if(i === 3 || i === 4){
+
+                if($(this).children().val() === ""){
+                    cur[heads[i]] = null;
+                }else{
+                cur[heads[i]] = $(this).children().val();
+                }
+
+            }else{
+                cur[heads[i]] = $(this).text().trim();
+            }
+        }
+      });
+      rows.push(cur);
+      cur = {};
+    });
+
+
+$.ajax({
+    url: "{% url 'update_enroll' %}",
+    type: "POST",
+    data: JSON.stringify(rows),
+    headers: {'X-CSRFToken': getCookie('csrftoken') },
+    dataType : 'json',
+    success: function() {
+
+        Swal.fire(
+          'Calificaciones',
+          'Actualizadas exitosamente.',
+          'success'
+        )
+    }
+});
+}
+
+
+function qualify_status(){
+
+    var heads = ["pk"];
+
+    var rows = [];
+    $("tbody tr").each(function () {
+      cur = {};
+      $(this).find("td").each(function(i, v) {
+
+        if(i === 0 && $(this).children().hasClass("checked")){
+            cur[heads[i]] = $(this).children().children().data('id')
+        }
+      });
+      rows.push(cur);
+      cur = {};
+    });
+
+$.ajax({
+    url: "/enrrolment/{{group.pk}}/qualify_students/"+ String($("#id_course_status").val())+"/",
+    type: "POST",
+    data: JSON.stringify(rows),
+    headers: {'X-CSRFToken': getCookie('csrftoken') },
+    dataType : 'json',
+    success: function() {
+        $("#qualifystudentmodal").modal().hide();
+        window.location.href = "{% url 'qualify_students' pk=group.pk %}";
+    }
+});
 
 }
 
@@ -183,14 +261,12 @@ function change_key(object_checkbox){
     $('#studentstable').DataTable();
     $(window).load(function() {
       $('.select2-container').width('100%');
-      $("#selectall").parent().removeClass("checked");
+      $(".icheckbox_flat-green").removeClass("checked");
     });
 
     $("#selectall").on("ifChanged", function(){
         select_rows($(this));
     });
-
-    $('#formgroupquality').hide();
 
     $('.checkstudent').on("ifChanged", function(){
         change_key($(this));

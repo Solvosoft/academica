@@ -26,7 +26,8 @@ from .views.admin_views import CategoryList, create_category,\
     pre_enroll_group
 from matricula.contrib.bills.urls import urlpatterns as billurls
 from .views.professor_views import edit_professor
-from .views.students_views import qualify_students, save_quality_student, save_quality_students
+from .views.students_views import qualify_students, save_quality_student, \
+    update_enroll, update_enroll_status
 
 urlpatterns = [
     url('^create_user$', create_user, name="create_user"),
@@ -75,7 +76,6 @@ urlpatterns = [
     url('enrrolment/students', StudentList.as_view(), name="students"),
     path('enrrolment/<int:pk>/qualify_students', qualify_students, name="qualify_students"),
     path('enrrolment/<int:pk_enroll>/<int:pk_group>/qualify_student', save_quality_student, name="save_quality_student"),
-    path('enrrolment/<int:pk>/qualify_students/<str:pk_enroll_list>/', save_quality_students, name="save_quality_students"),
     path('enrrolment/recovery_pass_student/<int:pk>/', recovery_pass_student, name="recovery_pass_student"),
     url('enrrolment/create_student', create_student, name="create_student"),
     path('enrrolment/delete_student/<int:pk>/', StudentDelete.as_view() , name="delete_student"),
@@ -87,4 +87,6 @@ urlpatterns = [
     path('enrrolment/delete_page/<int:pk>/', PageDelete.as_view() , name="delete_page"),
     path('enrrolment/edit_page/<int:pk>/', edit_page, name="edit_page"),
     path('enrrolment/edit_professor/', edit_professor, name="edit_professor"),
+    path('enrrolment/json/students/', update_enroll, name='update_enroll'),
+    path('enrrolment/<int:pk>/qualify_students/<str:status>/', update_enroll_status, name="qualify_students_status"),
 ] + billurls

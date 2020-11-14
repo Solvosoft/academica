@@ -1,6 +1,10 @@
+import json
+from unicodedata import decimal
+
 from django.contrib import messages
 
 from django.shortcuts import render, get_object_or_404, redirect
+from django_ajax.decorators import ajax
 
 from matricula.forms import QualifyStudentForm
 from matricula.models import Enroll, Group
@@ -34,21 +38,21 @@ def save_quality_student(request, pk_enroll, pk_group):
                 messages.success(request, "Datos actualizados exitosamente.")
                 return redirect('qualify_students', pk=pk_group)
 
+@ajax
+def update_enroll(request):
 
-def save_quality_students(request, pk, pk_enroll_list):
+    if request.is_ajax():
+       enroll_list = json.loads(request.body)
 
-    list_p = [int(i) for i in pk_enroll_list.split(",")]
+       for enroll in enroll_list:
+           Enroll.objects.filter(pk=int(enroll['pk'])).update(course_score=float(enroll['Nota']), course_status=enroll['Estado'])
 
-    queryset = Enroll.objects.filter(pk__in=list_p)
 
-    if request.method == "POST":
+@ajax
+def update_enroll_status(request, pk, status):
 
-        form = QualifyStudentForm(request.POST)
+    if request.is_ajax():
+       enroll_list = json.loads(request.body)
 
-        if form.is_valid():
-
-            if queryset:
-
-                queryset.update(course_status=form.cleaned_data['course_status'])
-                messages.success(request, "Datos actualizados exitosamente.")
-                return redirect('qualify_students', pk=pk)
+       for enroll in enroll_list:
+           Enroll.objects.filter(pk=int(enroll['pk']), group__pk=pk).update(course_status=status)
