@@ -138,7 +138,8 @@ class CourseCreateForm(forms.ModelForm, GTForm):
 
 class GroupAddForm(forms.ModelForm, GTForm):
     schedule = forms.CharField(
-        required=False, max_length=250, widget=djgentelella.TextInput)
+        required=False, max_length=250, widget=djgentelella.TextInput,
+        label=_("Schedule"))
 
     class Meta:
         model = Group
