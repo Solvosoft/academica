@@ -250,6 +250,9 @@ class GroupCreateForm(forms.ModelForm, GTForm):
     schedule = forms.CharField(
         required=False, max_length=250, widget=djgentelella.TextInput,
         label=_("Schedule"))
+    period = forms.CharField(
+        required=False, widget=djgentelella.Select, label=_("Period")
+    )
 
     class Meta:
         model = Group
@@ -271,11 +274,45 @@ class GroupCreateForm(forms.ModelForm, GTForm):
             'cost': djgentelella.NumberInput,
             'maximum': djgentelella.NumberInput,
             'flow': djgentelella.Select
-
         }
 
     def __init__(self, *args, **kwargs):
         super(GroupCreateForm, self).__init__(*args, **kwargs)
+        if 'initial' in kwargs:
+            if 'course_id' in kwargs['initial']:
+                self.fields['course'].initial = kwargs['initial']['course_id']
+
+
+class GroupEditForm(forms.ModelForm, GTForm):
+    schedule = forms.CharField(
+        required=False, max_length=250, widget=djgentelella.TextInput,
+        label=_("Schedule"))
+
+    class Meta:
+        model = Group
+        fields = [
+            'name', 'course', 'period', 'schedule', 'pre_enroll_start',
+            'pre_enroll_finish', 'enroll_start', 'enroll_finish', 'is_paid',
+            'currency', 'cost', 'maximum', 'flow'
+        ]
+        widgets = {
+            'name': djgentelella.TextInput,
+            'course': djgentelella.Select,
+            'period': djgentelella.Select,
+            'pre_enroll_start': djgentelella.DateTimeInput,
+            'pre_enroll_finish': djgentelella.DateTimeInput,
+            'enroll_start': djgentelella.DateTimeInput,
+            'enroll_finish': djgentelella.DateTimeInput,
+            'is_paid': djgentelella.YesNoInput(
+                attrs={'rel': ['currency', 'cost']}),
+            'currency': djgentelella.Select,
+            'cost': djgentelella.NumberInput,
+            'maximum': djgentelella.NumberInput,
+            'flow': djgentelella.Select
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(GroupEditForm, self).__init__(*args, **kwargs)
         if 'initial' in kwargs:
             if 'period_id' in kwargs['initial']:
                 self.fields['period'].initial = kwargs['initial']['period_id']

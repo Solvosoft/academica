@@ -15,7 +15,7 @@ from matricula.forms import CategoryCreateForm, CategorySearchForm,\
     MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm,\
     GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentSearchForm,\
     StudentAdminCreateForm, PageCreateForm, PageSearchForm, MenuItemAddForm,\
-    PreEnrollAddGroupForm, GroupAddForm
+    PreEnrollAddGroupForm, GroupAddForm, GroupEditForm
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -541,7 +541,22 @@ def create_group(request):
         form = GroupCreateForm(request.POST)
         context['form'] = form
         if form.is_valid():
-            form.save()
+            group = Group(
+                name=form.cleaned_data['name'],
+                course=form.cleaned_data['course'],
+                period=get_active_period(),
+                schedule=form.cleaned_data['schedule'],
+                pre_enroll_start=form.cleaned_data['pre_enroll_start'],
+                pre_enroll_finish=form.cleaned_data['pre_enroll_finish'],
+                enroll_start=form.cleaned_data['enroll_start'],
+                enroll_finish=form.cleaned_data['enroll_finish'],
+                is_paid=form.cleaned_data['is_paid'],
+                currency=form.cleaned_data['currency'],
+                cost=form.cleaned_data['cost'],
+                maximum=form.cleaned_data['maximum'],
+                flow=form.cleaned_data['flow']
+            )
+            group.save()
             messages.success(request, "Grupo guardado con éxito")
             return HttpResponseRedirect(reverse('groups_enroll'))
         else:
@@ -574,7 +589,7 @@ def edit_group(request, pk=None):
     if pk is not None:
         if request.method == "POST":
             instance = Group.objects.get(pk=pk)
-            form = GroupCreateForm(request.POST, instance=instance)
+            form = GroupEditForm(request.POST, instance=instance)
             if form.is_valid():
                 messages.success(request, "Grupo guardado con éxito")
                 form.save()
@@ -585,7 +600,7 @@ def edit_group(request, pk=None):
         else:
             if request.method == "GET":
                 instance = Group.objects.get(pk=pk)
-                form = GroupCreateForm(initial=instance.__dict__)
+                form = GroupEditForm(initial=instance.__dict__)
                 return render(request, 'groups/group_update.html', {'form': form})
     return HttpResponseRedirect(reverse('groups_enroll'))
 
