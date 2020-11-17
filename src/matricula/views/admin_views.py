@@ -15,7 +15,8 @@ from matricula.forms import CategoryCreateForm, CategorySearchForm,\
     MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm,\
     GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentSearchForm,\
     StudentAdminCreateForm, PageCreateForm, PageSearchForm, MenuItemAddForm,\
-    PreEnrollAddGroupForm, GroupAddForm, GroupEditForm
+    PreEnrollAddGroupForm, GroupAddForm, GroupEditForm, PermissionForm
+from djgentelella.models import MenuItem as DJMenuItem
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -300,7 +301,7 @@ def add_group_course(request, pk=None):
 @method_decorator(permission_required('matricula.view_menuitem'), name='dispatch')
 class MenuItemList(ListView):
     template_name = "menuitems/menuitem_list.html"
-    model = MenuItem
+    model = DJMenuItem
     paginate_by = 30
 
     def dispatch(self, *args, **kwargs):
@@ -311,14 +312,12 @@ class MenuItemList(ListView):
         queryset = super().get_queryset()
         self.form = MenuItemSearchForm(self.request.GET)
         self.form.is_valid()
-        if self.form.cleaned_data['name']:
+        if self.form.cleaned_data['title']:
             queryset = queryset.filter(
-                Q(name__icontains=self.form.cleaned_data['name']) | 
-                Q(description__icontains=self.form.cleaned_data['name']))
+                title__icontains=self.form.cleaned_data['title'])
         if self.form.cleaned_data['parent']:
-            queryset = queryset.filter(parent__in=self.form.cleaned_data['parent'])
-        if self.form.cleaned_data['type']:
-            queryset = queryset.filter(type__in=self.form.cleaned_data['type'])
+            queryset = queryset.filter(
+                parent__in=self.form.cleaned_data['parent'])
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -333,20 +332,23 @@ def create_menuitem(request):
     if request.method == 'POST':
         form = MenuItemCreateForm(request.POST)
         context['form'] = form
-        if form.is_valid():
-            form.save()
+        formPerms = PermissionForm(request.POST)
+        if form.is_valid() and formPerms.is_valid():
+            menuitem = form.save()
+            menuitem.permission.add(*formPerms.cleaned_data['permission'])
             messages.success(request, "Elemento del menú guardado con éxito")
             return HttpResponseRedirect(reverse('menuitems'))
         else:
             messages.error(request, "Error al guardar elemento del menú")
     else:
+        context['permsForm'] = PermissionForm()
         context['form'] = MenuItemCreateForm()
     return render(request, 'menuitems/menuitem_create.html', context)
 
 
 @method_decorator(permission_required('matricula.delete_menuitem'), name='dispatch')
 class MenuItemDelete(DeleteView):
-    model = MenuItem
+    model = DJMenuItem
     success_url = "/matricula/enrrolment/menuitems"
     success_message = "Menú eliminado con éxito"
 
@@ -358,6 +360,8 @@ class MenuItemDelete(DeleteView):
         return self.post(*args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
+        menuitem = self.get_object()
+        menuitem.permission.remove(*menuitem.permission.all())
         messages.success(self.request, self.success_message)
         return super(MenuItemDelete, self).delete(request, *args, **kwargs)
 
@@ -366,12 +370,16 @@ class MenuItemDelete(DeleteView):
 def edit_menuitem(request, pk=None):
     context = {}
     if pk is not None:
-        menu = MenuItem.objects.get(pk=pk)
+        menu = DJMenuItem.objects.get(pk=pk)
         if request.method == "POST":
             form = MenuItemCreateForm(request.POST, instance=menu)
             context['form'] = form
-            if form.is_valid():
-                form.save()
+            formPerms = PermissionForm(request.POST)
+            context['formPerms'] = formPerms
+            if form.is_valid() and formPerms.is_valid():
+                menuitem = form.save()
+                menuitem.permission.remove(*menuitem.permission.all())
+                menuitem.permission.add(*formPerms.cleaned_data['permission'])
                 messages.success(request, "Elemento del menú guardado con éxito")
                 return HttpResponseRedirect(reverse('menuitems'))
             else:
@@ -380,6 +388,7 @@ def edit_menuitem(request, pk=None):
         else:
             if request.method == "GET":
                 context['form'] = MenuItemCreateForm(initial=menu.__dict__)
+                context['permsForm'] = PermissionForm(initial={'permission': menu.permission.all()})
                 return render(request, 'menuitems/menuitem_update.html', context)
     return HttpResponseRedirect(reverse('menuitems'))
 

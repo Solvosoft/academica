@@ -15,6 +15,9 @@ from djgentelella.widgets import core as djgentelella
 from djgentelella.widgets import wysiwyg as widget
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.selects import AutocompleteSelect
+from djgentelella.models import MenuItem as DJMenuItem
+from django.contrib.auth.models import Permission
+from djgentelella.widgets.selects import AutocompleteSelectMultiple
 
 
 class StudentCreateForm(GTForm, forms.ModelForm):
@@ -169,33 +172,41 @@ class GroupAddForm(forms.ModelForm, GTForm):
 
 
 class MenuItemSearchForm(GTForm, forms.Form):
-    name = forms.CharField(
+    title = forms.CharField(
         required=False, widget=djgentelella.TextInput,
-        label="Nombre")
+        label="Título")
     parent = forms.ModelMultipleChoiceField(
-        queryset=MenuItem.objects.all(), required=False,
+        queryset=DJMenuItem.objects.all(), required=False,
         widget=djgentelella.SelectMultiple, label="Padre"
-    )
-    type = forms.MultipleChoiceField(
-        choices=MenuItem.TYPES, required=False,
-        widget=djgentelella.SelectMultiple, label="Tipo"
     )
 
 
 class MenuItemCreateForm(forms.ModelForm, GTForm):
     class Meta:
-        model = MenuItem
-        fields = '__all__'
+        model = DJMenuItem
+        fields = [
+            'title', 'url_name', 'category', 'is_reversed',
+            'reversed_kwargs', 'reversed_args', 'parent',
+            'is_widget', 'icon', 'only_icon']
         widgets = {
-            'name': djgentelella.TextInput,
-            'type': djgentelella.Select,
-            'description': djgentelella.Textarea,
-            'require_authentication': djgentelella.YesNoInput,
-            'order': djgentelella.NumberInput,
+            'title': djgentelella.TextInput,
+            'url_name': djgentelella.TextInput,
+            'category': djgentelella.TextInput,
+            'is_reversed': djgentelella.YesNoInput,
+            'reversed_kwargs': djgentelella.TextInput,
+            'reversed_args': djgentelella.TextInput,
             'parent': djgentelella.Select,
-            'publicated': djgentelella.YesNoInput,
-            'is_index': djgentelella.YesNoInput
+            'is_widget': djgentelella.YesNoInput,
+            'icon': djgentelella.TextInput,
+            'only_icon': djgentelella.YesNoInput
         }
+
+    def __init__(self, *args, **kwargs):
+        super(MenuItemCreateForm, self).__init__(*args, **kwargs)
+        if 'initial' in kwargs:
+            print(kwargs)
+            if 'permission_id' in kwargs['initial']:
+                self.fields['permission'].initial = kwargs['initial']['permission_id']
 
 
 class PeriodSearchForm(GTForm, forms.Form):
@@ -435,3 +446,10 @@ class PreEnrollAddGroupForm(GTForm, forms.Form):
         queryset=Enroll.objects.all(), widget=djgentelella.SelectMultiple,
         required=False, label="Matrícula")
     action = forms.CharField(required=True)
+
+
+class PermissionForm(GTForm, forms.Form):
+    permission = forms.ModelMultipleChoiceField(
+        widget=AutocompleteSelectMultiple('permission'),
+        queryset=Permission.objects.all(),
+        label="Permisos", required=False)
