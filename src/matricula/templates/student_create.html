@@ -14,7 +14,7 @@
 					<div>
 						<form method="post" id="{% url 'create_user' %}">
 								{% csrf_token %}
-								{{form.as_table}}
+								{{form.as_horizontal}}
 							<div style="margin-top:10px; text-align:right;">
 								<button type="submit" class="btn btn-success" value="Save" >
 									<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Registar
@@ -30,4 +30,40 @@
 {% block js %}
 	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
-{% endblock %}
+	<script>
+		var input = document.querySelector('#id_organization'),
+		tagify = new Tagify(input, {whitelist:[]}),
+		controller; // for aborting the call
+		// listen to any keystrokes which modify tagify's input
+		tagify.settings.maxTags=1
+		tagify.on('input', onInput)
+		tagify.on('add', onAdd)
+		function onAdd(e){
+			input.value=e.detail.data.value
+		}
+		function onInput( e ){
+			var value = e.detail.value;
+			tagify.settings.whitelist.length = 0; // reset the whitelist
+
+			// https://developer.mozilla.org/en-US/docs/Web/API/AbortController/abort
+			controller && controller.abort();
+			controller = new AbortController();
+
+			// show loading animation and hide the suggestions dropdown
+			tagify.loading(true).dropdown.hide.call(tagify)
+
+			fetch("/gtapis/student/?q="+e.detail.value, {signal:controller.signal})
+				.then(RES => RES.json())
+				.then(function(whitelist){
+				// update inwhitelist Array in-place
+				var whitelst = []
+				for(var i=0; i<whitelist.total_count; i++){
+					whitelst.push(whitelist.results[i].text)
+				}
+				console.log(whitelst)
+				tagify.settings.whitelist.splice(0, whitelist.total_count, ...whitelst)
+				tagify.loading(false).dropdown.show.call(tagify, value); // render the suggestions dropdown
+			})
+		}
+	</script>
+{%endblock%}

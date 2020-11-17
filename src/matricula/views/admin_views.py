@@ -873,11 +873,12 @@ def edit_student(request, pk=None):
     if pk is not None:
         if request.method == "POST":
             instance = User.objects.get(pk=pk)
-            print(request.POST)
             form = StudentAdminCreateForm(request.POST, instance=instance)
             if form.is_valid():
                 messages.success(request, "Estudiante guardada con éxito")
                 form.save()
+                instance.student.organization = form.cleaned_data['organization']
+                instance.student.save()
                 return HttpResponseRedirect(reverse('students'))
             else:
                 messages.error(request, "Error al actualizar")
@@ -886,7 +887,9 @@ def edit_student(request, pk=None):
         else:
             if request.method == "GET":
                 instance = User.objects.get(pk=pk)
-                form = StudentAdminCreateForm(initial=instance.__dict__)
+                inst = instance.__dict__
+                inst['organization'] = instance.student.organization
+                form = StudentAdminCreateForm(initial=inst)
                 return render(
                     request, 'students/student_update.html', {'form': form})
     return HttpResponseRedirect(reverse('students'))

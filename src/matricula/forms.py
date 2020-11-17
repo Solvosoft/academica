@@ -40,12 +40,15 @@ class StudentCreateForm(GTForm, forms.ModelForm):
     password_check = forms.CharField(
         widget=djgentelella.PasswordInput, required=True,
         label=_("Repeat password"))
+    organization = forms.CharField(
+        label="Organización", required=True
+    )
 
     class Meta:
         model = Student
         fields = [
             'name', 'first_name', 'last_name', 'email',
-            'password', 'password_check']
+            'password', 'password_check', 'organization']
         widgets = {
             'last_name': djgentelella.TextInput,
             'email': djgentelella.EmailInput
@@ -361,7 +364,7 @@ class StudentSearchForm(GTForm, forms.Form):
     )
 
 
-class StudentAdminCreateForm(forms.ModelForm, GTForm):
+class StudentAdminCreateForm(GTForm, forms.ModelForm):
     username = forms.CharField(
         label="Nombre de usuario", widget=djgentelella.TextInput, required=True
     )
@@ -371,10 +374,14 @@ class StudentAdminCreateForm(forms.ModelForm, GTForm):
         label="Apellidos", widget=djgentelella.TextInput, required=True)
     email = forms.CharField(
         label="Correo", widget=djgentelella.EmailMaskInput, required=True)
+    organization = forms.CharField(
+        label="Organización", required=True
+    )
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email']
+        fields = [
+            'username', 'first_name', 'last_name', 'email', 'organization']
 
 
 class PageSearchForm(GTForm, forms.Form):

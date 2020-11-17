@@ -29,9 +29,9 @@ def create_user(request):
     if request.method == 'POST':
         form = StudentCreateForm(request.POST)
         if form.is_valid():
-            user = User.objects.create_user(form.cleaned_data['name'],
-                                               form.cleaned_data['email'],
-                                               form.cleaned_data['password'])
+            user = User.objects.create_user(
+                form.cleaned_data['name'], form.cleaned_data['email'],
+                form.cleaned_data['password'])
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name']
             user.is_active = False

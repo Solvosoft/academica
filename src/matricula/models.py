@@ -12,6 +12,7 @@ from django.utils.html import strip_tags
 class Student(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, primary_key=True)
+    organization = models.CharField(verbose_name="Organización", max_length=150)
     key = models.UUIDField(default=uuid.uuid4)
     confirmed_at = models.DateTimeField(null=True, blank=True)
     expired_at = models.DateTimeField()
