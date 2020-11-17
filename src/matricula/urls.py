@@ -25,7 +25,8 @@ from .views.admin_views import CategoryList, create_category,\
     export_group, recovery_pass_student, MenuPageDelete, create_menupage,\
     pre_enroll_group
 from matricula.contrib.bills.urls import urlpatterns as billurls
-from .views.professor_views import ProfessorsList, CreateProfessor, EditProfessor, edit_profile
+from .views.professor_views import ProfessorsList, CreateProfessor, EditProfessor, edit_profile, delete_professor, \
+    deactivate_professor
 from .views.students_views import qualify_students, save_quality_student, \
     update_enroll, update_enroll_status
 
@@ -89,6 +90,8 @@ urlpatterns = [
     path('enrrolment/profile/', edit_profile, name="edit_profile"),
     path('enrrolment/edit_professor/<int:pk>/', EditProfessor.as_view(), name="edit_professor"),
     path('enrrolment/create_professor/', CreateProfessor.as_view(), name="create_professor"),
+    path('enrrolment/delete_professor/<int:pk>/', delete_professor, name="delete_professor"),
+    path('enrrolment/deactivate_professor/<int:pk>/', deactivate_professor, name="deactivate_professor"),
     path('enrrolment/professors/', ProfessorsList.as_view(), name="professors_list"),
     path('enrrolment/json/students/', update_enroll, name='update_enroll'),
     path('enrrolment/<int:pk>/qualify_students/<str:status>/', update_enroll_status, name="qualify_students_status"),

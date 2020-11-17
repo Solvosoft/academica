@@ -245,7 +245,7 @@ class GroupCreateForm(forms.ModelForm, GTForm):
     def __init__(self, *args, **kwargs):
         super(GroupCreateForm, self).__init__(*args, **kwargs)
 
-        self.fields['professors'].queryset = Professor.objects.all()
+        self.fields['professors'].queryset = Professor.objects.filter(active=True)
 
         if 'initial' in kwargs:
             if 'period_id' in kwargs['initial']:

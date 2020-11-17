@@ -1,0 +1,30 @@
+{% extends 'gentelella/base.html' %}
+
+{% load static %}
+{% block extra_css %}
+    <link href="{% static 'css/membership.css' %}" rel="stylesheet">
+{% endblock extra_css %}
+
+{% block content %}
+<div class="row">
+    <div class='col-md-8 col-md-offset-2 col-xs-12'>
+        <div class="x_panel">
+            <div class="x_title">
+                <h1 class="text-center">Editar profesora</h1>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form method="post">
+                    {% csrf_token %}
+                    {{form.as_horizontal}}
+                    <br>
+                    <div class="form-group" style="text-align:center">
+                        <a class="btn btn-danger" type="button" href="{% url 'professors_list' %}">Cancelar</a>
+                        <button class="btn btn-success" type="submit">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

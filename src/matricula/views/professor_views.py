@@ -1,16 +1,19 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.generic import ListView, CreateView, UpdateView
 
-from matricula.forms import ProfessorEditForm
+from matricula.forms import ProfessorEditForm, ProfessorSearchForm, ProfessorAddForm
 from matricula.models import Professor
 
-def edit_professor(request):
+@login_required
+def edit_profile(request):
     user = request.user
     professor = Professor.objects.filter(user=user).first()
 
     if request.method == "POST":
-
-        print(request.POST)
 
         form = ProfessorEditForm(request.POST)
 
@@ -39,4 +42,67 @@ def edit_professor(request):
 
     context = {'form': form}
 
-    return render(request, "professor/edit.html", context=context)
+    return render(request, "professor/personal_information.html", context=context)
+
+
+@method_decorator(permission_required('matricula.view_professor'), name='dispatch')
+class ProfessorsList(ListView):
+
+    model = Professor
+    paginate_by = 30
+    template_name = "professor/professors_list.html"
+    ordering = ["-active", "user__first_name"]
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['formsearch'] = ProfessorSearchForm()
+        return context
+
+
+@method_decorator(permission_required('matricula.add_professor'), name='dispatch')
+class CreateProfessor(CreateView):
+
+    model = Professor
+    form_class = ProfessorAddForm
+    template_name = "professor/create.html"
+    success_url = reverse_lazy("professors_list")
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, "Profesora registrada exitosamente.")
+        return super().form_valid(form)
+
+
+@method_decorator(permission_required('matricula.change_professor'), name='dispatch')
+class EditProfessor(UpdateView):
+
+    model = Professor
+    form_class = ProfessorAddForm
+    template_name = "professor/edit.html"
+    success_url = reverse_lazy("professors_list")
+
+    def form_valid(self, form):
+        self.object.save()
+        messages.success(self.request, "Datos actualizados exitosamente.")
+        return super().form_valid(form)
+
+
+@permission_required('matricula.delete_professor')
+def delete_professor(request, pk):
+    professor = Professor.objects.filter(pk=pk).first()
+
+    if professor:
+        professor.delete()
+        messages.success(request, "Profesora eliminada con éxito")
+        return redirect('professors_list')
+
+
+@permission_required('matricula.change_professor')
+def deactivate_professor(request, pk):
+    professor = Professor.objects.filter(pk=pk).first()
+
+    if professor:
+        professor.active = False
+        professor.save()
+        messages.success(request, "Profesora desactivada con éxito")
+        return redirect('professors_list')
