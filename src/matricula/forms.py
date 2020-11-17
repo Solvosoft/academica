@@ -383,3 +383,32 @@ class ProfessorEditForm(GTForm, forms.Form):
     email_students = forms.CharField(label="Correo electrónico para estudiantes", widget=djgentelella.EmailMaskInput, required=True)
     description = forms.CharField(widget=djgentelella.Textarea, required=True, label="Descripción",
                                            help_text="Esta descripción será mostrada en los grupos en los cuales sea asignada como profesora.")
+
+
+
+class ProfessorSearchForm(GTForm, forms.Form):
+    PROFESSOR_STATES = (
+        (None, "Todas"),
+        (True, "Activas"),
+        (False, "Inactivas"),
+    )
+
+    professor = forms.ModelMultipleChoiceField(
+        queryset=Professor.objects.all(), widget=djgentelella.SelectMultiple,
+        required=False, label="Profesora")
+
+    status = forms.ChoiceField(choices=PROFESSOR_STATES, widget=djgentelella.Select, required=False, label="Estado")
+
+
+
+class ProfessorAddForm(GTForm, forms.ModelForm):
+
+   class Meta:
+       model = Professor
+       fields = "__all__"
+       widgets = {
+           'user': djgentelella.Select,
+           'email': djgentelella.EmailMaskInput,
+           'description': djgentelella.Textarea,
+           'active': djgentelella.YesNoInput
+       }

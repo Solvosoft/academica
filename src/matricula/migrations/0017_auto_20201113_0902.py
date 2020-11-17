@@ -18,11 +18,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Professor',
             fields=[
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='auth.user')),
+                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, serialize=False, to='auth.user')),
                 ('email', models.EmailField(blank=True, max_length=254, verbose_name='Email for students')),
                 ('description', models.TextField(blank=True, max_length=500, null=True, verbose_name='Description')),
-            ],
+                ('active', models.BooleanField(default=True, verbose_name='Activa')),
+            ]
         ),
+
         migrations.AddField(
             model_name='enroll',
             name='course_score',
