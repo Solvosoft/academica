@@ -3,7 +3,7 @@
 {%block content %}
 	<h1 class="text-center">Elementos del menú</h1>
 	<div class="row">
-		{% if perms.matricula.add_course %}
+		{% if perms.djgentelella.add_course %}
 			<div class="col-sm-12 col-xs-12 col-md-8 col-md-offset-2">
 		{% else %}
 			<div class="col-sm-12 col-xs-12 col-md-10 col-md-offset-1">
@@ -26,12 +26,12 @@
 			</div>
 		</div>
 		<div class="col-sm-12 col-xs-12 col-lg-2 col-md-3">
-			{% if perms.matricula.add_menuitem %}
+			{% if perms.djgentelella.add_menuitem %}
 				<a class="btn btn-primary" href="{% url 'create_menuitem' %}">Crear menú</a>
 			{% endif %}
 		</div>
 	</div>
-	{% if perms.matricula.delete_menuitem %}
+	{% if perms.djgentelella.delete_menuitem %}
 		<!-- modal delete category -->
 		<div id="modaldeleteitem" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
 			<div class="modal-dialog" role="document">
@@ -55,12 +55,12 @@
 				<div class="x_title">
 					<h2 class="green">{{object.title}}</h2>
 					<ul class="nav navbar-right panel_toolbox" style="min-width: unset;">
-						{% if perms.matricula.change_menuitem %}
+						{% if perms.djgentelella.change_menuitem %}
 							<li>
 								<a href="{% url 'edit_menuitem' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
 							</li>
 						{% endif %}
-						{% if perms.matricula.delete_menuitem %}
+						{% if perms.djgentelella.delete_menuitem %}
 							<li><a data-url="{% url 'delete_menuitem' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
 						{% endif %}
 					</ul>

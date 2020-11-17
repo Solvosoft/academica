@@ -298,7 +298,7 @@ def add_group_course(request, pk=None):
     return HttpResponseRedirect(reverse('enrrolment_courses'))
 
 
-@method_decorator(permission_required('matricula.view_menuitem'), name='dispatch')
+@method_decorator(permission_required('djgentelella.view_menuitem'), name='dispatch')
 class MenuItemList(ListView):
     template_name = "menuitems/menuitem_list.html"
     model = DJMenuItem
@@ -326,7 +326,7 @@ class MenuItemList(ListView):
         return context
 
 
-@permission_required('matricula.add_menuitem')
+@permission_required('djgentelella.add_menuitem')
 def create_menuitem(request):
     context = {}
     if request.method == 'POST':
@@ -346,7 +346,7 @@ def create_menuitem(request):
     return render(request, 'menuitems/menuitem_create.html', context)
 
 
-@method_decorator(permission_required('matricula.delete_menuitem'), name='dispatch')
+@method_decorator(permission_required('djgentelella.delete_menuitem'), name='dispatch')
 class MenuItemDelete(DeleteView):
     model = DJMenuItem
     success_url = "/matricula/enrrolment/menuitems"
@@ -366,7 +366,7 @@ class MenuItemDelete(DeleteView):
         return super(MenuItemDelete, self).delete(request, *args, **kwargs)
 
 
-@permission_required('matricula.change_menuitem')
+@permission_required('djgentelella.change_menuitem')
 def edit_menuitem(request, pk=None):
     context = {}
     if pk is not None:
