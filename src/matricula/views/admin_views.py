@@ -35,6 +35,7 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import get_template
 from django.contrib.staticfiles import finders
 import os
+from matricula.views.utils import get_expire_date
 
 
 def link_callback(uri, rel):
@@ -840,7 +841,10 @@ def create_student(request):
                 email=form.cleaned_data['email'],
                 is_active=True)
             user.save()
-            student = Student(user=user, created_at=now(), confirmed_at=now())
+            student = Student(
+                user=user, organization=form.cleaned_data['organization'],
+                created_at=now(), confirmed_at=now(),
+                expired_at=get_expire_date())
             student.save()
             mail_body = render_to_string("set_email_first.html", {
                 'url': request.build_absolute_uri(

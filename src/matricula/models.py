@@ -4,14 +4,9 @@ from django.contrib.auth.models import User
 from django.utils.encoding import smart_text
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.conf import settings
-from django.utils.timezone import now, timedelta
+from django.utils.timezone import now
 import uuid
 from django.utils.html import strip_tags
-
-
-def get_expire_date():
-    return now() + timedelta(days=settings.TOKEN_CONFIRMATION_EXPIRE_DAYS)
 
 
 class Student(models.Model):
