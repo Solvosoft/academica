@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('auth', '0012_alter_user_first_name_max_length'),
-        ('matricula', '0016_auto_20201110_1328'),
+        ('matricula', '0016_auto_20201112_1610'),
     ]
 
     operations = [
