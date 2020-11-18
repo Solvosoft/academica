@@ -196,8 +196,12 @@
                             {% if perms.matricula.view_student %}
                                 <li><a href="{% url 'students' %}">Estudiantes</a></li>
                             {% endif %}
+
                             {% if perms.matricula.view_professor %}
                                 <li><a href="{% url 'professors_list' %}">Profesoras</a></li>
+                            {% endif %}
+                            {% if perms.matricula.view_coupon %}
+                                <li><a href="{% url 'coupons_list' %}">Cupones</a></li>
                             {% endif %}
                         </ul>
                     </li>

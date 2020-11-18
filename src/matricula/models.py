@@ -227,3 +227,21 @@ class Page(models.Model):
     class Meta:
         verbose_name = _("Page")
         verbose_name_plural = _("Pages")
+
+
+class Coupon(models.Model):
+
+    DISCOUNT_CHOICES = (
+        (50, "50"),
+        (100, "100")
+    )
+
+    student = models.ForeignKey(Student, verbose_name=_("Student"), on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, verbose_name=_("Course"), on_delete=models.CASCADE)
+    discount_percentage = models.IntegerField(null=True, blank=True, choices=DISCOUNT_CHOICES,default=DISCOUNT_CHOICES[1])
+    is_used = models.BooleanField(default=False, verbose_name=_("Is used?"))
+    code = models.CharField(max_length=15, null=True, blank=True, unique=True, verbose_name=_("Discount code"))
+
+
+    def __str__(self):
+        return f"{self.student} - {self.course.name} - {self.code[2:6]}"

@@ -7,7 +7,8 @@ Created on 7/4/2015
 '''
 from django import forms
 from matricula.models import Student, Page, MenuItem, Category, Course, \
-    Period, Group, Enroll, Professor
+    Period, Group, Enroll, Professor, Coupon
+
 from django.utils.translation import ugettext_lazy as _
 from django.core import validators
 from django.contrib.auth.models import User
@@ -24,9 +25,9 @@ class StudentCreateForm(GTForm, forms.ModelForm):
                     '@/./+/-/_ only.'),
         validators=[
             validators.RegexValidator(r'^[\w.@+-]+$',
-                _('Enter a valid username. '
-                    'This value may contain only letters, numbers '
-                    'and @/./+/-/_ characters.'), 'invalid'),
+                                      _('Enter a valid username. '
+                                        'This value may contain only letters, numbers '
+                                        'and @/./+/-/_ characters.'), 'invalid'),
         ], required=True, widget=djgentelella.TextInput)
     first_name = forms.CharField(
         label=_('first name'), max_length=30, required=True,
@@ -365,8 +366,6 @@ class PreEnrollAddGroupForm(GTForm, forms.Form):
 
 
 class QualifyStudentForm(GTForm, forms.ModelForm):
-
-
     class Meta:
         model = Enroll
         fields = ['course_status']
@@ -379,11 +378,12 @@ class ProfessorEditForm(GTForm, forms.Form):
     username = forms.CharField(label="Nombre de usuaria", widget=djgentelella.TextInput, required=False)
     first_name = forms.CharField(label="Nombre", widget=djgentelella.TextInput, required=True)
     last_name = forms.CharField(label="Apellidos", widget=djgentelella.TextInput, required=True)
-    email = forms.CharField(label="Correo electrónico como usuaria del sistema", widget=djgentelella.EmailMaskInput, required=True)
-    email_students = forms.CharField(label="Correo electrónico para estudiantes", widget=djgentelella.EmailMaskInput, required=True)
+    email = forms.CharField(label="Correo electrónico como usuaria del sistema", widget=djgentelella.EmailMaskInput,
+                            required=True)
+    email_students = forms.CharField(label="Correo electrónico para estudiantes", widget=djgentelella.EmailMaskInput,
+                                     required=True)
     description = forms.CharField(widget=djgentelella.Textarea, required=True, label="Descripción",
-                                           help_text="Esta descripción será mostrada en los grupos en los cuales sea asignada como profesora.")
-
+                                  help_text="Esta descripción será mostrada en los grupos en los cuales sea asignada como profesora.")
 
 
 class ProfessorSearchForm(GTForm, forms.Form):
@@ -400,15 +400,43 @@ class ProfessorSearchForm(GTForm, forms.Form):
     status = forms.ChoiceField(choices=PROFESSOR_STATES, widget=djgentelella.Select, required=False, label="Estado")
 
 
-
 class ProfessorAddForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = Professor
+        fields = "__all__"
+        widgets = {
+            'user': djgentelella.Select,
+            'email': djgentelella.EmailMaskInput,
+            'description': djgentelella.Textarea,
+            'active': djgentelella.YesNoInput
+        }
 
-   class Meta:
-       model = Professor
-       fields = "__all__"
-       widgets = {
-           'user': djgentelella.Select,
-           'email': djgentelella.EmailMaskInput,
-           'description': djgentelella.Textarea,
-           'active': djgentelella.YesNoInput
-       }
+
+class CouponsSearchForm(GTForm, forms.Form):
+    DISCOUNT_CHOICES = (
+        (None, "Todos"),
+        (50, "50"),
+        (100, "100")
+    )
+
+    IS_USED_CHOICES = (
+        (None, "Todos"),
+        (True, "Sí"),
+        (False, "No")
+    )
+
+    student = forms.ModelMultipleChoiceField(
+        queryset=Student.objects.all(), widget=djgentelella.SelectMultiple,
+        required=False, label="Estudiante")
+
+    course = forms.ModelMultipleChoiceField(
+        queryset=Course.objects.all(), widget=djgentelella.SelectMultiple,
+        required=False, label="Curso")
+
+    is_used = forms.ChoiceField(
+        choices=IS_USED_CHOICES, widget=djgentelella.Select,
+        required=False, label="¿Utilizado?")
+
+    discount_percentage = forms.ChoiceField(
+        choices=DISCOUNT_CHOICES, widget=djgentelella.Select,
+        required=False, label="Descuento")

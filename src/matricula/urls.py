@@ -25,10 +25,14 @@ from .views.admin_views import CategoryList, create_category,\
     export_group, recovery_pass_student, MenuPageDelete, create_menupage,\
     pre_enroll_group
 from matricula.contrib.bills.urls import urlpatterns as billurls
+
 from .views.professor_views import ProfessorsList, CreateProfessor, EditProfessor, edit_profile, delete_professor, \
     deactivate_professor
 from .views.students_views import qualify_students, save_quality_student, \
     update_enroll, update_enroll_status
+
+from .views.coupons_views import coupons_list
+
 
 urlpatterns = [
     url('^create_user$', create_user, name="create_user"),
@@ -95,4 +99,6 @@ urlpatterns = [
     path('enrrolment/professors/', ProfessorsList.as_view(), name="professors_list"),
     path('enrrolment/json/students/', update_enroll, name='update_enroll'),
     path('enrrolment/<int:pk>/qualify_students/<str:status>/', update_enroll_status, name="qualify_students_status"),
+    path('enrrolment/coupons/', coupons_list, name="coupons_list"),
+
 ] + billurls
