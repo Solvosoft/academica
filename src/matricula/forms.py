@@ -6,8 +6,8 @@ Created on 7/4/2015
 @author: luisza
 '''
 from django import forms
-from matricula.models import Student, Page, MenuItem, Category, Course,\
-    Period, Group, Enroll
+from matricula.models import Student, Page, MenuItem, Category, Course, \
+    Period, Group, Enroll, Coupon
 from django.utils.translation import ugettext_lazy as _
 from django.core import validators
 from django.contrib.auth.models import User
@@ -359,3 +359,34 @@ class PreEnrollAddGroupForm(GTForm, forms.Form):
         queryset=Enroll.objects.all(), widget=djgentelella.SelectMultiple,
         required=False, label="Matrícula")
     action = forms.CharField(required=True)
+
+
+class CouponsSearchForm(GTForm, forms.Form):
+
+    DISCOUNT_CHOICES = (
+        (None, "Todos"),
+        (50, "50"),
+        (100, "100")
+    )
+
+    IS_USED_CHOICES = (
+        (None, "Todos"),
+        (True, "Sí"),
+        (False, "No")
+    )
+
+    student = forms.ModelMultipleChoiceField(
+        queryset=Student.objects.all(), widget=djgentelella.SelectMultiple,
+        required=False, label="Estudiante")
+
+    course = forms.ModelMultipleChoiceField(
+        queryset=Course.objects.all(), widget=djgentelella.SelectMultiple,
+        required=False, label="Curso")
+
+    is_used = forms.ChoiceField(
+        choices=IS_USED_CHOICES, widget=djgentelella.Select,
+        required=False, label="¿Utilizado?")
+
+    discount_percentage = forms.ChoiceField(
+        choices=DISCOUNT_CHOICES, widget=djgentelella.Select,
+        required=False, label="Descuento")

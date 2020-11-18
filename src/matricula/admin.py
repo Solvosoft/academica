@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 from matricula.models import Student, Course, Group, Enroll, Period, Category, \
-    MenuItem, Page
+    MenuItem, Page, Coupon
 from django.utils.translation import ugettext_lazy as _
 from django.conf.urls import url
 from django.urls import reverse
@@ -121,6 +121,7 @@ class MenuItemAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Student)
+admin.site.register(Coupon)
 admin.site.register(Course)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(Enroll, EnrollAdmin)

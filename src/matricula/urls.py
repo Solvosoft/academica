@@ -25,6 +25,7 @@ from .views.admin_views import CategoryList, create_category,\
     export_group, recovery_pass_student, MenuPageDelete, create_menupage,\
     pre_enroll_group
 from matricula.contrib.bills.urls import urlpatterns as billurls
+from .views.coupons_views import coupons_list
 
 urlpatterns = [
     url('^create_user$', create_user, name="create_user"),
@@ -81,4 +82,5 @@ urlpatterns = [
     path('enrrolment/delete_menu_page/<int:pk>/', MenuPageDelete.as_view(), name="delete_menupage"),
     path('enrrolment/delete_page/<int:pk>/', PageDelete.as_view() , name="delete_page"),
     path('enrrolment/edit_page/<int:pk>/', edit_page, name="edit_page"),
+    path('enrrolment/coupons/', coupons_list, name="coupons_list"),
 ] + billurls
