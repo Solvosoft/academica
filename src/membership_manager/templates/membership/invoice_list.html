@@ -31,65 +31,61 @@
             <div class="col-md-10">
                 {% endif %}
                 <div class="x_panel">
+                    <div class="row" style="margin-bottom: 2%;">
+                        <div class="col-md-6">
+                            {% include 'field.html' with field=form_filters.name  %}
 
-                        <div class="row" style="margin-bottom: 2%;">
-                            <div class="col-md-6">
-                                {% include 'field.html' with field=form_filters.name  %}
-
-                            </div>
-                            <div class="col-md-6">
-                                {% include 'field.html' with field=form_filters.country  %}
-                            </div>
                         </div>
-                        <div class="row" style="margin-bottom: 2%;">
-                            <div class="col-md-6">
-                                {% include 'field.html' with field=form_filters.membership_type  %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include 'field.html' with field=form_filters.service_type  %}
-                            </div>
+                        <div class="col-md-6">
+                            {% include 'field.html' with field=form_filters.country  %}
                         </div>
-                        <div class="row" style="margin-bottom: 2%;">
-                            <div class="col-md-4">
-                                {% include 'field.html' with field=form_filters.currency  %}
-                            </div>
-                            <div class="col-md-4">
-                                {% include 'field.html' with field=form_filters.state  %}
-                            </div>
-                            <div class="col-md-4">
-                                {% include 'field.html' with field=form_filters.invoices  %}
-                            </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2%;">
+                        <div class="col-md-6">
+                            {% include 'field.html' with field=form_filters.membership_type  %}
                         </div>
-                        <div class="row">
-                            <div class="text-right">
-                                <a href="{% url 'invoice-list' %}" class="btn btn-dark">Limpiar filtros</a>
-                                <button class="btn btn-success" type="button" onclick="search_invoices()">Buscar</button>
-                            </div>
+                        <div class="col-md-6">
+                            {% include 'field.html' with field=form_filters.service_type  %}
                         </div>
-
+                    </div>
+                    <div class="row" style="margin-bottom: 2%;">
+                        <div class="col-md-4">
+                            {% include 'field.html' with field=form_filters.currency  %}
+                        </div>
+                        <div class="col-md-4">
+                            {% include 'field.html' with field=form_filters.state  %}
+                        </div>
+                        <div class="col-md-4">
+                            {% include 'field.html' with field=form_filters.invoices  %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="text-right">
+                            <a href="{% url 'invoice-list' %}" class="btn btn-dark">Limpiar filtros</a>
+                            <button class="btn btn-success" type="button" onclick="search_invoices()">Buscar</button>
+                        </div>
+                    </div>
                     <div id="modalnewslettertemplate" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <h4 class="modal-title">Seleccione la plantilla base de boletín</h4>
-                                    </div>
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">Seleccione la plantilla base de boletín</h4>
+                                </div>
 
-                                    <div class="modal-body">
-                                        {% include 'field.html' with field=form_template_newsletter.news_letter_template  %}
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                                        <button class="btn btn-success" type="submit" formaction="{% url 'create_news_letter_membership' %}">Seleccionar</button>
-                                        <input type="hidden" name="year" value="{{current_year}}" />
-                                    </div>
-
+                                <div class="modal-body">
+                                    {% include 'field.html' with field=form_template_newsletter.news_letter_template  %}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                                    <button class="btn btn-success" type="submit" formaction="{% url 'create_news_letter_membership' %}">Seleccionar</button>
+                                    <input type="hidden" name="year" value="{{current_year}}" />
                                 </div>
 
                             </div>
+
                         </div>
-
-
+                        </div>
                 </div>
             </div>
             {% if perms.async_notifications.add_newsletter %}
@@ -107,121 +103,107 @@
 <div class="container">
     <div class="row">
         <div class='col-md-12 col-xs-12'>
-
-            <div class="x_panel ">
+            <div class="x_panel">
                 <div class="x_content" style="display: block;">
                     <div class="dashboard-widget-content">
-<div class="paginator_container">
-    <ul class="pagination">
-        {% for year in years %}
-         <li class="{% if current_year == year.year %}active{% endif %}">
-            <a href="{% url 'invoice-list' %}?year={{year.year}}{{params}}"> {{ year.year }}</a>
-         </li>
-         {% endfor %}
-    </ul>
-</div>
+                        <div class="paginator_container">
+                            <ul class="pagination">
+                                {% for year in years %}
+                                    <li class="{% if current_year == year.year %}active{% endif %}">
+                                    <a href="{% url 'invoice-list' %}?year={{year.year}}{{params}}"> {{ year.year }}</a>
+                                 </li>
+                                 {% endfor %}
+                            </ul>
+                        </div>
+                        {% for month, objlist  in object_list %}
+                            <div class="x_content monthbox {% cycle 'monthleft'  'monthright' %}">
+                                <article class="media event">
+                                <a class="pull-left date">
+                                    <p class="month">{% month_by_number month %}</p>
+                                     <p class="day">{{month}}</p>
+                                </a>
+                                <div class="media-body">
+                                    <ul class="list-group">
+                                        {% for object in objlist %}
+                                            <li class="list-group-item row">
+                                            <div class="row">
+                                                <div class="col-md-1">
+                                                    <span title="{{ object.get_status_display }}">
+                                                      <i class="fa s-2 {% if object.status == 'pending' %}fa-exclamation-circle orange{%elif object.status == 'paid'%}fa-check-circle green{% endif %}" aria-hidden="true"></i>
+                                                  </span>
+                                                </div>
+                                                <div class="{% if perms.admin.view_logentry %}col-md-4{% else %}col-md-5{% endif %}">
 
+                                                    <a href="{% url 'invoice-edit'  object.pk %}?next={% next_url %}">
+                                                        {{ object.membership }}</a>
+                                                </div>
+                                                <div class="col-md-2">{{ object.renewal_period }}</div>
+                                                <div class="col-md-2">{{ object.amount }} {{ object.currency }}{% if object.status == 'pending' %}
+                                                <br><a href="{% url 'invoice-pay' object.pk %}?next={% next_url %}" class="btn btn-xs btn-success">Pagar</a>{% endif %}</div>
+                                                <div class="col-md-2">{% if object.pdf_invoice %}
+                                                  <a title="Factura por servicio" href="{{ object.pdf_invoice.url }}?f={% now 'YmdHs' %}" target="_blank" class="btn btn-sm">
+                                                  <i class="fa s-2 fa-file-pdf-o"></i>
+                                                  </a>
+                                                  {% endif %}
+                                                  {% if object.receipt %}
+                                                  <a title="Comprobante de pago" href="{{ object.receipt.url }}" target="_blank" class="btn btn-sm">
+                                                    <i class="fa fa-ticket" aria-hidden="true"></i>
+                                                  </a>
+                                                  {% endif %}
+                                              </div>
+                                                {% if perms.admin.view_logentry %}
+                                                    <div class="col-md-1">
+                                                        <a title="Ver historial" href="{% url 'logentry_object' app='membership_manager' model='invoice' pk=object.pk %}" class="edit-link"><i class="fa fa-history green"></i></a>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="row green" style="margin-bottom: 2em; margin-top: 0.5em;">
+                                                <div class="col-md-4">{{ object.code }} {{ object.membership.get_membership_type_display }}</div>
+                                                <div class="col-md-4">{% if object.transaction_number %} Trans #:
+                                                    {{ object.transaction_number }}{%endif%}</div>
+                                                <div class="col-md-4">{% if object.payment_date %} Fecha pago:
+                                                    {{ object.payment_date|default:" " }}{% endif %}
 
-                            {% for month, objlist  in object_list %}
-<div class="x_content monthbox {% cycle 'monthleft'  'monthright' %}">
-<article class="media event">
-<a class="pull-left date">
-<p class="month">{% month_by_number month %}</p>
- <p class="day">{{month}}</p>
-</a>
-<div class="media-body">
-    <ul class="list-group">
-    {% for object in objlist %}
-    <li class="list-group-item row">
-        <div class="row">
-            <div class="col-md-1">
-                <span title="{{ object.get_status_display }}">
-                  <i class="fa s-2 {% if object.status == 'pending' %}fa-exclamation-circle orange{%elif object.status == 'paid'%}fa-check-circle green{% endif %}" aria-hidden="true"></i>
-              </span>
-            </div>
-            {% if perms.admin.view_logentry %}
-    <div class="col-md-4">
-        {% else %}
-        <div class="col-md-5">
-        {% endif %}
-        <a href="{% url 'invoice-edit'  object.pk %}?next={% next_url %}">
-            {{ object.membership }}</a>
-    </div>
-    <div class="col-md-2">{{ object.renewal_period }}</div>
-    <div class="col-md-2">{{ object.amount }} {{ object.currency }}{% if object.status == 'pending' %}
-    <br><a href="{% url 'invoice-pay' object.pk %}?next={% next_url %}" class="btn btn-xs btn-success">Pagar</a>{% endif %}</div>
-    <div class="col-md-2">{% if object.pdf_invoice %}
-      <a title="Factura por servicio" href="{{ object.pdf_invoice.url }}?f={% now 'YmdHs' %}" target="_blank" class="btn btn-sm">
-      <i class="fa s-2 fa-file-pdf-o"></i>
-      </a>
-      {% endif %}
-      {% if object.receipt %}
-      <a title="Comprobante de pago" href="{{ object.receipt.url }}" target="_blank" class="btn btn-sm">
-        <i class="fa fa-ticket" aria-hidden="true"></i>
-      </a>
-      {% endif %}
-  </div>
-        {% if perms.admin.view_logentry %}
-        <div class="col-md-1">
-            <a title="Ver historial" href="{% url 'logentry_object' app='membership_manager' model='invoice' pk=object.pk %}" class="edit-link"><i class="fa fa-history green"></i></a>
-        </div>
-            {% endif %}
-</div>
-        <div class="row green" style="margin-bottom: 2em; margin-top: 0.5em;">
-            <div class="col-md-4">{{ object.code }} {{ object.membership.get_membership_type_display }}</div>
-            <div class="col-md-4">{% if object.transaction_number %} Trans #:
-                {{ object.transaction_number }}{%endif%}</div>
-            <div class="col-md-4">{% if object.payment_date %} Fecha pago:
-                {{ object.payment_date|default:" " }}{% endif %}
-
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-            <div class="btn-group" role="group" aria-label="...">
-              <button style="margin-right: 1em" type="button" data-item="{{object.pk}}" data-action="NP"  class="btn btn-xs btn-primary baction">Notificar Pago</button>
-              <button style="margin-right: 1em" type="button" data-item="{{object.pk}}" data-action="ER" class="btn btn-xs btn-info baction">Enviar Recordatorio</button>
-              <button style="margin-right: 1em" type="button" data-item="{{object.pk}}" data-action="RC" class="btn btn-xs btn-primary baction">Regenerar código</button>
-              <button type="button" data-item="{{object.pk}}" data-action="RP" class="btn btn-xs btn-info baction">Regenerar PDF</button>
-            </div>
-            </div>
-        </div>
-
-
-
-    </li>
-    {% empty%}
-        <li class="list-group-item">No existen facturas disponibles</li>
-    {% endfor %}
-     </ul>
-</div>
-</article>
-</div>
-                      {% empty %}
-<div class="x_content text-center purple" >
-    No existen facturas disponibles
-</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                            <div class="col-md-12">
+                                            <div class="btn-group" role="group" aria-label="...">
+                                              <button style="margin-right: 1em" type="button" data-item="{{object.pk}}" data-action="NP"  class="btn btn-xs btn-primary baction">Notificar Pago</button>
+                                              <button style="margin-right: 1em" type="button" data-item="{{object.pk}}" data-action="ER" class="btn btn-xs btn-info baction">Enviar Recordatorio</button>
+                                              <button style="margin-right: 1em" type="button" data-item="{{object.pk}}" data-action="RC" class="btn btn-xs btn-primary baction">Regenerar código</button>
+                                              <button type="button" data-item="{{object.pk}}" data-action="RP" class="btn btn-xs btn-info baction">Regenerar PDF</button>
+                                            </div>
+                                            </div>
+                                        </div>
+                                        </li>
+                                        {% empty%}
+                                            <li class="list-group-item">No existen facturas disponibles</li>
+                                        {% endfor %}
+                                     </ul>
+                                </div>
+                            </article>
+                            </div>
+                        {% empty %}
+                            <div class="x_content text-center purple" >
+                                No existen facturas disponibles
+                            </div>
                         {% endfor %}
-
                     </div>
                 </div>
+                <div class="paginator_container">
+                    <ul class="pagination">
+                        {% for year in years %}
+                         <li class="{% if current_year == year.year %}active{% endif %}">
+                            <a href="{% url 'invoice-list' %}?year={{year.year}}{{params}}"> {{ year.year }}</a>
+                         </li>
+                         {% endfor %}
+                    </ul>
+                </div>
             </div>
-
         </div>
     </div>
-
 </div>
-
-<div class="paginator_container">
-    <ul class="pagination">
-        {% for year in years %}
-         <li class="{% if current_year == year.year %}active{% endif %}">
-            <a href="{% url 'invoice-list' %}?year={{year.year}}{{params}}"> {{ year.year }}</a>
-         </li>
-         {% endfor %}
-    </ul>
-</div>
-
 <div id="invoicemodal" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
