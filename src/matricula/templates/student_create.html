@@ -1,17 +1,7 @@
 {% extends 'gentelella/base.html'%}
-{% load socialaccount static i18n %}
-{% block extra_css%}
-	<link rel="stylesheet" href="{% static 'css/auth-buttons.css'%}">
-{%endblock%}
+{% load static i18n %}
 {%block content%}
-	<h1>Registro de usuarios</h1>
-	<div class="row">
-		<div class="col-md-12 text-center" style="margin-bottom: 15px;">
-			<a class="btn-auth btn-facebook" style="display:inline-bock;" href="{% provider_login_url 'facebook' method='oauth2' %}"> Facebook</a>
-			<a class="btn-auth btn-google"  style="display:inline-block;" href="{% provider_login_url 'google' method='oauth2' %}">Google</a>
-			<a class="btn-auth btn-github"  style="display:inline-block;" href="{% provider_login_url 'github' method='oauth2' %}">Github</a>    
-		</div>
-	</div>
+	<h1 class="text-center">Registro de usuarios</h1>
 	<div class="col-md-8 col-md-offset-2">
 		<div class="x_panel">
 			<div class="x_title">
@@ -24,7 +14,7 @@
 					<div>
 						<form method="post" id="{% url 'create_user' %}">
 								{% csrf_token %}
-								{{form.as_table}}
+								{{form.as_horizontal}}
 							<div style="margin-top:10px; text-align:right;">
 								<button type="submit" class="btn btn-success" value="Save" >
 									<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Registar
@@ -40,4 +30,40 @@
 {% block js %}
 	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
-{% endblock %}
+	<script>
+		var input = document.querySelector('#id_organization'),
+		tagify = new Tagify(input, {whitelist:[]}),
+		controller; // for aborting the call
+		// listen to any keystrokes which modify tagify's input
+		tagify.settings.maxTags=1
+		tagify.on('input', onInput)
+		tagify.on('add', onAdd)
+		function onAdd(e){
+			input.value=e.detail.data.value
+		}
+		function onInput( e ){
+			var value = e.detail.value;
+			tagify.settings.whitelist.length = 0; // reset the whitelist
+
+			// https://developer.mozilla.org/en-US/docs/Web/API/AbortController/abort
+			controller && controller.abort();
+			controller = new AbortController();
+
+			// show loading animation and hide the suggestions dropdown
+			tagify.loading(true).dropdown.hide.call(tagify)
+
+			fetch("/gtapis/student/?q="+e.detail.value, {signal:controller.signal})
+				.then(RES => RES.json())
+				.then(function(whitelist){
+				// update inwhitelist Array in-place
+				var whitelst = []
+				for(var i=0; i<whitelist.total_count; i++){
+					whitelst.push(whitelist.results[i].text)
+				}
+				console.log(whitelst)
+				tagify.settings.whitelist.splice(0, whitelist.total_count, ...whitelst)
+				tagify.loading(false).dropdown.show.call(tagify, value); // render the suggestions dropdown
+			})
+		}
+	</script>
+{%endblock%}

@@ -54,10 +54,15 @@
 		{% endif %}
 		{% for course in object_list %}
 			<div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
-				<div class="x_panel" style="height:200px;word-break: break-all;">
+				<div class="x_panel" style="height:230px;word-break: break-all;">
 					<div class="x_title">
-						<h2 class="green">{{course.category.name|wordwrap:20}}</h2>
+						<h2 class="green">{{course.category.name|wordwrap:17|linebreaks}}</h2>
 						<ul class="nav navbar-right panel_toolbox" style="min-width: unset;">
+							{% if perms.matricula.can_add_group_course %}
+								<li>
+									<a href="{% url 'add_group_course' course.pk %}"><i class="fa fa-plus blue"></i></a>
+								</li>
+							{% endif %}
 							{% if perms.matricula.change_course %}
 								<li>
 									<a href="{% url 'edit_course' course.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
@@ -72,11 +77,11 @@
 					<div class="x_content">
 						<ul class="list-unstyled user_data">
 							<li>
-								<strong>Curso: </strong>{{course.name}}
+								<strong>Categoría: </strong>{{course.category.name}}
 							</li>
 							<li>
 								<a href="#" style="cursor:pointer" data-placement="top" data-toggle="tooltip" data-original-title="{{course.content|safe|striptags}}">
-									<strong>Contenido: </strong>{{course.content|safe|striptags|truncatechars:175}}
+									<strong>Contenido: </strong>{{course.content|safe|striptags|truncatechars:150|linebreaks}}
 								</a>
 							</li>
 						</ul>
@@ -113,13 +118,13 @@
 {% block js %}
 	{% if perms.matricula.delete_course %}
 		<script type="text/javascript">
-			$(document).ready(function(){
-				function deleteitem(element){
+			function deleteitem(element){
+				$(document).ready(function(){
 					$("#deleteitem").attr("href", $(element).data('url'));
 					$("#modaldeleteitem").modal();
-					return false
-				}
-			});
+					return false;
+				});
+			}
 		</script>
 	{% endif %}
 	<script>

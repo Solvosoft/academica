@@ -6,26 +6,22 @@ from django.contrib.auth.models import User
 from django.utils.encoding import smart_text
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.conf import settings
-from django.utils.timezone import now, timedelta
+from django.utils.timezone import now
 import uuid
 from django.utils.html import strip_tags
-
-
-def get_expire_date():
-    return now() + timedelta(days=settings.TOKEN_CONFIRMATION_EXPIRE_DAYS)
 
 
 class Student(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, primary_key=True)
+    organization = models.CharField(verbose_name="Organización", max_length=150)
     key = models.UUIDField(default=uuid.uuid4)
     confirmed_at = models.DateTimeField(null=True, blank=True)
-    expired_at = models.DateTimeField(default=get_expire_date())
+    expired_at = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def confirm(self, key):
-        if(now() < self.expired_at and str(self.key) == key):
+        if (now() < self.expired_at and str(self.key) == key):
             self.user.is_active = True
             self.user.save()
             self.confirmed_at = now()
@@ -90,10 +86,12 @@ class Course(models.Model):
     class Meta:
         verbose_name = _("Course")
         verbose_name_plural = _("Courses")
+        permissions = [
+            ("can_add_group_course", "Can add course to group"),
+        ]
 
 
 class Group(models.Model):
-
     NORMAL = 0
     AUTO_PREENROLL = 1
     AUTO_ENROLL = 2
@@ -127,16 +125,17 @@ class Group(models.Model):
         verbose_name=_("Pre enroll finish hour"))
     enroll_start = models.DateTimeField(verbose_name=_("Enroll start hour"))
     enroll_finish = models.DateTimeField(verbose_name=_("Enroll finish hour"))
+    is_paid = models.BooleanField(verbose_name="Es pagado", default=True)
     currency = models.CharField(
         max_length=3, verbose_name=_("Currency"), choices=COURRENCY_CHOICES,
-        default="CRC")
+        default="USD")
     cost = models.DecimalField(
         max_digits=10, decimal_places=2, verbose_name=_("Course cost"))
     maximum = models.SmallIntegerField(
         verbose_name=_("Maximum number of students"))
-    is_open = models.BooleanField(default=True)
-    flow = models.SmallIntegerField(
-        choices=FLOWS, default=NORMAL, verbose_name=_("Enrollment behavior"))
+    is_open = models.BooleanField(
+        default=True, verbose_name="¿Está abierto?")
+    flow = models.SmallIntegerField(choices=FLOWS, default=NORMAL, verbose_name=_("Enrollment behavior"))
     professors = models.ManyToManyField(Professor, blank=True, verbose_name=_("Professors"))
 
     @property
@@ -151,13 +150,24 @@ class Group(models.Model):
     class Meta:
         verbose_name = _("Group")
         verbose_name_plural = _("Groups")
+        permissions = [
+            ("can_view_pre_enroll_group", "Can view pre-enrolled in group"),
+            ("can_export_enrolled_group", "Can export students group"),
+            ("can_open_group", "Can open group"),
+            ("can_close_group", "Can close group"),
+            ("can_view_pdf_enrolled_group", "Can view enrolled to group"),
+        ]
+
+    def save(self, *args, **kwargs):
+        if not self.is_paid:
+            self.cost = 0
+        super().save(*args, **kwargs)
 
 
 class Enroll(models.Model):
-
     COURSE_STATUS = (("approved", _("Approved")),
-             ("reproved", _("Reproved"))
-             )
+                     ("reproved", _("Reproved"))
+                     )
 
     enroll_finished = models.BooleanField(
         default=False, verbose_name=_("Is enroll finished?"))
@@ -173,8 +183,8 @@ class Enroll(models.Model):
     bill_created = models.BooleanField(
         default=False, verbose_name=_("Bill created"))
     course_score = models.DecimalField(max_digits=6, decimal_places=4, default=Decimal(0.00), verbose_name=_("Note"))
-    course_status = models.CharField(max_length=20, choices=COURSE_STATUS, blank=True, null=True, verbose_name=_("Status"))
-
+    course_status = models.CharField(max_length=20, choices=COURSE_STATUS, blank=True, null=True,
+                                     verbose_name=_("Status"))
 
     def __str__(self):
         return self.student.user.username + " -- " + smart_text(self.group)
@@ -230,7 +240,6 @@ class Page(models.Model):
 
 
 class Coupon(models.Model):
-
     DISCOUNT_CHOICES = (
         (50, "50"),
         (100, "100")
@@ -238,10 +247,10 @@ class Coupon(models.Model):
 
     student = models.ForeignKey(Student, verbose_name=_("Student"), on_delete=models.CASCADE)
     course = models.ForeignKey(Course, verbose_name=_("Course"), on_delete=models.CASCADE)
-    discount_percentage = models.IntegerField(null=True, blank=True, choices=DISCOUNT_CHOICES,default=DISCOUNT_CHOICES[1])
+    discount_percentage = models.IntegerField(null=True, blank=True, choices=DISCOUNT_CHOICES,
+                                              default=DISCOUNT_CHOICES[1])
     is_used = models.BooleanField(default=False, verbose_name=_("Is used?"))
     code = models.CharField(max_length=15, null=True, blank=True, unique=True, verbose_name=_("Discount code"))
-
 
     def __str__(self):
         return f"{self.student} - {self.course.name} - {self.code[2:6]}"

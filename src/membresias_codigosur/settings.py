@@ -35,7 +35,6 @@ ASYNC_TEMPLATES_NOTIFICATION = os.path.join(BASE_NOCODE_DIR, 'news_templates/')
 # Application definition
 
 INSTALLED_APPS = [
-
     'django.contrib.contenttypes',
     #'grappelli.dashboard',
     #'grappelli',
@@ -44,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites',
     'membership_core',
     'membership_manager',
     'membership_telbot_manager',
@@ -61,12 +59,6 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'matricula',
     'matricula.contrib.bills',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.github',
-    'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.facebook',
     'paypal.standard.ipn'
 ]
 
@@ -249,50 +241,6 @@ ASYNC_NEWSLETTER_SEVER_CONFIGS={
 }
 """
 
-# allauth configurations
-SITE_ID = 1
-
-AUTHENTICATION_BACKENDS = (
-    "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
-)
-
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        }
-    },
-    'facebook': {
-        'METHOD': 'oauth2',
-        'SCOPE': ['email', 'public_profile', 'user_friends'],
-        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
-        'FIELDS': [
-            'id',
-            'email',
-            'name',
-            'first_name',
-            'last_name',
-            'verified',
-            'locale',
-            'timezone',
-            'link',
-            'gender',
-            'updated_time'
-        ],
-        'EXCHANGE_TOKEN': True,
-        'LOCALE_FUNC': lambda request: 'en_US',
-        'VERIFIED_EMAIL': False,
-        'VERSION': 'v2.4'
-    },
-}
-# end allauth configurations
 PAYPAL_TEST = True
 PAYPAL_RECEIVER_EMAIL = "luisza14-buyer@gmail.com"
 MY_PAYPAL_HOST = "http://academica.ngrok.io"

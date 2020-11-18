@@ -57,10 +57,15 @@
 	{% endif %}
 	{% for object in object_list %}
 		<div class="col-md-6 col-lg-4 col-sm-6 col-xs-12">
-			<div class="x_panel" style="height:400px;word-break: break-all;">
+			<div class="x_panel" style="height:400px;word-break: break-word;">
 				<div class="x_title">
 					<h2 class="green">{{object.period|safe|striptags}}</h2>
 					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
+						{% if perms.matricula.can_export_enrolled_group %}
+							<li>
+								<a href="{% url 'list_students_group' object.pk %}" class="edit-link"><i class="fa fa-mortar-board"></i></a>
+							</li>
+						{% endif %}
 						{% if perms.matricula.change_group %}
 							<li>
 								<a href="{% url 'edit_group_enroll' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
@@ -83,12 +88,6 @@
 									<strong>Curso: </strong>{{object.course}}
 								</li>
 								<li>
-									<strong>Matricula Inicio: </strong>{{object.enroll_start}}
-								</li>
-								<li>
-									<strong>Matricula Fin: </strong>{{object.enroll_finish}}
-								</li>
-								<li>
 									<strong>Inversión: </strong>{{object.cost}}
 								</li>
 							</ul>
@@ -96,25 +95,32 @@
 						<div class="col-md-6 col-sm-6 col-xs-6">
 							<ul class="list-unstyled user_data">
 								<li>
-									<strong>Máximo estudiantes: </strong>{{object.maximum}}
+									<strong>Inscritos: </strong>
+									{{object.enroll_set.all.count}} de {{object.maximum}}
 								</li>
 								<li>
 									<strong>Moneda: </strong>{{object.currency}}
-								</li>
-								<li>
-									<strong>Pre-matricula Inicio: </strong>{{object.pre_enroll_start}}
-								</li>
-								<li>
-									<strong>Pre-matricula Fin: </strong>{{object.pre_enroll_finish}}
 								</li>
 							</ul>
 						</div>
 						<div class="col-md-12">
 							<ul class="list-unstyled user_data">
+								<li>
+									<strong>Rango matrícula: </strong>{{object.enroll_start}} - {{object.enroll_finish}}
+								</li>
+								<li>
+									<strong>Rango pre-matrícula: </strong>{{object.pre_enroll_start}} - {{object.enroll_finish}}
+								</li>
 								<li><strong>Flujo del curso: </strong>{{object.FLOWS|index:object.flow|index:1}}</li>
 								<li><strong>Lista de estudiantes: </strong>{{object.enroll_set.all.count}} <a href="{% url 'export_group' object.pk%}"><i class="fa fa-file-text-o"></i></a></li>
 								<li><strong>Lista de estudiantes prematriculados: </strong><a href="{% url 'pre_enroll_group' object.pk%}"><i class="fa fa-filter"></i></a></li>
 								<li><strong>Calificar estudiantes: </strong><a href="{% url 'qualify_students' pk=object.pk %}"><i class="fa fa-check-square"></i></a></li>
+								{% if perms.matricula.can_export_enrolled_group %}
+									<li><strong>Exportar estudiantes: </strong>{{object.enroll_set.all.count}} <a href="{% url 'export_group' object.pk%}"><i class="fa fa-file-text-o"></i></a></li>
+								{% endif %}
+								{% if perms.matricula.can_view_pre_enroll_group %}
+									<li><strong>Estudiantes pre-matriculados: </strong><a href="{% url 'pre_enroll_group' object.pk%}"><i class="fa fa-filter"></i></a></li>
+								{% endif %}
 							</ul>
 						</div>
 					</div>
