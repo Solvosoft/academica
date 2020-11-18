@@ -196,6 +196,9 @@
                             {% if perms.matricula.view_student %}
                                 <li><a href="{% url 'students' %}">Estudiantes</a></li>
                             {% endif %}
+                            {% if perms.matricula.view_professor %}
+                                <li><a href="{% url 'professors_list' %}">Profesoras</a></li>
+                            {% endif %}
                         </ul>
                     </li>
                 </ul>

@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 from matricula.models import Student, Course, Group, Enroll, Period, Category, \
-    MenuItem, Page
+    MenuItem, Page, Professor
 from django.utils.translation import ugettext_lazy as _
 from django.conf.urls import url
 from django.urls import reverse
@@ -19,7 +19,7 @@ from matricula.forms import MenuItemFormPage
 class EnrollAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
-            'fields': (('enroll_finished', 'enroll_activate'), 'group', 'student', 'bill_created')
+            'fields': (('enroll_finished', 'enroll_activate'), 'group', 'student', 'bill_created', 'course_score', 'course_status')
         }),)
 
     list_display = ('student', 'group', 'enroll_finished', 'enroll_activate')
@@ -45,7 +45,7 @@ class GroupAdmin(admin.ModelAdmin, BaseGroup):
                                    ('cost', 'currency'), 'schedule',
                                     'flow',
                                     ('pre_enroll_start', 'pre_enroll_finish'),
-                                    ('enroll_start' , 'enroll_finish'))
+                                    ('enroll_start' , 'enroll_finish', 'professors'))
                         }),
                 )
     list_display = ('name', 'course', 'period', 'maximum',
@@ -128,6 +128,7 @@ admin.site.register(Period)
 admin.site.register(Category)
 admin.site.register(MenuItem)
 admin.site.register(Page)
+admin.site.register(Professor)
 
 admin.site.site_header = _("Academica administrator site")
 
@@ -144,3 +145,4 @@ admin_site.register(Period)
 admin_site.register(Category)
 admin_site.register(MenuItem, MenuItemAdmin)
 admin_site.register(Page)
+

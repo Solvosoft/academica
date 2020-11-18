@@ -25,6 +25,10 @@ from .views.admin_views import CategoryList, create_category,\
     export_group, recovery_pass_student, MenuPageDelete, create_menupage,\
     pre_enroll_group
 from matricula.contrib.bills.urls import urlpatterns as billurls
+from .views.professor_views import ProfessorsList, CreateProfessor, EditProfessor, edit_profile, delete_professor, \
+    deactivate_professor
+from .views.students_views import qualify_students, save_quality_student, \
+    update_enroll, update_enroll_status
 
 urlpatterns = [
     url('^create_user$', create_user, name="create_user"),
@@ -71,6 +75,8 @@ urlpatterns = [
     path('enrrolment/delete_enroll/<int:pk>/', EnrollDelete.as_view() , name="delete_enroll"),
     path('enrrolment/edit_enroll/<int:pk>/', edit_enroll, name="edit_enroll"),
     url('enrrolment/students', StudentList.as_view(), name="students"),
+    path('enrrolment/<int:pk>/qualify_students', qualify_students, name="qualify_students"),
+    path('enrrolment/<int:pk_enroll>/<int:pk_group>/qualify_student', save_quality_student, name="save_quality_student"),
     path('enrrolment/recovery_pass_student/<int:pk>/', recovery_pass_student, name="recovery_pass_student"),
     url('enrrolment/create_student', create_student, name="create_student"),
     path('enrrolment/delete_student/<int:pk>/', StudentDelete.as_view() , name="delete_student"),
@@ -81,4 +87,12 @@ urlpatterns = [
     path('enrrolment/delete_menu_page/<int:pk>/', MenuPageDelete.as_view(), name="delete_menupage"),
     path('enrrolment/delete_page/<int:pk>/', PageDelete.as_view() , name="delete_page"),
     path('enrrolment/edit_page/<int:pk>/', edit_page, name="edit_page"),
+    path('enrrolment/profile/', edit_profile, name="edit_profile"),
+    path('enrrolment/edit_professor/<int:pk>/', EditProfessor.as_view(), name="edit_professor"),
+    path('enrrolment/create_professor/', CreateProfessor.as_view(), name="create_professor"),
+    path('enrrolment/delete_professor/<int:pk>/', delete_professor, name="delete_professor"),
+    path('enrrolment/deactivate_professor/<int:pk>/', deactivate_professor, name="deactivate_professor"),
+    path('enrrolment/professors/', ProfessorsList.as_view(), name="professors_list"),
+    path('enrrolment/json/students/', update_enroll, name='update_enroll'),
+    path('enrrolment/<int:pk>/qualify_students/<str:status>/', update_enroll_status, name="qualify_students_status"),
 ] + billurls

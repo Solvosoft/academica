@@ -1,0 +1,128 @@
+{% extends 'gentelella/base.html' %}
+{% load static utils membership_code %}
+{% load static %}
+{% block extra_css %}
+    <link href="{% static 'css/membership.css' %}" rel="stylesheet">
+{% endblock extra_css %}
+{% block content %}
+    <h1 class="text-center">Profesoras</h1>
+    <div class="search_options">
+        <div class="row">
+            {% if not perms.matricula.add_professor %}
+                <div class="col-md-10 col-md-offset-1 col-xs-12">
+                {% else %}
+                    <div class="col-md-10">
+                {% endif %}
+                <div class="x_panel">
+                    <form method="GET">
+                    <div class="row">
+                        <div class="col-md-6">
+                            {% include 'field.html' with field=formsearch.professor  %}
+                        </div>
+                        <div class="col-md-6">
+                            {% include 'field.html' with field=formsearch.status  %}
+                        </div>
+                    </div>
+                    <br/>
+                    <div style="text-align:right;">
+                        <a href="{% url 'professors_list' %}" class="btn btn-dark">Limpiar filtros</a>
+                        <button class="btn btn-success" type="submit">Buscar</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+            {% if perms.matricula.add_professor %}
+                <div class="col-md-2">
+                    <div class="buttons">
+                        <a href="{% url 'create_professor' %}" class="btn btn-primary">Nueva profesora</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% if perms.matricula.delete_professor %}
+
+        <div id="modaldeleteprofessor" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Al eliminar esta profesora todos sus elementos relacionados(grupos, facturas, etc) serán eliminados también. Es recomendable que en lugar de eliminar esta profesora, lo desactive.</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                        <a class="btn btn-success" id="deactivateprofessor">Desactivar</a>
+                        <a class="btn btn-danger" id="deleteprofessor">Eliminar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    {% endif %}
+    <div class="row">
+        {% for professor in object_list %}
+            <div class="col-md-3 widget widget_tally_box">
+                <div class="x_panel fixed_height_390 {% if not professor.active %}inactive_contact{%endif%}">
+                    <div class="x_title">
+                        <ul class="nav navbar-right panel_toolbox">
+                            {% if perms.matricula.change_professor %}
+                                <li><a title="Editar profesora" href="{% url 'edit_professor' pk=professor.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
+                            {% endif %}
+                            {% if perms.matricula.delete_professor %}
+                                <li><a title="Eliminar profesora" data-url="{% url 'delete_professor' pk=professor.pk %}" data-href="{% url 'deactivate_professor' pk=professor.pk %}" onclick="deleteprofessor(this)"><i class="fa fa-close"></i></a></li>
+                            {% endif %}
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                         <h4><b>Nombre: {% if professor.user.get_full_name %} {{professor.user.get_full_name|title}} {% else %} Sin especificar {% endif %}</b></h4>
+                        <div style="text-align: left; margin-bottom: 15px;">
+                            <h4>Información:</h4>
+                        </div>
+                        <div><strong>Correo de usuario: </strong> {% if professor.user.email %} {{professor.user.email}} {% else %} Sin especificar {% endif %}</div>
+                        <div><strong>Correo para estudiantes: </strong> {% if professor.email %} {{professor.email}} {% else %} Sin especificar {% endif %}</div>
+                        <div><strong>Estado: </strong> {% if professor.active%} Activa {%else%} Inactiva {% endif %}</div>
+                        <div><strong>Descripción: </strong><p style="text-align: justify; text-justify: inter-word;">{% if professor.description %} {{professor.description|truncatechars:165}} {% else %} Sin especificar {% endif %} </p></div>
+                       <div class="clearfix"></div>
+                    </div>
+                    <div class="x_footer">
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="paginator_container">
+        {% if is_paginated %}
+            <ul class="pagination">
+                {% if paginator.has_previous %}
+                    <li><a href="?{% url_replace request 'page' paginator.previous_page_number %}">&laquo;</a></li>
+                {% else %}
+                    <li class="disabled"><span>&laquo;</span></li>
+                {% endif %}
+                {% for i in paginator.page_range %}
+                    {% if page_obj.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                    {% else %}
+                        <li><a href="?{% url_replace request 'page' i %}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if paginator.has_next %}
+                    <li><a href="?{% url_replace request 'page' paginator.next_page_number %}">&raquo;</a></li>
+                {% else %}
+                    <li class="disabled"><span>&raquo;</span></li>
+                {% endif %}
+            </ul>
+        {% endif %}
+    </div>
+    </div>
+{% endblock content %}
+{% block js %}
+<script>
+function deleteprofessor(element){
+    $("#deleteprofessor").attr("href", $(element).data('url'));
+    $("#deactivateprofessor").attr("href", $(element).data('href'));
+    $("#modaldeleteprofessor").modal();
+}
+</script>
+{% endblock js%}

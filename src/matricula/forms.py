@@ -6,8 +6,8 @@ Created on 7/4/2015
 @author: luisza
 '''
 from django import forms
-from matricula.models import Student, Page, MenuItem, Category, Course,\
-    Period, Group, Enroll
+from matricula.models import Student, Page, MenuItem, Category, Course, \
+    Period, Group, Enroll, Professor
 from django.utils.translation import ugettext_lazy as _
 from django.core import validators
 from django.contrib.auth.models import User
@@ -224,7 +224,7 @@ class GroupCreateForm(forms.ModelForm, GTForm):
         fields = [
             'name', 'period', 'course', 'schedule', 'pre_enroll_start',
             'pre_enroll_finish', 'enroll_start', 'enroll_finish', 'currency',
-            'cost', 'maximum', 'flow'
+            'cost', 'maximum', 'flow', 'professors'
         ]
         widgets = {
             'name': djgentelella.TextInput,
@@ -238,12 +238,15 @@ class GroupCreateForm(forms.ModelForm, GTForm):
             'currency': djgentelella.Select,
             'cost': djgentelella.NumberInput,
             'maximum': djgentelella.NumberInput,
-            'flow': djgentelella.Select
-
+            'flow': djgentelella.Select,
+            'professors': djgentelella.SelectMultiple
         }
 
     def __init__(self, *args, **kwargs):
         super(GroupCreateForm, self).__init__(*args, **kwargs)
+
+        self.fields['professors'].queryset = Professor.objects.filter(active=True)
+
         if 'initial' in kwargs:
             if 'period_id' in kwargs['initial']:
                 self.fields['period'].initial = kwargs['initial']['period_id']
@@ -359,3 +362,53 @@ class PreEnrollAddGroupForm(GTForm, forms.Form):
         queryset=Enroll.objects.all(), widget=djgentelella.SelectMultiple,
         required=False, label="Matrícula")
     action = forms.CharField(required=True)
+
+
+class QualifyStudentForm(GTForm, forms.ModelForm):
+
+
+    class Meta:
+        model = Enroll
+        fields = ['course_status']
+        widgets = {
+            'course_status': djgentelella.Select
+        }
+
+
+class ProfessorEditForm(GTForm, forms.Form):
+    username = forms.CharField(label="Nombre de usuaria", widget=djgentelella.TextInput, required=False)
+    first_name = forms.CharField(label="Nombre", widget=djgentelella.TextInput, required=True)
+    last_name = forms.CharField(label="Apellidos", widget=djgentelella.TextInput, required=True)
+    email = forms.CharField(label="Correo electrónico como usuaria del sistema", widget=djgentelella.EmailMaskInput, required=True)
+    email_students = forms.CharField(label="Correo electrónico para estudiantes", widget=djgentelella.EmailMaskInput, required=True)
+    description = forms.CharField(widget=djgentelella.Textarea, required=True, label="Descripción",
+                                           help_text="Esta descripción será mostrada en los grupos en los cuales sea asignada como profesora.")
+
+
+
+class ProfessorSearchForm(GTForm, forms.Form):
+    PROFESSOR_STATES = (
+        (None, "Todas"),
+        (True, "Activas"),
+        (False, "Inactivas"),
+    )
+
+    professor = forms.ModelMultipleChoiceField(
+        queryset=Professor.objects.all(), widget=djgentelella.SelectMultiple,
+        required=False, label="Profesora")
+
+    status = forms.ChoiceField(choices=PROFESSOR_STATES, widget=djgentelella.Select, required=False, label="Estado")
+
+
+
+class ProfessorAddForm(GTForm, forms.ModelForm):
+
+   class Meta:
+       model = Professor
+       fields = "__all__"
+       widgets = {
+           'user': djgentelella.Select,
+           'email': djgentelella.EmailMaskInput,
+           'description': djgentelella.Textarea,
+           'active': djgentelella.YesNoInput
+       }

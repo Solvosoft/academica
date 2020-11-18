@@ -114,6 +114,7 @@
 								<li><strong>Flujo del curso: </strong>{{object.FLOWS|index:object.flow|index:1}}</li>
 								<li><strong>Lista de estudiantes: </strong>{{object.enroll_set.all.count}} <a href="{% url 'export_group' object.pk%}"><i class="fa fa-file-text-o"></i></a></li>
 								<li><strong>Lista de estudiantes prematriculados: </strong><a href="{% url 'pre_enroll_group' object.pk%}"><i class="fa fa-filter"></i></a></li>
+								<li><strong>Calificar estudiantes: </strong><a href="{% url 'qualify_students' pk=object.pk %}"><i class="fa fa-check-square"></i></a></li>
 							</ul>
 						</div>
 					</div>
