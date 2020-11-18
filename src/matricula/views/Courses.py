@@ -6,13 +6,29 @@ Created on 16/5/2015
 '''
 from .utils import get_active_period
 from django.shortcuts import render, get_object_or_404
-from matricula.models import Course, Category, Group
+from matricula.models import Course, Category, Group, Professor
 
 
 def list_courses(request):
 
     cat = request.GET.get('cat', None)
     period = get_active_period()
+
+    show_info_modal = 0
+    professor = Professor.objects.filter(user=request.user).first()
+
+    if professor:
+        if professor.email:
+            if professor.email == "":
+                show_info_modal = 1
+        else:
+            show_info_modal = 1
+
+        if professor.description:
+            if professor.description == "":
+                show_info_modal = 1
+        else:
+            show_info_modal = 1
 
     category = Category.objects.filter(course__group__period=period).distinct()
     if cat:
@@ -32,7 +48,7 @@ def list_courses(request):
                                   'groups': []}
         courses[course.pk]['groups'].append(group)
 
-    return render(request, 'courses.html', {'courses': courses})
+    return render(request, 'courses.html', {'courses': courses, 'show_info_modal': show_info_modal})
 
 
 def view_course(request, pk):

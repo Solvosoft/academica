@@ -5,17 +5,18 @@ Created on 18/10/2020
 @author: allexiusw
 '''
 from django.conf import settings
-from django.views.generic import ListView, DeleteView, UpdateView
+from django.views.generic import ListView, DeleteView
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render
-from matricula.models import Category, Course, MenuItem, Period, Group,\
-    Enroll, Student, Page
-from matricula.forms import CategoryCreateForm, CategorySearchForm,\
-    CourseSearchForm, CourseCreateForm, MenuItemSearchForm,\
-    MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm,\
-    GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentSearchForm,\
-    StudentAdminCreateForm, PageCreateForm, PageSearchForm, MenuItemAddForm,\
-    PreEnrollAddGroupForm
+from matricula.models import Category, Course, MenuItem, Period, Group, \
+    Enroll, Student, Page, Professor
+from matricula.forms import CategoryCreateForm, CategorySearchForm, \
+    CourseSearchForm, CourseCreateForm, MenuItemSearchForm, \
+    MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, \
+    GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentSearchForm, \
+    StudentAdminCreateForm, PageCreateForm, PageSearchForm, MenuItemAddForm, \
+    PreEnrollAddGroupForm, GroupAddForm, GroupEditForm, PermissionForm
+from djgentelella.models import MenuItem as DJMenuItem
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -29,6 +30,46 @@ from django.http import HttpResponse
 from django.utils.timezone import now
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
+from .utils import get_active_period
+from xhtml2pdf import pisa
+from django.shortcuts import get_object_or_404
+from django.template.loader import get_template
+from django.contrib.staticfiles import finders
+import os
+from matricula.views.utils import get_expire_date
+
+
+def link_callback(uri, rel):
+    """
+    Convert HTML URIs to absolute system paths so xhtml2pdf can access those
+    resources
+    """
+    result = finders.find(uri)
+    if result:
+        if not isinstance(result, (list, tuple)):
+            result = [result]
+        result = list(os.path.realpath(path) for path in result)
+        path = result[0]
+    else:
+        sUrl = settings.STATIC_URL  # Typically /static/
+        sRoot = settings.STATIC_ROOT  # Typically /home/userX/project_static/
+        mUrl = settings.MEDIA_URL  # Typically /media/
+        mRoot = settings.MEDIA_ROOT  # Typically /home/userX/project_static/media/
+
+        if uri.startswith(mUrl):
+            path = os.path.join(mRoot, uri.replace(mUrl, ""))
+        elif uri.startswith(sUrl):
+            path = os.path.join(sRoot, uri.replace(sUrl, ""))
+        else:
+            return uri
+
+    # make sure that file exists
+    if not os.path.isfile(path):
+        raise Exception(
+            'media URI must start with %s or %s' % (sUrl, mUrl)
+        )
+    return path
+
 
 @method_decorator(permission_required('matricula.view_category'), name='dispatch')
 class CategoryList(ListView):
@@ -126,11 +167,11 @@ def edit_category(request, pk=None):
             else:
                 form = CategoryCreateForm()
         return render(request, 'categories/category_update.html', {
-                                    'form': form,
-                                    'form_search': search_form,
-                                    'paginator': page_obj,
-                                    'is_paginated': is_paginated
-                                    })
+            'form': form,
+            'form_search': search_form,
+            'paginator': page_obj,
+            'is_paginated': is_paginated
+        })
     return HttpResponseRedirect(reverse(request, 'categories'))
 
 
@@ -223,10 +264,44 @@ def edit_course(request, pk=None):
     return HttpResponseRedirect(reverse(request, 'enrrolment_courses'))
 
 
-@method_decorator(permission_required('matricula.view_menuitem'), name='dispatch')
+@permission_required('matricula.can_add_group_course')
+def add_group_course(request, pk=None):
+    if pk is not None:
+        if request.method == "POST":
+            course = Course.objects.get(pk=pk)
+            form = GroupAddForm(request.POST)
+            if form.is_valid():
+                group = Group(
+                    name=form.cleaned_data['name'],
+                    period=get_active_period(),
+                    course=course,
+                    schedule=form.cleaned_data['schedule'],
+                    pre_enroll_start=form.cleaned_data['pre_enroll_start'],
+                    pre_enroll_finish=form.cleaned_data['pre_enroll_finish'],
+                    enroll_start=form.cleaned_data['enroll_start'],
+                    enroll_finish=form.cleaned_data['enroll_finish'],
+                    is_paid=form.cleaned_data['is_paid'],
+                    currency=form.cleaned_data['currency'],
+                    cost=form.cleaned_data['cost'],
+                    maximum=form.cleaned_data['maximum'],
+                    is_open=form.cleaned_data['is_open'],
+                    flow=form.cleaned_data['flow']
+                )
+                group.save()
+                messages.success(request, "Grupo agregado con éxito")
+                return HttpResponseRedirect(reverse('enrrolment_courses'))
+            else:
+                messages.error(request, "Error al crear grupo")
+                return render(request, 'courses/course_group_create.html', {'form': form})
+        form = GroupAddForm()
+        return render(request, 'courses/course_group_create.html', {'form': form})
+    return HttpResponseRedirect(reverse('enrrolment_courses'))
+
+
+@method_decorator(permission_required('djgentelella.view_menuitem'), name='dispatch')
 class MenuItemList(ListView):
     template_name = "menuitems/menuitem_list.html"
-    model = MenuItem
+    model = DJMenuItem
     paginate_by = 30
 
     def dispatch(self, *args, **kwargs):
@@ -237,14 +312,12 @@ class MenuItemList(ListView):
         queryset = super().get_queryset()
         self.form = MenuItemSearchForm(self.request.GET)
         self.form.is_valid()
-        if self.form.cleaned_data['name']:
+        if self.form.cleaned_data['title']:
             queryset = queryset.filter(
-                Q(name__icontains=self.form.cleaned_data['name']) | 
-                Q(description__icontains=self.form.cleaned_data['name']))
+                title__icontains=self.form.cleaned_data['title'])
         if self.form.cleaned_data['parent']:
-            queryset = queryset.filter(parent__in=self.form.cleaned_data['parent'])
-        if self.form.cleaned_data['type']:
-            queryset = queryset.filter(type__in=self.form.cleaned_data['type'])
+            queryset = queryset.filter(
+                parent__in=self.form.cleaned_data['parent'])
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -253,26 +326,29 @@ class MenuItemList(ListView):
         return context
 
 
-@permission_required('matricula.add_menuitem')
+@permission_required('djgentelella.add_menuitem')
 def create_menuitem(request):
     context = {}
     if request.method == 'POST':
         form = MenuItemCreateForm(request.POST)
         context['form'] = form
-        if form.is_valid():
-            form.save()
+        formPerms = PermissionForm(request.POST)
+        if form.is_valid() and formPerms.is_valid():
+            menuitem = form.save()
+            menuitem.permission.add(*formPerms.cleaned_data['permission'])
             messages.success(request, "Elemento del menú guardado con éxito")
             return HttpResponseRedirect(reverse('menuitems'))
         else:
             messages.error(request, "Error al guardar elemento del menú")
     else:
+        context['permsForm'] = PermissionForm()
         context['form'] = MenuItemCreateForm()
     return render(request, 'menuitems/menuitem_create.html', context)
 
 
-@method_decorator(permission_required('matricula.delete_menuitem'), name='dispatch')
+@method_decorator(permission_required('djgentelella.delete_menuitem'), name='dispatch')
 class MenuItemDelete(DeleteView):
-    model = MenuItem
+    model = DJMenuItem
     success_url = "/matricula/enrrolment/menuitems"
     success_message = "Menú eliminado con éxito"
 
@@ -284,20 +360,26 @@ class MenuItemDelete(DeleteView):
         return self.post(*args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
+        menuitem = self.get_object()
+        menuitem.permission.remove(*menuitem.permission.all())
         messages.success(self.request, self.success_message)
         return super(MenuItemDelete, self).delete(request, *args, **kwargs)
 
 
-@permission_required('matricula.change_menuitem')
+@permission_required('djgentelella.change_menuitem')
 def edit_menuitem(request, pk=None):
     context = {}
     if pk is not None:
-        menu = MenuItem.objects.get(pk=pk)
+        menu = DJMenuItem.objects.get(pk=pk)
         if request.method == "POST":
             form = MenuItemCreateForm(request.POST, instance=menu)
             context['form'] = form
-            if form.is_valid():
-                form.save()
+            formPerms = PermissionForm(request.POST)
+            context['formPerms'] = formPerms
+            if form.is_valid() and formPerms.is_valid():
+                menuitem = form.save()
+                menuitem.permission.remove(*menuitem.permission.all())
+                menuitem.permission.add(*formPerms.cleaned_data['permission'])
                 messages.success(request, "Elemento del menú guardado con éxito")
                 return HttpResponseRedirect(reverse('menuitems'))
             else:
@@ -306,6 +388,7 @@ def edit_menuitem(request, pk=None):
         else:
             if request.method == "GET":
                 context['form'] = MenuItemCreateForm(initial=menu.__dict__)
+                context['permsForm'] = PermissionForm(initial={'permission': menu.permission.all()})
                 return render(request, 'menuitems/menuitem_update.html', context)
     return HttpResponseRedirect(reverse('menuitems'))
 
@@ -413,6 +496,10 @@ class GroupList(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+
+        user = self.request.user
+        professor = Professor.objects.filter(user=user).first()
+
         self.form = GroupSearchForm(self.request.GET)
         self.form.is_valid()
         if self.form.cleaned_data['period']:
@@ -426,6 +513,10 @@ class GroupList(ListView):
                 queryset = queryset.filter(is_open=True)
             else:
                 queryset = queryset.filter(is_open=False)
+
+        if professor:
+            queryset = queryset.filter(professors=professor)
+
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -434,7 +525,7 @@ class GroupList(ListView):
         return context
 
 
-@permission_required('matricula.view_group')
+@permission_required('matricula.can_view_pre_enroll_group')
 def pre_enroll_group(request, pk=None):
     context = {}
     if pk is not None:
@@ -468,7 +559,22 @@ def create_group(request):
         form = GroupCreateForm(request.POST)
         context['form'] = form
         if form.is_valid():
-            form.save()
+            group = Group(
+                name=form.cleaned_data['name'],
+                course=form.cleaned_data['course'],
+                period=get_active_period(),
+                schedule=form.cleaned_data['schedule'],
+                pre_enroll_start=form.cleaned_data['pre_enroll_start'],
+                pre_enroll_finish=form.cleaned_data['pre_enroll_finish'],
+                enroll_start=form.cleaned_data['enroll_start'],
+                enroll_finish=form.cleaned_data['enroll_finish'],
+                is_paid=form.cleaned_data['is_paid'],
+                currency=form.cleaned_data['currency'],
+                cost=form.cleaned_data['cost'],
+                maximum=form.cleaned_data['maximum'],
+                flow=form.cleaned_data['flow']
+            )
+            group.save()
             messages.success(request, "Grupo guardado con éxito")
             return HttpResponseRedirect(reverse('groups_enroll'))
         else:
@@ -499,9 +605,9 @@ class GroupDelete(DeleteView):
 @permission_required('matricula.change_group')
 def edit_group(request, pk=None):
     if pk is not None:
+        instance = Group.objects.get(pk=pk)
         if request.method == "POST":
-            instance = Group.objects.get(pk=pk)
-            form = GroupCreateForm(request.POST, instance=instance)
+            form = GroupEditForm(request.POST, instance=instance)
             if form.is_valid():
                 messages.success(request, "Grupo guardado con éxito")
                 form.save()
@@ -511,13 +617,14 @@ def edit_group(request, pk=None):
                 return render(request, 'groups/group_update.html', {'form': form})
         else:
             if request.method == "GET":
-                instance = Group.objects.get(pk=pk)
-                form = GroupCreateForm(initial=instance.__dict__)
+                info = instance.__dict__
+                info['professors'] = instance.professors.all()
+                form = GroupEditForm(initial=instance.__dict__)
                 return render(request, 'groups/group_update.html', {'form': form})
     return HttpResponseRedirect(reverse('groups_enroll'))
 
 
-@permission_required('matricula.can_export_group')
+@permission_required('matricula.can_export_enrolled_group')
 def export_group(request, pk=None):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="students_list.csv"'
@@ -526,11 +633,11 @@ def export_group(request, pk=None):
         group = Group.objects.get(pk=pk)
         enrolls = group.enroll_set.all()
         writer.writerow([
-                'username',
-                'firstname',
-                'lastname',
-                'email',
-                "course1"])
+            'username',
+            'firstname',
+            'lastname',
+            'email',
+            "course1"])
         for enroll in enrolls:
             first_name = enroll.student.user.first_name if enroll.student.user.first_name != "" else "default"
             last_name = enroll.student.user.last_name if enroll.student.user.last_name != "" else "default"
@@ -542,6 +649,94 @@ def export_group(request, pk=None):
                 group.name])
         return response
     return HttpResponseRedirect(reverse('groups_enroll'))
+
+
+@permission_required('matricula.can_list_students_group')
+def list_students_group(request, pk=None):
+    context = {}
+    if pk is not None:
+        context = {}
+        if request.method == "POST":
+            group = Group.objects.get(pk=pk)
+            if group:
+                form = PreEnrollAddGroupForm(request.POST)
+                if form.is_valid():
+                    enroll = Enroll.objects.filter(pk__in=form.cleaned_data['students'])
+                    for instance in enroll:
+                        instance.enroll_finished = True
+                        instance.save()
+                    messages.success(request, "Estudiantes inscritos con éxito")
+                    return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
+            messages.error(request, "Error al realizar la acción")
+            return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
+        else:
+            if request.method == "GET":
+                instance = Group.objects.get(pk=pk)
+                context['object'] = instance
+                return render(
+                    request, 'groups/group_students_list.html', context)
+    return HttpResponseRedirect(reverse('periods'))
+
+
+@permission_required('matricula.can_open_group')
+def open_group(request, pk):
+    try:
+        group = Group.objects.get(pk=pk)
+    except Exception:
+        messages.error(_("Group Not Found"))
+    enrolls = Enroll.objects.filter(group=group)
+    enrolls.update(enroll_activate=True)
+    if request.GET.get('sendemail', '0') == '1':
+        send_mail(
+            _('%(group)s is open now') % {'group': str(group)},
+            _("Go to academica and enroll you"),
+            settings.DEFAULT_FROM_EMAIL,
+            [enroll.student.user.email for enroll in enrolls],
+            fail_silently=False)
+    messages.success(request, "Grupo aperturado con éxito")
+    return HttpResponseRedirect(reverse('list_students_group', args=[pk, ]))
+
+
+@permission_required('matricula.can_close_group')
+def close_group(request, pk):
+    try:
+        group = Group.objects.get(pk=pk)
+    except Exception:
+        messages.error(_("Group Not Found"))
+    enrolls = Enroll.objects.filter(group=group)
+    enrolls.update(enroll_activate=False)
+    if request.GET.get('sendemail', '0') == '1':
+        send_mail(
+            _('%(group)s was closed') % {'group': str(group)},
+            _("Attention: %(group)s was closed") % {"group": group},
+            settings.DEFAULT_FROM_EMAIL,
+            [enroll.student.user.email for enroll in enrolls],
+            fail_silently=False)
+    messages.success(request, "Grupo cerrado con éxito")
+    return HttpResponseRedirect(reverse('list_students_group', args=[pk, ]))
+
+
+@permission_required('matricula.can_view_pdf_enrolled_group')
+def export_enrolled_group(request, pk=None):
+    group = get_object_or_404(Group, pk=pk)
+    attrs = {'group__pk': pk}
+    if request.GET.get('finished', '0') == '1':
+        attrs['enroll_finished'] = True
+    elif request.GET.get('finished', '0') == '2':
+        attrs['enroll_finished'] = False
+    if request.GET.get('activate', '0') == '1':
+        attrs['enroll_activate'] = True
+    elif request.GET.get('activate', '0') == '2':
+        attrs['enroll_activate'] = False
+    student_list = Enroll.objects.filter(**attrs)
+    template = get_template('Pdf/student_list.html')
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+    html = template.render({'student_list': student_list, 'group': group})
+    pisa_status = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
+    if not pisa_status.err:
+        return response
+    return HttpResponse("Error " + str(pisa_status.err) + "  " + html)
 
 
 @method_decorator(permission_required('matricula.view_enroll'), name='dispatch')
@@ -664,7 +859,10 @@ def create_student(request):
                 email=form.cleaned_data['email'],
                 is_active=True)
             user.save()
-            student = Student(user=user, created_at=now(), confirmed_at=now())
+            student = Student(
+                user=user, organization=form.cleaned_data['organization'],
+                created_at=now(), confirmed_at=now(),
+                expired_at=get_expire_date())
             student.save()
             mail_body = render_to_string("set_email_first.html", {
                 'url': request.build_absolute_uri(
@@ -693,11 +891,12 @@ def edit_student(request, pk=None):
     if pk is not None:
         if request.method == "POST":
             instance = User.objects.get(pk=pk)
-            print(request.POST)
             form = StudentAdminCreateForm(request.POST, instance=instance)
             if form.is_valid():
                 messages.success(request, "Estudiante guardada con éxito")
                 form.save()
+                instance.student.organization = form.cleaned_data['organization']
+                instance.student.save()
                 return HttpResponseRedirect(reverse('students'))
             else:
                 messages.error(request, "Error al actualizar")
@@ -706,7 +905,9 @@ def edit_student(request, pk=None):
         else:
             if request.method == "GET":
                 instance = User.objects.get(pk=pk)
-                form = StudentAdminCreateForm(initial=instance.__dict__)
+                inst = instance.__dict__
+                inst['organization'] = instance.student.organization
+                form = StudentAdminCreateForm(initial=inst)
                 return render(
                     request, 'students/student_update.html', {'form': form})
     return HttpResponseRedirect(reverse('students'))
@@ -736,22 +937,22 @@ class StudentDelete(DeleteView):
 
 @permission_required('matricula.can_recovery_pass_student')
 def recovery_pass_student(request, pk=None):
-    if(pk is not None):
+    if (pk is not None):
         student = Student.objects.get(pk=pk)
         if student:
             mail_body = render_to_string("email_recovery.html",
-                    {
-                    'url': request.build_absolute_uri(reverse('recover_password')),
-                    'user': student.user,
-                    'student': student
-                    })
+                                         {
+                                             'url': request.build_absolute_uri(reverse('recover_password')),
+                                             'user': student.user,
+                                             'student': student
+                                         })
             send_mail(_('Password recovery'),
-                        'Url for recover %s?id=%d&key=%s' % (request.build_absolute_uri(reverse('recover_password')),
-                                                student.user.pk,
-                                                student.key
-                                                ),
-                        settings.DEFAULT_FROM_EMAIL, [student.user.email],
-                        html_message=mail_body)
+                      'Url for recover %s?id=%d&key=%s' % (request.build_absolute_uri(reverse('recover_password')),
+                                                           student.user.pk,
+                                                           student.key
+                                                           ),
+                      settings.DEFAULT_FROM_EMAIL, [student.user.email],
+                      html_message=mail_body)
             messages.success(request, "Se ha enviado correo de recuperación de contraseña.")
         else:
             messages.error(request, "El usuario no fue encontrado")
@@ -781,8 +982,8 @@ class PageList(ListView):
         context['form_search'] = PageSearchForm(self.request.GET)
         pages = []
         for page in self.get_queryset():
-            page.menu = MenuItem.objects.filter(
-                type=1, name=page.pk).first()
+            page.menu = DJMenuItem.objects.filter(
+                url_name="/pages/" + page.slug).first()
             pages.append(page)
         context['object_list'] = pages
         return context
@@ -804,15 +1005,17 @@ def create_page(request):
             page.save()
             if form.cleaned_data['create_menu']:
                 menu_form.is_valid()
-                menu = MenuItem(
-                    name=page.pk,
-                    description=menu_form.cleaned_data['description'],
-                    order=menu_form.cleaned_data['order'],
-                    is_index=menu_form.cleaned_data['is_index'],
-                    type=1,
-                    require_authentication=menu_form.cleaned_data['require_authentication'],
+                menu = DJMenuItem(
+                    title=page.title,
+                    category='main',
+                    url_name='/pages/' + page.slug,
+                    is_reversed=False,
+                    reversed_args='',
+                    reversed_kwargs='',
+                    icon='',
+                    only_icon=False,
                     parent=menu_form.cleaned_data['parent'],
-                    publicated=menu_form.cleaned_data['publicated']
+                    is_widget=False
                 )
                 menu.save()
             messages.success(request, "Página guardada con éxito")
@@ -833,15 +1036,17 @@ def create_menupage(request, pk=None):
             form = MenuItemAddForm(request.POST)
             if form.is_valid():
                 page = Page.objects.get(pk=pk)
-                menu = MenuItem(
-                    name=page.pk,
-                    description=form.cleaned_data['description'],
-                    order=form.cleaned_data['order'],
-                    is_index=form.cleaned_data['is_index'],
-                    type=1,
-                    require_authentication=form.cleaned_data['require_authentication'],
+                menu = DJMenuItem(
+                    title=page.title,
+                    category='main',
+                    url_name='/pages/' + page.slug,
+                    is_reversed=False,
+                    reversed_args='',
+                    reversed_kwargs='',
+                    icon='',
+                    only_icon=False,
                     parent=form.cleaned_data['parent'],
-                    publicated=form.cleaned_data['publicated']
+                    is_widget=False
                 )
                 menu.save()
                 messages.success(request, "Menú guardado con éxito")
@@ -898,7 +1103,7 @@ class PageDelete(DeleteView):
 
 @method_decorator(permission_required('matricula.delete_page'), name='dispatch')
 class MenuPageDelete(DeleteView):
-    model = MenuItem
+    model = DJMenuItem
     success_url = "/matricula/enrrolment/pages"
     success_message = "Menú eliminado con éxito"
 

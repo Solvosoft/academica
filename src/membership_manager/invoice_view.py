@@ -168,8 +168,7 @@ class InvoicePayView(UpdateView):
 
     def form_valid(self, form):
         super().form_valid(form)
-        self.object.status = 'paid'
-        self.object.save()
+        form.save()
 
         membership = self.object.membership
         pay_invoice(self.object)

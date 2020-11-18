@@ -11,8 +11,8 @@ function manageNewsletter(url, previewurl){
               headers: {'X-CSRFToken': getCookie('csrftoken') },
               data: {'recipient': $(".datafilter").find(':input').serialize()},
               success: function(data){
+                    $('input[name="recipient"]').data('tagify').removeAllTags();
                     for (var x=0; x<data['emails'].length; x++){
-                         $('input[name="recipient"]').data('tagify').removeAllTags();
                          $('input[name="recipient"]').data('tagify').addTags(data['emails'][x])
                     }
               }

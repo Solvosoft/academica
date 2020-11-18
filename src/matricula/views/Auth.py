@@ -22,45 +22,51 @@ from django.views.generic.edit import UpdateView
 from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.timezone import now
+from matricula.views.utils import get_expire_date
 
 
 def create_user(request):
     if request.method == 'POST':
         form = StudentCreateForm(request.POST)
         if form.is_valid():
-            user = User.objects.create_user(form.cleaned_data['name'],
-                                               form.cleaned_data['email'],
-                                               form.cleaned_data['password'])
+            user = User.objects.create_user(
+                form.cleaned_data['name'], form.cleaned_data['email'],
+                form.cleaned_data['password'])
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name']
             user.is_active = False
             user.save()
-            student = Student(user=user)
+            student = Student(
+                user=user, organization=form.cleaned_data['organization'],
+                expired_at=get_expire_date())
             student.save()
-            mail_body = render_to_string("email_confirmation.html",
-                     {
-                      "url": request.build_absolute_uri(reverse('confirm_email')),
-                      "user": user,
-                      'email': user.email,
-                      'student': student
-                      })
-            send_mail(_('Email confirmation'),
-                      'Url confirmation %s?id=%d&key=%s' % (request.build_absolute_uri(reverse('confirm_email')),
-                                                student.pk,
-                                                str(student.key)
-                                               ),
-                      settings.DEFAULT_FROM_EMAIL, [form.cleaned_data['email']],
-                      html_message=mail_body)
-            return render(request, 'messages.html',
-                          {'message': _('Thank you, We will send you an email soon'),
-                           'mtype': 'success'}
-                          )
+            mail_body = render_to_string(
+                "email_confirmation.html",
+                {
+                    "url": request.build_absolute_uri(reverse('confirm_email')),
+                    "user": user,
+                    'email': user.email,
+                    'student': student
+                })
+
+            send_mail(
+                _('Email confirmation'),
+                'Url confirmation %s?id=%d&key=%s' % (
+                    request.build_absolute_uri(reverse('confirm_email')),
+                    student.pk,
+                    str(student.key)),
+                settings.DEFAULT_FROM_EMAIL, [form.cleaned_data['email']],
+                html_message=mail_body)
+            return render(
+                request, 'messages.html', {
+                    'message': _('Thank you, We will send you an email soon'),
+                    'mtype': 'success'})
     else:
         form = StudentCreateForm()
     if request.user.is_authenticated and not request.user.is_staff:
-        messages.info(request, _('Your user have not permission for see this page'))
+        messages.info(
+            request, _('Your user have not permission for see this page'))
         return redirect(reverse('courses'))
-
     return render(request, 'student_create.html', {'form': form})
 
 

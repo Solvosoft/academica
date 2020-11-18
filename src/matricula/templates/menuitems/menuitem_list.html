@@ -3,7 +3,7 @@
 {%block content %}
 	<h1 class="text-center">Elementos del menú</h1>
 	<div class="row">
-		{% if perms.matricula.add_course %}
+		{% if perms.djgentelella.add_course %}
 			<div class="col-sm-12 col-xs-12 col-md-8 col-md-offset-2">
 		{% else %}
 			<div class="col-sm-12 col-xs-12 col-md-10 col-md-offset-1">
@@ -12,13 +12,10 @@
 				<div class="x_content">
 					<form method="GET">
 						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-							{% include 'field.html' with field=form_search.name %}
+							{% include 'field.html' with field=form_search.title %}
 						</div>
 						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 							{% include 'field.html' with field=form_search.parent %}
-						</div>
-						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-							{% include 'field.html' with field=form_search.type %}
 						</div>
 						<div style="text-align:right">
 							<a href="{% url 'menuitems' %}" class="btn btn-dark">Limpiar</a>
@@ -29,12 +26,12 @@
 			</div>
 		</div>
 		<div class="col-sm-12 col-xs-12 col-lg-2 col-md-3">
-			{% if perms.matricula.add_menuitem %}
+			{% if perms.djgentelella.add_menuitem %}
 				<a class="btn btn-primary" href="{% url 'create_menuitem' %}">Crear menú</a>
 			{% endif %}
 		</div>
 	</div>
-	{% if perms.matricula.delete_menuitem %}
+	{% if perms.djgentelella.delete_menuitem %}
 		<!-- modal delete category -->
 		<div id="modaldeleteitem" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
 			<div class="modal-dialog" role="document">
@@ -52,19 +49,19 @@
 		</div>
 		<!-- end delete modal-->
 	{% endif %}
-	{% for menuitem in object_list %}
+	{% for object in object_list %}
 		<div class="col-md-6 col-lg-4 col-sm-6 col-xs-12">
 			<div class="x_panel">
 				<div class="x_title">
-					<h2 class="green">{{menuitem.name}}--{{menuitem.description|safe|striptags}}</h2>
+					<h2 class="green">{{object.title}}</h2>
 					<ul class="nav navbar-right panel_toolbox" style="min-width: unset;">
-						{% if perms.matricula.change_menuitem %}
+						{% if perms.djgentelella.change_menuitem %}
 							<li>
-								<a href="{% url 'edit_menuitem' menuitem.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
+								<a href="{% url 'edit_menuitem' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
 							</li>
 						{% endif %}
-						{% if perms.matricula.delete_menuitem %}
-							<li><a data-url="{% url 'delete_menuitem' pk=menuitem.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+						{% if perms.djgentelella.delete_menuitem %}
+							<li><a data-url="{% url 'delete_menuitem' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
 						{% endif %}
 					</ul>
 					<div class="clearfix"></div>
@@ -74,20 +71,24 @@
 						<div class="col-md-6 col-sm-6 col-xs-6">
 							<ul class="list-unstyled user_data">
 								<li>
-									{% if menuitem.require_authentication%}<i class="fa fa-lock"></i> Requiere Autenticación{% else %}<i class="fa fa-unlock"></i> Sin autenticación{% endif %}
+									{% if object.permission.all.count%}<i class="fa fa-lock"></i> Requiere Autenticación{% else %}<i class="fa fa-unlock"></i> Sin autenticación{% endif %}
 								</li>
 								<li>
-									{% if menuitem.publicated%}<i class="fa fa-globe "></i> Publicado{% else %}<i class="fa fa-unlink "></i> Sin publicar{% endif %}
-								</li>
-								<li>
-									</i><i class="fa fa-sort-numeric-asc"></i> {% if menuitem.is_index%}Principal{% else %}Secundaria{% endif %}
+									</i><i class="fa fa-sort-numeric-asc"></i> {% if object.is_reversed%}URL Invertida{% else %}No invertida{% endif %}
 								</li>
 							</ul>
 						</div>
 						<div class="col-md-6 col-sm-6 col-xs-6">
-							<p><strong>Tipo: </strong>{{ menuitem.TYPES|index:menuitem.type|index:1}}</p>
-							<p><strong>Orden: </strong>{{menuitem.order}}</p>
-							<p><strong>Padre: </strong>{% if menuitem.parent %}{{menuitem.parent}}{%else%}Ninguno{%endif%}</p>
+							<p><strong>Padre: </strong>{% if object.parent %}{{object.parent}}{%else%}Ninguno{%endif%}</p>
+						</div>
+						<div class="col-md-12">
+							<p><strong>URL: </strong><a href="{{object.url_name}}">{{object.url_name}}</a></p>
+						</div>
+						<div class="col-md-12">
+							<p><strong>Lista argumentos: </strong>{% if object.reversed_args %}{{object.reversed_args}}{%else%}No especficiado{%endif%}</p>
+						</div>
+						<div class="col-md-12">
+							<p><strong>Diccionario de argumentos: </strong>{% if object.reversed_kwargs %}{{object.reversed_kwargs}}{%else%}No especficiado{%endif%}</p>
 						</div>
 					</div>
 				</div>

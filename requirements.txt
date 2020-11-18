@@ -1,6 +1,6 @@
 django>=3.1
 pyTelegramBotAPI
-async_notifications==0.1.23
+async_notifications==0.1.24
 django-ajax-selects==1.9.1
 celery==4.4.7
 django-celery-beat==2.0.0
@@ -11,15 +11,13 @@ python-dateutil
 django-markitup==4.0.0
 markdown==3.2.2
 psycopg2-binary
-djgentelella==0.1.1
+djgentelella==0.1.2
 djangorestframework==3.11.0
-django-allauth==0.42.0
 django-ckeditor==6.0.0
 django-paypal==1.0.0
 django-simple-math-captcha==1.0.7
 djangoajax==3.2
 gunicorn==19.6.0
-oauthlib==1.1.2
 Pillow==3.3.0
 PyPDF2==1.26.0
 python-openid==2.2.5

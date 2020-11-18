@@ -163,7 +163,7 @@
                     </ul>
                 </li>
             </ul>
-            {% if perms.matricula.view_category or perms.matricula.view_course or perms.matricula.view_menuitem or  perms.matricula.view_group or perms.matricula.view_enroll or perms.matricula.view_period or perms.matricula.view_page or perms.matricula.view_student %}
+            {% if perms.matricula.view_category or perms.matricula.view_course or perms.djgentelella.view_menuitem or  perms.matricula.view_group or perms.matricula.view_enroll or perms.matricula.view_period or perms.matricula.view_page or perms.matricula.view_student %}
                 <ul class="nav side-menu">
                     <li>
                         <a>
@@ -178,11 +178,11 @@
                             {% if perms.matricula.view_course %}
                                 <li><a href="{% url 'enrrolment_courses' %}">Cursos</a></li>
                             {% endif %}
-                            {% if perms.matricula.view_menuitem %}
-                                <li><a href="{% url 'menuitems' %}">Elementos del menú</a></li>
-                            {% endif %}
                             {% if perms.matricula.view_group %}
                                 <li><a href="{% url 'groups_enroll' %}">Grupos</a></li>
+                            {% endif %}
+                            {% if perms.djgentelella.view_menuitem %}
+                                <li><a href="{% url 'menuitems' %}">Elementos del menú</a></li>
                             {% endif %}
                             {% if perms.matricula.view_enroll %}
                                 <li><a href="{% url 'enrolls' %}">Matrículas</a></li>
@@ -195,6 +195,10 @@
                             {% endif %}
                             {% if perms.matricula.view_student %}
                                 <li><a href="{% url 'students' %}">Estudiantes</a></li>
+                            {% endif %}
+
+                            {% if perms.matricula.view_professor %}
+                                <li><a href="{% url 'professors_list' %}">Profesoras</a></li>
                             {% endif %}
                             {% if perms.matricula.view_coupon %}
                                 <li><a href="{% url 'coupons_list' %}">Cupones</a></li>

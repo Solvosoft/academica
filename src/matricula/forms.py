@@ -7,7 +7,8 @@ Created on 7/4/2015
 '''
 from django import forms
 from matricula.models import Student, Page, MenuItem, Category, Course, \
-    Period, Group, Enroll, Coupon
+    Period, Group, Enroll, Professor, Coupon
+
 from django.utils.translation import ugettext_lazy as _
 from django.core import validators
 from django.contrib.auth.models import User
@@ -15,6 +16,9 @@ from djgentelella.widgets import core as djgentelella
 from djgentelella.widgets import wysiwyg as widget
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.selects import AutocompleteSelect
+from djgentelella.models import MenuItem as DJMenuItem
+from django.contrib.auth.models import Permission
+from djgentelella.widgets.selects import AutocompleteSelectMultiple
 
 
 class StudentCreateForm(GTForm, forms.ModelForm):
@@ -24,9 +28,9 @@ class StudentCreateForm(GTForm, forms.ModelForm):
                     '@/./+/-/_ only.'),
         validators=[
             validators.RegexValidator(r'^[\w.@+-]+$',
-                _('Enter a valid username. '
-                    'This value may contain only letters, numbers '
-                    'and @/./+/-/_ characters.'), 'invalid'),
+                                      _('Enter a valid username. '
+                                        'This value may contain only letters, numbers '
+                                        'and @/./+/-/_ characters.'), 'invalid'),
         ], required=True, widget=djgentelella.TextInput)
     first_name = forms.CharField(
         label=_('first name'), max_length=30, required=True,
@@ -40,12 +44,15 @@ class StudentCreateForm(GTForm, forms.ModelForm):
     password_check = forms.CharField(
         widget=djgentelella.PasswordInput, required=True,
         label=_("Repeat password"))
+    organization = forms.CharField(
+        label="Organización", required=True
+    )
 
     class Meta:
         model = Student
         fields = [
             'name', 'first_name', 'last_name', 'email',
-            'password', 'password_check']
+            'password', 'password_check', 'organization']
         widgets = {
             'last_name': djgentelella.TextInput,
             'email': djgentelella.EmailInput
@@ -74,13 +81,6 @@ class StudentEditForm(GTForm, forms.ModelForm):
 class MenuItemFormPage(forms.ModelForm):
     name = forms.ModelChoiceField(queryset=Page.objects.all(), label=_("Page"))
 
-    def __init__(self, *args, **kwargs):
-        super(MenuItemFormPage, self).__init__(*args, **kwargs)
-        if 'instance' in kwargs and kwargs['instance']:
-            self.fields['name'] = forms.ModelChoiceField(
-                queryset=Page.objects.all(), label=_("Page"),
-                initial=kwargs['instance'].name)
-
     def save(self, *args, **kwargs):
         dev = super(MenuItemFormPage, self).save(*args, **kwargs)
         dev.name = self.cleaned_data['name'].pk
@@ -92,6 +92,13 @@ class MenuItemFormPage(forms.ModelForm):
         fields = [
             "name", 'type', 'description', 'require_authentication',
             'order', 'parent', 'publicated', 'is_index']
+
+    def __init__(self, *args, **kwargs):
+        super(MenuItemFormPage, self).__init__(*args, **kwargs)
+        if 'instance' in kwargs and kwargs['instance']:
+            self.fields['name'] = forms.ModelChoiceField(
+                queryset=Page.objects.all(), label=_("Page"),
+                initial=kwargs['instance'].name)
 
 
 class CategoryCreateForm(forms.ModelForm, GTForm):
@@ -124,8 +131,7 @@ class CourseCreateForm(forms.ModelForm, GTForm):
         model = Course
         fields = '__all__'
         widgets = {
-            'name': djgentelella.TextInput(
-                attrs={'placeholder': "Nombre curso"}),
+            'name': djgentelella.TextInput,
             'content': widget.TextareaWysiwyg,
             'category': AutocompleteSelect('categorybasename'),
         }
@@ -137,34 +143,71 @@ class CourseCreateForm(forms.ModelForm, GTForm):
                 self.fields['category'].initial = kwargs['initial']['category_id']
 
 
+class GroupAddForm(forms.ModelForm, GTForm):
+    schedule = forms.CharField(
+        required=False, max_length=250, widget=djgentelella.TextInput,
+        label=_("Schedule"))
+
+    class Meta:
+        model = Group
+        fields = [
+            'name', 'schedule', 'pre_enroll_start', 'pre_enroll_finish',
+            'enroll_start', 'enroll_finish', 'is_paid', 'currency', 'cost',
+            'maximum', 'is_open', 'flow'
+        ]
+        widgets = {
+            "name": djgentelella.TextInput,
+            "schedule": djgentelella.TextInput,
+            "pre_enroll_start": djgentelella.DateTimeInput,
+            "pre_enroll_finish": djgentelella.DateTimeInput,
+            "enroll_start": djgentelella.DateTimeInput,
+            "enroll_finish": djgentelella.DateTimeInput,
+            'is_paid': djgentelella.YesNoInput(
+                attrs={'rel': ['currency', 'cost']}),
+            "currency": djgentelella.Select,
+            "cost": djgentelella.NumberInput,
+            "maximum": djgentelella.NumberInput,
+            "is_open": djgentelella.YesNoInput,
+            "flow": djgentelella.Select
+        }
+
+
 class MenuItemSearchForm(GTForm, forms.Form):
-    name = forms.CharField(
+    title = forms.CharField(
         required=False, widget=djgentelella.TextInput,
-        label="Nombre")
+        label="Título")
     parent = forms.ModelMultipleChoiceField(
-        queryset=MenuItem.objects.all(), required=False,
+        queryset=DJMenuItem.objects.all(), required=False,
         widget=djgentelella.SelectMultiple, label="Padre"
-    )
-    type = forms.MultipleChoiceField(
-        choices=MenuItem.TYPES, required=False,
-        widget=djgentelella.SelectMultiple, label="Tipo"
     )
 
 
 class MenuItemCreateForm(forms.ModelForm, GTForm):
     class Meta:
-        model = MenuItem
-        fields = '__all__'
+        model = DJMenuItem
+        fields = [
+            'title', 'url_name', 'category', 'is_reversed',
+            'reversed_kwargs', 'reversed_args', 'parent',
+            'is_widget', 'icon', 'only_icon']
         widgets = {
-            'name': djgentelella.TextInput,
-            'type': djgentelella.Select,
-            'description': djgentelella.Textarea,
-            'require_authentication': djgentelella.YesNoInput,
-            'order': djgentelella.NumberInput,
+            'title': djgentelella.TextInput,
+            'url_name': djgentelella.TextInput,
+            'category': djgentelella.TextInput,
+            'is_reversed': djgentelella.YesNoInput,
+            'reversed_kwargs': djgentelella.TextInput,
+            'reversed_args': djgentelella.TextInput,
             'parent': djgentelella.Select,
-            'publicated': djgentelella.YesNoInput,
-            'is_index': djgentelella.YesNoInput
+            'is_widget': djgentelella.YesNoInput,
+            'icon': djgentelella.TextInput,
+            'only_icon': djgentelella.YesNoInput
         }
+
+    def __init__(self, *args, **kwargs):
+        super(MenuItemCreateForm, self).__init__(*args, **kwargs)
+        if 'initial' in kwargs:
+            print(kwargs)
+            if 'permission_id' in kwargs['initial']:
+                self.fields['permission'].initial = kwargs['initial']['permission_id']
 
 
 class PeriodSearchForm(GTForm, forms.Form):
@@ -219,31 +262,76 @@ class GroupSearchForm(GTForm, forms.Form):
 
 
 class GroupCreateForm(forms.ModelForm, GTForm):
+    schedule = forms.CharField(
+        required=False, max_length=250, widget=djgentelella.TextInput,
+        label=_("Schedule"))
+    period = forms.CharField(
+        required=False, widget=djgentelella.Select, label=_("Period")
+    )
+
     class Meta:
         model = Group
         fields = [
             'name', 'period', 'course', 'schedule', 'pre_enroll_start',
-            'pre_enroll_finish', 'enroll_start', 'enroll_finish', 'currency',
-            'cost', 'maximum', 'flow'
+            'pre_enroll_finish', 'enroll_start', 'enroll_finish', 'is_paid', 'currency',
+            'cost', 'maximum', 'flow', 'professors'
         ]
         widgets = {
             'name': djgentelella.TextInput,
-            'period': djgentelella.Select,
             'course': djgentelella.Select,
-            'schedule': djgentelella.TextInput,
             'pre_enroll_start': djgentelella.DateTimeInput,
             'pre_enroll_finish': djgentelella.DateTimeInput,
             'enroll_start': djgentelella.DateTimeInput,
             'enroll_finish': djgentelella.DateTimeInput,
+            'is_paid': djgentelella.YesNoInput(
+                attrs={'rel': ['currency', 'cost']}),
             'currency': djgentelella.Select,
             'cost': djgentelella.NumberInput,
             'maximum': djgentelella.NumberInput,
-            'flow': djgentelella.Select
-
+            'flow': djgentelella.Select,
+            'professors': djgentelella.SelectMultiple
         }
 
     def __init__(self, *args, **kwargs):
         super(GroupCreateForm, self).__init__(*args, **kwargs)
+
+        self.fields['professors'].queryset = Professor.objects.filter(active=True)
+
+        if 'initial' in kwargs:
+            if 'course_id' in kwargs['initial']:
+                self.fields['course'].initial = kwargs['initial']['course_id']
+
+
+class GroupEditForm(forms.ModelForm, GTForm):
+    schedule = forms.CharField(
+        required=False, max_length=250, widget=djgentelella.TextInput,
+        label=_("Schedule"))
+
+    class Meta:
+        model = Group
+        fields = [
+            'name', 'course', 'period', 'schedule', 'pre_enroll_start',
+            'pre_enroll_finish', 'enroll_start', 'enroll_finish', 'is_paid',
+            'currency', 'cost', 'maximum', 'flow'
+        ]
+        widgets = {
+            'name': djgentelella.TextInput,
+            'course': djgentelella.Select,
+            'period': djgentelella.Select,
+            'pre_enroll_start': djgentelella.DateTimeInput,
+            'pre_enroll_finish': djgentelella.DateTimeInput,
+            'enroll_start': djgentelella.DateTimeInput,
+            'enroll_finish': djgentelella.DateTimeInput,
+            'is_paid': djgentelella.YesNoInput(
+                attrs={'rel': ['currency', 'cost']}),
+            'currency': djgentelella.Select,
+            'cost': djgentelella.NumberInput,
+            'maximum': djgentelella.NumberInput,
+            'flow': djgentelella.Select
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(GroupEditForm, self).__init__(*args, **kwargs)
         if 'initial' in kwargs:
             if 'period_id' in kwargs['initial']:
                 self.fields['period'].initial = kwargs['initial']['period_id']
@@ -292,7 +380,7 @@ class StudentSearchForm(GTForm, forms.Form):
     )
 
 
-class StudentAdminCreateForm(forms.ModelForm, GTForm):
+class StudentAdminCreateForm(GTForm, forms.ModelForm):
     username = forms.CharField(
         label="Nombre de usuario", widget=djgentelella.TextInput, required=True
     )
@@ -302,10 +390,14 @@ class StudentAdminCreateForm(forms.ModelForm, GTForm):
         label="Apellidos", widget=djgentelella.TextInput, required=True)
     email = forms.CharField(
         label="Correo", widget=djgentelella.EmailMaskInput, required=True)
+    organization = forms.CharField(
+        label="Organización", required=True
+    )
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email']
+        fields = [
+            'username', 'first_name', 'last_name', 'email', 'organization']
 
 
 class PageSearchForm(GTForm, forms.Form):
@@ -337,20 +429,13 @@ class PageCreateForm(forms.ModelForm, GTForm):
 
 
 class MenuItemAddForm(forms.ModelForm, GTForm):
-    description = forms.CharField(required=False, widget=djgentelella.Textarea)
-    order = forms.IntegerField(required=False, widget=djgentelella.NumberInput)
-
     class Meta:
-        model = MenuItem
-        fields = [
-            'description', 'require_authentication', 'order',
-            'parent', 'publicated', 'is_index'
-        ]
+        model = DJMenuItem
+        fields = '__all__'
+        fields = ['parent', 'permission']
         widgets = {
-            'require_authentication': djgentelella.YesNoInput,
             'parent': djgentelella.Select,
-            'publicated': djgentelella.YesNoInput,
-            'is_index': djgentelella.YesNoInput
+            'permission': djgentelella.SelectMultiple,
         }
 
 
@@ -361,8 +446,54 @@ class PreEnrollAddGroupForm(GTForm, forms.Form):
     action = forms.CharField(required=True)
 
 
-class CouponsSearchForm(GTForm, forms.Form):
+class QualifyStudentForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = Enroll
+        fields = ['course_status']
+        widgets = {
+            'course_status': djgentelella.Select
+        }
 
+
+class ProfessorEditForm(GTForm, forms.Form):
+    username = forms.CharField(label="Nombre de usuaria", widget=djgentelella.TextInput, required=False)
+    first_name = forms.CharField(label="Nombre", widget=djgentelella.TextInput, required=True)
+    last_name = forms.CharField(label="Apellidos", widget=djgentelella.TextInput, required=True)
+    email = forms.CharField(label="Correo electrónico como usuaria del sistema", widget=djgentelella.EmailMaskInput,
+                            required=True)
+    email_students = forms.CharField(label="Correo electrónico para estudiantes", widget=djgentelella.EmailMaskInput,
+                                     required=True)
+    description = forms.CharField(widget=djgentelella.Textarea, required=True, label="Descripción",
+                                  help_text="Esta descripción será mostrada en los grupos en los cuales sea asignada como profesora.")
+
+
+class ProfessorSearchForm(GTForm, forms.Form):
+    PROFESSOR_STATES = (
+        (None, "Todas"),
+        (True, "Activas"),
+        (False, "Inactivas"),
+    )
+
+    professor = forms.ModelMultipleChoiceField(
+        queryset=Professor.objects.all(), widget=djgentelella.SelectMultiple,
+        required=False, label="Profesora")
+
+    status = forms.ChoiceField(choices=PROFESSOR_STATES, widget=djgentelella.Select, required=False, label="Estado")
+
+
+class ProfessorAddForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = Professor
+        fields = "__all__"
+        widgets = {
+            'user': djgentelella.Select,
+            'email': djgentelella.EmailMaskInput,
+            'description': djgentelella.Textarea,
+            'active': djgentelella.YesNoInput
+        }
+
+
+class CouponsSearchForm(GTForm, forms.Form):
     DISCOUNT_CHOICES = (
         (None, "Todos"),
         (50, "50"),
@@ -390,3 +521,10 @@ class CouponsSearchForm(GTForm, forms.Form):
     discount_percentage = forms.ChoiceField(
         choices=DISCOUNT_CHOICES, widget=djgentelella.Select,
         required=False, label="Descuento")
+
+
+class PermissionForm(GTForm, forms.Form):
+    permission = forms.ModelMultipleChoiceField(
+        widget=AutocompleteSelectMultiple('permission'),
+        queryset=Permission.objects.all(),
+        label="Permisos", required=False)

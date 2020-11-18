@@ -97,10 +97,11 @@ def print_menu_item(request, menues, is_list=False):
         if not menu['children']:
             dev += '<li><a href="%s"> %s</a>' % (ref, strip_tags(ref_display))
         if menu['children']:
-            dev += '<li><a>'+ ref_display +'<span class="fa fa-chevron-down"></span></a>'+\
-            '<ul class="nav child_menu">' + print_menu_item(request, menu['children'], True) + "</ul>"
+            dev += '<li><a>' + ref_display +\
+                '<span class="fa fa-chevron-down"></span></a>' +\
+                '<ul class="nav child_menu">' +\
+                print_menu_item(request, menu['children'], True) + "</ul>"
         dev += '</li>'
-
     return dev
 
 

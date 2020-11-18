@@ -7,7 +7,7 @@
 			<form method="POST">
 				{% csrf_token %}
 				<div class="x_title">
-					<h2 class="green">Crear curso</h2>
+					<h2 class="green">Crear grupo</h2>
 					<div class="clearfix"></div>
 				</div>
 				<div class="x_content">
@@ -22,4 +22,16 @@
 			</form>
 		</div>
 	</div>
+{%endblock%}
+{%block js%}
+	<script>
+		$(document).ready(function(){
+			$('#id_is_paid').change(function () {
+				if (!$(this).prop("checked")) {
+					$("#id_cost").val(0)	
+					return;
+				}
+			});
+		});
+	</script>
 {%endblock%}
