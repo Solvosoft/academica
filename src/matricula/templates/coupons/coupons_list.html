@@ -63,7 +63,7 @@
                                 <td>{{ coupon.student }}</td>
                                 <td>{{ coupon.course }}</td>
                                 <td>
-                                    <input type="checkbox" class="flat" data-widget="CheckboxInput" data-key="{{ coupon.is_used }}">
+                                    <input type="checkbox" class="flat" data-widget="CheckboxInput" data-key="{{ coupon.is_used }}" disabled="disabled">
                                 </td>
 
                                 <td>{{ coupon.discount_percentage }}%</td>
@@ -108,14 +108,14 @@ function delete_coupon(element){
     $("#modaldeletecoupon").modal();
 }
 
-function base(){
+function selectChecks(){
 
     $("tbody tr").each(function () {
       $(this).find("td div input").each(function(i, v) {
 
         if($(this).children().children().context.dataset['key'] === "True"){
-            console.log($(this).parent());
             $(this).parent().addClass("checked");
+            $(this).parent().css('background-position', "-22px 0");
         }
       });
     });
@@ -126,7 +126,7 @@ function base(){
     $("#couponstable").DataTable();
 
     $(window).load(function() {
-      base();
+      selectChecks();
     });
 })(jQuery);
 </script>
