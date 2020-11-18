@@ -973,8 +973,8 @@ class PageList(ListView):
         context['form_search'] = PageSearchForm(self.request.GET)
         pages = []
         for page in self.get_queryset():
-            page.menu = MenuItem.objects.filter(
-                type=1, name=page.pk).first()
+            page.menu = DJMenuItem.objects.filter(
+                url_name="/pages/"+page.slug).first()
             pages.append(page)
         context['object_list'] = pages
         return context
@@ -996,15 +996,17 @@ def create_page(request):
             page.save()
             if form.cleaned_data['create_menu']:
                 menu_form.is_valid()
-                menu = MenuItem(
-                    name=page.pk,
-                    description=menu_form.cleaned_data['description'],
-                    order=menu_form.cleaned_data['order'],
-                    is_index=menu_form.cleaned_data['is_index'],
-                    type=1,
-                    require_authentication=menu_form.cleaned_data['require_authentication'],
+                menu = DJMenuItem(
+                    title=page.title,
+                    category='main',
+                    url_name='/pages/'+page.slug,
+                    is_reversed=False,
+                    reversed_args='',
+                    reversed_kwargs='',
+                    icon='',
+                    only_icon=False,
                     parent=menu_form.cleaned_data['parent'],
-                    publicated=menu_form.cleaned_data['publicated']
+                    is_widget=False
                 )
                 menu.save()
             messages.success(request, "Página guardada con éxito")
@@ -1025,15 +1027,17 @@ def create_menupage(request, pk=None):
             form = MenuItemAddForm(request.POST)
             if form.is_valid():
                 page = Page.objects.get(pk=pk)
-                menu = MenuItem(
-                    name=page.pk,
-                    description=form.cleaned_data['description'],
-                    order=form.cleaned_data['order'],
-                    is_index=form.cleaned_data['is_index'],
-                    type=1,
-                    require_authentication=form.cleaned_data['require_authentication'],
+                menu = DJMenuItem(
+                    title=page.title,
+                    category='main',
+                    url_name='/pages/'+page.slug,
+                    is_reversed=False,
+                    reversed_args='',
+                    reversed_kwargs='',
+                    icon='',
+                    only_icon=False,
                     parent=form.cleaned_data['parent'],
-                    publicated=form.cleaned_data['publicated']
+                    is_widget=False
                 )
                 menu.save()
                 messages.success(request, "Menú guardado con éxito")
@@ -1090,7 +1094,7 @@ class PageDelete(DeleteView):
 
 @method_decorator(permission_required('matricula.delete_page'), name='dispatch')
 class MenuPageDelete(DeleteView):
-    model = MenuItem
+    model = DJMenuItem
     success_url = "/matricula/enrrolment/pages"
     success_message = "Menú eliminado con éxito"
 

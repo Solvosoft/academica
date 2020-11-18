@@ -80,13 +80,6 @@ class StudentEditForm(GTForm, forms.ModelForm):
 class MenuItemFormPage(forms.ModelForm):
     name = forms.ModelChoiceField(queryset=Page.objects.all(), label=_("Page"))
 
-    def __init__(self, *args, **kwargs):
-        super(MenuItemFormPage, self).__init__(*args, **kwargs)
-        if 'instance' in kwargs and kwargs['instance']:
-            self.fields['name'] = forms.ModelChoiceField(
-                queryset=Page.objects.all(), label=_("Page"),
-                initial=kwargs['instance'].name)
-
     def save(self, *args, **kwargs):
         dev = super(MenuItemFormPage, self).save(*args, **kwargs)
         dev.name = self.cleaned_data['name'].pk
@@ -98,6 +91,13 @@ class MenuItemFormPage(forms.ModelForm):
         fields = [
             "name", 'type', 'description', 'require_authentication',
             'order', 'parent', 'publicated', 'is_index']
+
+    def __init__(self, *args, **kwargs):
+        super(MenuItemFormPage, self).__init__(*args, **kwargs)
+        if 'instance' in kwargs and kwargs['instance']:
+            self.fields['name'] = forms.ModelChoiceField(
+                queryset=Page.objects.all(), label=_("Page"),
+                initial=kwargs['instance'].name)
 
 
 class CategoryCreateForm(forms.ModelForm, GTForm):
@@ -424,20 +424,13 @@ class PageCreateForm(forms.ModelForm, GTForm):
 
 
 class MenuItemAddForm(forms.ModelForm, GTForm):
-    description = forms.CharField(required=False, widget=djgentelella.Textarea)
-    order = forms.IntegerField(required=False, widget=djgentelella.NumberInput)
-
     class Meta:
-        model = MenuItem
-        fields = [
-            'description', 'require_authentication', 'order',
-            'parent', 'publicated', 'is_index'
-        ]
+        model = DJMenuItem
+        fields = '__all__'
+        fields = ['parent', 'permission']
         widgets = {
-            'require_authentication': djgentelella.YesNoInput,
             'parent': djgentelella.Select,
-            'publicated': djgentelella.YesNoInput,
-            'is_index': djgentelella.YesNoInput
+            'permission': djgentelella.SelectMultiple,
         }
 
 
