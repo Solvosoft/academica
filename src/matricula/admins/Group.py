@@ -58,9 +58,6 @@ class ViewsGroup:
 
         return extras
 
-    def get_email_message_open(self, *args, **kargs):
-        return _("Go to academica and enroll you")
-
     def get_email_message_close(self, *args, **kargs):
 
         val = args[0]
@@ -113,12 +110,16 @@ class ViewsGroup:
         enrolls.update(enroll_activate=False)
 
         if request.GET.get('sendemail', '0') == '1':
-            send_mail(_('%(group)s was closed') % {'group': str(group)},
-                      self.get_email_message_close({'group': group}),
-                      settings.DEFAULT_FROM_EMAIL,
-                      [enroll.student.email for enroll in enrolls],
-                      fail_silently=False
-                      )
+            send_email_from_template(
+                'email_close_group',
+                [enroll.student.user.email for enroll in enrolls],
+                {
+                    "url": request.build_absolute_uri(
+                        reverse('courses')),
+                    "group": group,
+                },
+                enqueued=False,
+                user=None)
         message = self.get_message(_("This Group was closed"), 'success')
         message['inner-fragments']['#status'] = '<span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>'
         return message

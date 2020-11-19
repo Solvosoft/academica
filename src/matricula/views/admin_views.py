@@ -711,12 +711,16 @@ def close_group(request, pk):
     enrolls = Enroll.objects.filter(group=group)
     enrolls.update(enroll_activate=False)
     if request.GET.get('sendemail', '0') == '1':
-        send_mail(
-            _('%(group)s was closed') % {'group': str(group)},
-            _("Attention: %(group)s was closed") % {"group": group},
-            settings.DEFAULT_FROM_EMAIL,
+        send_email_from_template(
+            'email_close_group',
             [enroll.student.user.email for enroll in enrolls],
-            fail_silently=False)
+            {
+                "url": request.build_absolute_uri(
+                    reverse('courses')),
+                "group": group,
+            },
+            enqueued=False,
+            user=None)
     messages.success(request, "Grupo cerrado con éxito")
     return HttpResponseRedirect(reverse('list_students_group', args=[pk, ]))
 
