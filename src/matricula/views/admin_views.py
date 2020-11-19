@@ -28,8 +28,6 @@ from django.core.paginator import Paginator
 import csv
 from django.http import HttpResponse
 from django.utils.timezone import now
-from django.template.loader import render_to_string
-from django.core.mail import send_mail
 from .utils import get_active_period
 from xhtml2pdf import pisa
 from django.shortcuts import get_object_or_404
