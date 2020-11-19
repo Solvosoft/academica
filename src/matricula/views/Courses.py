@@ -10,25 +10,23 @@ from matricula.models import Course, Category, Group, Professor
 
 
 def list_courses(request):
-
     cat = request.GET.get('cat', None)
     period = get_active_period()
-
-    show_info_modal = 0
-    professor = Professor.objects.filter(user=request.user).first()
-
-    if professor:
-        if professor.email:
-            if professor.email == "":
+    if request.user.is_authenticated:
+        show_info_modal = 0
+        professor = Professor.objects.filter(user=request.user).first()
+        if professor:
+            if professor.email:
+                if professor.email == "":
+                    show_info_modal = 1
+            else:
                 show_info_modal = 1
-        else:
-            show_info_modal = 1
 
-        if professor.description:
-            if professor.description == "":
+            if professor.description:
+                if professor.description == "":
+                    show_info_modal = 1
+            else:
                 show_info_modal = 1
-        else:
-            show_info_modal = 1
 
     category = Category.objects.filter(course__group__period=period).distinct()
     if cat:
