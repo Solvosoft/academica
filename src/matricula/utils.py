@@ -33,3 +33,8 @@ def load_email_temp_academica():
         'set_email_first_academy', 'Correo de configuración de contraseña',
         [('url'), ('student')], 'set_email_first.html',
         as_template=True)
+
+    update_template_context(
+        'new_user_created_membership', 'Nueva usuaria creada en la plataforma',
+        [('user'), ('domain')], 'gentelella/registration/new_user.html',
+        as_template=True)

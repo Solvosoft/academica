@@ -1,16 +1,13 @@
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User, Group
-from django.core.mail import send_mail
 from django.shortcuts import redirect, render
-from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, UpdateView, CreateView
-
 from membership_manager.forms import UserSearchForm, UserAddForm, GroupAddForm
 from membership_manager.utils import add_logentry
+from async_notifications.utils import send_email_from_template
 
 
 @method_decorator(permission_required('auth.view_user'), name='dispatch')
@@ -44,20 +41,14 @@ class AddUser(CreateView):
     template_name = "user/create.html"
 
     def send_email(self,  user):
-        schema=self.request.scheme+"://"
-        context = {
-            'user': user,
-            'domain': schema+self.request.get_host(),
-        }
-        send_mail(subject="Nueva usuaria creada en la plataforma",
-                  message="Por favor use un visor de html",
-                  recipient_list=[user.email],
-                  from_email=settings.DEFAULT_FROM_EMAIL,
-                  html_message=render_to_string(
-                      'gentelella/registration/new_user.html',
-                      context=context
-                  )
-        )
+        schema = self.request.scheme+"://"
+        send_email_from_template(
+            'new_user_created_membership', user.email, {
+                'user': user,
+                'domain': schema+self.request.get_host(),
+            },
+            enqueued=False,
+            user=None)
 
     def form_valid(self, form):
         response = super().form_valid(form)
