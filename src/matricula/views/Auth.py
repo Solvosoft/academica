@@ -8,9 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render, redirect, get_object_or_404
 from matricula.forms import StudentCreateForm, StudentEditForm
 from matricula.models import Student, Enroll
-from django.core.mail import send_mail
 from django.urls import reverse, reverse_lazy
-from django.conf import settings
 from django.contrib import messages
 from django.contrib import auth
 from django.http.response import HttpResponse

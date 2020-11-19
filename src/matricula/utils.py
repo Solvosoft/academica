@@ -23,3 +23,8 @@ def load_email_temp_academica():
         'email_recovery_academy', 'Correo de recuperación de contraseña',
         [('user'), ('student', 'url')], 'email_recovery.html',
         as_template=True)
+
+    update_template_context(
+        'email_invoice_academy', 'Correo de confirmación de pago',
+        [('bill'), ('student')], 'email_invoice.html',
+        as_template=True)
