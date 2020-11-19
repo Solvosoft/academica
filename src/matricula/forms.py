@@ -547,3 +547,23 @@ class CouponAddForm(GTForm, forms.Form):
     discount_percentage = forms.ChoiceField(
         choices=DISCOUNT_CHOICES, widget=djgentelella.Select,
         required=False, label="Descuento")
+
+
+class CouponEditForm(GTForm, forms.Form):
+
+    DISCOUNT_CHOICES = (
+        (50, "50"),
+        (100, "100")
+    )
+
+    student = forms.ModelChoiceField(
+        queryset=Student.objects.all(), widget=djgentelella.Select,
+        required=False, label="Estudiante")
+
+    course = forms.ModelChoiceField(
+        queryset=Course.objects.all(), widget=djgentelella.Select,
+        required=False, label="Curso")
+
+    discount_percentage = forms.ChoiceField(
+        choices=DISCOUNT_CHOICES, widget=djgentelella.Select,
+        required=False, label="Descuento")

@@ -32,7 +32,7 @@ from .views.professor_views import ProfessorsList, CreateProfessor, EditProfesso
 from .views.students_views import qualify_students, save_quality_student, \
     update_enroll, update_enroll_status
 
-from .views.coupons_views import coupons_list, create_cupon
+from .views.coupons_views import coupons_list, create_cupon, delete_coupon, edit_coupon
 
 urlpatterns = [
     url('^create_user$', create_user, name="create_user"),
@@ -107,5 +107,7 @@ urlpatterns = [
     path('enrrolment/<int:pk>/qualify_students/<str:status>/', update_enroll_status, name="qualify_students_status"),
     path('enrrolment/coupons/', coupons_list, name="coupons_list"),
     path('enrrolment/coupons/create', create_cupon, name="create_cupon"),
+    path('enrrolment/coupons/<int:pk>/delete', delete_coupon, name="delete_cupon"),
+    path('enrrolment/coupons/<int:pk>/edit', edit_coupon, name="edit_coupon"),
 
 ] + billurls

@@ -75,8 +75,10 @@
                                 <td>{{ coupon.code }}</td>
                                 <td>
                                     {% if not coupon.is_used %}
-                                    <a title="Editar cupón" class="btn btn-sm" href=""><i class="fa fa-edit fa-2x"></i> </a>
-                                    <a title="Eliminar cupón" class="btn btn-sm" data-url="" onclick="delete_coupon(this)"><i class="fa fa-trash fa-2x"></i></a>
+                                    <a title="Editar cupón" class="btn btn-sm" href="{% url 'edit_coupon' pk=coupon.pk %}"><i class="fa fa-edit fa-2x"></i> </a>
+                                    <a title="Eliminar cupón" class="btn btn-sm" data-url="{% url 'delete_cupon' pk=coupon.pk %}" onclick="delete_coupon(this)"><i class="fa fa-trash fa-2x"></i></a>
+                                    {% else %}
+                                        Este cupón ya fue utilizado.
                                     {% endif %}
                                 </td>
                             </tr>
@@ -96,7 +98,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">¿Es posible que este cupon este asociado a un estudiante, esta segura que desea eliminarlo?</h4>
+                <h4 class="modal-title">¿Esta segura que desea eliminar este cupón?</h4>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
