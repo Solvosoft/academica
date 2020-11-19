@@ -873,19 +873,15 @@ def create_student(request):
                 created_at=now(), confirmed_at=now(),
                 expired_at=get_expire_date())
             student.save()
-            mail_body = render_to_string("set_email_first.html", {
-                'url': request.build_absolute_uri(
-                    reverse('recover_password')),
-                'user': user, 'student': student})
-            send_mail(
-                "Configurar contraseña inicial",
-                'Url for recover %s?id=%d&key=%s' % (
-                    request.build_absolute_uri(
+            send_email_from_template(
+                'set_email_first_academy', user.email,
+                {
+                    "url": request.build_absolute_uri(
                         reverse('recover_password')),
-                    user.pk,
-                    student.key),
-                settings.DEFAULT_FROM_EMAIL, [user.email],
-                html_message=mail_body)
+                    'student': student
+                },
+                enqueued=False,
+                user=None)
             messages.success(request, "Estudiante guardada con éxito")
             return HttpResponseRedirect(reverse('students'))
         else:

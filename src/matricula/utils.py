@@ -28,3 +28,8 @@ def load_email_temp_academica():
         'email_invoice_academy', 'Correo de confirmación de pago',
         [('bill'), ('student')], 'email_invoice.html',
         as_template=True)
+
+    update_template_context(
+        'set_email_first_academy', 'Correo de configuración de contraseña',
+        [('url'), ('student')], 'set_email_first.html',
+        as_template=True)
