@@ -14,6 +14,8 @@ from django.conf import settings
 from django.template.loader import get_template
 from django.template.context import Context
 from xhtml2pdf import pisa
+from async_notifications.utils import send_email_from_template
+from django.urls.base import reverse
 import io
 
 
@@ -87,14 +89,17 @@ class ViewsGroup:
             return self.get_message(_("Group Not Found"), 'warning')
         enrolls = Enroll.objects.filter(group=group)
         enrolls.update(enroll_activate=True)
-
         if request.GET.get('sendemail', '0') == '1':
-            send_mail(_('%(group)s is open now') % {'group': str(group)},
-                      self.get_email_message_open({'group': group}),
-                      settings.DEFAULT_FROM_EMAIL,
-                      [enroll.student.email for enroll in enrolls],
-                      fail_silently=False
-                      )
+            send_email_from_template(
+                'email_open_group',
+                [enroll.student.user.email for enroll in enrolls],
+                {
+                    "url": request.build_absolute_uri(
+                        reverse('course', args=[group.course.pk])),
+                    "group": group,
+                },
+                enqueued=False,
+                user=None)
         message = self.get_message(_("This Group is open now"), 'success')
         message['inner-fragments']['#status'] = '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>'
         return message

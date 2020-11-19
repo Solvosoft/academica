@@ -8,13 +8,13 @@ from django.conf import settings
 from django.views.generic import ListView, DeleteView
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render
-from matricula.models import Category, Course, MenuItem, Period, Group, \
+from matricula.models import Category, Course, Period, Group,\
     Enroll, Student, Page, Professor
-from matricula.forms import CategoryCreateForm, CategorySearchForm, \
-    CourseSearchForm, CourseCreateForm, MenuItemSearchForm, \
-    MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, \
-    GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentSearchForm, \
-    StudentAdminCreateForm, PageCreateForm, PageSearchForm, MenuItemAddForm, \
+from matricula.forms import CategoryCreateForm, CategorySearchForm,\
+    CourseSearchForm, CourseCreateForm, MenuItemSearchForm,\
+    MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm,\
+    GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentSearchForm,\
+    StudentAdminCreateForm, PageCreateForm, PageSearchForm, MenuItemAddForm,\
     PreEnrollAddGroupForm, GroupAddForm, GroupEditForm, PermissionForm
 from djgentelella.models import MenuItem as DJMenuItem
 from django.contrib import messages
@@ -37,6 +37,7 @@ from django.template.loader import get_template
 from django.contrib.staticfiles import finders
 import os
 from matricula.views.utils import get_expire_date
+from async_notifications.utils import send_email_from_template
 
 
 def link_callback(uri, rel):
@@ -687,12 +688,16 @@ def open_group(request, pk):
     enrolls = Enroll.objects.filter(group=group)
     enrolls.update(enroll_activate=True)
     if request.GET.get('sendemail', '0') == '1':
-        send_mail(
-            _('%(group)s is open now') % {'group': str(group)},
-            _("Go to academica and enroll you"),
-            settings.DEFAULT_FROM_EMAIL,
+        send_email_from_template(
+            'email_open_group',
             [enroll.student.user.email for enroll in enrolls],
-            fail_silently=False)
+            {
+                "url": request.build_absolute_uri(
+                    reverse('course', args=[group.course.pk])),
+                "group": group,
+            },
+            enqueued=False,
+            user=None)
     messages.success(request, "Grupo aperturado con éxito")
     return HttpResponseRedirect(reverse('list_students_group', args=[pk, ]))
 

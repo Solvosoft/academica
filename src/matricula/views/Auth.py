@@ -23,6 +23,7 @@ from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.timezone import now
 from matricula.views.utils import get_expire_date
+from async_notifications.utils import send_email_from_template
 
 
 def create_user(request):
@@ -40,23 +41,15 @@ def create_user(request):
                 user=user, organization=form.cleaned_data['organization'],
                 expired_at=get_expire_date())
             student.save()
-            mail_body = render_to_string(
-                "email_confirmation.html",
+            send_email_from_template(
+                'new_user_created_academy', user.email,
                 {
                     "url": request.build_absolute_uri(reverse('confirm_email')),
                     "user": user,
-                    'email': user.email,
                     'student': student
-                })
-
-            send_mail(
-                _('Email confirmation'),
-                'Url confirmation %s?id=%d&key=%s' % (
-                    request.build_absolute_uri(reverse('confirm_email')),
-                    student.pk,
-                    str(student.key)),
-                settings.DEFAULT_FROM_EMAIL, [form.cleaned_data['email']],
-                html_message=mail_body)
+                },
+                enqueued=False,
+                user=None)
             return render(
                 request, 'messages.html', {
                     'message': _('Thank you, We will send you an email soon'),
@@ -74,18 +67,19 @@ def create_user(request):
 def add_student(request):
     if request.method == 'POST':
         if not hasattr(request.user, "student"):
-            student = Student(user=request.user, confirmed_at=now())
+            student = Student(
+                user=request.user, confirmed_at=now(), expired_at=now())
             student.save()
-            mail_body = render_to_string("email_welcome.html",
-                     {
-                      "url": request.build_absolute_uri(reverse('courses')),
-                      "user": request.user,
-                      })
-            send_mail(_('Email confirmation'),
-                      'Url confirmation %s' % (request.build_absolute_uri(reverse('courses'))),
-                      settings.DEFAULT_FROM_EMAIL, [request.user.email],
-                      html_message=mail_body)
-            messages.success(request,_('Thank you, We will send you an email soon'))
+            send_email_from_template(
+                'email_welcome_academy', request.user.email,
+                {
+                    "url": request.build_absolute_uri(reverse('courses')),
+                    "student": student,
+                },
+                enqueued=False,
+                user=None)
+            messages.success(
+                request, _('Thank you, We will send you an email soon'))
             return redirect(reverse('courses'))
         else:
             return redirect(reverse('courses'))
@@ -98,25 +92,25 @@ def confirm_email(request):
 
     try:
         student = Student.objects.get(pk=id)
-    except:
-        return render(request, 'messages.html',
-                          {'message': _('Key not found'),
-                           'mtype': 'warning'}
-                          )
+    except Student.DoesNotExist:
+        return render(
+            request, 'messages.html', {
+                'message': _('Key not found'), 'mtype': 'warning'})
     try:
         student.confirm(key)
         if student.user.is_active:
-            return render(request, 'messages.html',
-                        {'message': _('Congratulations, now you can login'),
-                        'mtype': 'success'}
-                    )
-    except:
+            return render(
+                request, 'messages.html',{
+                    'message': _('Congratulations, now you can login'),
+                    'mtype': 'success'})
+    except Exception as e:
+        print(e)
         pass
 
-    return render(request, 'messages.html',
-                      {'message': _('Key not found'),
-                       'mtype': 'warning'}
-                      )
+    return render(
+        request, 'messages.html', {
+            'message': _('Key not found'), 'mtype': 'warning'})
+
 
 @ajax
 def authenticate(request):
