@@ -21,7 +21,7 @@ def load_email_temp_academica():
 
     update_template_context(
         'email_recovery_academy', 'Correo de recuperación de contraseña',
-        [('user'), ('student', 'url')], 'email_recovery.html',
+        [('user'), ('student'), ('url')], 'email_recovery.html',
         as_template=True)
 
     update_template_context(

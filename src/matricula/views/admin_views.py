@@ -945,20 +945,17 @@ def recovery_pass_student(request, pk=None):
     if (pk is not None):
         student = Student.objects.get(pk=pk)
         if student:
-            mail_body = render_to_string("email_recovery.html",
-                                         {
-                                             'url': request.build_absolute_uri(reverse('recover_password')),
-                                             'user': student.user,
-                                             'student': student
-                                         })
-            send_mail(_('Password recovery'),
-                      'Url for recover %s?id=%d&key=%s' % (request.build_absolute_uri(reverse('recover_password')),
-                                                           student.user.pk,
-                                                           student.key
-                                                           ),
-                      settings.DEFAULT_FROM_EMAIL, [student.user.email],
-                      html_message=mail_body)
-            messages.success(request, "Se ha enviado correo de recuperación de contraseña.")
+            send_email_from_template(
+                'email_recovery_academy', student.user.email, {
+                    'url': request.build_absolute_uri(
+                        reverse('recover_password')),
+                    'user': student.user,
+                    'student': student
+                },
+                enqueued=False,
+                user=None)
+            messages.success(
+                request, "Se ha enviado correo de recuperación de contraseña.")
         else:
             messages.error(request, "El usuario no fue encontrado")
     return HttpResponseRedirect(reverse('students'))
