@@ -1,0 +1,19 @@
+{%load i18n %}
+
+<h1>El grupo {{group.name}} esta abierto para matrícula</h1>
+
+Estimado estudiante,
+<p>
+Se le notifica que el grupo {{group.course.name}} -- {{group.name}} ha sido aperturado, proceda a inscribirse lo antes posible.
+</p>
+<p style="color: #FF0000;">
+
+Para completar la inscripción acceda al siguiente enlace:
+<a href="{{url}}">Acceder</a></p>
+
+<p>
+{% blocktrans %}if your email service block links  then copy and paste this url in a new tab{% endblocktrans %}
+<br>{{url}}</p> 
+
+<br><br>
+{% trans 'Best regards' %}

@@ -265,14 +265,11 @@ class GroupCreateForm(forms.ModelForm, GTForm):
     schedule = forms.CharField(
         required=False, max_length=250, widget=djgentelella.TextInput,
         label=_("Schedule"))
-    period = forms.CharField(
-        required=False, widget=djgentelella.Select, label=_("Period")
-    )
 
     class Meta:
         model = Group
         fields = [
-            'name', 'period', 'course', 'schedule', 'pre_enroll_start',
+            'name', 'course', 'schedule', 'pre_enroll_start',
             'pre_enroll_finish', 'enroll_start', 'enroll_finish', 'is_paid', 'currency',
             'cost', 'maximum', 'flow', 'professors'
         ]
