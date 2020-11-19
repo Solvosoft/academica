@@ -8,10 +8,8 @@
 <div class="container">
 
     <div class="row">
-
-        <div class="col-md-10 col-md-offset-1 col-xs-12">
-
-        <div class="x_panel">
+        <div class="{% if not perms.matricula.add_coupon %}col-md-10 col-md-offset-1 col-xs-12{% else %}col-md-10{% endif %}">
+            <div class="x_panel">
             <form method="GET">
             <div class="row">
                 <div class="col-md-6">
@@ -36,8 +34,14 @@
             </div>
             </form>
         </div>
-
-    </div>
+        </div>
+        {% if perms.matricula.add_coupon %}
+                <div class="col-md-2">
+                    <div class="buttons">
+                        <a href="{% url 'create_cupon' %}" class="btn btn-primary">Nuevo cupón</a>
+                    </div>
+                </div>
+            {% endif %}
     </div>
 
     <div class="row">
@@ -53,6 +57,7 @@
                                     <th style="text-align: center;">Curso</th>
                                     <th style="text-align: center;">¿Utilizado?</th>
                                     <th style="text-align: center;">Descuento</th>
+                                    <th style="text-align: center;">Código</th>
                                     <th style="text-align: center;">Acción</th>
                                 </tr>
                             </thead>
@@ -67,9 +72,12 @@
                                 </td>
 
                                 <td>{{ coupon.discount_percentage }}%</td>
+                                <td>{{ coupon.code }}</td>
                                 <td>
+                                    {% if not coupon.is_used %}
                                     <a title="Editar cupón" class="btn btn-sm" href=""><i class="fa fa-edit fa-2x"></i> </a>
                                     <a title="Eliminar cupón" class="btn btn-sm" data-url="" onclick="delete_coupon(this)"><i class="fa fa-trash fa-2x"></i></a>
+                                    {% endif %}
                                 </td>
                             </tr>
                             {% endfor %}
