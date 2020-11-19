@@ -12,8 +12,8 @@ from matricula.models import Course, Category, Group, Professor
 def list_courses(request):
     cat = request.GET.get('cat', None)
     period = get_active_period()
+    show_info_modal = 0
     if request.user.is_authenticated:
-        show_info_modal = 0
         professor = Professor.objects.filter(user=request.user).first()
         if professor:
             if professor.email:
@@ -45,7 +45,6 @@ def list_courses(request):
             courses[course.pk] = {'course': course,
                                   'groups': []}
         courses[course.pk]['groups'].append(group)
-
     return render(request, 'courses.html', {'courses': courses, 'show_info_modal': show_info_modal})
 
 
