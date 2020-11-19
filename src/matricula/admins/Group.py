@@ -9,8 +9,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.http import HttpResponse
-from django.core.mail import send_mail
-from django.conf import settings
 from django.template.loader import get_template
 from django.template.context import Context
 from xhtml2pdf import pisa
@@ -114,8 +112,7 @@ class ViewsGroup:
                 'email_close_group',
                 [enroll.student.user.email for enroll in enrolls],
                 {
-                    "url": request.build_absolute_uri(
-                        reverse('courses')),
+                    "url": request.build_absolute_uri(reverse('courses')),
                     "group": group,
                 },
                 enqueued=False,
