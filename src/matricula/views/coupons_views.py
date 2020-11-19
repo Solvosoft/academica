@@ -60,6 +60,10 @@ def coupons_list(request):
 @permission_required('matricula.add_coupon')
 def create_cupon(request):
 
+    coupons_list = []
+    send_coupons = True
+    student = ""
+
     year = datetime.datetime.now().year
 
     if request.method == "POST":
@@ -73,19 +77,50 @@ def create_cupon(request):
             discount_percentage = form.cleaned_data['discount_percentage']
 
             if course and student_list and discount_percentage:
-                coupons_list = [Coupon(
-                    student=student,
-                    course=course,
-                    code="UP" + str(year) + str(student)[0:2] + "P" + str(discount_percentage) + str(course)[0:2],
-                    discount_percentage=discount_percentage
-                ) for student in student_list]
+                for student in student_list:
 
-                if coupons_list:
+                    check_coupon = Coupon.objects.filter(student=student, course=course)
 
-                    Coupon.objects.bulk_create(coupons_list)
-                    send_code_notification(coupons_list, request.user)
-                    messages.success(request, "El cupón ha sido registrado y se notifico al estudiante éxitosamente.")
-                    return redirect('coupons_list')
+                    if check_coupon:
+
+                        if check_coupon.count() == 1 and check_coupon.first().discount_percentage == 50 and discount_percentage == "50":
+                            coupon = Coupon(
+                                student=student,
+                                course=course,
+                                code="UP" + str(year) + str(student)[0:2] + "P2" + str(discount_percentage) + str(
+                                    course)[0:2],
+                                discount_percentage=discount_percentage
+                            )
+                            coupons_list.append(coupon)
+                        else:
+                            student = str(student)
+                            send_coupons = False
+                            break
+
+
+                    else:
+                        coupon = Coupon(
+                                student=student,
+                                course=course,
+                                code="UP" + str(year) + str(student)[0:2] + "P" + str(discount_percentage) + str(
+                                    course)[0:2],
+                                discount_percentage=discount_percentage
+                            )
+                        coupons_list.append(coupon)
+
+                if send_coupons:
+
+                    if coupons_list:
+
+                        Coupon.objects.bulk_create(coupons_list)
+                        send_code_notification(coupons_list, request.user)
+                        messages.success(request, "El cupón ha sido registrado y se notificó al estudiante éxitosamente.")
+                        return redirect('coupons_list')
+                else:
+                    messages.error(request, "Error, al estudiante " + student + " no es posible asignarle"
+                                                                                     " este cupón, por favor verifique la cantidad de cupones asignados a este estudiante con el"
+                                                                                     " curso indicado, además verifique que los porcentajes de descuento asignados en un curso"
+                                                                                     " no superen el 100%.")
 
     else:
         form = CouponAddForm()
