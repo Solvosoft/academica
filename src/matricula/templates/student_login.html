@@ -1,8 +1,5 @@
 {% extends 'gentelella/base.html' %}
-{% load static i18n socialaccount %}
-{% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/auth-buttons.css'%}">
-{% endblock %}
+{% load static i18n %}
 {% block body_class %}login{% endblock body_class %}
 {% block body %}
 <div>
@@ -39,13 +36,6 @@
                         <a href="{% url 'password_reset' %}">{% trans 'Lost your password?' %}</a><a href="{% url 'create_user' %}">Crear cuenta</a>
                     </div>
                     <div id="message" style="width: 80%; margin-left: 10%"></div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <a class="btn-auth btn-facebook" style="display:inline-bock;" href="{% provider_login_url 'facebook' method='oauth2' %}"> Facebook</a>
-                            <a class="btn-auth btn-google"  style="display:inline-block;" href="{% provider_login_url 'google' method='oauth2' %}">Google</a>
-                            <a class="btn-auth btn-github"  style="display:inline-block;" href="{% provider_login_url 'github' method='oauth2' %}">Github</a>    
-                        </div>
-                    </div>
                     {% include 'gentelella/registration/footer.html' %}
                 </form>
             </section>
