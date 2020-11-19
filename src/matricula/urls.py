@@ -36,7 +36,7 @@ from .views.coupons_views import coupons_list
 
 
 urlpatterns = [
-    url('^create_user$', create_user, name="create_user"),
+    url('^create_user$', create_user, name="create_user_academy"),
     url('^add_student$', add_student, name="add_student"),
     url('^login_user$', login_user, name="login_user"),
     url('^confirm_email$', confirm_email, name="confirm_email"),
