@@ -1,13 +1,15 @@
 import datetime
+import json
 
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django_ajax.decorators import ajax
 
 from async_notifications.utils import send_email_from_template
 from matricula.contrib.bills.models import Bill
 from matricula.forms import CouponsSearchForm, CouponAddForm, CouponEditForm
-from matricula.models import Coupon
+from matricula.models import Coupon, Course, Group, Student
 
 redirect_coupons = False
 
@@ -262,3 +264,43 @@ def coupons_bill_list(request, pk):
         form = CouponsSearchForm()
 
     return render(request, "coupons/coupons_list.html", context={'form': form, 'coupons_list': coupons_list})
+
+
+
+@ajax
+def add_coupons_group(request, pk, percentage):
+
+    group = get_object_or_404(Group, pk=pk)
+    year = datetime.datetime.now().year
+
+    if request.is_ajax():
+       students = json.loads(request.body)
+
+       for student_pk in students:
+           student = get_object_or_404(Student, pk=int(student_pk['pk']))
+           coupon_list = Coupon.objects.filter(student=student, course=group.course)
+           code = "UP" + str(year) + str(student)[0:2] + "P" + str(percentage) + str(group.course)[0:2]
+
+           if coupon_list:
+
+               if coupons_list.count == 1:
+
+                   if coupons_list.first().code[9] == "5":
+                       code = "UP" + str(year) + str(student)[0:2] + "P2" + str(percentage) + str(group.course)[0:2]
+
+                   coupon = Coupon(
+                       course=group.course,
+                       student=student,
+                       discount_percentage=percentage,
+                       code=code
+                   )
+                   coupon.save()
+
+           else:
+               coupon = Coupon(
+                   course=group.course,
+                   student=student,
+                   discount_percentage=percentage,
+                   code=code
+               )
+               coupon.save()

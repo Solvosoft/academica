@@ -25,7 +25,6 @@ def create_bill(sender, **kwargs):
         total = instance.group.cost
 
         if coupons:
-
             percentage = sum(coupons.values_list('discount_percentage', flat=True))
 
             if instance.group.cost > 0:
@@ -56,7 +55,7 @@ def create_bill(sender, **kwargs):
         )
         instance.save()
 
-        Coupon.objects.filter(course=instance.group.course, student=instance.student).update(bill=Bill.objects.last())
+        Coupon.objects.filter(course=instance.group.course, student=instance.student).update(bill=Bill.objects.last(), is_used=True)
 
 
 def paypal_bill_paid(sender, **kwargs):

@@ -83,7 +83,7 @@
 								{% for enroll in object.enroll_set.all %}
 									<tr class="{% cycle 'odd' 'even' %} pointer">
 										<td class="a-center ">
-											<input type="checkbox" value="{{enroll.pk}}" class="flat" name="students">
+											<input type="checkbox" value="{{enroll.pk}}" class="flat" name="students" data-id="{{enroll.student.pk}}">
 										</td>
 										<td class="">{{enroll.student}}</td>
 										<td class="">{{enroll.enroll_date}}</td>
@@ -98,6 +98,7 @@
 					</div>
 					<div class="text-center">
 						<a class="btn btn-dark" href="{% url 'groups_enroll' %}">Atras</a>
+						<a class="btn btn-success" id="assigncouponsbutton" title="Asignar cupones" data-toggle="modal" data-target="#assigncouponsmodal" style="display:none;">Asignar cupones</a>
 						<input class="btn btn-primary" type="submit" name="action" value="Matricular">
 					</div>
 				</form>
@@ -130,87 +131,168 @@
 		{% endif %}
 	</div>
 	<div class="clearfix"></div>
+	<div id="assigncouponsmodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<form method="post">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title">Asignar cupones</h4>
+		  </div>
+		  <div class="modal-body">
+			  {% csrf_token %}
+			  <div class="form-group row">
+				  <span class="col-sm-5">
+					  <label for="id_discount_percentage">Porcentaje de descuento:</label>
+				  </span>
+				  <div class="col-sm-7 col-xs-12">
+					  <select name="discount_percentage"  class="select2_single form-control " data-widget="Select" id="id_discount_percentage">
+						  <option value="50">50</option>
+						  <option value="100">100</option>
+					  </select>
+				  </div>
+			  </div>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+			<button type="button" onclick="assign_coupons()" class="btn btn-primary">Asignar</button>
+		  </div>
+			</form>
+		</div>
+	  </div>
+	</div>
 {%endblock%}
 {%block js%}
-	<script>
-		// iCheck
-		$(document).ready(function () {
-			if ($("input.flat")[0]) {
-				$(document).ready(function () {
-					$('input.flat').iCheck({
-						checkboxClass: 'icheckbox_flat-green',
-						radioClass: 'iradio_flat-green'
-					});
-				});
-			}
-		});
-		// /iCheck
+<script>
+function assign_coupons(){
 
-		// Table
-		$('table input').on('ifChecked', function () {
-			checkState = '';
-			$(this).parent().parent().parent().addClass('selected');
-			countChecked();
-		});
-		$('table input').on('ifUnchecked', function () {
-			checkState = '';
-			$(this).parent().parent().parent().removeClass('selected');
-			countChecked();
-		});
+console.log("ENTRE");
 
-		var checkState = '';
+	var heads = [];
+    $("thead").find("th").each(function () {
+        if($(this).text().trim() === ""){
+            heads.push("pk");
+        }else{
+            heads.push($(this).text().trim());
+        }
+    });
 
-		$('.bulk_action input').on('ifChecked', function () {
-			checkState = '';
-			$(this).parent().parent().parent().addClass('selected');
-			countChecked();
-		});
-		$('.bulk_action input').on('ifUnchecked', function () {
-			checkState = '';
-			$(this).parent().parent().parent().removeClass('selected');
-			countChecked();
-		});
-		$('.bulk_action input#check-all').on('ifChecked', function () {
-			checkState = 'all';
-			countChecked();
-		});
-		$('.bulk_action input#check-all').on('ifUnchecked', function () {
-			checkState = 'none';
-			countChecked();
-		});
+    var rows = [];
+    $("tbody tr").each(function () {
+      cur = {};
+      $(this).find("td").each(function(i, v) {
 
-		function countChecked() {
-			if (checkState === 'all') {
-				$(".bulk_action input[name='students']").iCheck('check');
-			}
-			if (checkState === 'none') {
-				$(".bulk_action input[name='students']").iCheck('uncheck');
-			}
+        if(i === 0){
+            cur[heads[i]] = $(this).children().children().data('id')
+        }
+      });
+      rows.push(cur);
+      cur = {};
+    });
 
-			var checkCount = $(".bulk_action input[name='students']:checked").length;
 
-			if (checkCount) {
-				$('.column-title').hide();
-				$('.bulk-actions').show();
-				$('.action-cnt').html(checkCount + ' Registros Seleccionados');
-			} else {
-				$('.column-title').show();
-				$('.bulk-actions').hide();
-			}
+	$.ajax({
+		url: "/enrrolment/coupons/{{object.pk}}/"+ $("#id_discount_percentage").val()+"/group/",
+		type: "POST",
+		data: JSON.stringify(rows),
+		headers: {'X-CSRFToken': getCookie('csrftoken') },
+		dataType : 'json',
+		success: function() {
+
+			Swal.fire(
+			  'Cupones',
+			  'Asignados exitosamente.',
+			  'success'
+			)
 		}
+	});
 
-		// Accordion
+}
+
+// iCheck
+$(document).ready(function () {
+	if ($("input.flat")[0]) {
 		$(document).ready(function () {
-			$(".expand").on("click", function () {
-				$(this).next().slideToggle(200);
-				$expand = $(this).find(">:first-child");
-
-				if ($expand.text() == "+") {
-					$expand.text("-");
-				} else {
-					$expand.text("+");
-				}
+			$('input.flat').iCheck({
+				checkboxClass: 'icheckbox_flat-green',
+				radioClass: 'iradio_flat-green'
 			});
 		});
-	</script>
+	}
+});
+// /iCheck
+
+// Table
+$('table input').on('ifChecked', function () {
+	checkState = '';
+	$(this).parent().parent().parent().addClass('selected');
+	countChecked();
+	$("#assigncouponsbutton").show();
+});
+$('table input').on('ifUnchecked', function () {
+	checkState = '';
+	$(this).parent().parent().parent().removeClass('selected');
+	countChecked();
+	$("#assigncouponsbutton").hide();
+});
+
+var checkState = '';
+
+$('.bulk_action input').on('ifChecked', function () {
+	checkState = '';
+	$(this).parent().parent().parent().addClass('selected');
+	countChecked();
+});
+$('.bulk_action input').on('ifUnchecked', function () {
+	checkState = '';
+	$(this).parent().parent().parent().removeClass('selected');
+	countChecked();
+});
+$('.bulk_action input#check-all').on('ifChecked', function () {
+	checkState = 'all';
+	countChecked();
+});
+$('.bulk_action input#check-all').on('ifUnchecked', function () {
+	checkState = 'none';
+	countChecked();
+});
+
+function countChecked() {
+	if (checkState === 'all') {
+		$(".bulk_action input[name='students']").iCheck('check');
+	}
+	if (checkState === 'none') {
+		$(".bulk_action input[name='students']").iCheck('uncheck');
+	}
+
+	var checkCount = $(".bulk_action input[name='students']:checked").length;
+
+	if (checkCount) {
+		$('.column-title').hide();
+		$('.bulk-actions').show();
+		$('.action-cnt').html(checkCount + ' Registros Seleccionados');
+	} else {
+		$('.column-title').show();
+		$('.bulk-actions').hide();
+	}
+}
+
+// Accordion
+$(document).ready(function () {
+	$(".expand").on("click", function () {
+		$(this).next().slideToggle(200);
+		$expand = $(this).find(">:first-child");
+
+		if ($expand.text() == "+") {
+			$expand.text("-");
+		} else {
+			$expand.text("+");
+		}
+	});
+});
+
+$(window).load(function() {
+	$('.select2-container').width('100%');
+});
+</script>
 {%endblock%}
