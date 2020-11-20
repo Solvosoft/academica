@@ -61,6 +61,7 @@ def view_course(request, pk=None):
     if pk is not None:
         course = get_object_or_404(Course, pk=pk)
         groups = Group.objects.filter(period=period, course=course)
+        groups = sorted(groups.all(), key=lambda t: t.in_enrollment, reverse=True)
     else:
         course = Course.objects.none()
         groups = Group.objects.filter(period=period)
@@ -79,6 +80,7 @@ def view_course(request, pk=None):
                 Q(name__icontains=form_search.cleaned_data['name'])|
                 Q(course__name__icontains=form_search.cleaned_data['name'])|
                 Q(course__category__name__icontains=form_search.cleaned_data['name']))
+        groups = sorted(groups.all(), key=lambda t: t.in_enrollment, reverse=True)
     return render(request, 'course.html', {
             'course': {'course': course, 'groups': groups},
             'add_schedule': True, 'form_search': form_search
