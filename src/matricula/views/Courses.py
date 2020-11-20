@@ -61,16 +61,20 @@ def view_course(request, pk=None):
         course = get_object_or_404(Course, pk=pk)
         groups = Group.objects.filter(period=period, course=course)
     else:
-        course = Course.objects.all()
+        course = Course.objects.none()
         groups = Group.objects.filter(period=period)
         if form_search.cleaned_data['category']:
-            course = course.filter(
-                category__in=form_search.cleaned_data['category'])
-            groups = Group.objects.filter(period=period, course__in=course)
-        if int(form_search.cleaned_data['is_paid']) == 1:
+            groups = groups.filter(
+                course__category__pk__in=form_search.cleaned_data['category'])
+        if form_search.cleaned_data['course']:
+            groups = groups.filter(
+                course__pk__in=form_search.cleaned_data['course'])
+        if form_search.cleaned_data['is_paid'] and int(form_search.cleaned_data['is_paid']) == 1:
             groups = groups.filter(is_paid=True)
-        elif int(form_search.cleaned_data['is_paid']) == 2:
+        elif form_search.cleaned_data['is_paid'] and int(form_search.cleaned_data['is_paid']) == 2:
             groups = groups.filter(is_paid=False)
+        if form_search.cleaned_data['name']:
+            groups.filter(name__icontains=form_search.cleaned_data['name'])
     return render(request, 'course.html', {
             'course': {'course': course, 'groups': groups},
             'add_schedule': True, 'form_search': form_search

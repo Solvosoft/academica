@@ -542,7 +542,7 @@ class CourseMainSearchForm(GTForm, forms.Form):
     category = forms.ModelMultipleChoiceField(
         queryset=Category.objects.all(), widget=djgentelella.SelectMultiple,
         required=False, label="Categoría")
-    courses = forms.ModelMultipleChoiceField(
+    course = forms.ModelMultipleChoiceField(
         queryset=Course.objects.all(), widget=djgentelella.SelectMultiple,
         required=False, label="Cursos")
     is_paid = forms.ChoiceField(
