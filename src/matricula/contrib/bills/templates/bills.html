@@ -30,7 +30,7 @@
 					</div>
 					<div class="col-lg-6 col-md-6 col-sm-12">
 						<div style="margin-top:50px;" class="price-tax text-center">
-							{{bill.form.render}}
+							{% if bill.obj.amount > 0.0 %} {{bill.form.render}} {% else %} Factura sin pendientes {% endif %}
 						</div>
 					</div>
 					<div class="clearfix"></div>

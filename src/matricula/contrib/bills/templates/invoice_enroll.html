@@ -4,16 +4,25 @@
 	<tr>
 		<td><strong>{% trans 'Student' %}: </strong></td><td>{{student.user.get_full_name}}</td>
 	</tr>
-	
+
 	<tr>
 		<td><strong>Descripción de matrícula: </strong></td><td>{{enroll}}</td>
 	</tr>
 
 	<tr>
-		<td><strong>{% trans 'Amount' %}: </strong></td><td>{{group.cost}} {{group.currency}}</td>
-	</tr>
-	
-	<tr>
 		<td><strong>{% trans 'Date' %}: </strong></td><td> {{date}}</td>
 	</tr>
+
+	<tr>
+		<td><strong>{% trans 'Amount' %}: </strong></td><td>{{group.cost}} {{group.currency}}</td>
+	</tr>
+
+	<tr>
+		<td><strong>{% trans 'Discount' %}: </strong></td><td>{{discount}} {{group.currency}}</td>
+	</tr>
+
+	<tr>
+		<td><strong>{% trans 'Total' %}: </strong></td><td>{{total}} {{group.currency}}</td>
+	</tr>
+
 </table>

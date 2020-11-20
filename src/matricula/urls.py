@@ -32,7 +32,7 @@ from .views.professor_views import ProfessorsList, CreateProfessor, EditProfesso
 from .views.students_views import qualify_students, save_quality_student, \
     update_enroll, update_enroll_status
 
-from .views.coupons_views import coupons_list, create_cupon, delete_coupon, edit_coupon
+from .views.coupons_views import coupons_list, create_cupon, delete_coupon, edit_coupon, coupons_bill_list
 
 urlpatterns = [
     url('^create_user$', create_user, name="create_user"),
@@ -106,6 +106,7 @@ urlpatterns = [
     path('enrrolment/json/students/', update_enroll, name='update_enroll'),
     path('enrrolment/<int:pk>/qualify_students/<str:status>/', update_enroll_status, name="qualify_students_status"),
     path('enrrolment/coupons/', coupons_list, name="coupons_list"),
+    path('enrrolment/coupons/<int:pk>/bill', coupons_bill_list, name="coupons_bill_list"),
     path('enrrolment/coupons/create', create_cupon, name="create_cupon"),
     path('enrrolment/coupons/<int:pk>/delete', delete_coupon, name="delete_cupon"),
     path('enrrolment/coupons/<int:pk>/edit', edit_coupon, name="edit_coupon"),

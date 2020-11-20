@@ -3,7 +3,7 @@ from django.db.models.signals import post_save
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.dispatch import receiver
-from matricula.models import Enroll
+from matricula.models import Enroll, Coupon
 from .models import Bill
 from django.utils.translation import ugettext_lazy as _
 from paypal.standard.ipn.signals import valid_ipn_received
@@ -19,6 +19,24 @@ def create_bill(sender, **kwargs):
     if not instance.bill_created and instance.enroll_finished\
             and instance.group.cost > 0:
         instance.bill_created = True
+
+        coupons = Coupon.objects.filter(course=instance.group.course, student=instance.student)
+        discount = 0.0
+        total = instance.group.cost
+
+        if coupons:
+
+            percentage = sum(coupons.values_list('discount_percentage', flat=True))
+
+            if instance.group.cost > 0:
+                discount = instance.group.cost
+                total = 0.0
+
+                if percentage == 50:
+                    discount = instance.group.cost / 2
+                    total = instance.group.cost / 2
+
+
         Bill.objects.create(
             short_description=_("Enroll in %s") % (instance.group),
             description=render_to_string(
@@ -26,15 +44,19 @@ def create_bill(sender, **kwargs):
                 {
                     'student': instance.student,
                     'enroll': smart_text(instance.group),
+                    'discount': discount,
+                    'total': total,
                     'date': instance.enroll_date.strftime("%Y-%m-%d %H:%M"),
                     'group': instance.group,
                 }
             ),
-            amount=instance.group.cost,
+            amount=total,
             student=instance.student,
             currency=instance.group.currency,
         )
         instance.save()
+
+        Coupon.objects.filter(course=instance.group.course, student=instance.student).update(bill=Bill.objects.last())
 
 
 def paypal_bill_paid(sender, **kwargs):
