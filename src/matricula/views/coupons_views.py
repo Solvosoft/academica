@@ -2,11 +2,14 @@ import datetime
 
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from async_notifications.utils import send_email_from_template
+from matricula.contrib.bills.models import Bill
 from matricula.forms import CouponsSearchForm, CouponAddForm, CouponEditForm
 from matricula.models import Coupon
+
+redirect_coupons = False
 
 
 def send_code_notification(coupons_list, user):
@@ -19,6 +22,57 @@ def send_code_notification(coupons_list, user):
             user=user,
             context={'coupon': coupon}
         )
+
+
+def get_error_message(request, student):
+    global redirect_coupons
+    redirect_coupons = False
+    return messages.error(request, "Error, al estudiante " + str(student) + " no es posible asignarle"
+            " este cupón, por favor verifique la cantidad de cupones asignados a este estudiante con el"
+            " curso indicado, además verifique que los porcentajes de descuento asignados en un curso"
+                                                            " no superen el 100%.")
+
+
+def save_coupon(request, course, student, discount_percentage, coupon):
+    global redirect_coupons
+    coupon.course = course
+    coupon.student = student
+    coupon.discount_percentage = int(discount_percentage)
+    coupon.save()
+    messages.success(request, "El cupón ha sido actualizado éxitosamente.")
+    redirect_coupons = True
+
+def update_coupon(request, check_coupon, student, course, discount_percentage, coupon):
+    year = datetime.datetime.now().year
+    code = "UP" + str(year) + str(student)[0:2] + "P" + str(discount_percentage) + str(course)[0:2]
+    code_counts = check_coupon.first().code[9]
+
+    if code_counts == "5":
+        code = "UP" + str(year) + str(student)[0:2] + "P2" + str(discount_percentage) + str(course)[0:2]
+
+    if check_coupon.count() <= 1:
+        if student == coupon.student:
+            if not course == coupon.course:
+                coupon.code = code
+            save_coupon(request, course, student, discount_percentage, coupon)
+        else:
+            if check_coupon.first().discount_percentage == 50 and int(discount_percentage) == 50:
+                coupon.code = code
+                save_coupon(request, course, student, discount_percentage, coupon)
+            else:
+                get_error_message(request, student)
+    else:
+        cupon_exists = check_coupon.filter(pk=coupon.pk).first()
+
+        if cupon_exists and check_coupon.count() == 2:
+
+            if check_coupon.first().discount_percentage == 50 and check_coupon.last().discount_percentage == 50 and int(
+                    discount_percentage) == 50:
+                save_coupon(request, course, student, discount_percentage, coupon)
+            else:
+                get_error_message(request, student)
+        else:
+            get_error_message(request, student)
 
 
 @permission_required('matricula.view_coupon')
@@ -96,8 +150,6 @@ def create_cupon(request):
                             student = str(student)
                             send_coupons = False
                             break
-
-
                     else:
                         coupon = Coupon(
                                 student=student,
@@ -117,10 +169,7 @@ def create_cupon(request):
                         messages.success(request, "El cupón ha sido registrado y se notificó al estudiante éxitosamente.")
                         return redirect('coupons_list')
                 else:
-                    messages.error(request, "Error, al estudiante " + student + " no es posible asignarle"
-                                                                                     " este cupón, por favor verifique la cantidad de cupones asignados a este estudiante con el"
-                                                                                     " curso indicado, además verifique que los porcentajes de descuento asignados en un curso"
-                                                                                     " no superen el 100%.")
+                    get_error_message(request, student)
 
     else:
         form = CouponAddForm()
@@ -141,6 +190,8 @@ def delete_coupon(request, pk):
 @permission_required('matricula.change_coupon')
 def edit_coupon(request, pk):
     coupon = Coupon.objects.filter(pk=pk).first()
+    year = datetime.datetime.now().year
+    global redirect_coupons
 
     if request.method == "POST":
         form = CouponEditForm(request.POST)
@@ -154,56 +205,14 @@ def edit_coupon(request, pk):
                 check_coupon = Coupon.objects.filter(student=student, course=course)
 
                 if check_coupon:
+                    update_coupon(request, check_coupon, student, course, discount_percentage, coupon)
+                    if redirect_coupons:
+                        return redirect('coupons_list')
 
-                    if check_coupon.count() <= 1:
-                        if student == coupon.student:
-                            coupon.course = course
-                            coupon.student = student
-                            coupon.discount_percentage = int(discount_percentage)
-                            coupon.save()
-                            messages.success(request, "El cupón ha sido actulizado y se notificó al estudiante éxitosamente.")
-                            return redirect('coupons_list')
-
-                        else:
-                            if check_coupon.first().discount_percentage == 50 and int(discount_percentage) == 50:
-                                coupon.course = course
-                                coupon.student = student
-                                coupon.discount_percentage = int(discount_percentage)
-                                coupon.save()
-                                messages.success(request,
-                                                 "El cupón ha sido actualizado y se notificó al estudiante éxitosamente.")
-                                return redirect('coupons_list')
-                            else:
-                                messages.error(request,
-                                               "Error, al estudiante " + str(student) + " no es posible asignarle"
-                                                                                        " este cupón, por favor verifique la cantidad de cupones asignados a este estudiante con el"
-                                                                                        " curso indicado, además verifique que los porcentajes de descuento asignados en un curso"
-                                                                                        " no superen el 100%.")
-                    else:
-
-                        cupon_exists = check_coupon.filter(pk=coupon.pk).first()
-
-                        if cupon_exists and check_coupon.count() == 2:
-
-                            if check_coupon.first().discount_percentage == 50 and check_coupon.last().discount_percentage == 50 and int(discount_percentage) == 50:
-                                coupon.course = course
-                                coupon.student = student
-                                coupon.discount_percentage = int(discount_percentage)
-                                coupon.save()
-                                messages.success(request, "El cupón ha sido actualizado y se notificó al estudiante éxitosamente.")
-                                return redirect('coupons_list')
-                            else:
-                                messages.error(request,
-                                               "Error, al estudiante " + str(student) + " no es posible asignarle"
-                                                                                   " este cupón, por favor verifique la cantidad de cupones asignados a este estudiante con el"
-                                                                                   " curso indicado, además verifique que los porcentajes de descuento asignados en un curso"
-                                                                                   " no superen el 100%.")
-                        else:
-                            messages.error(request,
-                                           "Error, al estudiante " + str(student) + " no es posible asignarle"
-                                                                               " este cupón, por favor verifique la cantidad de cupones asignados a este estudiante con el"
-                                                                               " curso indicado, además verifique que los porcentajes de descuento asignados en un curso"
-                                                                               " no superen el 100%.")
+                else:
+                    coupon.code = "UP" + str(year) + str(student)[0:2] + "P" + str(discount_percentage) + str(course)[0:2]
+                    save_coupon(request, course, student, discount_percentage, coupon)
+                    return redirect('coupons_list')
 
     else:
        form = CouponEditForm(initial={
@@ -213,3 +222,43 @@ def edit_coupon(request, pk):
         })
 
     return render(request, "coupons/create.html", context={'form': form})
+
+
+
+
+@permission_required('matricula.view_coupon')
+def coupons_bill_list(request, pk):
+
+    bill = get_object_or_404(Bill, pk=pk)
+
+    filters = {}
+    coupons_list = Coupon.objects.filter(bill=bill)
+
+    if request.method == "GET":
+
+        form = CouponsSearchForm(request.GET)
+        if form.is_valid():
+
+            course = form.cleaned_data['course']
+            student = form.cleaned_data['student']
+            is_used = form.cleaned_data['is_used']
+            discount_percentage = form.cleaned_data['discount_percentage']
+
+            if course:
+                filters['course__in'] = course
+
+            if student:
+                filters['student__in'] = student
+
+            if is_used:
+                filters['is_used'] = is_used
+
+            if discount_percentage:
+                filters['discount_percentage'] = discount_percentage
+
+            coupons_list = coupons_list.filter(**filters)
+
+    else:
+        form = CouponsSearchForm()
+
+    return render(request, "coupons/coupons_list.html", context={'form': form, 'coupons_list': coupons_list})
