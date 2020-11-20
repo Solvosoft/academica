@@ -38,7 +38,7 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title">¿Está segura que desea eliminar este pago?</h4>
+						<h4 class="modal-title">¿Está segura que desea eliminar este pago? Podrían haber cupones relacionados al mismo que también serían eliminados.</h4>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
@@ -61,13 +61,18 @@
 						{%endif%}
 					</h2>
 					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
+						{% if object.coupon_set.all.count > 0 %}
+							{% if perms.matricula.view_coupon %}
+								<li><a title="Ver cupones" href="{% url 'coupons_bill_list' pk=object.pk %}"><i class="fa fa-list-alt"></i></a></li>
+							{% endif %}
+						{% endif %}
 						{% if perms.bills.change_bill %}
 							<li>
-								<a href="{% url 'edit_bill' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
+								<a title="Editar" href="{% url 'edit_bill' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
 							</li>
 						{% endif %}
 						{% if perms.bills.delete_bill %}
-							<li><a data-url="{% url 'delete_bill' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+							<li><a title="Eliminar" data-url="{% url 'delete_bill' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
 						{% endif %}
 					</ul>
 					<div class="clearfix"></div>
@@ -81,6 +86,9 @@
 								</li>
 								<li>
 									<strong>Monto: </strong>{{object.amount}}
+								</li>
+								<li>
+									<strong>Cupones: </strong>{{object.coupon_set.all.count}}
 								</li>
 							</ul>
 						</div>
