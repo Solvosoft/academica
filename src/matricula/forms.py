@@ -528,3 +528,23 @@ class PermissionForm(GTForm, forms.Form):
         widget=AutocompleteSelectMultiple('permission'),
         queryset=Permission.objects.all(),
         label="Permisos", required=False)
+
+
+class CourseMainSearchForm(GTForm, forms.Form):
+    IS_PAID = (
+        (0, "No filtrar"),
+        (1, "Pagados"),
+        (2, "Gratis")
+    )
+    name = forms.CharField(
+        label='Término de búsqueda', required=False,
+        widget=djgentelella.TextInput)
+    category = forms.ModelMultipleChoiceField(
+        queryset=Category.objects.all(), widget=djgentelella.SelectMultiple,
+        required=False, label="Categoría")
+    courses = forms.ModelMultipleChoiceField(
+        queryset=Course.objects.all(), widget=djgentelella.SelectMultiple,
+        required=False, label="Cursos")
+    is_paid = forms.ChoiceField(
+        choices=IS_PAID, widget=djgentelella.Select,
+        required=False, label="Pagado")

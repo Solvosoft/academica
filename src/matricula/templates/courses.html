@@ -6,6 +6,30 @@
 {%block content%}
 	<div class="row">
 		<h1 class="text-center"> {% trans 'List of available courses' %} </h1>
+		<div class="col-md-10 col-md-offset-1">
+			<div class="x_panel">
+				<div class="x_content">
+					<form method="GET" action="{% url 'course_list' %}">
+						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+							{% include 'field.html' with field=form_search.name %}
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+							{% include 'field.html' with field=form_search.category %}
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+							{% include 'field.html' with field=form_search.courses %}
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+							{% include 'field.html' with field=form_search.is_paid %}
+						</div>
+						<div style="text-align:right">
+							<a href="{% url 'course_list' %}" class="btn btn-dark">Limpiar</a>
+							<button class="btn btn-success" type="submit">Buscar</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
 		<div id="group_message"></div>
 		{% if request.user.is_authenticated and not request.user.student %}
 			<form method="post" action="{% url 'add_student' %}">

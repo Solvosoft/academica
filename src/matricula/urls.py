@@ -48,6 +48,7 @@ urlpatterns = [
         name='myprofile'),
     url('^courses$', list_courses, name='courses'),
     url('^course/(?P<pk>\\d+)$', view_course, name='course'),
+    url('^course$', view_course, name='course_list'),
     url('^enrollme/(?P<pk>\\d+)$', enrollme, name="enrollme"),
     url('^enrollment$', list_enroll, name="enrollment"),
     url('^finish_enroll/(?P<pk>\\d+)$', finish_enroll, name="finish_enroll"),
