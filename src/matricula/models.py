@@ -251,6 +251,7 @@ class Coupon(models.Model):
                                               default=DISCOUNT_CHOICES[1])
     is_used = models.BooleanField(default=False, verbose_name=_("Is used?"))
     code = models.CharField(max_length=15, null=True, blank=True, unique=True, verbose_name=_("Discount code"))
+    bill = models.ForeignKey("bills.Bill", verbose_name=("Bill"), null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.student} - {self.course.name} - {self.code[2:6]}"
