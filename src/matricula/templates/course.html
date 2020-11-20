@@ -12,56 +12,58 @@
 		</form>
 	{% endif %}
 	<div id="group_message"></div>
-	{% for group in course.groups%}
-		<div class="col-md-6">
-			<div class="x_panel">
-				<div class="x_title">
-					<h3 class="green">{{group.name}}</h3>
-				</div>
-				<div class="x_content">
-					<div class="col-md-6">
-						<strong>Grupo: </strong>{{course.course.name}}
+	<div class="row">
+		{% for group in course.groups%}
+			<div class="col-md-6">
+				<div class="x_panel">
+					<div class="x_title">
+						<h3 class="green">{{group.name}}</h3>
 					</div>
-					<div class="col-md-6">
-						<strong>Categoría: </strong>{{course.course.category.name}}
-					</div>
-					<div class="col-md-6">
-						<strong>Inscritos: </strong>{{group.enroll_set.count}} de {{ group.maximum }}
-					</div>
-					<div class="col-md-6">
-						<strong>Inversión: </strong>{{group.cost}} {{group.currency}}
-					</div>
-					<div class="col-md-12">
-						<strong>Horario: </strong>{{group.schedule}}
-					</div>
-					<div class="col-md-12">
-					<strong>Rango pre-inscripción: </strong>{{group.pre_enroll_start}} - {{group.pre_enroll_finish}}
-					</div>
-					<div class="col-md-12">
-						<strong>Rango inscripción: </strong>{{group.enroll_start}} - {{group.enroll_finish}}
-					</div>
-					<div class="col-md-12">
-						{% if request.user.is_authenticated and group.in_enrollment and request.user.student %}
-							<a class="btn btn-primary btn-sm" data-href="{% url 'enrollme' group.pk%}"  data-ajax="true">
-								{% if group.flow == group.AUTO_ENROLL%}
-									{% trans 'Enroll me' %}
-								{% else %}
-									{% trans 'Pre-enroll me' %}
-								{% endif%}
-							</a>
-						{% endif %}
-					</div>
-					<div class="col-md-12 text-right">
-						{% if group.is_free %}
-							<span class="badge bg-green">Curso gratis</span>
-						{% else %}
-							<span class="badge bg-blue">Curso pagado</span>
-						{% endif %}
+					<div class="x_content">
+						<div class="col-md-6">
+							<strong>Grupo: </strong>{{course.course.name}}
+						</div>
+						<div class="col-md-6">
+							<strong>Categoría: </strong>{{course.course.category.name}}
+						</div>
+						<div class="col-md-6">
+							<strong>Inscritos: </strong>{{group.enroll_set.count}} de {{ group.maximum }}
+						</div>
+						<div class="col-md-6">
+							<strong>Inversión: </strong>{{group.cost}} {{group.currency}}
+						</div>
+						<div class="col-md-12">
+							<strong>Horario: </strong>{{group.schedule}}
+						</div>
+						<div class="col-md-12">
+							<strong>Rango pre-inscripción: </strong>{{group.pre_enroll_start}} - {{group.pre_enroll_finish}}
+						</div>
+						<div class="col-md-12">
+							<strong>Rango inscripción: </strong>{{group.enroll_start}} - {{group.enroll_finish}}
+						</div>
+						<div class="col-md-12">
+							{% if request.user.is_authenticated and group.in_enrollment and request.user.student %}
+								<a class="btn btn-primary btn-sm" data-href="{% url 'enrollme' group.pk%}"  data-ajax="true">
+									{% if group.flow == group.AUTO_ENROLL%}
+										{% trans 'Enroll me' %}
+									{% else %}
+										{% trans 'Pre-enroll me' %}
+									{% endif%}
+								</a>
+							{% endif %}
+						</div>
+						<div class="col-md-12 text-right">
+							{% if group.is_paid %}
+								<span class="badge bg-green">Curso pagado</span>
+							{% else %}
+								<span class="badge bg-blue">Curso gratis</span>
+							{% endif %}
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	{% endfor %}
+		{% endfor %}
+	</div>
 {%endblock%}
 {% block js %}
 	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
