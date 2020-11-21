@@ -185,6 +185,7 @@ class Enroll(models.Model):
     course_score = models.DecimalField(max_digits=6, decimal_places=4, default=Decimal(0.00), verbose_name=_("Note"))
     course_status = models.CharField(max_length=20, choices=COURSE_STATUS, blank=True, null=True,
                                      verbose_name=_("Status"))
+    pdf_certificate = models.FileField(upload_to="certificates/", null=True, blank=True, verbose_name=_("Certificate"))
 
     def __str__(self):
         return self.student.user.username + " -- " + smart_text(self.group)
