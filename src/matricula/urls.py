@@ -15,16 +15,16 @@ from .admin import admin_site
 from matricula.views.Pages import PageDetail
 from matricula.views.Enrollments import list_enroll, enrollme,\
     finish_enroll
-from .views.admin_views import CategoryList, create_category,\
-    CategoryDelete, edit_category, CourseList, create_course,\
-    CourseDelete, edit_course, MenuItemList, create_menuitem, MenuItemDelete,\
-    edit_menuitem, PeriodList, create_period, edit_period, PeriodDelete,\
-    GroupList, create_group, edit_group, GroupDelete, EnrollList,\
-    create_enroll, edit_enroll, EnrollDelete, StudentList, create_student,\
-    edit_student, StudentDelete, PageList, create_page, edit_page, PageDelete,\
-    export_group, recovery_pass_student, MenuPageDelete, create_menupage,\
-    pre_enroll_group, add_group_course, list_students_group,\
-    export_enrolled_group, open_group, close_group
+from .views.admin_views import CategoryList, create_category, \
+    CategoryDelete, edit_category, CourseList, create_course, \
+    CourseDelete, edit_course, MenuItemList, create_menuitem, MenuItemDelete, \
+    edit_menuitem, PeriodList, create_period, edit_period, PeriodDelete, \
+    GroupList, create_group, edit_group, GroupDelete, EnrollList, \
+    create_enroll, edit_enroll, EnrollDelete, StudentList, create_student, \
+    edit_student, StudentDelete, PageList, create_page, edit_page, PageDelete, \
+    export_group, recovery_pass_student, MenuPageDelete, create_menupage, \
+    pre_enroll_group, add_group_course, list_students_group, \
+    export_enrolled_group, open_group, close_group, build_pdf_certificate_view, build_pdf_certificate_list
 from matricula.contrib.bills.urls import urlpatterns as billurls
 
 from .views.professor_views import ProfessorsList, CreateProfessor, EditProfessor, edit_profile, delete_professor, \
@@ -112,5 +112,5 @@ urlpatterns = [
     path('enrrolment/coupons/<int:pk>/delete', delete_coupon, name="delete_cupon"),
     path('enrrolment/coupons/<int:pk>/edit', edit_coupon, name="edit_coupon"),
     path('enrrolment/coupons/<int:pk>/<int:percentage>/group/', add_coupons_group, name="add_coupons_group"),
-
+    path('enrrolment/certificate/build/<int:pk>/', build_pdf_certificate_list, name="build_pdf_certificate_list"),
 ] + billurls

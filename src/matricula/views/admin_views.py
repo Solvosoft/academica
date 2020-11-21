@@ -5,9 +5,10 @@ Created on 18/10/2020
 @author: allexiusw
 '''
 from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
 from django.views.generic import ListView, DeleteView
 from django.utils.translation import ugettext_lazy as _
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from matricula.models import Category, Course, Period, Group,\
     Enroll, Student, Page, Professor
 from matricula.forms import CategoryCreateForm, CategorySearchForm,\
@@ -38,6 +39,9 @@ from django.contrib.staticfiles import finders
 import os
 from matricula.views.utils import get_expire_date
 from async_notifications.utils import send_email_from_template
+import io
+from django.core.files.base import File
+from django.core.files.base import File
 
 
 def link_callback(uri, rel):
@@ -655,6 +659,8 @@ def export_group(request, pk=None):
 @permission_required('matricula.can_list_students_group')
 def list_students_group(request, pk=None):
     context = {}
+    show_buttons_certificates = False
+    show_column_certificates = False
     if pk is not None:
         context = {}
         if request.method == "POST":
@@ -674,6 +680,18 @@ def list_students_group(request, pk=None):
             if request.method == "GET":
                 instance = Group.objects.get(pk=pk)
                 context['object'] = instance
+
+                for enroll in Enroll.objects.filter(group=instance):
+
+                    if enroll.pdf_certificate is None or enroll.pdf_certificate == "":
+                        show_buttons_certificates = True
+                        break
+
+                if not show_buttons_certificates:
+                    show_column_certificates = True
+
+                context['show_buttons_certificates'] = show_buttons_certificates
+                context['show_column_certificates'] = show_column_certificates
                 return render(
                     request, 'groups/group_students_list.html', context)
     return HttpResponseRedirect(reverse('periods'))
@@ -1122,3 +1140,45 @@ class MenuPageDelete(DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super(MenuPageDelete, self).delete(request, *args, **kwargs)
+
+
+def build_pdf_certificate(enroll):
+    html = 'certificate.html'
+    date = '{:%d de %B del %Y}'.format(now())
+    sourceHtml = render_to_string('certificate.html', context={
+        'enroll': enroll,
+        'date': date
+    })
+    # FIXME the variable 'enqueued' == False, it must be false o we should change it to True?!
+    resultFile = io.BytesIO()
+
+    pisaStatus = pisa.CreatePDF(
+        sourceHtml,  # the HTML to convert
+        dest=resultFile,  # file handle to recieve result
+        link_callback=link_callback)
+    if pisaStatus.err:
+        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err,
+                                                                               html))
+    resultFile.seek(0)
+    file_name = f'certificado_{str(enroll.group)}_{str(enroll.student)}.pdf'
+    enroll.pdf_certificate = File(resultFile, name=file_name)
+    enroll.save()
+
+@staff_member_required
+def build_pdf_certificate_view(request, pk):
+    enroll = get_object_or_404(Enroll, pk=pk)
+    build_pdf_certificate(enroll)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="'+str(enroll.group)+"-"+str(enroll.student)+'.pdf"'
+    response.write(enroll.pdf_certificate.read())
+    return response
+
+
+def build_pdf_certificate_list(request, pk):
+
+    enroll_list = Enroll.objects.filter(group__pk=pk)
+    if enroll_list:
+        for enroll in enroll_list:
+            build_pdf_certificate_view(request, enroll.pk)
+        messages.success(request, "Certificados generados exitosamente.")
+        return redirect("list_students_group", pk=pk)

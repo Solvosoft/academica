@@ -315,19 +315,17 @@ def add_coupons_group(request, pk, percentage):
 
        for student_pk in students:
            student = get_object_or_404(Student, pk=int(student_pk['pk']))
-           coupon_list = Coupon.objects.filter(student=student, course=group.course)
            code = "UP" + str(year) + str(student)[0:2] + "P" + str(percentage) + str(group.course)[0:2]
            enrollment = Enroll.objects.filter(student=student, group=group).first()
            bill = Bill.objects.filter(enrollment=enrollment).first()
-
            discount = bill.enrollment.group.cost
            total = 0.0
 
-           if coupon_list:
+           if Coupon.objects.filter(student=student, course=group.course):
 
-               if coupons_list.count() == 1:
+               if Coupon.objects.filter(student=student, course=group.course).count() == 1:
 
-                   if coupons_list.first().code[9] == "5" and percentage == 50:
+                   if Coupon.objects.filter(student=student, course=group.course).first().code[9] == "5" and percentage == 50:
                        code = "UP" + str(year) + str(student)[0:2] + "P2" + str(percentage) + str(group.course)[0:2]
                        update_bill(bill, discount, total, percentage, code, enrollment, request.user)
            else:

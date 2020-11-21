@@ -73,6 +73,9 @@
 								<th class="column-title">Para matricular</th>
 								<th class="column-title">Matriculado</th>
 								<th class="column-title">Factura Generada</th>
+								{% if show_column_certificates %}
+									<th class="column-title">Certificado</th>
+								{% endif %}
 							</tr>
 						</thead>
 						<tbody>
@@ -83,6 +86,14 @@
 									<td class="">{% if enroll.enroll_activate%}Si{%else%}No{%endif%}</td>
 									<td class="">{% if enroll.enroll_finished%}Si{%else%}No{%endif%}</td>
 									<td class="">{% if enroll.bill_created %}Si{%else%}No{%endif%}</td>
+									{% if show_column_certificates %}
+										<td class="">
+											{% if enroll.pdf_certificate %}
+											<a title="Certificado" href="{{ enroll.pdf_certificate.url }}" target="_blank" class="btn btn-sm">
+													  <i class="fa s-2 fa-file-pdf-o"></i></a>
+											{%endif%}
+										</td>
+									{%endif%}
 								</tr>
 							{%endfor%}
 						</tbody>
@@ -96,6 +107,9 @@
 					{% if perms.matricula.can_close_group %}
 						<a class="btn btn-primary" href="{% url 'close_group' object.pk %}">Cerrar grupo</a>
 						<a class="btn btn-primary" href="{% url 'close_group' object.pk %}?sendemail=1">Cerrar grupo y notificar</a>
+					{% endif %}
+					{% if show_buttons_certificates %}
+						<a class="btn btn-primary" href="{% url 'build_pdf_certificate_list' pk=object.pk %}">Generar certificados</a>
 					{% endif %}
 					{% if perms.matricula.can_view_pdf_enrolled_group %}
 						<div class="btn-group">
