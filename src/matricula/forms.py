@@ -527,6 +527,7 @@ class PermissionForm(GTForm, forms.Form):
         queryset=Permission.objects.all(),
         label="Permisos", required=False)
 
+
 class CouponAddForm(GTForm, forms.Form):
 
     DISCOUNT_CHOICES = (
@@ -565,3 +566,24 @@ class CouponEditForm(GTForm, forms.Form):
     discount_percentage = forms.ChoiceField(
         choices=DISCOUNT_CHOICES, widget=djgentelella.Select,
         required=False, label="Descuento")
+
+
+class CourseMainSearchForm(GTForm, forms.Form):
+    IS_PAID = (
+        (0, "No filtrar"),
+        (1, "Pagados"),
+        (2, "Gratis")
+    )
+    name = forms.CharField(
+        label='Término de búsqueda', required=False,
+        widget=djgentelella.TextInput)
+    category = forms.ModelMultipleChoiceField(
+        queryset=Category.objects.all(), widget=djgentelella.SelectMultiple,
+        required=False, label="Categoría")
+    course = forms.ModelMultipleChoiceField(
+        queryset=Course.objects.all(), widget=djgentelella.SelectMultiple,
+        required=False, label="Cursos")
+    is_paid = forms.ChoiceField(
+        choices=IS_PAID, widget=djgentelella.Select,
+        required=False, label="Pagado")
+

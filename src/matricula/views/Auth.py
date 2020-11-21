@@ -8,9 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render, redirect, get_object_or_404
 from matricula.forms import StudentCreateForm, StudentEditForm
 from matricula.models import Student, Enroll
-from django.core.mail import send_mail
 from django.urls import reverse, reverse_lazy
-from django.conf import settings
 from django.contrib import messages
 from django.contrib import auth
 from django.http.response import HttpResponse
@@ -192,29 +190,27 @@ def mail_recover_pass(request):
     students = Student.objects.filter(user__email__exact=email)
     if students:
         student = students[0]
-        mail_body = render_to_string("email_recovery.html",
-                {
-                 'url': request.build_absolute_uri(reverse('recover_password')),
-                 'user': student.user,
-                 'student': student
-                })
-        send_mail(_('Password recovery'),
-                      'Url for recover %s?id=%d&key=%s' % (request.build_absolute_uri(reverse('recover_password')),
-                                               student.user.pk,
-                                               student.key
-                                               ),
-                      settings.DEFAULT_FROM_EMAIL, [student.user.email],
-                      html_message=mail_body)
+        send_email_from_template(
+                'email_recovery_academy', request.user.email, {
+                    'url': request.build_absolute_uri(
+                        reverse('recover_password')),
+                    'user': student.user,
+                    'student': student
+                },
+                enqueued=False,
+                user=None)
         recover_message_type = 'success'
         recover_message = _('You will recive a message soon, check your email')
     else:
         recover_message_type = 'warning'
         recover_message = _('User not found')
+    return {
+        'inner-fragments': {
+            '#recover_pass': render_to_string(
+                'recover.html', context={
+                    'recover_message_type': recover_message_type,
+                    'recover_message': recover_message})}}
 
-    return {'inner-fragments': {'#recover_pass': render_to_string('recover.html', context={'recover_message_type': recover_message_type,
-                                'recover_message': recover_message})
-                        }
-            }
 
 @login_required
 def get_profile(request):

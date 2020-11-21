@@ -1,5 +1,5 @@
 {% extends 'gentelella/base.html'%}
-{% load static %}
+{% load static i18n %}
 {%block content%}
 	<h1 class="text-center">Detalles del Curso</h1>
 	{% if request.user.is_authenticated and not request.user.student %}
@@ -11,19 +11,83 @@
 			</div>
 		</form>
 	{% endif %}
+	<div class="col-md-10 col-md-offset-1">
+		<div class="x_panel">
+			<div class="x_content">
+				<form method="GET" action="{% url 'course_list' %}">
+					<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+						{% include 'field.html' with field=form_search.name %}
+					</div>
+					<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+						{% include 'field.html' with field=form_search.category %}
+					</div>
+					<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+						{% include 'field.html' with field=form_search.course %}
+					</div>
+					<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+						{% include 'field.html' with field=form_search.is_paid %}
+					</div>
+					<div style="text-align:right">
+						<a href="{% url 'course_list' %}" class="btn btn-dark">Limpiar</a>
+						<button class="btn btn-success" type="submit">Buscar</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="clearfix"></div>
 	<div id="group_message"></div>
-	<div class="x_panel">
-		<div class="x_title">
-			<h3 class="green">{{course.course.name}}</h3>
-		</div>
-		<div class="x_content">
-			<div class="col-lg-6 col-md-6 col-sm-12">
-				{{course.course.content|safe}}
+	<div class="row">
+		{% for group in course.groups%}
+			<div class="col-md-6">
+				<div class="x_panel" style="height:250px;">
+					<div class="x_title">
+						<h3 class="green">{{group.name}}</h3>
+					</div>
+					<div class="x_content">
+						<div class="col-md-6">
+							<strong>Curso: </strong>{{group.course}}
+						</div>
+						<div class="col-md-6">
+							<strong>Categoría: </strong>{{group.course.category}}
+						</div>
+						<div class="col-md-6">
+							<strong>Inscritos: </strong>{{group.enroll_set.count}} de {{ group.maximum }}
+						</div>
+						<div class="col-md-6">
+							<strong>Inversión: </strong>{{group.cost}} {{group.currency}}
+						</div>
+						<div class="col-md-12">
+							<strong>Horario: </strong>{{group.schedule}}
+						</div>
+						<div class="col-md-12">
+							<strong>Rango pre-inscripción: </strong>{{group.pre_enroll_start}} - {{group.pre_enroll_finish}}
+						</div>
+						<div class="col-md-12">
+							<strong>Rango inscripción: </strong>{{group.enroll_start}} - {{group.enroll_finish}}
+						</div>
+						<div class="col-md-6 text-left">
+							{% if group.is_paid %}
+								<span class="badge bg-green">Curso pagado</span>
+							{% else %}
+								<span class="badge bg-blue">Curso gratis</span>
+							{% endif %}
+						</div>
+						<div class="col-md-6 text-right">
+							{% if request.user.is_authenticated and group.in_enrollment and request.user.student %}
+								<a class="btn btn-primary btn-sm" data-href="{% url 'enrollme' group.pk%}"  data-ajax="true">
+									{% if group.flow == group.AUTO_ENROLL%}
+										{% trans 'Enroll me' %}
+									{% else %}
+										{% trans 'Pre-enroll me' %}
+									{% endif%}
+								</a>
+							{% endif %}
+						</div>
+					</div>
+				</div>
 			</div>
-			<div class="col-lg-6 col-md-6 col-sm-12">
-				{% include 'groups.html' %}
-			</div>
-		</div>
+		{% endfor %}
 	</div>
 {%endblock%}
 {% block js %}

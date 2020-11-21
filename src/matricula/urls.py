@@ -36,7 +36,7 @@ from .views.coupons_views import coupons_list, create_cupon, delete_coupon, edit
     add_coupons_group
 
 urlpatterns = [
-    url('^create_user$', create_user, name="create_user"),
+    url('^create_user$', create_user, name="create_user_academy"),
     url('^add_student$', add_student, name="add_student"),
     url('^login_user$', login_user, name="login_user"),
     url('^confirm_email$', confirm_email, name="confirm_email"),
@@ -48,6 +48,7 @@ urlpatterns = [
         name='myprofile'),
     url('^courses$', list_courses, name='courses'),
     url('^course/(?P<pk>\\d+)$', view_course, name='course'),
+    url('^course$', view_course, name='course_list'),
     url('^enrollme/(?P<pk>\\d+)$', enrollme, name="enrollme"),
     url('^enrollment$', list_enroll, name="enrollment"),
     url('^finish_enroll/(?P<pk>\\d+)$', finish_enroll, name="finish_enroll"),

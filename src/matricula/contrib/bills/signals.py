@@ -1,6 +1,5 @@
 # -*- coding: UTF-8 -*-
 from django.db.models.signals import post_save
-from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.dispatch import receiver
 from matricula.models import Enroll, Coupon
@@ -10,7 +9,8 @@ from paypal.standard.ipn.signals import valid_ipn_received
 from paypal.standard.models import ST_PP_COMPLETED
 from datetime import datetime
 from django.utils.encoding import smart_text
-from django.conf import settings
+from async_notifications.utils import send_email_from_template
+from django.views.decorators.csrf import csrf_exempt
 
 
 @receiver(post_save, sender=Enroll)
@@ -59,6 +59,7 @@ def create_bill(sender, **kwargs):
         Coupon.objects.filter(course=instance.group.course, student=instance.student).update(bill=Bill.objects.last(), is_used=True)
 
 
+@csrf_exempt
 def paypal_bill_paid(sender, **kwargs):
     ipn_obj = sender
     if ipn_obj.payment_status == ST_PP_COMPLETED:
@@ -73,14 +74,13 @@ def paypal_bill_paid(sender, **kwargs):
             ok = False
             # FIXME do something here
         if ok:
-            invoice = render_to_string('email_invoice.html', {'bill': bill})
-            send_mail(_("Academica Invoice paid"),
-                      _("Go to Academica"),
-                      settings.DEFAULT_FROM_EMAIL,
-                      [bill.student.email],
-                      html_message=invoice,
-                      fail_silently=False
-                      )
+            send_email_from_template(
+                'email_invoice_academy', bill.student.user.email, {
+                    'bill': bill,
+                    'student': bill.student
+                },
+                enqueued=False,
+                user=None)
 
 
 valid_ipn_received.connect(paypal_bill_paid)

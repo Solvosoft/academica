@@ -29,8 +29,6 @@ from django.core.paginator import Paginator
 import csv
 from django.http import HttpResponse
 from django.utils.timezone import now
-from django.template.loader import render_to_string
-from django.core.mail import send_mail
 from .utils import get_active_period
 from xhtml2pdf import pisa
 from django.shortcuts import get_object_or_404
@@ -729,12 +727,16 @@ def close_group(request, pk):
     enrolls = Enroll.objects.filter(group=group)
     enrolls.update(enroll_activate=False)
     if request.GET.get('sendemail', '0') == '1':
-        send_mail(
-            _('%(group)s was closed') % {'group': str(group)},
-            _("Attention: %(group)s was closed") % {"group": group},
-            settings.DEFAULT_FROM_EMAIL,
+        send_email_from_template(
+            'email_close_group',
             [enroll.student.user.email for enroll in enrolls],
-            fail_silently=False)
+            {
+                "url": request.build_absolute_uri(
+                    reverse('courses')),
+                "group": group,
+            },
+            enqueued=False,
+            user=None)
     messages.success(request, "Grupo cerrado con éxito")
     return HttpResponseRedirect(reverse('list_students_group', args=[pk, ]))
 
@@ -887,19 +889,15 @@ def create_student(request):
                 created_at=now(), confirmed_at=now(),
                 expired_at=get_expire_date())
             student.save()
-            mail_body = render_to_string("set_email_first.html", {
-                'url': request.build_absolute_uri(
-                    reverse('recover_password')),
-                'user': user, 'student': student})
-            send_mail(
-                "Configurar contraseña inicial",
-                'Url for recover %s?id=%d&key=%s' % (
-                    request.build_absolute_uri(
+            send_email_from_template(
+                'set_email_first_academy', user.email,
+                {
+                    "url": request.build_absolute_uri(
                         reverse('recover_password')),
-                    user.pk,
-                    student.key),
-                settings.DEFAULT_FROM_EMAIL, [user.email],
-                html_message=mail_body)
+                    'student': student
+                },
+                enqueued=False,
+                user=None)
             messages.success(request, "Estudiante guardada con éxito")
             return HttpResponseRedirect(reverse('students'))
         else:
@@ -963,20 +961,17 @@ def recovery_pass_student(request, pk=None):
     if (pk is not None):
         student = Student.objects.get(pk=pk)
         if student:
-            mail_body = render_to_string("email_recovery.html",
-                                         {
-                                             'url': request.build_absolute_uri(reverse('recover_password')),
-                                             'user': student.user,
-                                             'student': student
-                                         })
-            send_mail(_('Password recovery'),
-                      'Url for recover %s?id=%d&key=%s' % (request.build_absolute_uri(reverse('recover_password')),
-                                                           student.user.pk,
-                                                           student.key
-                                                           ),
-                      settings.DEFAULT_FROM_EMAIL, [student.user.email],
-                      html_message=mail_body)
-            messages.success(request, "Se ha enviado correo de recuperación de contraseña.")
+            send_email_from_template(
+                'email_recovery_academy', student.user.email, {
+                    'url': request.build_absolute_uri(
+                        reverse('recover_password')),
+                    'user': student.user,
+                    'student': student
+                },
+                enqueued=False,
+                user=None)
+            messages.success(
+                request, "Se ha enviado correo de recuperación de contraseña.")
         else:
             messages.error(request, "El usuario no fue encontrado")
     return HttpResponseRedirect(reverse('students'))
