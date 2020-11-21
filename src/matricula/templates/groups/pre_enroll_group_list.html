@@ -166,8 +166,6 @@
 <script>
 function assign_coupons(){
 
-console.log("ENTRE");
-
 	var heads = [];
     $("thead").find("th").each(function () {
         if($(this).text().trim() === ""){
@@ -198,10 +196,10 @@ console.log("ENTRE");
 		headers: {'X-CSRFToken': getCookie('csrftoken') },
 		dataType : 'json',
 		success: function() {
-
+			$("#assigncouponsmodal").modal('hide');
 			Swal.fire(
 			  'Cupones',
-			  'Asignados exitosamente.',
+			  'Se registraron y se notificó a los estudiantes éxitosamente.',
 			  'success'
 			)
 		}

@@ -35,6 +35,7 @@ def create_bill(sender, **kwargs):
                     discount = instance.group.cost / 2
                     total = instance.group.cost / 2
 
+        instance.save()
 
         Bill.objects.create(
             short_description=_("Enroll in %s") % (instance.group),
@@ -52,8 +53,8 @@ def create_bill(sender, **kwargs):
             amount=total,
             student=instance.student,
             currency=instance.group.currency,
+            enrollment=instance
         )
-        instance.save()
 
         Coupon.objects.filter(course=instance.group.course, student=instance.student).update(bill=Bill.objects.last(), is_used=True)
 

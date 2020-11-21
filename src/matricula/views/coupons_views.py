@@ -4,12 +4,14 @@ import json
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import render_to_string
 from django_ajax.decorators import ajax
 
 from async_notifications.utils import send_email_from_template
 from matricula.contrib.bills.models import Bill
 from matricula.forms import CouponsSearchForm, CouponAddForm, CouponEditForm
-from matricula.models import Coupon, Course, Group, Student
+from matricula.models import Coupon, Course, Group, Student, Enroll
+from django.utils.encoding import smart_text
 
 redirect_coupons = False
 
@@ -266,6 +268,41 @@ def coupons_bill_list(request, pk):
     return render(request, "coupons/coupons_list.html", context={'form': form, 'coupons_list': coupons_list})
 
 
+def update_bill(bill, discount, total, percentage, code, enrollment, user):
+
+    coupon = Coupon(
+        course=bill.enrollment.group.course,
+        student=bill.student,
+        discount_percentage=percentage,
+        code=code,
+        bill=bill,
+        is_used=True
+    )
+    coupon.save()
+    send_email_from_template(
+        "coupon_code_notification",
+        coupon.student.user.email,
+        enqueued=False,
+        user=user,
+        context={'coupon': coupon}
+    )
+
+    if bill and enrollment:
+
+        bill.description = render_to_string(
+            'invoice_enroll.html',
+            {
+                'student': bill.student,
+                'enroll': smart_text(bill.enrollment.group),
+                'discount': discount,
+                'total': total,
+                'date': bill.enrollment.enroll_date.strftime("%Y-%m-%d %H:%M"),
+                'group': bill.enrollment.group,
+            }
+        )
+        bill.amount = total
+        bill.save()
+
 
 @ajax
 def add_coupons_group(request, pk, percentage):
@@ -280,27 +317,22 @@ def add_coupons_group(request, pk, percentage):
            student = get_object_or_404(Student, pk=int(student_pk['pk']))
            coupon_list = Coupon.objects.filter(student=student, course=group.course)
            code = "UP" + str(year) + str(student)[0:2] + "P" + str(percentage) + str(group.course)[0:2]
+           enrollment = Enroll.objects.filter(student=student, group=group).first()
+           bill = Bill.objects.filter(enrollment=enrollment).first()
+
+           discount = bill.enrollment.group.cost
+           total = 0.0
 
            if coupon_list:
 
-               if coupons_list.count == 1:
+               if coupons_list.count() == 1:
 
-                   if coupons_list.first().code[9] == "5":
+                   if coupons_list.first().code[9] == "5" and percentage == 50:
                        code = "UP" + str(year) + str(student)[0:2] + "P2" + str(percentage) + str(group.course)[0:2]
-
-                   coupon = Coupon(
-                       course=group.course,
-                       student=student,
-                       discount_percentage=percentage,
-                       code=code
-                   )
-                   coupon.save()
-
+                       update_bill(bill, discount, total, percentage, code, enrollment, request.user)
            else:
-               coupon = Coupon(
-                   course=group.course,
-                   student=student,
-                   discount_percentage=percentage,
-                   code=code
-               )
-               coupon.save()
+               if percentage == 50:
+                   discount = bill.enrollment.group.cost /2
+                   total = bill.enrollment.group.cost /2
+
+               update_bill(bill, discount, total, percentage, code, enrollment, request.user)
