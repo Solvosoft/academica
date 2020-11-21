@@ -9,8 +9,8 @@ from paypal.standard.ipn.signals import valid_ipn_received
 from paypal.standard.models import ST_PP_COMPLETED
 from datetime import datetime
 from django.utils.encoding import smart_text
-from django.conf import settings
 from async_notifications.utils import send_email_from_template
+from django.views.decorators.csrf import csrf_exempt
 
 
 @receiver(post_save, sender=Enroll)
@@ -37,6 +37,7 @@ def create_bill(sender, **kwargs):
         instance.save()
 
 
+@csrf_exempt
 def paypal_bill_paid(sender, **kwargs):
     ipn_obj = sender
     if ipn_obj.payment_status == ST_PP_COMPLETED:
@@ -52,7 +53,7 @@ def paypal_bill_paid(sender, **kwargs):
             # FIXME do something here
         if ok:
             send_email_from_template(
-                'email_invoice_academy', bill.student.email, {
+                'email_invoice_academy', bill.student.user.email, {
                     'bill': bill,
                     'student': bill.student
                 },
