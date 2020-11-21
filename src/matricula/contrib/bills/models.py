@@ -25,6 +25,7 @@ class Bill(models.Model):
     is_paid = models.BooleanField(default=False)
     paid_date = models.DateTimeField(auto_now_add=True)
     transaction_id = models.TextField(max_length=300, null=True, blank=True)
+    enrollment = models.ForeignKey("matricula.Enroll", null=True, on_delete=models.CASCADE, verbose_name=("Enrollment"))
 
     def __str__(self):
         return self.short_description
