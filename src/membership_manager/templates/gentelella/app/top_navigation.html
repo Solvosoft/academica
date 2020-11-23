@@ -5,10 +5,16 @@
 			<a id="menu_toggle"><i class="fa fa-bars"></i></a>
 		</div>
 		<ul class="nav navbar-nav navbar-right">
-			{% top_menu  %}
+			{% if request.user.is_authenticated%}
+				{% if request.user.student %} 
+					{% top_menu  %}
+				{% endif %}
+			{% else %}
+				{% top_menu  %}
+			{% endif %}
             {% if not request.user.is_authenticated %}
 			    <li><a href="{% url "login" %}">Iniciar sesión</a><li>
-				<li><a href="{% url "create_user" %}">Registrarme</a><li>
+				<li><a href="{% url "create_user_academy" %}">Registrarme</a><li>
             {% endif %}
 		</ul>
 	</div>
