@@ -26,8 +26,8 @@ def load_email_temp_academica():
 
     update_template_context(
         'email_invoice_academy', 'Correo de confirmación de pago',
-        [('bill'), ('student')], 'email_invoice.html',
-        as_template=True)
+        [('bill'), ('student'), ('bill_description_safe')],
+        'email_invoice.html', as_template=True)
 
     update_template_context(
         'set_email_first_academy', 'Correo de configuración de contraseña',

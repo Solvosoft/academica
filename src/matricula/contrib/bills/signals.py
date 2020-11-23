@@ -11,6 +11,7 @@ from datetime import datetime
 from django.utils.encoding import smart_text
 from async_notifications.utils import send_email_from_template
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.html import mark_safe
 
 
 @receiver(post_save, sender=Enroll)
@@ -70,13 +71,15 @@ def paypal_bill_paid(sender, **kwargs):
             bill.transaction_id = ipn_obj.txn_id
             bill.save()
             ok = True
-        except Exception:
+        except Exception as e:
+            print(e)
             ok = False
             # FIXME do something here
         if ok:
             send_email_from_template(
                 'email_invoice_academy', bill.student.user.email, {
                     'bill': bill,
+                    'bill_description_safe': mark_safe(bill.description),
                     'student': bill.student
                 },
                 enqueued=False,
