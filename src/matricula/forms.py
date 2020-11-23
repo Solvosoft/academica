@@ -113,13 +113,13 @@ class CategoryCreateForm(forms.ModelForm, GTForm):
 
 class CategorySearchForm(GTForm, forms.Form):
     name = forms.CharField(
-        label='Término de búsqueda', required=False,
+        label='Término', required=False,
         widget=djgentelella.TextInput)
 
 
 class CourseSearchForm(GTForm, forms.Form):
     name = forms.CharField(
-        label='Término de búsqueda', required=False,
+        label='Término', required=False,
         widget=djgentelella.TextInput)
     category = forms.ModelMultipleChoiceField(
         queryset=Category.objects.all(), widget=djgentelella.SelectMultiple,
@@ -575,7 +575,7 @@ class CourseMainSearchForm(GTForm, forms.Form):
         (2, "Gratis")
     )
     name = forms.CharField(
-        label='Término de búsqueda', required=False,
+        label='Término', required=False,
         widget=djgentelella.TextInput)
     category = forms.ModelMultipleChoiceField(
         queryset=Category.objects.all(), widget=djgentelella.SelectMultiple,
