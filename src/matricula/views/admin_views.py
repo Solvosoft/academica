@@ -518,13 +518,24 @@ class GroupList(ListView):
             else:
                 queryset = queryset.filter(is_open=False)
 
-        if professor:
-            queryset = queryset.filter(professors=professor)
+        if not user.is_superuser:
+            if professor:
+                queryset = queryset.filter(professors=professor)
 
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        show_qualify_students_button = False
+
+        user = self.request.user
+        professor = Professor.objects.filter(user=user).first()
+
+        if professor or self.request.user.is_superuser:
+            show_qualify_students_button = True
+
+        context['show_qualify_students_button'] = show_qualify_students_button
+
         context['form_search'] = GroupSearchForm(self.request.GET)
         return context
 

@@ -112,7 +112,9 @@
 									<strong>Rango pre-matrícula: </strong>{{object.pre_enroll_start}} - {{object.enroll_finish}}
 								</li>
 								<li><strong>Flujo del curso: </strong>{{object.FLOWS|index:object.flow|index:1}}</li>
+								{% if show_qualify_students_button %}
 								<li><strong>Calificar estudiantes: </strong><a href="{% url 'qualify_students' pk=object.pk %}"><i class="fa fa-check-square"></i></a></li>
+								{% endif %}
 								{% if perms.matricula.can_export_enrolled_group %}
 									<li><strong>Exportar estudiantes: </strong>{{object.enroll_set.all.count}} <a href="{% url 'export_group' object.pk%}"><i class="fa fa-file-text-o"></i></a></li>
 								{% endif %}
