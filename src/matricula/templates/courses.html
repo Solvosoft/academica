@@ -6,6 +6,15 @@
 {%block content%}
 	<div class="row">
 		<h1 class="text-center"> {% trans 'List of available courses' %} </h1>
+		{% if request.user.is_authenticated and not request.user.student %}
+			<form method="post" action="{% url 'add_student' %}">
+				{% csrf_token %}
+				<div class="alert alert-warning alert-dismissible" role="alert">
+					<strong>Advertencia!</strong> Para tomar cursos usted debe tener rol de estudiante. 
+					<button type="submit" class="btn btn-sm btn-primary">Crear</button>
+				</div>
+			</form>
+		{% endif %}
 		<div class="col-md-10 col-md-offset-1">
 			<div class="x_panel">
 				<div class="x_content">
@@ -31,15 +40,7 @@
 			</div>
 		</div>
 		<div id="group_message"></div>
-		{% if request.user.is_authenticated and not request.user.student %}
-			<form method="post" action="{% url 'add_student' %}">
-				{% csrf_token %}
-				<div class="alert alert-warning alert-dismissible" role="alert">
-					<strong>Advertencia!</strong> Para tomar cursos usted debe tener rol de estudiante. 
-					<button type="submit" class="btn btn-sm btn-primary">Crear</button>
-				</div>
-			</form>
-		{% endif %}
+		<div class="clearfix"></div>
 		<div class="x_panel">
 			<div class="x_content">
 				{% for pk, course in courses.items %}
