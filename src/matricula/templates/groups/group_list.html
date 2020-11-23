@@ -59,7 +59,7 @@
 		<div class="col-md-6 col-lg-4 col-sm-6 col-xs-12">
 			<div class="x_panel" style="height:400px;word-break: break-word;">
 				<div class="x_title">
-					<h2 class="green">{{object.period|safe|striptags}}</h2>
+					<h2 class="green">{{object.name|safe|striptags}}</h2>
 					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
 						{% if perms.matricula.can_export_enrolled_group %}
 							<li>
@@ -68,11 +68,11 @@
 						{% endif %}
 						{% if perms.matricula.change_group %}
 							<li>
-								<a href="{% url 'edit_group_enroll' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
+								<a href="{% url 'edit_group_enroll' object.pk %}" title="Editar grupo" class="edit-link"><i class="fa fa-edit"></i></a>
 							</li>
 						{% endif %}
 						{% if perms.matricula.delete_group %}
-							<li><a data-url="{% url 'delete_group_enroll' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+							<li><a data-url="{% url 'delete_group_enroll' pk=object.pk %}" title="Eliminar grupo" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
 						{% endif %}
 					</ul>
 					<div class="clearfix"></div>
@@ -81,9 +81,6 @@
 					<div class="row">
 						<div class="col-md-6 col-sm-6 col-xs-6">
 							<ul class="list-unstyled user_data">
-								<li>
-									<strong>Nombre: </strong>{{object.name}}
-								</li>
 								<li>
 									<strong>Curso: </strong>{{object.course}}
 								</li>
@@ -100,6 +97,9 @@
 								</li>
 								<li>
 									<strong>Moneda: </strong>{{object.currency}}
+								</li>
+								<li>
+									<strong>Período: </strong>{{object.period}}
 								</li>
 							</ul>
 						</div>

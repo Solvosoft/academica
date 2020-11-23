@@ -72,11 +72,11 @@
 					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
 						{% if perms.matricula.change_enroll %}
 							<li>
-								<a href="{% url 'edit_page' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
+								<a href="{% url 'edit_page' object.pk %}" class="edit-link" title="Editar página"><i class="fa fa-edit"></i></a>
 							</li>
 						{% endif %}
 						{% if perms.matricula.delete_page %}
-							<li><a data-url="{% url 'delete_page' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+							<li><a data-url="{% url 'delete_page' pk=object.pk %}" onclick="deleteitem(this)" title="ELiminar página"><i class="fa fa-close"></i></a></li>
 						{% endif %}
 					</ul>
 					<div class="clearfix"></div>
@@ -94,9 +94,9 @@
 								<li>
 									<strong>Menú: </strong>
 									{% if object.menu %}
-										<a href="#" data-url="{% url 'delete_menupage' pk=object.menu.pk %}" onclick="deletemenu(this)"><i class="fa fa-close"></i></a>
+										<a href="#" data-url="{% url 'delete_menupage' pk=object.menu.pk %}" onclick="deletemenu(this)" title="Eliminar elemento del menú"><i class="fa fa-close"></i></a>
 									{% else %}
-										<a href="{% url 'create_menupage' pk=object.pk %}" ><i class="fa fa-plus"></i></a>
+										<a href="{% url 'create_menupage' pk=object.pk %}" title="Agregar elemento al menú"><i class="fa fa-plus"></i></a>
 									{% endif %}
 								</li>
 							</ul>
