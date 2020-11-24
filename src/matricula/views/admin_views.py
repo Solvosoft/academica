@@ -550,7 +550,7 @@ def pre_enroll_group(request, pk=None):
             if group:
                 form = PreEnrollAddGroupForm(request.POST)
                 if form.is_valid():
-                    enroll = Enroll.objects.filter(pk__in=form.cleaned_data['students'])
+                    enroll = Enroll.objects.filter(pk__in=form.cleaned_data['students'], group=group)
                     for instance in enroll:
                         instance.enroll_finished = True
                         instance.save()
@@ -562,6 +562,7 @@ def pre_enroll_group(request, pk=None):
             if request.method == "GET":
                 instance = Group.objects.get(pk=pk)
                 context['object'] = instance
+                context['pre_enroll_list'] = Enroll.objects.filter(group=instance, enroll_finished=False)
                 return render(
                     request, 'groups/pre_enroll_group_list.html', context)
     return HttpResponseRedirect(reverse('periods'))
