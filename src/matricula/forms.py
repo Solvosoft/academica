@@ -476,7 +476,8 @@ class ProfessorSearchForm(GTForm, forms.Form):
         queryset=Professor.objects.all(), widget=djgentelella.SelectMultiple,
         required=False, label="Profesora")
 
-    status = forms.ChoiceField(choices=PROFESSOR_STATES, widget=djgentelella.Select, required=False, label="Estado")
+    status = forms.ChoiceField(
+        choices=PROFESSOR_STATES, widget=djgentelella.Select, required=False, label="Estado")
 
 
 class ProfessorAddForm(GTForm, forms.ModelForm):
@@ -586,4 +587,3 @@ class CourseMainSearchForm(GTForm, forms.Form):
     is_paid = forms.ChoiceField(
         choices=IS_PAID, widget=djgentelella.Select,
         required=False, label="Pagado")
-
