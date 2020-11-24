@@ -1,8 +1,8 @@
 {% load static %}
-{% load invoice_code %}
+{% load i18n %}
 <html>
     <head>
-        <title>Facturación</title>
+        <title>Certificado</title>
 
         <style>
           @page {
@@ -112,10 +112,10 @@
             </div>
 
             <div class="description_text" id="end_text">
-                por la conlusión de curso {{enroll.group.course}} con una nota de {{enroll.course_score}}.
+                por la conlusión del curso {{enroll.group.course}} con una nota de {{enroll.course_score}}
             </div>
             <div id="short_text">
-                Emitido en la Universidad Popular el {{date}}.
+                Emitido en la Universidad Popular el {% blocktranslate %}{{certificate_date}}{% endblocktranslate %}.
             </div>
 
     </body>

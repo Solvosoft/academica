@@ -671,7 +671,7 @@ def export_group(request, pk=None):
 def list_students_group(request, pk=None):
     context = {}
     show_buttons_certificates = False
-    show_column_certificates = False
+    show_column_action = False
     if pk is not None:
         context = {}
         if request.method == "POST":
@@ -692,17 +692,22 @@ def list_students_group(request, pk=None):
                 instance = Group.objects.get(pk=pk)
                 context['object'] = instance
 
-                for enroll in Enroll.objects.filter(group=instance):
+                enroll_list = Enroll.objects.filter(group=instance)
+                approved_students = enroll_list.filter(course_status="approved")
+                enroll_finished = enroll_list.filter(enroll_finished=True)
+                enroll_list_with_certificates = enroll_list.filter(pdf_certificate__isnull=False).exclude(pdf_certificate="")
 
-                    if enroll.pdf_certificate is None or enroll.pdf_certificate == "":
+                for enroll in enroll_list:
+
+                    if enroll.pdf_certificate is None or enroll.pdf_certificate == "" and approved_students and enroll_finished and request.user.is_superuser:
                         show_buttons_certificates = True
                         break
 
-                if not show_buttons_certificates:
-                    show_column_certificates = True
+                if enroll_list_with_certificates:
+                    show_column_action = True
 
+                context['show_column_action'] = show_column_action
                 context['show_buttons_certificates'] = show_buttons_certificates
-                context['show_column_certificates'] = show_column_certificates
                 return render(
                     request, 'groups/group_students_list.html', context)
     return HttpResponseRedirect(reverse('periods'))
@@ -1152,10 +1157,10 @@ class MenuPageDelete(DeleteView):
 
 def build_pdf_certificate(enroll):
     html = 'certificate.html'
-    date = '{:%d de %B del %Y}'.format(now())
+    date = str('{:%d de %B del %Y}'.format(now()))
     sourceHtml = render_to_string('certificate.html', context={
         'enroll': enroll,
-        'date': date
+        'certificate_date': date
     })
     # FIXME the variable 'enqueued' == False, it must be false o we should change it to True?!
     resultFile = io.BytesIO()
@@ -1181,12 +1186,20 @@ def build_pdf_certificate_view(request, pk):
     response.write(enroll.pdf_certificate.read())
     return response
 
+@staff_member_required
+def regenerate_certificate(request, pk_group, pk):
+    enroll = get_object_or_404(Enroll, pk=pk)
+    build_pdf_certificate(enroll)
+    messages.success(request, "Certificado regenerado con éxito.")
+    return redirect('list_students_group', pk=pk_group)
+
 
 def build_pdf_certificate_list(request, pk):
 
-    enroll_list = Enroll.objects.filter(group__pk=pk)
+    enroll_list = Enroll.objects.filter(group__pk=pk, course_status="approved", enroll_finished=True)
     if enroll_list:
         for enroll in enroll_list:
-            build_pdf_certificate_view(request, enroll.pk)
+            if enroll.pdf_certificate is None or enroll.pdf_certificate == "":
+                build_pdf_certificate_view(request, enroll.pk)
         messages.success(request, "Certificados generados exitosamente.")
         return redirect("list_students_group", pk=pk)

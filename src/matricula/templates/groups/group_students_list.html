@@ -58,7 +58,7 @@
 {% endblock %}
 {%block content %}
 	<h1 class="text-center">Lista de estudiantes del curso</h1>
-	<div class="col-md-10 col-sm-12 col-md-offset-1">
+	<div class="col-sm-12">
 		<div class="x_panel">
 			<h2 class="green text-center">{{object.name}}</h2>
 			<div class="text-right"><span class="badge bg-info pull-right">Estudiantes: {{object.enroll_set.all.count}}</span>.</div>
@@ -73,9 +73,10 @@
 								<th class="column-title">Para matricular</th>
 								<th class="column-title">Matriculado</th>
 								<th class="column-title">Factura Generada</th>
-								{% if show_column_certificates %}
-									<th class="column-title">Certificado</th>
-								{% endif %}
+								<th class="column-title">Certificado</th>
+								{% if show_column_action %}
+									<th class="column-title">Acción</th>
+								{%endif%}
 							</tr>
 						</thead>
 						<tbody>
@@ -86,11 +87,29 @@
 									<td class="">{% if enroll.enroll_activate%}Si{%else%}No{%endif%}</td>
 									<td class="">{% if enroll.enroll_finished%}Si{%else%}No{%endif%}</td>
 									<td class="">{% if enroll.bill_created %}Si{%else%}No{%endif%}</td>
-									{% if show_column_certificates %}
+									<td class="">
+										{% if enroll.pdf_certificate %}
+											<a title="Certificado" href="{{ enroll.pdf_certificate.url }}" target="_blank" class="btn btn-sm">
+											  <i class="fa s-2 fa-file-pdf-o"></i></a>
+										{%else%}
+											{% if enroll.enroll_finished %}
+												{% if enroll.course_status == "reproved" %}
+													Estudiante reprobado.
+												{% elif enroll.course_status == "approved" %}
+													Estudiante aprobado, debe generar el certificado.
+												{%else%}
+													Estudiante no calificado.
+												{%endif%}
+											{%else%}
+												Matrícula no finalizada.
+											{%endif%}
+										{%endif%}
+									</td>
+									{% if show_column_action %}
 										<td class="">
 											{% if enroll.pdf_certificate %}
-											<a title="Certificado" href="{{ enroll.pdf_certificate.url }}" target="_blank" class="btn btn-sm">
-													  <i class="fa s-2 fa-file-pdf-o"></i></a>
+											<a title="Regenerar certificado" href="{% url 'build_pdf_certificate_view' pk_group=enroll.group.pk pk=enroll.pk %}" class="btn btn-sm">
+												  <i class="fa fa-refresh green fa-2x"></i></a>
 											{%endif%}
 										</td>
 									{%endif%}

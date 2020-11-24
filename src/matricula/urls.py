@@ -7,14 +7,16 @@ Created on 7/4/2015
 
 from django.conf.urls import url
 from django.urls import path
-from matricula.views.Auth import recover_password,\
-    mail_recover_pass, authenticate, create_user, login_user,\
+
+from matricula.contrib.bills.urls import urlpatterns as billurls
+from matricula.views.Auth import recover_password, \
+    mail_recover_pass, authenticate, create_user, login_user, \
     confirm_email, logout, StudentEdit, add_student
 from matricula.views.Courses import list_courses, view_course
-from .admin import admin_site
-from matricula.views.Pages import PageDetail
-from matricula.views.Enrollments import list_enroll, enrollme,\
+from matricula.views.Enrollments import list_enroll, enrollme, \
     finish_enroll
+from matricula.views.Pages import PageDetail
+from .admin import admin_site
 from .views.admin_views import CategoryList, create_category, \
     CategoryDelete, edit_category, CourseList, create_course, \
     CourseDelete, edit_course, MenuItemList, create_menuitem, MenuItemDelete, \
@@ -24,16 +26,13 @@ from .views.admin_views import CategoryList, create_category, \
     edit_student, StudentDelete, PageList, create_page, edit_page, PageDelete, \
     export_group, recovery_pass_student, MenuPageDelete, create_menupage, \
     pre_enroll_group, add_group_course, list_students_group, \
-    export_enrolled_group, open_group, close_group, build_pdf_certificate_view, build_pdf_certificate_list
-from matricula.contrib.bills.urls import urlpatterns as billurls
-
+    export_enrolled_group, open_group, close_group, build_pdf_certificate_list, regenerate_certificate
+from .views.coupons_views import coupons_list, create_cupon, delete_coupon, edit_coupon, coupons_bill_list, \
+    add_coupons_group
 from .views.professor_views import ProfessorsList, CreateProfessor, EditProfessor, edit_profile, delete_professor, \
     deactivate_professor
 from .views.students_views import qualify_students, save_quality_student, \
     update_enroll, update_enroll_status
-
-from .views.coupons_views import coupons_list, create_cupon, delete_coupon, edit_coupon, coupons_bill_list, \
-    add_coupons_group
 
 urlpatterns = [
     url('^create_user$', create_user, name="create_user_academy"),
@@ -114,4 +113,5 @@ urlpatterns = [
     path('enrrolment/coupons/<int:pk>/edit', edit_coupon, name="edit_coupon"),
     path('enrrolment/coupons/<int:pk>/<int:percentage>/group/', add_coupons_group, name="add_coupons_group"),
     path('enrrolment/certificate/build/<int:pk>/', build_pdf_certificate_list, name="build_pdf_certificate_list"),
+    path('enrrolment/certificate/enroll/<int:pk_group>/<int:pk>/', regenerate_certificate, name="build_pdf_certificate_view"),
 ] + billurls
