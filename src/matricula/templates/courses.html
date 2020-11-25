@@ -5,7 +5,7 @@
 {% endblock %}
 {%block content%}
 	<div class="row">
-		<h1 class="text-center"> {% trans 'List of available courses' %} </h1>
+		<h1 class="text-center">Lista de cursos disponibles</h1>
 		{% if request.user.is_authenticated and not request.user.student %}
 			<form method="post" action="{% url 'add_student' %}">
 				{% csrf_token %}

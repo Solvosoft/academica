@@ -8,7 +8,6 @@ Created on 7/4/2015
 from django.conf.urls import url
 from django.urls import path
 
-from matricula.contrib.bills.urls import urlpatterns as billurls
 from matricula.views.Auth import recover_password, \
     mail_recover_pass, authenticate, create_user, login_user, \
     confirm_email, logout, StudentEdit, add_student
@@ -26,15 +25,21 @@ from .views.admin_views import CategoryList, create_category, \
     edit_student, StudentDelete, PageList, create_page, edit_page, PageDelete, \
     export_group, recovery_pass_student, MenuPageDelete, create_menupage, \
     pre_enroll_group, add_group_course, list_students_group, \
-    export_enrolled_group, open_group, close_group, build_pdf_certificate_list, regenerate_certificate
+    export_enrolled_group, open_group, close_group, regenerate_certificate, \
+    build_pdf_certificate_list
+
 from .views.coupons_views import coupons_list, create_cupon, delete_coupon, edit_coupon, coupons_bill_list, \
     add_coupons_group
+from matricula.contrib.bills.urls import urlpatterns as billurls
+from matricula.views.Auth import get_profile
+
 from .views.professor_views import ProfessorsList, CreateProfessor, EditProfessor, edit_profile, delete_professor, \
     deactivate_professor
 from .views.students_views import qualify_students, save_quality_student, \
     update_enroll, update_enroll_status
 
 urlpatterns = [
+    url('^accounts/profile/?$', get_profile, name='profile'),
     url('^create_user$', create_user, name="create_user_academy"),
     url('^add_student$', add_student, name="add_student"),
     url('^login_user$', login_user, name="login_user"),
