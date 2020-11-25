@@ -223,18 +223,21 @@ td[class="spechide"]
                                 <div class="contentEditable" align='center'>
 <p>
 {% blocktrans %}
-Gracias por suscribirse a la página web de la academia, estamos felices de tenerlo con nosotros, 
-tenemos varios cursos que le esperan, pero se requiere un paso más.
+Gracias por suscribirte a la página web de la academia, estamos felices de tenerte con nosotros, 
+tenemos varios cursos que te esperan, pero se requiere un paso más.
 {% endblocktrans %}
 </p>
-<p style="color: #FF0000;">
-
-{% blocktrans %}Tu correo electrónico de confirmación es necesario, por favor use {% endblocktrans %}
-<a href="{{url}}?id={{student.pk}}&key={{student.key}}" > {% trans 'este link' %} </a> {% trans 'para confirmar su correo electrónico' %}</p>
 
 <p>
-{% blocktrans %}si tu servicio de correo electrónico bloquea los enlaces, entonces copia y pega esta url en una nueva pestaña{% endblocktrans %}
-<br> {{url}}?id={{student.pk}}&key={{student.key}}</p> 
+  <span style="color: #FF0000;">
+    Tu correo electrónico de confirmación es necesario, por favor use
+    <a href="{{url}}?id={{student.pk}}&key={{student.key}}" >
+      {% trans 'este link' %} 
+    </a> para confirmar su correo electrónico.
+  </span>
+  Si tu servicio de correo electrónico bloquea los enlaces, entonces copia y pega esta url en una nueva pestaña.
+  <br> {{url}}?id={{student.pk}}&key={{student.key}}
+</p>
 
 <br><br>
 {% trans 'Saludos cordiales.' %}
