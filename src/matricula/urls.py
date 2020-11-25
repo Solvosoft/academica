@@ -21,11 +21,12 @@ from .views.admin_views import CategoryList, create_category, \
     edit_menuitem, PeriodList, create_period, edit_period, PeriodDelete, \
     GroupList, create_group, edit_group, GroupDelete, EnrollList, \
     create_enroll, edit_enroll, EnrollDelete, StudentList, create_student, \
-    edit_student, StudentDelete, PageList, create_page, edit_page, PageDelete, \
+    edit_student, StudentDelete, PageList, create_page, edit_page, PageDelete,\
     export_group, recovery_pass_student, MenuPageDelete, create_menupage, \
     pre_enroll_group, add_group_course, list_students_group, \
     export_enrolled_group, open_group, close_group, build_pdf_certificate_view, build_pdf_certificate_list
 from matricula.contrib.bills.urls import urlpatterns as billurls
+from matricula.views.Auth import get_profile
 
 from .views.professor_views import ProfessorsList, CreateProfessor, EditProfessor, edit_profile, delete_professor, \
     deactivate_professor
@@ -36,6 +37,7 @@ from .views.coupons_views import coupons_list, create_cupon, delete_coupon, edit
     add_coupons_group
 
 urlpatterns = [
+    url('^accounts/profile/?$', get_profile, name='profile'),
     url('^create_user$', create_user, name="create_user_academy"),
     url('^add_student$', add_student, name="add_student"),
     url('^login_user$', login_user, name="login_user"),
