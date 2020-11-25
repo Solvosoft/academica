@@ -4,42 +4,43 @@ Created on 18/10/2020
 
 @author: allexiusw
 '''
-from django.conf import settings
-from django.contrib.admin.views.decorators import staff_member_required
-from django.views.generic import ListView, DeleteView
-from django.utils.translation import ugettext_lazy as _
-from django.shortcuts import render, redirect
-from matricula.models import Category, Course, Period, Group,\
-    Enroll, Student, Page, Professor
-from matricula.forms import CategoryCreateForm, CategorySearchForm,\
-    CourseSearchForm, CourseCreateForm, MenuItemSearchForm,\
-    MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm,\
-    GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentSearchForm,\
-    StudentAdminCreateForm, PageCreateForm, PageSearchForm, MenuItemAddForm,\
-    PreEnrollAddGroupForm, GroupAddForm, GroupEditForm, PermissionForm
-from djgentelella.models import MenuItem as DJMenuItem
-from django.contrib import messages
-from django.urls import reverse
-from django.http import HttpResponseRedirect
-from django.contrib.auth.decorators import permission_required
-from django.utils.decorators import method_decorator
-from django.db.models import Q
-from django.contrib.auth.models import User
-from django.core.paginator import Paginator
 import csv
-from django.http import HttpResponse
-from django.utils.timezone import now
-from .utils import get_active_period
-from xhtml2pdf import pisa
-from django.shortcuts import get_object_or_404
-from django.template.loader import get_template
-from django.contrib.staticfiles import finders
-import os
-from matricula.views.utils import get_expire_date
-from async_notifications.utils import send_email_from_template
 import io
+import os
+
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.models import User
+from django.contrib.staticfiles import finders
 from django.core.files.base import File
-from django.core.files.base import File
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render, redirect
+from django.template.loader import get_template, render_to_string
+from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.utils.timezone import now
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import ListView, DeleteView
+from djgentelella.models import MenuItem as DJMenuItem
+from xhtml2pdf import pisa
+
+from async_notifications.utils import send_email_from_template
+from matricula.forms import CategoryCreateForm, CategorySearchForm, \
+    CourseSearchForm, CourseCreateForm, MenuItemSearchForm, \
+    MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, \
+    GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentSearchForm, \
+    StudentAdminCreateForm, PageCreateForm, PageSearchForm, MenuItemAddForm, \
+    PreEnrollAddGroupForm, GroupAddForm, GroupEditForm, PermissionForm
+from matricula.models import Category, Course, Period, Group, \
+    Enroll, Student, Page, Professor
+from matricula.views.utils import get_expire_date
+from .utils import get_active_period
 
 
 def link_callback(uri, rel):
@@ -517,13 +518,24 @@ class GroupList(ListView):
             else:
                 queryset = queryset.filter(is_open=False)
 
-        if professor:
-            queryset = queryset.filter(professors=professor)
+        if not user.is_superuser:
+            if professor:
+                queryset = queryset.filter(professors=professor)
 
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        show_qualify_students_button = False
+
+        user = self.request.user
+        professor = Professor.objects.filter(user=user).first()
+
+        if professor or self.request.user.is_superuser:
+            show_qualify_students_button = True
+
+        context['show_qualify_students_button'] = show_qualify_students_button
+
         context['form_search'] = GroupSearchForm(self.request.GET)
         return context
 
@@ -538,7 +550,7 @@ def pre_enroll_group(request, pk=None):
             if group:
                 form = PreEnrollAddGroupForm(request.POST)
                 if form.is_valid():
-                    enroll = Enroll.objects.filter(pk__in=form.cleaned_data['students'])
+                    enroll = Enroll.objects.filter(pk__in=form.cleaned_data['students'], group=group)
                     for instance in enroll:
                         instance.enroll_finished = True
                         instance.save()
@@ -550,6 +562,7 @@ def pre_enroll_group(request, pk=None):
             if request.method == "GET":
                 instance = Group.objects.get(pk=pk)
                 context['object'] = instance
+                context['pre_enroll_list'] = Enroll.objects.filter(group=instance, enroll_finished=False)
                 return render(
                     request, 'groups/pre_enroll_group_list.html', context)
     return HttpResponseRedirect(reverse('periods'))
@@ -658,7 +671,7 @@ def export_group(request, pk=None):
 def list_students_group(request, pk=None):
     context = {}
     show_buttons_certificates = False
-    show_column_certificates = False
+    show_column_action = False
     if pk is not None:
         context = {}
         if request.method == "POST":
@@ -679,17 +692,22 @@ def list_students_group(request, pk=None):
                 instance = Group.objects.get(pk=pk)
                 context['object'] = instance
 
-                for enroll in Enroll.objects.filter(group=instance):
+                enroll_list = Enroll.objects.filter(group=instance)
+                approved_students = enroll_list.filter(course_status="approved")
+                enroll_finished = enroll_list.filter(enroll_finished=True)
+                enroll_list_with_certificates = enroll_list.filter(pdf_certificate__isnull=False).exclude(pdf_certificate="")
 
-                    if enroll.pdf_certificate is None or enroll.pdf_certificate == "":
+                for enroll in enroll_list:
+
+                    if enroll.pdf_certificate is None or enroll.pdf_certificate == "" and approved_students and enroll_finished and request.user.is_superuser:
                         show_buttons_certificates = True
                         break
 
-                if not show_buttons_certificates:
-                    show_column_certificates = True
+                if enroll_list_with_certificates:
+                    show_column_action = True
 
+                context['show_column_action'] = show_column_action
                 context['show_buttons_certificates'] = show_buttons_certificates
-                context['show_column_certificates'] = show_column_certificates
                 return render(
                     request, 'groups/group_students_list.html', context)
     return HttpResponseRedirect(reverse('periods'))
@@ -1139,10 +1157,10 @@ class MenuPageDelete(DeleteView):
 
 def build_pdf_certificate(enroll):
     html = 'certificate.html'
-    date = '{:%d de %B del %Y}'.format(now())
+    date = str('{:%d de %B del %Y}'.format(now()))
     sourceHtml = render_to_string('certificate.html', context={
         'enroll': enroll,
-        'date': date
+        'certificate_date': date
     })
     # FIXME the variable 'enqueued' == False, it must be false o we should change it to True?!
     resultFile = io.BytesIO()
@@ -1168,12 +1186,20 @@ def build_pdf_certificate_view(request, pk):
     response.write(enroll.pdf_certificate.read())
     return response
 
+@staff_member_required
+def regenerate_certificate(request, pk_group, pk):
+    enroll = get_object_or_404(Enroll, pk=pk)
+    build_pdf_certificate(enroll)
+    messages.success(request, "Certificado regenerado con éxito.")
+    return redirect('list_students_group', pk=pk_group)
+
 
 def build_pdf_certificate_list(request, pk):
 
-    enroll_list = Enroll.objects.filter(group__pk=pk)
+    enroll_list = Enroll.objects.filter(group__pk=pk, course_status="approved", enroll_finished=True)
     if enroll_list:
         for enroll in enroll_list:
-            build_pdf_certificate_view(request, enroll.pk)
+            if enroll.pdf_certificate is None or enroll.pdf_certificate == "":
+                build_pdf_certificate_view(request, enroll.pk)
         messages.success(request, "Certificados generados exitosamente.")
         return redirect("list_students_group", pk=pk)

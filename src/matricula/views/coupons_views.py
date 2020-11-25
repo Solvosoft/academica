@@ -135,18 +135,25 @@ def create_cupon(request):
             discount_percentage = form.cleaned_data['discount_percentage']
 
             if course and student_list and discount_percentage:
+
                 for student in student_list:
+
+                    code = "UP" + str(year) + str(student)[0:2] + "P" + str(discount_percentage) + str(
+                                    course)[0:2]
 
                     check_coupon = Coupon.objects.filter(student=student, course=course)
 
                     if check_coupon:
 
                         if check_coupon.count() == 1 and check_coupon.first().discount_percentage == 50 and discount_percentage == "50":
+
+                            if check_coupon.first().code[9] == "5":
+                                code = "UP" + str(year) + str(student)[0:2] + "P2" + str(discount_percentage) + str(course)[0:2]
+
                             coupon = Coupon(
                                 student=student,
                                 course=course,
-                                code="UP" + str(year) + str(student)[0:2] + "P2" + str(discount_percentage) + str(
-                                    course)[0:2],
+                                code=code,
                                 discount_percentage=int(discount_percentage)
                             )
                             coupons_list.append(coupon)
@@ -154,26 +161,27 @@ def create_cupon(request):
                             student = str(student)
                             send_coupons = False
                             break
+
                     else:
                         coupon = Coupon(
                                 student=student,
                                 course=course,
-                                code="UP" + str(year) + str(student)[0:2] + "P" + str(discount_percentage) + str(
-                                    course)[0:2],
+                                code=code,
                                 discount_percentage=int(discount_percentage)
                             )
                         coupons_list.append(coupon)
 
                 if send_coupons:
 
-                    if coupons_list:
+                    if len(coupons_list) > 0:
 
                         Coupon.objects.bulk_create(coupons_list)
                         send_code_notification(coupons_list, request.user)
                         messages.success(request, "El cupón ha sido registrado y se notificó al estudiante éxitosamente.")
                         return redirect('coupons_list')
-                else:
-                    get_error_message(request, student)
+
+                    else:
+                        get_error_message(request, student)
 
     else:
         form = CouponAddForm()
@@ -271,14 +279,16 @@ def coupons_bill_list(request, pk):
 def update_bill(bill, discount, total, percentage, code, enrollment, user):
 
     coupon = Coupon(
-        course=bill.enrollment.group.course,
-        student=bill.student,
+        course=enrollment.group.course,
+        student=enrollment.student,
         discount_percentage=percentage,
-        code=code,
-        bill=bill,
-        is_used=True
+        code=code
     )
+    if bill:
+        coupon.bill=bill
+        coupon.is_used=True
     coupon.save()
+
     send_email_from_template(
         "coupon_code_notification",
         coupon.student.user.email,
@@ -318,7 +328,7 @@ def add_coupons_group(request, pk, percentage):
            code = "UP" + str(year) + str(student)[0:2] + "P" + str(percentage) + str(group.course)[0:2]
            enrollment = Enroll.objects.filter(student=student, group=group).first()
            bill = Bill.objects.filter(enrollment=enrollment).first()
-           discount = bill.enrollment.group.cost
+           discount = enrollment.group.cost
            total = 0.0
 
            if Coupon.objects.filter(student=student, course=group.course):
@@ -330,7 +340,7 @@ def add_coupons_group(request, pk, percentage):
                        update_bill(bill, discount, total, percentage, code, enrollment, request.user)
            else:
                if percentage == 50:
-                   discount = bill.enrollment.group.cost /2
-                   total = bill.enrollment.group.cost /2
+                   discount = enrollment.group.cost /2
+                   total = enrollment.group.cost /2
 
                update_bill(bill, discount, total, percentage, code, enrollment, request.user)

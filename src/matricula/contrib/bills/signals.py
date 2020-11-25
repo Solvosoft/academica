@@ -20,8 +20,9 @@ def create_bill(sender, **kwargs):
     if not instance.bill_created and instance.enroll_finished\
             and instance.group.cost > 0:
         instance.bill_created = True
+        instance.save()
 
-        coupons = Coupon.objects.filter(course=instance.group.course, student=instance.student)
+        coupons = Coupon.objects.filter(course=instance.group.course, student=instance.student, is_used=False)
         discount = 0.0
         total = instance.group.cost
 
@@ -35,8 +36,6 @@ def create_bill(sender, **kwargs):
                 if percentage == 50:
                     discount = instance.group.cost / 2
                     total = instance.group.cost / 2
-
-        instance.save()
 
         Bill.objects.create(
             short_description=_("Enroll in %s") % (instance.group),
@@ -57,7 +56,9 @@ def create_bill(sender, **kwargs):
             enrollment=instance
         )
 
-        Coupon.objects.filter(course=instance.group.course, student=instance.student).update(bill=Bill.objects.last(), is_used=True)
+        if coupons:
+
+            coupons.update(bill=Bill.objects.last(), is_used=True)
 
 
 @csrf_exempt

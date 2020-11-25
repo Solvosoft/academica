@@ -46,7 +46,7 @@
                                 <td>{{ enroll.student.user.get_full_name }}</td>
                                 <td>{{ enroll.student.user.email }}</td>
                                 <td>
-                                    <input type="number" name="course_score" value="{{ enroll.course_score }}" step="0.0000" required id="id_course_score{{enroll.pk}}">
+                                    <input type="number" step="any" name="course_score" value="{{ enroll.course_score }}" required id="id_course_score{{enroll.pk}}">
                                 </td>
                                 <td>
                                     <select name="course_status"  class="select2_single form-control " data-widget="Select" id="id_course_status{{enroll.pk}}">
@@ -65,6 +65,7 @@
                         <div class="form-group" style="text-align:center">
                             <a class="btn btn-danger" type="button" href="{% url 'groups_enroll' %}">Cancelar</a>
                             <button class="btn btn-success" type="button" onclick="json_table()">Guardar</button>
+                            <a class="btn btn-primary" type="button" href="{% url 'groups_enroll' %}">Atrás</a>
                         </div>
                     </div>
                 </div>
@@ -80,14 +81,16 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Calificar estudiantes</h4>
+          <h5><strong>Esta acción modificará los estados de los estudiantes seleccionados.</strong></h5>
       </div>
       <div class="modal-body">
+
           {% csrf_token %}
           {{form.as_horizontal}}
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" onclick="qualify_status()" class="btn btn-primary">Guardar</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+        <button type="button" onclick="qualify_status()" class="btn btn-success">Guardar</button>
       </div>
         </form>
     </div>

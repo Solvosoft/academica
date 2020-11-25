@@ -56,20 +56,20 @@
 			<div class="col-md-4 col-lg-3 col-sm-6 col-xs-12">
 				<div class="x_panel" style="height:230px;word-break: break-all;">
 					<div class="x_title">
-						<h2 class="green">{{course.category.name|wordwrap:17|linebreaks}}</h2>
+						<h2 class="green">{{course.name|wordwrap:17|linebreaks}}</h2>
 						<ul class="nav navbar-right panel_toolbox" style="min-width: unset;">
 							{% if perms.matricula.can_add_group_course %}
 								<li>
-									<a href="{% url 'add_group_course' course.pk %}"><i class="fa fa-plus blue"></i></a>
+									<a href="{% url 'add_group_course' course.pk %}" title="Agregar grupo"><i class="fa fa-plus blue"></i></a>
 								</li>
 							{% endif %}
 							{% if perms.matricula.change_course %}
 								<li>
-									<a href="{% url 'edit_course' course.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
+									<a href="{% url 'edit_course' course.pk %}" class="edit-link" title="Editar curso"><i class="fa fa-edit"></i></a>
 								</li>
 							{% endif %}
 							{% if perms.matricula.delete_course %}
-								<li><a data-url="{% url 'delete_course' pk=course.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+								<li><a data-url="{% url 'delete_course' pk=course.pk %}" title="Eliminar curso" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
 							{% endif %}
 						</ul>
 						<div class="clearfix"></div>

@@ -80,7 +80,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								{% for enroll in object.enroll_set.all %}
+								{% for enroll in pre_enroll_list %}
 									<tr class="{% cycle 'odd' 'even' %} pointer">
 										<td class="a-center ">
 											<input type="checkbox" value="{{enroll.pk}}" class="flat" name="students" data-id="{{enroll.student.pk}}">
