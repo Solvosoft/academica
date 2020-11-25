@@ -98,8 +98,8 @@ def confirm_email(request):
         student.confirm(key)
         if student.user.is_active:
             return render(
-                request, 'messages.html',{
-                    'message': _('Congratulations, now you can login'),
+                request, 'messages.html', {
+                    'message': "Felicidades tu cuenta ha sido validada, ya iniciar sesión",
                     'mtype': 'success'})
     except Exception as e:
         print(e)
