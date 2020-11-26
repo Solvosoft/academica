@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, permission_required
 from django.contrib.auth.models import Permission
 from django.core.exceptions import PermissionDenied
 
@@ -11,6 +11,9 @@ def user_group_perms(perm, login_url=None, raise_exception=False):
 
         app_label, codename = (perm.split("."))
         permission = Permission.objects.filter(codename=codename, content_type__app_label=app_label).first()
+
+        if permission_required(perm):
+            return True
 
         if permission:
             for group in user.groups.all():
