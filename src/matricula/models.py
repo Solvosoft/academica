@@ -48,6 +48,13 @@ class Professor(models.Model):
             dev = self.user.get_full_name()
         return dev
 
+    class Meta:
+        verbose_name = _("Professor")
+        verbose_name_plural = _("Professors")
+        permissions = [
+            ("change_profile", "Can change_profile"),
+        ]
+
 
 class Period(models.Model):
     name = models.CharField(max_length=50, verbose_name=_("Name"))
@@ -193,6 +200,10 @@ class Enroll(models.Model):
     class Meta:
         verbose_name = _("Enrollment")
         verbose_name_plural = _("Enrollments")
+        permissions = [
+            ("can_view_qualifications", "Can view qualifications"),
+            ("can_qualify_students", "Can qualify students"),
+        ]
 
 
 class MenuItem(models.Model):
