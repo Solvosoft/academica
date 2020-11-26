@@ -39,6 +39,7 @@
 				</div>
 				<!-- end delete modal-->
 			{% endif %}
+			<div class="row">
 			{% for object in page_obj %}
 				{% if perms.matricula.add_category %}
 					<div class="col-md-6 col-lg-6 col-sm-12">
@@ -67,6 +68,7 @@
 					</div>
 				</div>
 			{% endfor %}
+						</div>
 			<div class="clearfix"></div>
 			<div class="paginator_container text-center">
 				{% if is_paginated %}

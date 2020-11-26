@@ -25,7 +25,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-12 col-xs-12 col-lg-2 col-md-3">
+		<div class="col-sm-12 col-xs-12 col-lg-2 col-md-3 text-right">
 			{% if perms.djgentelella.add_menuitem %}
 				<a class="btn btn-primary" href="{% url 'create_menuitem' %}">Crear menú</a>
 			{% endif %}
@@ -49,6 +49,7 @@
 		</div>
 		<!-- end delete modal-->
 	{% endif %}
+		<div class="row">
 	{% for object in object_list %}
 		<div class="col-md-6 col-lg-4 col-sm-6 col-xs-12">
 			<div class="x_panel">
@@ -95,6 +96,7 @@
 			</div>
 		</div>
 	{% endfor %}
+			</div>
 	<div class="clearfix"></div>
 	<div class="paginator_container text-center">
 		{% if is_paginated %}

@@ -6,7 +6,7 @@
 		{% if perms.matricula.add_category %}
 			<div class="col-md-6 col-sm-12 col-lg-8">
 		{% else %}
-			<div class="col-md-6 col-sm-12 col-lg-12">
+			<div class="col-sm-12 col-xs-12 col-md-8 col-md-offset-2">
 		{% endif %}
 			<div class="x_panel">
 				<div class="x_content">
@@ -39,6 +39,7 @@
 				</div>
 				<!-- end delete modal-->
 			{% endif %}
+				<div class="row">
 			{% for category in object_list %}
 				{% if perms.matricula.add_category %}
 					<div class="col-md-6 col-lg-6 col-sm-12">
@@ -66,6 +67,7 @@
 					</div>
 				</div>
 			{% endfor %}
+					</div>
 			<div class="clearfix"></div>
 			<div class="paginator_container text-center">
 				{% if is_paginated %}

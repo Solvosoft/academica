@@ -74,6 +74,7 @@ class CreateProfessor(CreateView):
         instance = form.save()
         professor_group = Group.objects.filter(name="Profesores").first()
         instance.user.groups.add(professor_group)
+        instance.user.user_permissions.add(*professor_group.permissions.all())
         messages.success(self.request, "Profesora registrada exitosamente.")
         return super().form_valid(form)
 

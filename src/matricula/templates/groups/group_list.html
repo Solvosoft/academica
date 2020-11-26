@@ -3,11 +3,7 @@
 {%block content %}
 	<h1 class="text-center">Grupos</h1>
 	<div class="row">
-		{% if perms.matricula.add_course %}
-			<div class="col-sm-12 col-xs-12 col-md-8 col-md-offset-2">
-		{% else %}
-			<div class="col-sm-12 col-xs-12 col-md-10 col-md-12-offset-1">
-		{% endif %}
+		<div class="col-sm-12 col-xs-12 col-md-8 col-md-offset-2">
 			<div class="x_panel">
 				<div class="x_content">
 					<form method="GET">
@@ -31,11 +27,11 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-12 col-xs-12 col-lg-2 col-md-3">
-			{% if perms.matricula.add_group %}
+		{% if perms.matricula.add_group %}
+			<div class="col-sm-2 col-xs-12 col-lg-2 col-md-3 text-right">
 				<a class="btn btn-primary" href="{% url 'create_group_enroll' %}">Crear Grupo</a>
-			{% endif %}
-		</div>
+			</div>
+		{% endif %}
 	</div>
 	{% if perms.matricula.delete_group %}
 		<!-- modal delete category -->
@@ -55,6 +51,7 @@
 		</div>
 		<!-- end delete modal-->
 	{% endif %}
+		<div class="row">
 	{% for object in object_list %}
 		<div class="col-md-6 col-lg-4 col-sm-6 col-xs-12">
 			<div class="x_panel" style="height:400px;word-break: break-word;">
@@ -128,6 +125,7 @@
 			</div>
 		</div>
 	{% endfor %}
+			</div>
 	<div class="clearfix"></div>
 	<div class="paginator_container text-center">
 		{% if is_paginated %}
