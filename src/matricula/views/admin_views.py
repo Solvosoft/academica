@@ -43,6 +43,22 @@ from matricula.views.utils import get_expire_date
 from .utils import get_active_period
 
 
+MONTHS_DICT = {
+    'January': 'enero',
+    'February': 'febrero',
+    'March': 'marzo',
+    'April': 'abril',
+    'May': 'mayo',
+    'June': 'junio',
+    'July': 'julio',
+    'August': 'agosto',
+    'September': 'setiembre',
+    'October': 'octubre',
+    'November': 'noviembre',
+    'December': 'diciembre'
+}
+
+
 def link_callback(uri, rel):
     """
     Convert HTML URIs to absolute system paths so xhtml2pdf can access those
@@ -1157,7 +1173,8 @@ class MenuPageDelete(DeleteView):
 
 def build_pdf_certificate(enroll):
     html = 'certificate.html'
-    date = str('{:%d de %B del %Y}'.format(now()))
+    month = MONTHS_DICT['{:%B}'.format(now())]
+    date = str(now().day) + " de " + month + " del " + str(now().year)
     sourceHtml = render_to_string('certificate.html', context={
         'enroll': enroll,
         'certificate_date': date
