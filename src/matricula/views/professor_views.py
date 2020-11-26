@@ -1,14 +1,17 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, UpdateView
 
+from matricula.decorators import user_group_perms
 from matricula.forms import ProfessorEditForm, ProfessorSearchForm, ProfessorAddForm
 from matricula.models import Professor
 
 @login_required
+@user_group_perms(perm='matricula.change_profile')
 def edit_profile(request):
     user = request.user
     professor = Professor.objects.filter(user=user).first()
@@ -68,7 +71,9 @@ class CreateProfessor(CreateView):
     success_url = reverse_lazy("professors_list")
 
     def form_valid(self, form):
-        form.save()
+        instance = form.save()
+        professor_group = Group.objects.filter(name="Profesores").first()
+        instance.user.groups.add(professor_group)
         messages.success(self.request, "Profesora registrada exitosamente.")
         return super().form_valid(form)
 

@@ -35,8 +35,7 @@ from matricula.views.Auth import get_profile
 
 from .views.professor_views import ProfessorsList, CreateProfessor, EditProfessor, edit_profile, delete_professor, \
     deactivate_professor
-from .views.students_views import qualify_students, save_quality_student, \
-    update_enroll, update_enroll_status
+from .views.students_views import qualify_students, update_enroll, update_enroll_status
 
 urlpatterns = [
     url('^accounts/profile/?$', get_profile, name='profile'),
@@ -92,7 +91,6 @@ urlpatterns = [
     path('enrrolment/edit_enroll/<int:pk>/', edit_enroll, name="edit_enroll"),
     url('enrrolment/students', StudentList.as_view(), name="students"),
     path('enrrolment/<int:pk>/qualify_students', qualify_students, name="qualify_students"),
-    path('enrrolment/<int:pk_enroll>/<int:pk_group>/qualify_student', save_quality_student, name="save_quality_student"),
     path('enrrolment/recovery_pass_student/<int:pk>/', recovery_pass_student, name="recovery_pass_student"),
     url('enrrolment/create_student', create_student, name="create_student"),
     path('enrrolment/delete_student/<int:pk>/', StudentDelete.as_view(), name="delete_student"),
