@@ -60,16 +60,16 @@
 					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
 						{% if perms.matricula.can_export_enrolled_group %}
 							<li>
-								<a href="{% url 'list_students_group' object.pk %}" class="edit-link"><i class="fa fa-mortar-board"></i></a>
+								<a title="Gestión del grupo" href="{% url 'list_students_group' object.pk %}" class="edit-link"><i class="fa fa-mortar-board"></i></a>
 							</li>
 						{% endif %}
 						{% if perms.matricula.change_group %}
 							<li>
-								<a href="{% url 'edit_group_enroll' object.pk %}" title="Editar grupo" class="edit-link"><i class="fa fa-edit"></i></a>
+								<a title="Editar grupo" href="{% url 'edit_group_enroll' object.pk %}" title="Editar grupo" class="edit-link"><i class="fa fa-edit"></i></a>
 							</li>
 						{% endif %}
 						{% if perms.matricula.delete_group %}
-							<li><a data-url="{% url 'delete_group_enroll' pk=object.pk %}" title="Eliminar grupo" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+							<li><a title="Eliminar grupo" data-url="{% url 'delete_group_enroll' pk=object.pk %}" title="Eliminar grupo" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
 						{% endif %}
 					</ul>
 					<div class="clearfix"></div>
@@ -110,13 +110,13 @@
 								</li>
 								<li><strong>Flujo del curso: </strong>{{object.FLOWS|index:object.flow|index:1}}</li>
 								{% if show_qualify_students_button %}
-								<li><strong>Calificar estudiantes: </strong><a href="{% url 'qualify_students' pk=object.pk %}"><i class="fa fa-check-square"></i></a></li>
+								<li><strong>Calificar estudiantes: </strong><a title="Calificar" href="{% url 'qualify_students' pk=object.pk %}"><i class="fa fa-check-square"></i></a></li>
 								{% endif %}
 								{% if perms.matricula.can_export_enrolled_group %}
-									<li><strong>Exportar estudiantes: </strong>{{object.enroll_set.all.count}} <a href="{% url 'export_group' object.pk%}"><i class="fa fa-file-text-o"></i></a></li>
+									<li><strong>Exportar estudiantes: </strong>{{object.enroll_set.all.count}} <a title="Exportar estudiantes a moodle" href="{% url 'export_group' object.pk%}"><i class="fa fa-file-text-o"></i></a></li>
 								{% endif %}
 								{% if perms.matricula.can_view_pre_enroll_group %}
-									<li><strong>Estudiantes pre-matriculados: </strong><a href="{% url 'pre_enroll_group' object.pk%}"><i class="fa fa-filter"></i></a></li>
+									<li><strong>Estudiantes pre-matriculados: </strong><a title="Lista de estudiantes pre-matriculados" href="{% url 'pre_enroll_group' object.pk%}"><i class="fa fa-filter"></i></a></li>
 								{% endif %}
 							</ul>
 						</div>
