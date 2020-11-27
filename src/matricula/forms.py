@@ -256,6 +256,13 @@ class GroupSearchForm(GTForm, forms.Form):
         (OPEN, "Abierto"),
         (CLOSE, "Cerrado"),
     )
+    name = forms.CharField(
+        required=False, widget=djgentelella.TextInput,
+        label="Nombre")
+    course = forms.ModelMultipleChoiceField(
+        queryset=Course.objects.all(), widget=djgentelella.SelectMultiple,
+        label="Curso", required=False
+    )
     period = forms.ModelMultipleChoiceField(
         queryset=Period.objects.all(), label="Periodo", widget=djgentelella.SelectMultiple,
         required=False

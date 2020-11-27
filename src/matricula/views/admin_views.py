@@ -522,6 +522,14 @@ class GroupList(ListView):
 
         self.form = GroupSearchForm(self.request.GET)
         self.form.is_valid()
+        if self.form.cleaned_data['name']:
+            queryset = queryset.filter(
+                Q(name__icontains=self.form.cleaned_data['name'])|
+                Q(course__name__icontains=self.form.cleaned_data['name'])|
+                Q(course__category__name__icontains=self.form.cleaned_data['name']))
+        if self.form.cleaned_data['course']:
+            queryset = queryset.filter(
+                course__in=self.form.cleaned_data['course'])
         if self.form.cleaned_data['period']:
             queryset = queryset.filter(period__in=self.form.cleaned_data['period'])
         if self.form.cleaned_data['currency']:

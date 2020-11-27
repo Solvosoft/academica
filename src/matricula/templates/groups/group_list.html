@@ -8,6 +8,12 @@
 				<div class="x_content">
 					<form method="GET">
 						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+							{% include 'field.html' with field=form_search.name %}
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+							{% include 'field.html' with field=form_search.course %}
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 							{% include 'field.html' with field=form_search.period %}
 						</div>
 						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
