@@ -201,6 +201,18 @@ class MenuItemCreateForm(forms.ModelForm, GTForm):
             'icon': djgentelella.TextInput,
             'only_icon': djgentelella.YesNoInput
         }
+        labels = {
+            'title': _('Title'),
+            'url_name': _('Url name'),
+            'category': _('Category'),
+            'is_reversed': _('Is reversed?'),
+            'reversed_kwargs': _('Reversed kwargs'),
+            'reversed_args': _('Reversed args'),
+            'parent': _('Category'),
+            'is_widget': _('Is a widget?'),
+            'icon': _('Icon'),
+            'only_icon': _('Only icon?')
+        }
 
     def __init__(self, *args, **kwargs):
         super(MenuItemCreateForm, self).__init__(*args, **kwargs)

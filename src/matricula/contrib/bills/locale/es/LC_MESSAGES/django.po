@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Matricula Bills\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-10 09:58-0600\n"
+"POT-Creation-Date: 2020-11-27 11:54-0600\n"
 "PO-Revision-Date: 2020-11-10 12:39-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: ES <es@solvosoft.com>\n"
@@ -19,12 +19,12 @@ msgstr ""
 "X-Generator: Poedit 2.2.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: contrib/bills/admin.py:11 contrib/bills/models.py:34
+#: contrib/bills/admin.py:11 contrib/bills/models.py:35
 msgid "Bills"
 msgstr "Facturas"
 
 #: contrib/bills/models.py:9 contrib/bills/models.py:20
-#: contrib/bills/templates/invoice_enroll.html:13
+#: contrib/bills/templates/invoice_enroll.html:17
 msgid "Amount"
 msgstr "Monto"
 
@@ -44,22 +44,14 @@ msgstr "Estudiante"
 msgid "Currency"
 msgstr "Moneda"
 
-#: contrib/bills/models.py:33
+#: contrib/bills/models.py:34
 msgid "Bill"
 msgstr "Factura"
 
-#: contrib/bills/signals.py:23
+#: contrib/bills/signals.py:41
 #, python-format
 msgid "Enroll in %s"
 msgstr "Matriculado en %s"
-
-#: contrib/bills/signals.py:55
-msgid "Academica Invoice paid"
-msgstr "Factura de Académica pagada"
-
-#: contrib/bills/signals.py:56
-msgid "Go to Academica"
-msgstr "Ir a Académica"
 
 #: contrib/bills/templates/bills.html:21
 msgid "Unpaid bills"
@@ -69,19 +61,19 @@ msgstr "Facturas sin pagar"
 msgid "You don't have Unpaid bills"
 msgstr "No tiene facturas sin pagar"
 
-#: contrib/bills/templates/email_invoice.html:16
+#: contrib/bills/templates/email_invoice.html:232
 msgid "Invoice paid"
 msgstr "Factura pagada"
 
-#: contrib/bills/templates/email_invoice.html:16
+#: contrib/bills/templates/email_invoice.html:234
 msgid "Invoice unpaid"
 msgstr "Factura no pagada"
 
-#: contrib/bills/templates/email_invoice.html:17
+#: contrib/bills/templates/email_invoice.html:236
 msgid "Unique Transaction ID"
 msgstr "ID único de transacción"
 
-#: contrib/bills/templates/email_invoice.html:22
+#: contrib/bills/templates/email_invoice.html:241
 msgid "Paid Date"
 msgstr "Fecha de pago"
 
@@ -89,9 +81,23 @@ msgstr "Fecha de pago"
 msgid "Academica Invoice"
 msgstr "Factura de Académica"
 
-#: contrib/bills/templates/invoice_enroll.html:17
+#: contrib/bills/templates/invoice_enroll.html:13
 msgid "Date"
 msgstr "Fecha"
+
+#: contrib/bills/templates/invoice_enroll.html:21
+msgid "Discount"
+msgstr ""
+
+#: contrib/bills/templates/invoice_enroll.html:25
+msgid "Total"
+msgstr ""
+
+#~ msgid "Academica Invoice paid"
+#~ msgstr "Factura de Académica pagada"
+
+#~ msgid "Go to Academica"
+#~ msgstr "Ir a Académica"
 
 #~ msgid "Paid bills"
 #~ msgstr "Facturas pagas"
