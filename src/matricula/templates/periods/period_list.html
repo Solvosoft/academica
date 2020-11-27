@@ -3,11 +3,9 @@
 {%block content%}
 	<h1 class="text-center">Períodos</h1>
 	<div class="row">
-		{% if perms.matricula.add_category %}
-			<div class="col-md-6 col-sm-12 col-lg-8">
-		{% else %}
-			<div class="col-md-6 col-sm-12 col-lg-12">
-		{% endif %}
+
+			<div class="{% if perms.matricula.add_period %}col-md-6 col-sm-12 col-lg-8{% else %}col-md-8 col-md-offset-2 col-xs-12{% endif %}">
+
 			<div class="x_panel">
 				<div class="x_content">
 					<form method="GET">
@@ -21,36 +19,20 @@
 					</form>
 				</div>
 			</div>
-			{% if perms.matricula.delete_category %}
-				<!-- modal delete category -->
-				<div id="modaldeleteitem" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
-					<div class="modal-dialog" role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-								<h4 class="modal-title">¿Está segura que desea eliminar el período?</h4>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-primary" data-dismiss="modal">Limpiar</button>
-								<a class="btn btn-danger" id="deleteitem">Eliminar</a>
-							</div>
-						</div>
+
+				{% if not perms.matricula.add_period %}
 					</div>
-				</div>
-				<!-- end delete modal-->
-			{% endif %}
-			<div class="row">
-			{% for object in page_obj %}
-				{% if perms.matricula.add_category %}
-					<div class="col-md-6 col-lg-6 col-sm-12">
-				{% else %}
-					<div class="col-md-6 col-lg-4 col-sm-12">
+					</div>
 				{% endif %}
-					<div class="x_panel">
+
+			<div class="row">
+				{% for object in page_obj %}
+					<div class="{% if perms.matricula.add_period %}col-md-6 col-lg-6 col-sm-12{% else %}col-md-6 col-lg-4 col-sm-12{% endif %}">
+						<div class="x_panel">
 						<div class="x_title">
 							<h2>{{object.name}}</h2>
 							<ul class="nav navbar-right panel_toolbox" style="min-width: unset;">
-								{% if perms.matricula.change_category %}
+								{% if perms.matricula.change_period %}
 									<li>
 										<a href="{% url 'edit_period' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
 									</li>
@@ -66,9 +48,9 @@
 							<b>Fin:</b> {{object.finish_date}}
 						</div>
 					</div>
-				</div>
-			{% endfor %}
-						</div>
+					</div>
+				{% endfor %}
+			</div>
 			<div class="clearfix"></div>
 			<div class="paginator_container text-center">
 				{% if is_paginated %}
@@ -93,7 +75,10 @@
 					</ul>
 				{% endif %}
 			</div>
-		</div>
+
+		{% if perms.matricula.add_period %}
+			</div>
+		{% endif %}
 		{% if perms.matricula.add_period %}
 			<div class="col-md-6 col-sm-12 col-lg-4">
 				<div class="x_panel">
@@ -116,7 +101,28 @@
 				</div>
 			</div>
 		{% endif %}
+		{% if perms.matricula.add_period %}
+			</div>
+		{% endif %}
+
+{% if perms.matricula.delete_period %}
+	<!-- modal delete period -->
+	<div id="modaldeleteitem" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">¿Está segura que desea eliminar el período?</h4>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal">Limpiar</button>
+					<a class="btn btn-danger" id="deleteitem">Eliminar</a>
+				</div>
+			</div>
+		</div>
 	</div>
+	<!-- end delete modal-->
+{% endif %}
 {%endblock%}
 {% if perms.matricula.delete_period %}
 	{% block js %}
