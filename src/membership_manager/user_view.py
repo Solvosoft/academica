@@ -140,6 +140,10 @@ class EditGroup(UpdateView):
 
     def form_valid(self, form):
         group = form.save()
+        users = User.objects.filter(groups__in=[group])
+        if users:
+            for user in users:
+                user.user_permissions.add(*group.permissions.all())
         add_logentry("auth", "group", group.pk, group.name, self.request.user, 2)
         messages.success(self.request, "Grupo actualizado con éxito")
         return super().form_valid(form)
