@@ -119,6 +119,7 @@
 					</table>	
 				</div>
 				<div class="text-center">
+					<a class="btn btn-dark" href="{% url 'groups_enroll' %}">Atras</a>
 					{% if perms.matricula.can_open_group %}
 						<a class="btn btn-primary" href="{% url 'open_group' object.pk %}">Abrir grupo</a>
 						<a class="btn btn-primary" href="{% url 'open_group' object.pk %}?sendemail=1">Abrir grupo y notificar</a>
