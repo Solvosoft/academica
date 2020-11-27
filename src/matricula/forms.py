@@ -208,7 +208,7 @@ class MenuItemCreateForm(forms.ModelForm, GTForm):
             'is_reversed': _('Is reversed?'),
             'reversed_kwargs': _('Reversed kwargs'),
             'reversed_args': _('Reversed args'),
-            'parent': _('Category'),
+            'parent': _('Parent'),
             'is_widget': _('Is a widget?'),
             'icon': _('Icon'),
             'only_icon': _('Only icon?')
