@@ -1,5 +1,8 @@
 from django.contrib.auth.models import Group, Permission
 from django.core.management import BaseCommand
+from djgentelella.models import MenuItem
+from django.contrib.contenttypes.models import ContentType
+
 
 class Command(BaseCommand):
 
@@ -16,3 +19,19 @@ class Command(BaseCommand):
         )
         professor_group.save()
         professor_group.permissions.add(*permissions_professor)
+
+        ct = ContentType.objects.get_for_model(MenuItem)
+        # admin group to académica.
+        enroll_perms = Permission.objects.filter(
+            content_type__app_label="matricula").all()
+        djgentelella_perms = Permission.objects.filter(
+            content_type__app_label="djgentelella", content_type=ct).all()
+
+        enroll_group = Group(
+            name="Administradores Académica"
+        )
+        enroll_group.save()
+        for perm in enroll_perms:
+            enroll_group.permissions.add(perm)
+        for perm in djgentelella_perms:
+            enroll_group.permissions.add(perm)
