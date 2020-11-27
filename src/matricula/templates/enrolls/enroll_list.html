@@ -54,11 +54,11 @@
 					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
 						{% if perms.matricula.change_enroll %}
 							<li>
-								<a href="{% url 'edit_enroll' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
+								<a title="Editar matrícula" href="{% url 'edit_enroll' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
 							</li>
 						{% endif %}
 						{% if perms.matricula.delete_enroll %}
-							<li><a data-url="{% url 'delete_enroll' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+							<li><a title="Eliminar matrícula" data-url="{% url 'delete_enroll' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
 						{% endif %}
 					</ul>
 					<div class="clearfix"></div>
