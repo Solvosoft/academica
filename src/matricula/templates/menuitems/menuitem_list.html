@@ -58,11 +58,11 @@
 					<ul class="nav navbar-right panel_toolbox" style="min-width: unset;">
 						{% if perms.djgentelella.change_menuitem %}
 							<li>
-								<a href="{% url 'edit_menuitem' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
+								<a title="Editar menú" href="{% url 'edit_menuitem' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
 							</li>
 						{% endif %}
 						{% if perms.djgentelella.delete_menuitem %}
-							<li><a data-url="{% url 'delete_menuitem' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+							<li><a title="Eliminar menú" data-url="{% url 'delete_menuitem' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
 						{% endif %}
 					</ul>
 					<div class="clearfix"></div>
