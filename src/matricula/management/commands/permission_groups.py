@@ -31,7 +31,5 @@ class Command(BaseCommand):
             name="Administradores Académica"
         )
         enroll_group.save()
-        for perm in enroll_perms:
-            enroll_group.permissions.add(perm)
-        for perm in djgentelella_perms:
-            enroll_group.permissions.add(perm)
+        enroll_group.permissions.add(*enroll_perms)
+        enroll_group.permissions.add(*djgentelella_perms)
