@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Matricula Bills\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-27 11:54-0600\n"
-"PO-Revision-Date: 2020-11-10 12:39-0600\n"
+"POT-Creation-Date: 2020-11-27 14:48-0600\n"
+"PO-Revision-Date: 2020-11-27 14:57-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: ES <es@solvosoft.com>\n"
 "Language: es\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.4.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: contrib/bills/admin.py:11 contrib/bills/models.py:35
@@ -87,11 +87,11 @@ msgstr "Fecha"
 
 #: contrib/bills/templates/invoice_enroll.html:21
 msgid "Discount"
-msgstr ""
+msgstr "Descuento"
 
 #: contrib/bills/templates/invoice_enroll.html:25
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #~ msgid "Academica Invoice paid"
 #~ msgstr "Factura de Académica pagada"
