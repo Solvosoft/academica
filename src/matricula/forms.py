@@ -390,11 +390,22 @@ class EnrollCreateForm(forms.ModelForm, GTForm):
 
 
 class StudentSearchForm(GTForm, forms.Form):
+    IS_ACTIVE = (
+        (None, "Todos"),
+        (True, "Sí"),
+        (False, "No")
+    )
     student = forms.ModelMultipleChoiceField(
         queryset=Student.objects.all(),
-        label="Nombre estudiate", widget=djgentelella.SelectMultiple,
-        required=False
-    )
+        label="Nombre", widget=djgentelella.SelectMultiple,
+        required=False)
+    email = forms.CharField(
+        label="Correo", widget=djgentelella.TextInput, required=False)
+    organization = forms.CharField(
+        label="Organización", widget=djgentelella.TextInput, required=False)
+    active = forms.ChoiceField(
+        choices=IS_ACTIVE, widget=djgentelella.Select,
+        required=False, label="Activo")
 
 
 class StudentAdminCreateForm(GTForm, forms.ModelForm):
