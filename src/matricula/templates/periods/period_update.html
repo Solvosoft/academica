@@ -113,3 +113,16 @@
 		}
 	</style>
 {%endblock%}
+{% if perms.matricula.delete_period %}
+	{% block js %}
+		<script type="text/javascript">
+			function deleteitem(element){
+				$(function(){
+					$("#deleteitem").attr("href", $(element).data('url'));
+					$("#modaldeleteitem").modal();
+				});
+				return false
+			}
+		</script>
+	{% endblock js%}
+{% endif %}
