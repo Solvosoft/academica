@@ -511,11 +511,14 @@ class ProfessorSearchForm(GTForm, forms.Form):
 
 
 class ProfessorAddForm(GTForm, forms.ModelForm):
+    user = forms.ModelChoiceField(
+        queryset=User.objects.all(), widget=djgentelella.Select,
+        required=False, label="Usuaria")
+
     class Meta:
         model = Professor
         fields = "__all__"
         widgets = {
-            'user': djgentelella.Select,
             'email': djgentelella.EmailMaskInput,
             'description': djgentelella.Textarea,
             'active': djgentelella.YesNoInput
