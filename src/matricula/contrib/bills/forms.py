@@ -47,7 +47,12 @@ class BillSearchForm(GTForm, forms.Form):
     )
 
 
-class BillCreateForm(forms.ModelForm, GTForm):  
+class BillCreateForm(forms.ModelForm, GTForm):
+    is_paid = forms.CharField(
+        label="Pagado", widget=djgentelella.YesNoInput)
+    transaction_id = forms.CharField(
+        widget=djgentelella.Textarea, label="Id de transacción")
+
     class Meta:
         model = Bill
         fields = [
@@ -60,8 +65,6 @@ class BillCreateForm(forms.ModelForm, GTForm):
             'amount': djgentelella.NumberInput,
             'currency': djgentelella.Select(choices=Group.COURRENCY_CHOICES),
             'student': djgentelella.Select,
-            'is_paid': djgentelella.YesNoInput,
-            'transaction_id': djgentelella.Textarea,
         }
 
     def __init__(self, *args, **kwargs):
