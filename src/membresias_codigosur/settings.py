@@ -217,9 +217,10 @@ DATE_INPUT_FORMATS=[
 
 DATETIME_INPUT_FORMATS = [
     '%m/%d/%Y %H:%M %A',
-    '%m/%d/%Y %H:%M %p',
-    '%Y-%m-%d %H:%M %p',
-    '%d/%m/%y %H:%M %p'
+    '%m/%d/%Y %H:%M',
+    '%d/%m/%Y %H:%M',
+    '%Y-%m-%d %H:%M',
+    '%d/%m/%y %H:%M'
 ]
 
 MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
