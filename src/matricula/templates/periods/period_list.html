@@ -30,15 +30,15 @@
 					<div class="{% if perms.matricula.add_period %}col-md-6 col-lg-6 col-sm-12{% else %}col-md-6 col-lg-4 col-sm-12{% endif %}">
 						<div class="x_panel">
 						<div class="x_title">
-							<h2>{{object.name}}</h2>
+							<h2 class="green">{{object.name}}</h2>
 							<ul class="nav navbar-right panel_toolbox" style="min-width: unset;">
 								{% if perms.matricula.change_period %}
 									<li>
-										<a href="{% url 'edit_period' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
+										<a title="Editar período" href="{% url 'edit_period' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
 									</li>
 								{% endif %}
 								{% if perms.matricula.delete_period %}
-									<li><a data-url="{% url 'delete_period' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+									<li><a title="Eliminar período" data-url="{% url 'delete_period' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
 								{% endif %}
 							</ul>
 							<div class="clearfix"></div>

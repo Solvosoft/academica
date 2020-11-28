@@ -43,11 +43,11 @@
 							<ul class="nav navbar-right panel_toolbox" style="min-width: unset;">
 								{% if perms.matricula.delete_period %}
 									<li>
-										<a href="{% url 'edit_period' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
+										<a title="Editar período" href="{% url 'edit_period' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
 									</li>
 								{% endif %}
 								{% if perms.matricula.delete_period %}
-									<li><a data-url="{% url 'delete_period' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+									<li><a title="Eliminar período" data-url="{% url 'delete_period' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
 								{% endif %}
 							</ul>
 							<div class="clearfix"></div>
