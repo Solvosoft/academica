@@ -908,9 +908,9 @@ class StudentList(ListView):
         if self.form.cleaned_data['active']:
             queryset = queryset.filter(
                 user__is_active=self.form.cleaned_data['active'])
-        if self.form.cleaned_data['email']:
+        if self.form.cleaned_data['group']:
             queryset = queryset.filter(
-                user__email__icontains=self.form.cleaned_data['email'])
+                enroll__group=self.form.cleaned_data['group'])
         if self.form.cleaned_data['organization']:
             queryset = queryset.filter(
                 organization__icontains=self.form.cleaned_data['organization'])

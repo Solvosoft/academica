@@ -399,8 +399,9 @@ class StudentSearchForm(GTForm, forms.Form):
         queryset=Student.objects.all(),
         label="Nombre", widget=djgentelella.SelectMultiple,
         required=False)
-    email = forms.CharField(
-        label="Correo", widget=djgentelella.TextInput, required=False)
+    group = forms.ModelChoiceField(
+        label="Grupo", widget=djgentelella.Select, required=False,
+        queryset=Group.objects.all())
     organization = forms.CharField(
         label="Organización", widget=djgentelella.TextInput, required=False)
     active = forms.ChoiceField(
