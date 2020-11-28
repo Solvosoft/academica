@@ -99,7 +99,7 @@ def confirm_email(request):
         if student.user.is_active:
             return render(
                 request, 'messages.html', {
-                    'message': "Felicidades tu cuenta ha sido validada, ya iniciar sesión",
+                    'message': "Felicidades tu cuenta ha sido validada, ya puedes iniciar sesión.",
                     'mtype': 'success'})
     except Exception as e:
         print(e)
