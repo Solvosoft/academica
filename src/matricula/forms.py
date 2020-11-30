@@ -458,6 +458,13 @@ class PageCreateForm(forms.ModelForm, GTForm):
 
 
 class MenuItemAddForm(forms.ModelForm, GTForm):
+    parent = forms.ModelChoiceField(
+        queryset=DJMenuItem.objects.all(), label="Menú padre",
+        required=False, widget=djgentelella.Select)
+    permission = forms.ModelMultipleChoiceField(
+        queryset=Permission.objects.all(), label="Permisos requeridos",
+        widget=djgentelella.SelectMultiple, required=False)
+
     class Meta:
         model = DJMenuItem
         fields = '__all__'
