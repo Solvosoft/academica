@@ -469,10 +469,6 @@ class MenuItemAddForm(forms.ModelForm, GTForm):
         model = DJMenuItem
         fields = '__all__'
         fields = ['parent', 'permission']
-        widgets = {
-            'parent': djgentelella.Select,
-            'permission': djgentelella.SelectMultiple,
-        }
 
 
 class PreEnrollAddGroupForm(GTForm, forms.Form):
