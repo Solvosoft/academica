@@ -35,6 +35,11 @@ class Student(models.Model):
             dev = self.user.get_full_name()
         return dev
 
+    class Meta:
+        verbose_name = _("Student")
+        verbose_name_plural = _("Students")
+        ordering = ['user__last_name']
+
 
 class Professor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -54,6 +59,7 @@ class Professor(models.Model):
         permissions = [
             ("change_profile", "Can change_profile"),
         ]
+        ordering = ['user__last_name', 'active']
 
 
 class Period(models.Model):
@@ -67,6 +73,7 @@ class Period(models.Model):
     class Meta:
         verbose_name = _("Period")
         verbose_name_plural = _("Periods")
+        ordering = ['name']
 
 
 class Category(models.Model):
@@ -79,6 +86,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = _("Category")
         verbose_name_plural = _("Categories")
+        ordering = ['name']
 
 
 class Course(models.Model):
@@ -96,6 +104,7 @@ class Course(models.Model):
         permissions = [
             ("can_add_group_course", "Can add course to group"),
         ]
+        ordering = ['name']
 
 
 class Group(models.Model):
@@ -164,6 +173,7 @@ class Group(models.Model):
             ("can_close_group", "Can close group"),
             ("can_view_pdf_enrolled_group", "Can view enrolled to group"),
         ]
+        ordering = ['name']
 
     def save(self, *args, **kwargs):
         if not self.is_paid:
@@ -204,6 +214,7 @@ class Enroll(models.Model):
             ("can_view_qualifications", "Can view qualifications"),
             ("can_qualify_students", "Can qualify students"),
         ]
+        ordering = ['group']
 
 
 class MenuItem(models.Model):
@@ -235,6 +246,7 @@ class MenuItem(models.Model):
     class Meta:
         verbose_name = _("Menu Item")
         verbose_name_plural = _("Menu Items")
+        ordering = ['name']
 
 
 class Page(models.Model):
@@ -249,6 +261,7 @@ class Page(models.Model):
     class Meta:
         verbose_name = _("Page")
         verbose_name_plural = _("Pages")
+        ordering = ['title']
 
 
 class Coupon(models.Model):
@@ -267,3 +280,8 @@ class Coupon(models.Model):
 
     def __str__(self):
         return f"{self.student} - {self.course.name} - {self.code[2:6]}"
+
+    class Meta:
+        verbose_name = _("Coupon")
+        verbose_name_plural = _("Coupons")
+        ordering = ['course', 'student__user__last_name']

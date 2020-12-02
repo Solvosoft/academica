@@ -33,3 +33,4 @@ class Bill(models.Model):
     class Meta:
         verbose_name = _("Bill")
         verbose_name_plural = _("Bills")
+        ordering = ['is_paid', 'student']
