@@ -69,7 +69,7 @@
 		<div class="col-md-6 col-lg-4 col-sm-6 col-xs-12">
 			<div class="x_panel" style="height:220px;">
 				<div class="x_title">
-					<h2 class="green">{{object.title|wordwrap:100}}</h2>
+					<h2 class="green">{% if object.title %}{{object.title|wordwrap:100}}{%else%}Sin título{%endif%}</h2>
 					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
 						{% if perms.matricula.change_enroll %}
 							<li>
