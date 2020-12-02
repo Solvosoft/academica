@@ -33,10 +33,10 @@ class StudentCreateForm(GTForm, forms.ModelForm):
                                         'and @/./+/-/_ characters.'), 'invalid'),
         ], required=True, widget=djgentelella.TextInput)
     first_name = forms.CharField(
-        label=_('first name'), max_length=30, required=True,
+        label=_('First name'), max_length=30, required=True,
         widget=djgentelella.TextInput)
     last_name = forms.CharField(
-        label=_('last name'), max_length=30, required=True,
+        label=_('Last name'), max_length=30, required=True,
         widget=djgentelella.TextInput)
     email = forms.EmailField(required=True, widget=djgentelella.EmailMaskInput)
     password = forms.CharField(
