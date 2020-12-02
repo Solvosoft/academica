@@ -1044,7 +1044,9 @@ class PageList(ListView):
         self.form = PageSearchForm(self.request.GET)
         self.form.is_valid()
         if self.form.cleaned_data['slug']:
-            queryset = queryset.filter(slug=self.form.cleaned_data['slug'])
+            queryset = queryset.filter(
+                Q(slug__icontains=self.form.cleaned_data['slug'])| 
+                Q(title__icontains=self.form.cleaned_data['slug']))
         return queryset
 
     def get_context_data(self, **kwargs):
