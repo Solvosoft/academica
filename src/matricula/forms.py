@@ -439,6 +439,8 @@ class PageCreateForm(forms.ModelForm, GTForm):
         required=False, widget=djgentelella.YesNoInput(
             attrs={'rel': ['#create_menu_form']}, shparent='.x_panel'),
         label="¿Agregar página al menú?")
+    title = forms.CharField(
+        label="Título", required=True, widget=djgentelella.TextInput)
     content = forms.CharField(
         required=False, widget=widget.TextareaWysiwyg, label="Contenido")
 
@@ -447,7 +449,6 @@ class PageCreateForm(forms.ModelForm, GTForm):
         fields = '__all__'
         widgets = {
             'slug': djgentelella.TextInput,
-            'title': djgentelella.TextInput,
         }
 
     def __init__(self, *args, **kwargs):
