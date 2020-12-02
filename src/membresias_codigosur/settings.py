@@ -214,15 +214,17 @@ ASYNC_SMTP_DEBUG=False
 ASYNC_NEWSLETTER_WIDGET = 'markitup.widgets.AdminMarkItUpWidget'
 
 
-DATE_INPUT_FORMATS=[
-    '%d/%m/%Y', '%d/%m/%y', '%Y-%m-%d',
+DATE_INPUT_FORMATS = [
+    '%d/%m/%Y', '%Y-%m-%d', '%d/%m/%y'
 ]
 
+DATE_FORMAT = 'd/m/Y'
+
 DATETIME_INPUT_FORMATS = [
-    '%m/%d/%Y %H:%M %A',
-    '%m/%d/%Y %H:%M %p',
-    '%Y-%m-%d %H:%M %p',
-    '%d/%m/%y %H:%M %p'
+    '%m/%d/%Y %H:%M',
+    '%d/%m/%Y %H:%M',
+    '%Y-%m-%d %H:%M',
+    '%d/%m/%y %H:%M'
 ]
 
 MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
