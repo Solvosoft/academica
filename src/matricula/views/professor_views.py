@@ -58,8 +58,18 @@ class ProfessorsList(ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['formsearch'] = ProfessorSearchForm()
+        context['formsearch'] = ProfessorSearchForm(self.request.GET)
         return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.form = ProfessorSearchForm(self.request.GET)
+        self.form.is_valid()
+        if self.form.cleaned_data['professor']:
+            queryset = queryset.filter(pk__in=self.form.cleaned_data['professor'])
+        if self.form.cleaned_data['status']:
+            queryset = queryset.filter(active=self.form.cleaned_data['status'])
+        return queryset
 
 
 @method_decorator(permission_required('matricula.add_professor'), name='dispatch')
