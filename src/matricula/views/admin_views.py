@@ -7,8 +7,11 @@ Created on 18/10/2020
 import csv
 import io
 import os
-
 from django.conf import settings
+from django.views.generic import ListView, DeleteView
+from django.utils.translation import ugettext_lazy as _
+from django.shortcuts import render
+from djgentelella.models import MenuItem as DJMenuItem
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required
@@ -20,16 +23,12 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.template.loader import get_template, render_to_string
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
-from django.utils.translation import ugettext_lazy as _
-from django.views.generic import ListView, DeleteView
-from djgentelella.models import MenuItem as DJMenuItem
 from xhtml2pdf import pisa
-
 from async_notifications.utils import send_email_from_template
 from matricula.forms import CategoryCreateForm, CategorySearchForm, \
     CourseSearchForm, CourseCreateForm, MenuItemSearchForm, \
@@ -41,7 +40,6 @@ from matricula.models import Category, Course, Period, Group, \
     Enroll, Student, Page, Professor
 from matricula.views.utils import get_expire_date
 from .utils import get_active_period
-
 
 MONTHS_DICT = {
     'January': 'enero',
