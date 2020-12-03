@@ -112,8 +112,8 @@
 		}
 	</style>
 {%endblock%}
-{% if perms.matricula.delete_category %}
-	{% block js %}
+{% block js %}
+	{% if perms.matricula.delete_category %}
 		<script type="text/javascript">
 			function deleteitem(element){
 				$(document).ready(function(){
@@ -123,5 +123,5 @@
 				return false;
 			}
 		</script>
-	{% endblock js%}
-{% endif %}
+	{% endif %}
+{% endblock js%}
