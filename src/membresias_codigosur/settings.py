@@ -167,7 +167,6 @@ LOCALE_PATHS = (
     os.path.join(BASE_NOCODE_DIR, 'locale/'),
 )
 TINYMCE_UPLOAD_PATH =os.path.join(MEDIA_ROOT, 'tinymce')
-FROALA_UPLOAD_PATH = os.path.join(MEDIA_ROOT, 'froala_editor/')
 
 # python -m smtpd -c DebuggingServer -n localhost:1025
 # o también ver https://github.com/mailhog/MailHog
