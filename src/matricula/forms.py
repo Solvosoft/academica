@@ -12,7 +12,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.core import validators
 from django.contrib.auth.models import User
 from djgentelella.widgets import core as djgentelella
-from djgentelella.widgets import wysiwyg as widget
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.selects import AutocompleteSelect
 from djgentelella.models import MenuItem as DJMenuItem
@@ -442,7 +441,7 @@ class PageCreateForm(forms.ModelForm, GTForm):
     title = forms.CharField(
         label="Título", required=True, widget=djgentelella.TextInput)
     content = forms.CharField(
-        required=False, widget=widget.TextareaWysiwyg, label="Contenido")
+        required=False, widget=tinymce.EditorTinymce, label="Contenido")
 
     class Meta:
         model = Page

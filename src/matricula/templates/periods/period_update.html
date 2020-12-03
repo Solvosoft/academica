@@ -113,8 +113,8 @@
 		}
 	</style>
 {%endblock%}
-{% if perms.matricula.delete_period %}
-	{% block js %}
+{% block js %}
+	{% if perms.matricula.delete_period %}
 		<script type="text/javascript">
 			function deleteitem(element){
 				$(function(){
@@ -124,5 +124,5 @@
 				return false
 			}
 		</script>
-	{% endblock js%}
-{% endif %}
+	{% endif %}
+{% endblock js%}

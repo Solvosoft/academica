@@ -10,6 +10,7 @@ from .models import ColonExchange, Bill
 from matricula.models import Student, Group
 from djgentelella.widgets import core as djgentelella
 from djgentelella.forms.forms import GTForm
+from djgentelella.widgets import tinymce
 
 
 class ColonExchangeSearchForm(GTForm, forms.Form):
@@ -61,7 +62,7 @@ class BillCreateForm(forms.ModelForm, GTForm):
             ]
         widgets = {
             'short_description': djgentelella.TextInput,
-            'description': djgentelella.Textarea,
+            'description': tinymce.EditorTinymce,
             'amount': djgentelella.NumberInput,
             'currency': djgentelella.Select(choices=Group.COURRENCY_CHOICES),
             'student': djgentelella.Select,
