@@ -5,8 +5,7 @@ from djgentelella.forms.forms import CustomForm, GTForm
 from djgentelella.widgets import core as genwidgets, wysiwyg
 from djgentelella.widgets.selects import AutocompleteSelectMultiple
 from djgentelella.widgets.tagging import EmailTaggingInput
-from froala_editor.widgets import FroalaEditor
-
+from djgentelella.widgets import tinymce
 from async_notifications.interfaces import NewsLetterInterface
 from async_notifications.models import NewsLetterTemplate, NewsLetter, EmailTemplate, EmailNotification
 from async_notifications.utils import get_basemodels_dict
@@ -19,7 +18,6 @@ def get_countries_en_membresias():
 
     for x in keys:
         yield (x['id'], x['name'])
-
 
 
 class MembershipFilterForm(forms.Form):
@@ -203,7 +201,7 @@ class NewsLetterForm(GTForm, forms.ModelForm):
         exclude = ['cc', 'bcc', 'creator', 'template']
         widgets = {
             'subject': genwidgets.TextInput,
-            'message':  wysiwyg.TextareaWysiwyg,
+            'message':  tinymce.EditorTinymce,
             'recipient': EmailTaggingInput,
             'filters': forms.HiddenInput,
             'file': genwidgets.FileInput
@@ -293,7 +291,6 @@ class SendDateForm(CustomForm, forms.Form):
             raise forms.ValidationError("La fecha y hora ingresada no debe ser inferior a la fecha y hora actual.")
 
 
-
 class EmailsNewsLetter(CustomForm, forms.Form):
 
     emails = forms.CharField(widget=EmailTaggingInput, label="Correos", required=False)
@@ -328,8 +325,8 @@ class EmailTemplateForm(GTForm, forms.Form):
     email_template = forms.ModelChoiceField(widget=genwidgets.Select, queryset=EmailTemplate.objects.all(),
                                                   required=False, label="Plantilla de correo")
 
-class EmailNotificationForm(GTForm, forms.ModelForm):
 
+class EmailNotificationForm(GTForm, forms.ModelForm):
     bcc = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Organization.objects.filter(type=True), label='Copia oculta a carbón', required=False)
     cc = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Organization.objects.filter(type=True), label='CC copia a carbón', required=False)
 
@@ -338,7 +335,7 @@ class EmailNotificationForm(GTForm, forms.ModelForm):
         exclude = ['user', 'enqueued', 'sent', 'problems']
         widgets = {
             'subject': genwidgets.TextInput,
-            'message':  FroalaEditor,
+            'message':  tinymce.EditorTinymce,
             'recipient': EmailTaggingInput,
             'filters': forms.HiddenInput,
             'file': genwidgets.FileInput
@@ -363,7 +360,6 @@ class MembershipManager(NewsLetterInterface):
             'name': 'organization__in',
         }
     }
-
 
     def get_queryset(self):
         filters = self.get_filters()
@@ -392,7 +388,6 @@ class MembershipManager(NewsLetterInterface):
                 self.queryset = self.queryset.filter(**filters)
 
         return self.queryset
-
 
     def get_emails(self):
         mails = []

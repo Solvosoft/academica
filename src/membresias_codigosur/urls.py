@@ -46,5 +46,4 @@ urlpatterns = djgentelellaurls + [
             {'document_root': settings.MEDIA_ROOT,}
             ),
     re_path(r'^markitup/preview/$', login_required(preview_newsletter), name="markitup_preview"),
-    url(r'^froala_editor/', include('froala_editor.urls')),
     ] + url_manager + enrollurls
