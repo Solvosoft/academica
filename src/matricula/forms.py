@@ -6,9 +6,8 @@ Created on 7/4/2015
 @author: luisza
 '''
 from django import forms
-from matricula.models import Student, Page, MenuItem, Category, Course, \
-    Period, Group, Enroll, Professor, Coupon
-
+from matricula.models import Student, Page, MenuItem, Category, Course,\
+    Period, Group, Enroll, Professor
 from django.utils.translation import ugettext_lazy as _
 from django.core import validators
 from django.contrib.auth.models import User
@@ -19,6 +18,7 @@ from djgentelella.widgets.selects import AutocompleteSelect
 from djgentelella.models import MenuItem as DJMenuItem
 from django.contrib.auth.models import Permission
 from djgentelella.widgets.selects import AutocompleteSelectMultiple
+from djgentelella.widgets import tinymce
 
 
 class StudentCreateForm(GTForm, forms.ModelForm):
@@ -132,7 +132,7 @@ class CourseCreateForm(forms.ModelForm, GTForm):
         fields = '__all__'
         widgets = {
             'name': djgentelella.TextInput,
-            'content': widget.TextareaWysiwyg,
+            'content': tinymce.EditorTinymce,
             'category': AutocompleteSelect('categorybasename'),
         }
 
