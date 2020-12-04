@@ -49,19 +49,20 @@ def reports(request):
                             info = "currency"
 
                             for x, y in form_extra.cleaned_data.items():
+                                if y:
+                                    if not isinstance(y, list):
 
-                                if not isinstance(y, list):
+                                        if isinstance(y.first(), ServiceType):
 
-                                    if isinstance(y.first(), ServiceType):
+                                            info = "name"
 
-                                        info = "name"
-
-                                    info_filtros.append((form_extra.fields[x].label, list(y.values_list(info, flat=True))))
-                                else:
-                                    info_filtros.append((form_extra.fields[x].label, y))
+                                        info_filtros.append((form_extra.fields[x].label, list(y.values_list(info, flat=True))))
+                                    else:
+                                        info_filtros.append((form_extra.fields[x].label, y))
 
                             report.extra_form = midata
-                            report.info_filters = dict(info_filtros)
+                            if y:
+                                report.info_filters = dict(info_filtros)
                             report.user = user
                             report.save()
                             add_logentry("membership_manager", "report", report.pk, str(report), request.user, 1)

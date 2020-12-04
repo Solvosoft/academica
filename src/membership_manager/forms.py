@@ -204,7 +204,7 @@ class CreateReportTypeForm(GTForm, forms.ModelForm):
         model = ReportType
         fields = ['name']
         widgets = {
-            'name': forms.TextInput
+            'name': widget.TextInput
         }
 
 
