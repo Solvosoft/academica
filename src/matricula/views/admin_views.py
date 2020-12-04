@@ -1168,9 +1168,9 @@ class PageDelete(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         page = self.get_object()
-        menu = DJMenuItem.objects.get(url_name="/pages/"+page.slug)
-        if menu:
-            menu.delete()
+        menu = DJMenuItem.objects.filter(url_name="/pages/"+page.slug).all()
+        for mn in menu:
+            mn.delete()
         messages.success(self.request, self.success_message)
         return super(PageDelete, self).delete(request, *args, **kwargs)
 
