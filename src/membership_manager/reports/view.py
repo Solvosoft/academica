@@ -60,9 +60,9 @@ def reports(request):
                                     else:
                                         info_filtros.append((form_extra.fields[x].label, y))
 
+                                    report.info_filters = dict(info_filtros)
+
                             report.extra_form = midata
-                            if y:
-                                report.info_filters = dict(info_filtros)
                             report.user = user
                             report.save()
                             add_logentry("membership_manager", "report", report.pk, str(report), request.user, 1)
