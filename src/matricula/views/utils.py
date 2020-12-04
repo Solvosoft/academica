@@ -16,8 +16,8 @@ def get_active_period():
     period = Period.objects.filter(start_date__lte=datetime.now(),
                                    finish_date__gte=datetime.now())
 
-    if period.exists():
-        return period.last()
+    if period.first():
+        return period.all()
     raise Http404("No Active period")
 
 

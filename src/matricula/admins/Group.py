@@ -23,7 +23,7 @@ class ActionsGroup:
     '''
 
     def action_copy_last_period(self, request, queryset):
-        period = get_active_period()
+        period = get_active_period().last()
         groups = []
         for group in queryset:
             group.pk = None

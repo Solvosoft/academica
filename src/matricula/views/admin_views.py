@@ -291,7 +291,7 @@ def add_group_course(request, pk=None):
             if form.is_valid():
                 group = Group(
                     name=form.cleaned_data['name'],
-                    period=get_active_period(),
+                    period__in=get_active_period(),
                     course=course,
                     schedule=form.cleaned_data['schedule'],
                     pre_enroll_start=form.cleaned_data['pre_enroll_start'],
@@ -600,7 +600,7 @@ def create_group(request):
             group = Group(
                 name=form.cleaned_data['name'],
                 course=form.cleaned_data['course'],
-                period=get_active_period(),
+                period__in=get_active_period(),
                 schedule=form.cleaned_data['schedule'],
                 pre_enroll_start=form.cleaned_data['pre_enroll_start'],
                 pre_enroll_finish=form.cleaned_data['pre_enroll_finish'],

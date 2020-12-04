@@ -31,7 +31,7 @@ def list_courses(request):
             else:
                 show_info_modal = 1
 
-    category = Category.objects.filter(course__group__period=period).distinct()
+    category = Category.objects.filter(course__group__period__in=period).distinct()
     if cat:
         category = category.filter(pk=cat)
     if len(category) > 1:
@@ -60,11 +60,11 @@ def view_course(request, pk=None):
     form_search.is_valid()
     if pk is not None:
         course = get_object_or_404(Course, pk=pk)
-        groups = Group.objects.filter(period=period, course=course)
-        groups = sorted(groups.all(), key=lambda t: t.in_enrollment, reverse=True)
+        groups = Group.objects.filter(period__in=period, course=course).all()
+        groups = sorted(groups, key=lambda t: t.in_enrollment, reverse=True)
     else:
         course = Course.objects.none()
-        groups = Group.objects.filter(period=period)
+        groups = Group.objects.filter(period__in=period)
         if form_search.cleaned_data['category']:
             groups = groups.filter(
                 course__category__pk__in=form_search.cleaned_data['category'])
@@ -80,7 +80,7 @@ def view_course(request, pk=None):
                 Q(name__icontains=form_search.cleaned_data['name'])|
                 Q(course__name__icontains=form_search.cleaned_data['name'])|
                 Q(course__category__name__icontains=form_search.cleaned_data['name']))
-        groups = sorted(groups.all(), key=lambda t: t.in_enrollment, reverse=True)
+        groups = sorted(groups, key=lambda t: t.in_enrollment, reverse=True)
     return render(request, 'course.html', {
             'course': {'course': course, 'groups': groups},
             'add_schedule': True, 'form_search': form_search
