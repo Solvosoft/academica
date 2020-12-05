@@ -41,7 +41,7 @@ def list_courses(request):
     # courses = Course.objects.filter(
     #   category=category, group__period=period).distinct()
     groups = Group.objects.filter(
-        period=period, course__category__in=category.all()).order_by('course')
+        period__in=period, course__category__in=category.all()).order_by('course')
     courses = {}
     for group in groups:
         course = group.course
