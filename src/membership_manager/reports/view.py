@@ -60,8 +60,7 @@ def reports(request):
                                     else:
                                         info_filtros.append((form_extra.fields[x].label, y))
 
-                                    report.info_filters = dict(info_filtros)
-
+                            report.info_filters = dict(info_filtros)
                             report.extra_form = midata
                             report.user = user
                             report.save()
