@@ -18,6 +18,7 @@ from djgentelella.models import MenuItem as DJMenuItem
 from django.contrib.auth.models import Permission
 from djgentelella.widgets.selects import AutocompleteSelectMultiple
 from djgentelella.widgets import tinymce
+from matricula.views.utils import get_active_period
 
 
 class StudentCreateForm(GTForm, forms.ModelForm):
@@ -150,7 +151,7 @@ class GroupAddForm(forms.ModelForm, GTForm):
     class Meta:
         model = Group
         fields = [
-            'name', 'schedule', 'pre_enroll_start', 'pre_enroll_finish',
+            'name', 'period', 'schedule', 'pre_enroll_start', 'pre_enroll_finish',
             'enroll_start', 'enroll_finish', 'is_paid', 'currency', 'cost',
             'maximum', 'is_open', 'flow'
         ]
@@ -159,6 +160,7 @@ class GroupAddForm(forms.ModelForm, GTForm):
             "schedule": djgentelella.TextInput,
             "pre_enroll_start": djgentelella.DateTimeInput,
             "pre_enroll_finish": djgentelella.DateTimeInput,
+            'period': AutocompleteSelect('periodbasename'),
             "enroll_start": djgentelella.DateTimeInput,
             "enroll_finish": djgentelella.DateTimeInput,
             'is_paid': djgentelella.YesNoInput(
@@ -287,13 +289,14 @@ class GroupCreateForm(forms.ModelForm, GTForm):
     class Meta:
         model = Group
         fields = [
-            'name', 'course', 'schedule', 'pre_enroll_start',
+            'name', 'course', 'period', 'schedule', 'pre_enroll_start',
             'pre_enroll_finish', 'enroll_start', 'enroll_finish', 'is_paid', 'currency',
             'cost', 'maximum', 'flow', 'professors'
         ]
         widgets = {
             'name': djgentelella.TextInput,
             'course': djgentelella.Select,
+            'period': AutocompleteSelect('periodbasename'),
             'pre_enroll_start': djgentelella.DateTimeInput,
             'pre_enroll_finish': djgentelella.DateTimeInput,
             'enroll_start': djgentelella.DateTimeInput,

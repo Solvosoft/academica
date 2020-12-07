@@ -34,6 +34,11 @@
 					return;
 				}
 			});
+			//Button add period
+			bntItem = "<div class='text-right' style='margin-top:5px'>"+
+				"<a title='Nuevo período' href='/enrrolment/periods'" +
+				" style='font-size:2em' target='_blank'><i class='fa fa-plus-square'></i></a></div>";
+			$('#id_period').parent().append(bntItem);
 		});
 	</script>
 {%endblock%}

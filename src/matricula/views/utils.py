@@ -7,7 +7,6 @@ Created on 16/5/2015
 '''
 from datetime import datetime
 from matricula.models import Period
-from django.http.response import Http404
 from django.utils.timezone import now, timedelta
 from django.conf import settings
 
@@ -15,10 +14,7 @@ from django.conf import settings
 def get_active_period():
     period = Period.objects.filter(start_date__lte=datetime.now(),
                                    finish_date__gte=datetime.now())
-
-    if period.exists():
-        return period.all()
-    raise Http404("No Active period")
+    return period.all()
 
 
 def get_expire_date():

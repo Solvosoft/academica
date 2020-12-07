@@ -600,7 +600,7 @@ def create_group(request):
             group = Group(
                 name=form.cleaned_data['name'],
                 course=form.cleaned_data['course'],
-                period=get_active_period().first(),
+                period=form.cleaned_data['period'],
                 schedule=form.cleaned_data['schedule'],
                 pre_enroll_start=form.cleaned_data['pre_enroll_start'],
                 pre_enroll_finish=form.cleaned_data['pre_enroll_finish'],
