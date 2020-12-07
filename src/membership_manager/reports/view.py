@@ -79,7 +79,6 @@ def reports(request):
                         mostrar_boton = grafico.mostrar_descarga_grafico
 
                 else:
-                    print("NO HAY FILTROS")
                     if form.do_save:
                         report = form.save()
                         add_logentry("membership_manager", "report", report.pk, str(report), request.user, 1)
