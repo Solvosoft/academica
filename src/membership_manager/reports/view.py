@@ -52,11 +52,12 @@ def reports(request):
 
                                 if not isinstance(y, list):
 
-                                    if isinstance(y.first(), ServiceType):
+                                    if form_extra.fields['eje_x'].queryset:
 
-                                        info = "name"
+                                        if isinstance(form_extra.fields['eje_x'].queryset.first(), ServiceType):
+                                            info = "name"
 
-                                    info_filtros.append((form_extra.fields[x].label, list(y.values_list(info, flat=True))))
+                                        info_filtros.append((form_extra.fields[x].label, list(y.values_list(info, flat=True))))
                                 else:
                                     info_filtros.append((form_extra.fields[x].label, y))
 
@@ -78,6 +79,7 @@ def reports(request):
                         mostrar_boton = grafico.mostrar_descarga_grafico
 
                 else:
+                    print("NO HAY FILTROS")
                     if form.do_save:
                         report = form.save()
                         add_logentry("membership_manager", "report", report.pk, str(report), request.user, 1)

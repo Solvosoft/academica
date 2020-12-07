@@ -1,7 +1,6 @@
 from collections import Counter
 
 from django import forms
-from django.db.models import Q
 from django.template.loader import render_to_string
 from djgentelella.forms.forms import CustomForm
 from djgentelella.widgets import core as genwidgets

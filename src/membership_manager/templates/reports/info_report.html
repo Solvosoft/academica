@@ -10,7 +10,7 @@
         <label>Reporte creado por:</label>
     </div>
     <div class="col-sm-10">
-        {% if report.user.get_full_name %} {{report.user.get_full_name}} {% else %} Sin especificar {% endif %}
+        {% if report.user.get_full_name %} {{report.user.get_full_name}} {% elif report.user.username %} {{report.user.username}} {% else %} Sin especificar {% endif %}
     </div>
 </div>
 
