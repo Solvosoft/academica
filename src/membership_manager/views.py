@@ -11,14 +11,13 @@ from django.views.generic import UpdateView
 
 from async_notifications.models import EmailTemplate, EmailNotification
 from async_notifications.tasks import send_email
-from membership_core.models import Country, ServiceType
+from membership_core.models import Country, ServiceType, ServiceMT
 from membership_manager.dashboard import TopStats
 from membership_manager.models import Membership, Service, Organization
 from membership_manager.newsletterform import EmailTemplateForm, EmailNotificationForm
 from membership_telbot_manager.forms import TelegramNotificationTemplateForm, TelegramNotificationTemplateEdit
 from membership_telbot_manager.models import TelGroup, TelegramNotificationTemplate
 from membership_telbot_manager.utils import expiration_message, memberships, help_dialog, invoices, notification_message
-from membership_telbot_manager.views import help, state
 from .forms import ServiceTypeForm, LogEntryFilterForm
 from .utils import add_logentry
 
@@ -155,6 +154,7 @@ def delete_service(request, pk):
         object_pk = service.pk
         object_repr = service.name
         Service.objects.filter(servicetype=service).delete()
+        ServiceMT.objects.filter(servicetype=service).delete()
         service.delete()
         add_logentry("membership_core", "servicetype", object_pk, object_repr, request.user, 3)
         messages.success(request, "Servicio eliminado con éxito")
