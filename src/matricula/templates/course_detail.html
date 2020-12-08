@@ -1,8 +1,16 @@
 {% extends 'gentelella/base.html'%}
 {% load static i18n %}
+{% block extra_css %}
+	<style>
+		#html_content img, #html_content video{
+			max-width:100% !important;
+		}
+	</style>
+{% endblock%}
 {% block content %}
 	<div class="row" style="margin-bottom:3%; margin-top:5%;">
-		<h1 class="text-center" style="margin-bottom: -2%;">{{course}} </h1><br><div class="text-center" style="font-size:15px;"><strong>Grupos y descripción del curso</strong></div>
+		<h1 class="text-center" style="margin-bottom: -2%;">{{course}}</h1>
+		<br/><br/><div class="text-center" style="font-size:15px;"><strong>Grupos y descripción del curso</strong></div>
 	</div>
 	<div class="row" style="margin-bottom:3%;">
 		{% for group in course.group_set.all %}
@@ -62,7 +70,7 @@
 					<h1 class="text-center" style="float:none;">Descripción del curso</h1>
 					<div class="clearfix"></div>
 				</div>
-				<div class="x_content">
+				<div id="html_content" class="x_content">
 					{{ course.content | safe }}
 				</div>
         	</div>
