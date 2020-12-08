@@ -42,15 +42,13 @@
 							{% endif %}
 						</div>
 						<div class="col-md-6 text-right">
-							{% if request.user.is_authenticated and group.in_enrollment and request.user.student %}
-								<a class="btn btn-primary btn-sm" data-href="{% url 'enrollme' group.pk%}"  data-ajax="true">
-									{% if group.flow == group.AUTO_ENROLL%}
-										{% trans 'Enroll me' %}
-									{% else %}
-										{% trans 'Pre-enroll me' %}
-									{% endif%}
-								</a>
-							{% endif %}
+							{% if request.user.is_authenticated and request.user.student %}
+								{% if group.in_preenrollment or group.in_enrollment %}
+									<a class="btn btn-primary btn-sm" data-href="{% url 'enrollme' group.pk%}"  data-ajax="true">
+										{% if group.flow == group.AUTO_ENROLL %}{% trans 'Enroll me' %}{% else %}{% trans 'Pre-enroll me' %}{% endif %}
+									</a>
+								{% endif %}
+							{% endif%}
 						</div>
 					</div>
 				</div>

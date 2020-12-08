@@ -1,4 +1,6 @@
 # encoding: utf-8
+from _testcapi import datetime_check_time
+from datetime import datetime
 from decimal import Decimal
 
 from django.db import models
@@ -155,8 +157,19 @@ class Group(models.Model):
     professors = models.ManyToManyField(Professor, blank=True, verbose_name=_("Professors"))
 
     @property
+    def in_preenrollment(self):
+        if timezone.localtime(self.pre_enroll_start) <= timezone.localtime() <= timezone.localtime(self.pre_enroll_finish):
+            return True
+        return False
+
+    @property
     def in_enrollment(self):
-        if self.pre_enroll_start <= timezone.now() <= self.pre_enroll_finish:
+        print(timezone.localtime())
+        print(timezone.localtime(self.enroll_start))
+        print(timezone.localtime(self.enroll_finish))
+        if timezone.localtime(self.enroll_start) <= timezone.localtime() <= timezone.localtime(
+                self.enroll_finish):
+            print("ENTROOOOO")
             return True
         return False
 

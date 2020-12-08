@@ -5,12 +5,11 @@ Created on 7/4/2015
 '''
 
 from django.conf.urls import url, include
-from matricula.contrib.bills.views.Bills import get_my_bills
 from django.urls import path
-from matricula.views.admin_views import GroupList, create_group, GroupDelete, edit_group
-from .views.admin_views import ColonExchangeList, create_colonexchange, ColonExchangeDelete,\
-    edit_colonexchange, BillList, create_bill, edit_bill, BillDelete
 
+from matricula.contrib.bills.views.Bills import get_my_bills
+from .views.admin_views import ColonExchangeList, create_colonexchange, ColonExchangeDelete, \
+    edit_colonexchange, BillList, create_bill, edit_bill, BillDelete
 
 urlpatterns = [
     url('^bills/$', get_my_bills, name="bills"),
