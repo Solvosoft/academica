@@ -1,0 +1,67 @@
+{% extends 'gentelella/base.html'%}
+{% load static %}
+{% block content %}
+	<div class="row" style="margin-bottom:3%; margin-top:5%;">
+		<h1 class="text-center" style="margin-bottom: -2%;">{{course}} </h1><br><div class="text-center" style="font-size:15px;"><strong>Grupos y descripción del curso</strong></div>
+	</div>
+	<div class="row" style="margin-bottom:3%;">
+		{% for group in course.group_set.all %}
+			<div class="col-md-6">
+				<div class="x_panel" style="height:250px;">
+					<div class="x_title">
+						<h2 class="green">{{group.name}}</h2>
+						<div class="clearfix"></div>
+					</div>
+					<div class="x_content">
+						<div class="col-md-6">
+							<strong>Curso: </strong>{{group.course}}
+						</div>
+						<div class="col-md-6">
+							<strong>Categoría: </strong>{{group.course.category}}
+						</div>
+						<div class="col-md-6">
+							<strong>Inscritos: </strong>{{group.enroll_set.count}} de {{ group.maximum }}
+						</div>
+						<div class="col-md-6">
+							<strong>Inversión: </strong>{{group.cost}} {{group.currency}}
+						</div>
+						<div class="col-md-12">
+							<strong>Horario: </strong>{{group.schedule}}
+						</div>
+						<div class="col-md-12">
+							<strong>Rango pre-inscripción: </strong>{{group.pre_enroll_start}} - {{group.pre_enroll_finish}}
+						</div>
+						<div class="col-md-12">
+							<strong>Rango inscripción: </strong>{{group.enroll_start}} - {{group.enroll_finish}}
+						</div>
+						<div class="col-md-6 text-left">
+							{% if group.is_paid %}
+								<span class="badge bg-green">Curso pagado</span>
+							{% else %}
+								<span class="badge bg-blue">Curso gratis</span>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+    <div class="row">
+        <div class='col-md-10 col-md-offset-1 col-xs-12'>
+			<div class="x_panel">
+				<div class="x_title">
+					<h1 class="text-center" style="float:none;">Descripción del curso</h1>
+					<div class="clearfix"></div>
+				</div>
+				<div class="x_content">
+					{{ course.content | safe }}
+				</div>
+        	</div>
+        </div>
+    </div>
+	<div class="row">
+		<div class="form-group" style="text-align:center; margin-top:3%; margin-bottom:3%;">
+			<a class="btn btn-primary" type="button" href="{% url 'courses' %}">Atrás</a>
+		</div>
+	</div>
+{%endblock%}

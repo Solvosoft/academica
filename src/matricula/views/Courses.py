@@ -86,3 +86,8 @@ def view_course(request, pk=None):
             'add_schedule': True, 'form_search': form_search
         }
     )
+
+
+def course_detail(request, pk):
+    course = get_object_or_404(Course, pk=pk)
+    return render(request, "course_detail.html", context={'course': course})

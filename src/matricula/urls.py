@@ -11,7 +11,7 @@ from django.urls import path
 from matricula.views.Auth import recover_password, \
     mail_recover_pass, authenticate, create_user, login_user, \
     confirm_email, logout, StudentEdit, add_student
-from matricula.views.Courses import list_courses, view_course
+from matricula.views.Courses import list_courses, view_course, course_detail
 from matricula.views.Enrollments import list_enroll, enrollme, \
     finish_enroll
 from matricula.views.Pages import PageDetail
@@ -63,6 +63,7 @@ urlpatterns = [
     path('enrrolment/delete_category/<int:pk>/', CategoryDelete.as_view() , name="delete_category"),
     path('enrrolment/edit_category/<int:pk>/', edit_category, name="edit_category"),
     url('enrrolment/courses', CourseList.as_view(), name="enrrolment_courses"),
+    path('enrrolment/course_detail/<int:pk>/', course_detail, name="course_detail"),
     url('enrrolment/create_course', create_course, name="create_course"),
     path('enrrolment/add_group_course/<int:pk>/', add_group_course, name="add_group_course"),
     path('enrrolment/delete_course/<int:pk>/', CourseDelete.as_view(), name="delete_course"),
