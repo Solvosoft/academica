@@ -12,6 +12,16 @@
 		<h1 class="text-center" style="margin-bottom: -2%;">{{course}}</h1>
 		<br/><br/><div class="text-center" style="font-size:15px;"><strong>Grupos y descripción del curso</strong></div>
 	</div>
+	{% if request.user.is_authenticated and not request.user.student %}
+		<form method="post" action="{% url 'add_student' %}">
+			{% csrf_token %}
+			<div class="alert alert-warning alert-dismissible" role="alert">
+				<strong>Advertencia!</strong> Para tomar cursos usted debe tener rol de estudiante. 
+				<button type="submit" class="btn btn-sm btn-primary">Crear</button>
+			</div>
+		</form>
+	{% endif %}
+	<div id="group_message"></div>
 	<div class="row" style="margin-bottom:3%;">
 		{% for group in course.group_set.all %}
 			<div class="col-md-6">
@@ -82,3 +92,7 @@
 		</div>
 	</div>
 {%endblock%}
+{% block js %}
+	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
+{% endblock %}
