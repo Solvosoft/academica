@@ -1,69 +1,262 @@
-{%load i18n %}
+{% load static i18n %}
 <html>
     <head>
+        <title>Listado de inscripción</title>
         <style>
             @page {
-                size: a4 portrait;
-                @frame header_frame {           /* Static Frame */
-                    -pdf-frame-content: header_content;
-                    left: 50pt; width: 512pt; top: 50pt; height: 40pt;
+                @frame header_frame {
+                    -pdf-frame-content: header_content1;
+                    left: 1.5cm;
+                    width: 13cm;
+                    top: 2.5cm;
+                    height: .80cm;
                 }
-                @frame content_frame {          /* Content Frame */
-                    left: 50pt; width: 512pt; top: 90pt; height: 632pt;
+                @frame {
+                    -pdf-frame-content: header_content2;
+                    right: 1.5cm;
+                    width: 8cm;
+                    top: 2.5cm;
+                    height: .80cm;
                 }
-                @frame footer_frame {           /* Another static Frame */
-                    -pdf-frame-content: footer_content;
-                    left: 50pt; width: 512pt; top: 772pt; height: 20pt;
+
+                @frame {
+                    -pdf-frame-content: logo;
+                    left: 1.5cm;
+                    width: 7cm;
+                    top: 4.5cm;
+                    height: 5cm;
+                }
+
+                @frame {
+                    -pdf-frame-content: invoice_info;
+                    right: 1.5cm;
+                    width: 5cm;
+                    top: 4.5cm;
+                    height: 6cm;
+                }
+
+                @frame header_frame {
+                    -pdf-frame-content: line_col;
+                    left: 1.5cm;
+                    width: 18cm;
+                    top: 8cm;
+                    height: auto;
+                }
+
+
+                @frame header_frame {
+                    -pdf-frame-content: tablelvl11;
+                    left: 1.5cm;
+                    width: 14cm;
+                    top: 15cm;
+                    height: 1.06cm;
+                }
+
+                @frame {
+                    -pdf-frame-content: tablelvl12;
+                    right: 1.5cm;
+                    width: 4cm;
+                    top: 15cm;
+                    height: 1.03cm;
+                }
+
+                @frame header_frame {
+                    -pdf-frame-content: tablelvl21;
+                    left: 1.5cm;
+                    width: 14cm;
+                    top: 16.03cm;
+                    height: 1.03cm;
+                }
+
+                @frame {
+                    -pdf-frame-content: tablelvl22;
+                    right: 1.5cm;
+                    width: 4cm;
+                    top: 16.03cm;
+                    height: 1.03cm;
+                }
+
+                @frame header_frame {
+                    -pdf-frame-content: tablelvl31;
+                    left: 1.5cm;
+                    width: 14cm;
+                    top: 17.06cm;
+                    height: 1.06cm;
+                }
+
+                @frame {
+                    -pdf-frame-content: tablelvl32;
+                    right: 1.5cm;
+                    width: 4cm;
+                    top: 17.06cm;
+                    height: 1.06cm;
+                }
+
+                @frame header_frame {
+                    -pdf-frame-content: tablelvl41;
+                    left: 1.5cm;
+                    width: 14cm;
+                    top: 18.12cm;
+                    height: 1.06cm;
+                }
+
+                @frame {
+                    -pdf-frame-content: tablelvl42;
+                    right: 1.5cm;
+                    width: 4cm;
+                    top: 18.12cm;
+                    height: 1.06cm;
+                }
+
+                @frame header_frame {
+                    -pdf-frame-content: tablelvl51;
+                    left: 1.5cm;
+                    width: 14cm;
+                    top: 19.18cm;
+                    height: 1.06cm;
+                }
+
+                @frame {
+                    -pdf-frame-content: tablelvl52;
+                    right: 1.5cm;
+                    width: 4cm;
+                    top: 19.18cm;
+                    height: 1.06cm;
+                }
+
+                @frame header_frame {
+                    -pdf-frame-content: tablelvl61;
+                    left: 1.5cm;
+                    width: 14cm;
+                    top: 20.24cm;
+                    height: 1.06cm;
+                }
+
+                @frame {
+                    -pdf-frame-content: tablelvl62;
+                    right: 1.5cm;
+                    width: 4cm;
+                    top: 20.24cm;
+                    height: 1.06cm;
+                }
+
+                @frame {
+                    -pdf-frame-content: footer;
+                    right: 1.5cm;
+                    width: 18cm;
+                    top: 24.5cm;
+                    height: 3cm;
                 }
             }
-            
+
+
+            /* Page layout */
+            body {
+                font-family: Helvetica, "sansserif";
+            }
+
+            #header_content1, #header_content2 {
+                font-size: 11pt;
+                padding-top: 4pt;
+                font-weight: bold;
+                border-bottom-color: black;
+                border-bottom-style: solid;
+                border-bottom-width: 1px;
+            }
+
+            #header_content2 {
+                background-color: red;
+                text-align: center;
+                vertical-align: middle;
+                color: white;
+            }
+
+            #invoice_info {
+                grid-area: menu;
+                text-align: right;
+                font-size: 10pt;
+            }
+
+            #footer {
+                grid-area: foot;
+                font-size: 12pt;
+                text-align: center;
+                vertical-align: middle;
+                color: gray;
+            }
             table{
                 border-bottom-style: solid;
                 border-bottom-color: #000;
+                font-size: 15px;
+                color: black;
             }
             
-            td {
-                padding: 5px 2px;
-                text-align: center;
+            td, th {
+                font-size: 15px;
+                font-color: black;
+                padding-top:5px;
+                text-align:left;
             }
             #table_footer{
-                border-bottom-color: #FFF;
+                border-bottom-color: black;
             }
             #table_footer_total{
                 border-bottom-style: solid;
                 border-bottom-color: blue;
             }
-            #header_content{
-                text-align:right;
-            }
         </style>
     </head>
     <body>
-        <!-- Content for Static Frame 'header_frame' -->
-        <div id="header_content">Academica</div>
-
-        <!-- Content for Static Frame 'footer_frame' -->
-        <div id="footer_content">(c) - page <pdf:pagenumber> of <pdf:pagecount></div>
-
-        <!-- HTML Content -->
-        <h1>{{student_list.0.group.name}}</h1>
-        <table>
-            <tr >
-                <th>{% trans 'Name' %}</th>
-                <th>{% trans 'Email' %}</th>
-            </tr>
-            {% for enroll in student_list%}
+        <div id="header_content1" class="">
+            Académica: &nbsp &nbsp &nbsp
+            {% if not enroll_finished and enroll_activate%}
+                Pre-inscritos sin inscribir.
+            {% elif enroll_finished %}
+                Estudiantes inscritos.
+            {% else %}
+                Estudiantes pre-inscritos.
+            {%endif%}
+        </div>
+        <div id="header_content2">
+            Curso:{{student_list.0.group.course.name}}
+        </div>
+        <div id="logo">
+            <img src="http://www.universidadpopular.us/wp-content/uploads/2018/10/cropped-UP_logo_Square-e1539875905697-7.png" width="300" height="83" alt='Logo' data-default="placeholder" />
+        </div>
+        <div id="invoice_info">
+            Código Sur Sociedad Civil<br />
+            Cédula Juridica: 3-106-639831<br />
+            Telefono +506 8569 1676<br />
+            Correo: ayuda@codigosur.org
+        </div>
+        <div id="line_col">
+            <!-- HTML Content -->
+            <h1>Grupo:{{student_list.0.group.name}}</h1>
+            <table>
                 <tr>
-                    <td>{{enroll.student.user.get_full_name}} </td>
-                    <td>{{enroll.student.user.email}}</td>
+                    <th>{% trans 'Name' %}</th>
+                    <th>{% trans 'Email' %}</th>
+                    <th></th>
                 </tr>
-            {%endfor%}
+                {% for enroll in student_list%}
+                    <tr>
+                        <td>{{enroll.student.user.get_full_name}} </td>
+	                    <td>{{enroll.student.user.email}}</td>
+                        <td></td>
+                    </tr>
+                {%endfor%}
 
-            <tr id="table_footer">
-                <td> </td>
-                <td></td>
-                <td id="table_footer_total"> Total: {{student_list.count}}</td>
-            </tr>
-        </table>
+                <tr id="table_footer">
+                    <td> </td>
+                    <td></td>
+                    <td id="table_footer_total"> Total: {{student_list.count}}</td>
+                </tr>
+            </table>
+        </div>
+        <div id="footer">
+            <br><br>
+            Código Sur, San José. Costa Rica. CP 11501. Teléfono +506 8569 1676.<br />
+            Email: ayuda@codigosur.org – Web: https://codigosur.org
+        </div>
     </body>
 </html>

@@ -797,8 +797,10 @@ def export_enrolled_group(request, pk=None):
     template = get_template('Pdf/student_list.html')
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="report.pdf"'
-    html = template.render({'student_list': student_list, 'group': group})
-    pisa_status = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
+    html = template.render({
+        'student_list': student_list, 'group': group, **attrs})
+    pisa_status = pisa.CreatePDF(
+        html, dest=response, link_callback=link_callback)
     if not pisa_status.err:
         return response
     return HttpResponse("Error " + str(pisa_status.err) + "  " + html)
