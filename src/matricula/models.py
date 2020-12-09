@@ -164,12 +164,8 @@ class Group(models.Model):
 
     @property
     def in_enrollment(self):
-        print(timezone.localtime())
-        print(timezone.localtime(self.enroll_start))
-        print(timezone.localtime(self.enroll_finish))
         if timezone.localtime(self.enroll_start) <= timezone.localtime() <= timezone.localtime(
                 self.enroll_finish):
-            print("ENTROOOOO")
             return True
         return False
 
