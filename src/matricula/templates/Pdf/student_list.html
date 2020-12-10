@@ -208,7 +208,9 @@
     </head>
     <body>
         <div id="header_content1" class="">
-            Académica: &nbsp &nbsp &nbsp
+            Reporte académica. &nbsp &nbsp &nbsp
+        </div>
+        <div id="header_content2">
             {% if not enroll_finished and enroll_activate%}
                 Pre-inscritos sin inscribir.
             {% elif enroll_finished %}
@@ -216,9 +218,6 @@
             {% else %}
                 Estudiantes pre-inscritos.
             {%endif%}
-        </div>
-        <div id="header_content2">
-            Curso:{{student_list.0.group.course.name}}
         </div>
         <div id="logo">
             <img src="http://www.universidadpopular.us/wp-content/uploads/2018/10/cropped-UP_logo_Square-e1539875905697-7.png" width="300" height="83" alt='Logo' data-default="placeholder" />
@@ -231,7 +230,8 @@
         </div>
         <div id="line_col">
             <!-- HTML Content -->
-            <h1>Grupo:{{student_list.0.group.name}}</h1>
+            <h1>Curso:{{group.course.name}}</h1>
+            <h1>Grupo:{{group.name}}</h1>
             <table>
                 <tr>
                     <th>{% trans 'Name' %}</th>
