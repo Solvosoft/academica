@@ -172,6 +172,10 @@ class GroupAddForm(forms.ModelForm, GTForm):
             "flow": djgentelella.Select
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['period'].required = True
+
 
 class MenuItemSearchForm(GTForm, forms.Form):
     title = forms.CharField(
