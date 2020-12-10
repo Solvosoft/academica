@@ -8,17 +8,16 @@ Created on 17/5/2015
 from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
 from django.shortcuts import render
-from matricula.contrib.bills.models import Bill, ColonExchange
+from matricula.contrib.bills.models import Bill
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from membership_core.models import SystemCurrency
 
 
 def get_amount(bill):
-    if bill.currency == 'CRC':
-        colon = ColonExchange.objects.all().first()
-        return (colon.is_dolar * bill.amount, "USD")
-    return (bill.amount, bill.currency)
+    currency = SystemCurrency.objects.get(currency=bill.currency)
+    return bill.amount / currency.rates
 
 
 @csrf_exempt
@@ -32,14 +31,14 @@ def get_my_bills(request):
 
         not_paid_forms = []
         for bill in not_paid:
-            amount, currency = get_amount(bill)
+            amount = get_amount(bill)
             not_paid_forms.append(
                 {
                     'obj': bill,
                     'form': PayPalPaymentsForm(initial={
                         "business": settings.PAYPAL_RECEIVER_EMAIL,
                         "amount": "%.2f" % (amount),
-                        "currency_code": currency,
+                        "currency_code": 'USD',
                         "item_name": bill.short_description,
                         "invoice": str(bill.pk),
                         "notify_url":

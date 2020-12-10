@@ -6,25 +6,30 @@ Created on 03/11/2020
 @author: allexiusw
 '''
 from django import forms
-from .models import ColonExchange, Bill
+from .models import Bill
 from matricula.models import Student, Group
 from djgentelella.widgets import core as djgentelella
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import tinymce
+from membership_core.models import SystemCurrency
 
 
 class ColonExchangeSearchForm(GTForm, forms.Form):
-    is_dolar = forms.CharField(
+    rates = forms.CharField(
         required=False, widget=djgentelella.TextInput,
         label="Monto")
+    currency = forms.ModelMultipleChoiceField(
+        queryset=SystemCurrency.objects.all(), label="Moneda",
+        required=False, widget=djgentelella.SelectMultiple)
 
 
 class ColonExchangeCreateForm(forms.ModelForm, GTForm):
     class Meta:
-        model = ColonExchange
+        model = SystemCurrency
         fields = '__all__'
         widgets = {
-            'is_dolar': djgentelella.NumberInput
+            'currency': djgentelella.Select,
+            'rates': djgentelella.TextInput
         }
 
 
@@ -73,3 +78,5 @@ class BillCreateForm(forms.ModelForm, GTForm):
         if 'initial' in kwargs:
             if 'student_id' in kwargs['initial']:
                 self.fields['student'].initial = kwargs['initial']['student_id']
+            if 'currency_id' in kwargs['initial']:
+                self.fields['currency'].initial = kwargs['initial']['currency_id']

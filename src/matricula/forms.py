@@ -18,7 +18,7 @@ from djgentelella.models import MenuItem as DJMenuItem
 from django.contrib.auth.models import Permission
 from djgentelella.widgets.selects import AutocompleteSelectMultiple
 from djgentelella.widgets import tinymce
-from matricula.views.utils import get_active_period
+from membership_core.models import SystemCurrency
 
 
 class StudentCreateForm(GTForm, forms.ModelForm):
@@ -272,9 +272,9 @@ class GroupSearchForm(GTForm, forms.Form):
         queryset=Period.objects.all(), label="Periodo", widget=djgentelella.SelectMultiple,
         required=False
     )
-    currency = forms.MultipleChoiceField(
-        choices=Group.COURRENCY_CHOICES, widget=djgentelella.SelectMultiple, label="Moneda",
-        required=False
+    currency = forms.ModelMultipleChoiceField(
+        queryset=SystemCurrency.objects.all(), required=False,
+        widget=djgentelella.SelectMultiple, label="Moneda"
     )
     category = forms.ModelMultipleChoiceField(
         queryset=Category.objects.all(), widget=djgentelella.SelectMultiple, label="Categoría",
@@ -360,6 +360,8 @@ class GroupEditForm(forms.ModelForm, GTForm):
                 self.fields['period'].initial = kwargs['initial']['period_id']
             if 'course_id' in kwargs['initial']:
                 self.fields['course'].initial = kwargs['initial']['course_id']
+            if 'currency_id' in kwargs['initial']:
+                self.fields['currency'].initial = kwargs['initial']['currency_id']
 
 
 class EnrollSearchForm(GTForm, forms.Form):

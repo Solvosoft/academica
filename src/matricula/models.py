@@ -1,8 +1,5 @@
 # encoding: utf-8
-from _testcapi import datetime_check_time
-from datetime import datetime
 from decimal import Decimal
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.encoding import smart_text
@@ -11,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 import uuid
 from django.utils.html import strip_tags
+from membership_core.models import SystemCurrency
 
 
 class Student(models.Model):
@@ -144,9 +142,9 @@ class Group(models.Model):
     enroll_start = models.DateTimeField(verbose_name=_("Enroll start hour"))
     enroll_finish = models.DateTimeField(verbose_name=_("Enroll finish hour"))
     is_paid = models.BooleanField(verbose_name="Es pagado", default=True)
-    currency = models.CharField(
-        max_length=3, verbose_name=_("Currency"), choices=COURRENCY_CHOICES,
-        default="USD")
+    currency = models.ForeignKey(
+        SystemCurrency, verbose_name=_("Currency"), on_delete=models.CASCADE,
+        default=4)
     cost = models.DecimalField(
         max_digits=10, decimal_places=2, verbose_name=_("Course cost"))
     maximum = models.SmallIntegerField(

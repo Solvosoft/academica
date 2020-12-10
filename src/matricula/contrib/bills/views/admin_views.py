@@ -6,7 +6,7 @@ Created on 18/10/2020
 '''
 from django.views.generic import ListView, DeleteView
 from django.shortcuts import render
-from ..models import ColonExchange, Bill
+from ..models import Bill
 from ..forms import ColonExchangeCreateForm, BillSearchForm, BillCreateForm,\
     ColonExchangeSearchForm
 from django.contrib import messages
@@ -14,12 +14,13 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import permission_required
 from django.utils.decorators import method_decorator
+from membership_core.models import SystemCurrency
 
 
-@method_decorator(permission_required('bills.view_colonexchange'), name='dispatch')
+@method_decorator(permission_required('membership_core.view_systemcurrency'), name='dispatch')
 class ColonExchangeList(ListView):
     template_name = "colonexchange/colonexchange_list.html"
-    model = ColonExchange
+    model = SystemCurrency
     paginate_by = 30
 
     def dispatch(self, *args, **kwargs):
@@ -30,8 +31,10 @@ class ColonExchangeList(ListView):
         queryset = super().get_queryset()
         self.form = ColonExchangeSearchForm(self.request.GET)
         self.form.is_valid()
-        if self.form.cleaned_data['is_dolar']:
-            queryset = queryset.filter(is_dolar=self.form.cleaned_data['is_dolar'])
+        if self.form.cleaned_data['rates']:
+            queryset = queryset.filter(rates__icontains=self.form.cleaned_data['rates'])
+        if self.form.cleaned_data['currency']:
+            queryset = queryset.filter(pk__in=self.form.cleaned_data['currency'])
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -40,7 +43,7 @@ class ColonExchangeList(ListView):
         return context
 
 
-@permission_required('bills.add_colonexchange')
+@permission_required('membership_core.add_systemcurrency')
 def create_colonexchange(request):
     context = {}
     if request.method == 'POST':
@@ -57,9 +60,9 @@ def create_colonexchange(request):
     return render(request, 'colonexchange/colonexchange_create.html', context)
 
 
-@method_decorator(permission_required('bills.delete_colonexchange'), name='dispatch')
+@method_decorator(permission_required('membership_core.delete_systemcurrency'), name='dispatch')
 class ColonExchangeDelete(DeleteView):
-    model = ColonExchange
+    model = SystemCurrency
     success_url = "/matricula_bills/colonexchanges"
     success_message = "Moneda de intercambio eliminada con éxito"
 
@@ -75,11 +78,11 @@ class ColonExchangeDelete(DeleteView):
         return super(ColonExchangeDelete, self).delete(request, *args, **kwargs)
 
 
-@permission_required('bills.change_colonexchange')
+@permission_required('membership_core.change_systemcurrency')
 def edit_colonexchange(request, pk=None):
     if pk is not None:
         if request.method == "POST":
-            instance = ColonExchange.objects.get(pk=pk)
+            instance = SystemCurrency.objects.get(pk=pk)
             form = ColonExchangeCreateForm(request.POST, instance=instance)
             if form.is_valid():
                 messages.success(request, "Moneda de intercambio guardada con éxito")
@@ -90,7 +93,7 @@ def edit_colonexchange(request, pk=None):
                 return render(request, 'colonexchange/colonexchange_update.html', {'form': form})
         else:
             if request.method == "GET":
-                instance = ColonExchange.objects.get(pk=pk)
+                instance = SystemCurrency.objects.get(pk=pk)
                 form = ColonExchangeCreateForm(initial=instance.__dict__)
                 return render(request, 'colonexchange/colonexchange_update.html', {'form': form})
     return HttpResponseRedirect(reverse('colonexchange'))
