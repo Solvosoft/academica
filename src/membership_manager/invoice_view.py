@@ -202,11 +202,11 @@ def invoiceAction(request):
         if action == "NP":
             send_paid_invoice(queryset, request, 'pay_mail')
             ok='ok'
-            messages.success(request, "Correo envidado")
+            messages.success(request, "Correo enviado")
         elif action == "ER":
             send_paid_invoice(queryset, request, 'notification_mail')
             ok='ok'
-            messages.success(request, "Correo envidado")
+            messages.success(request, "Correo enviado")
         elif action == "RC":
             regenerate_invoice_code(queryset, request)
             ok='ok'
