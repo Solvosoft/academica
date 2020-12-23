@@ -113,7 +113,7 @@ class MembershipForm(GTForm, forms.ModelForm):
             'renewal_period': widget.Select,
             'apply_fees': widget.YesNoInput,
             'state': widget.Select,
-            'fees': widget.NumberInput,
+            'fees': forms.NumberInput(attrs={'step': "0.01", "class": "form-control"}),
             'free_membership': widget.YesNoInput
         }
 
