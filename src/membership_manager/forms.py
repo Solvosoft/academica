@@ -109,7 +109,7 @@ class MembershipForm(GTForm, forms.ModelForm):
             'organization': AutocompleteSelect('organizationbasename'),
             'membership_type': widget.Select,
             'currency': widget.Select,
-            'annual_cost': widget.NumberInput,
+            'annual_cost': forms.NumberInput(attrs={'step': "0.01", "class": "form-control"}),
             'renewal_period': widget.Select,
             'apply_fees': widget.YesNoInput,
             'state': widget.Select,
