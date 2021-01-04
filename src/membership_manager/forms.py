@@ -308,7 +308,7 @@ class InvoiceChangeForm(GTForm, forms.ModelForm):
             # 'membership': genwidgets.ReadOnlySelect,
             # 'renewal_period': genwidgets.ReadOnlySelect,
             'description': genwidgets.Textarea,
-            'amount': genwidgets.NumberInput,
+            'amount': forms.NumberInput(attrs={'step': "0.01", "class": "form-control"}),
             'currency': genwidgets.Select,
             'payment_method': genwidgets.Select,
             'transaction_number': genwidgets.TextInput,
