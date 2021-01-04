@@ -100,8 +100,8 @@ class Membership(models.Model):
     state = models.CharField(max_length=11, choices=STATES, default="active",
                              verbose_name="Estado")
     apply_fees = models.BooleanField(default=False, verbose_name="Aplicar impuestos", help_text="Si no se selecciona, el campo de impuestos es ignorado")
-    fees = models.DecimalField(default="13.00", null=True, blank=True, verbose_name="Impuestos",
-                               help_text="Un número de 0 a 100", max_digits=6, decimal_places=2)
+    fees = models.IntegerField(default=13, null=True, blank=True, verbose_name="Impuestos",
+                               help_text="Un número de 0 a 100")
 
     last_renew_start_date = models.DateField(null=True, blank=True)
     free_membership = models.BooleanField(default=False, verbose_name="¿Membresía gratuita sin factura?")
@@ -230,7 +230,7 @@ class Invoice(models.Model):
     def total_amount(self):
         amount = self.amount
         if self.membership.apply_fees:
-            amount = amount* float(1+self.membership.fees/100)
+            amount = amount*(1+self.membership.fees/100)
         return "%.2f"%amount
 
     @property
@@ -238,7 +238,7 @@ class Invoice(models.Model):
         if not self.membership.apply_fees:
             return ''
         amount = self.amount
-        amount = amount* float(self.membership.fees/100)
+        amount = amount*(self.membership.fees/100)
         return "%.2f"%(amount)
 
     @property
