@@ -41,9 +41,6 @@ class StudentCreateForm(GTForm, forms.ModelForm):
     email = forms.EmailField(required=True, widget=djgentelella.EmailMaskInput)
     password = forms.CharField(
         required=True, label=_("Password"), widget=djgentelella.PasswordInput)
-    password_check = forms.CharField(
-        widget=djgentelella.PasswordInput, required=True,
-        label=_("Repeat password"))
     organization = forms.CharField(
         label="Organización", required=True
     )
@@ -52,7 +49,7 @@ class StudentCreateForm(GTForm, forms.ModelForm):
         model = Student
         fields = [
             'name', 'first_name', 'last_name', 'email',
-            'country', 'phone_number', 'password', 'password_check',
+            'country', 'phone_number', 'password',
             'organization', ]
         widgets = {
             'last_name': djgentelella.TextInput,
@@ -65,9 +62,6 @@ class StudentCreateForm(GTForm, forms.ModelForm):
         cleaned_data = super(StudentCreateForm, self).clean()
         if User.objects.filter(username=cleaned_data.get('name')).exists():
             raise forms.ValidationError(_("User name exist "))
-
-        if cleaned_data.get('password') != cleaned_data.get('password_check'):
-            raise forms.ValidationError(_("Password not match "))
 
 
 class StudentEditForm(GTForm, forms.ModelForm):
