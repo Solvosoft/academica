@@ -8,13 +8,15 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 import uuid
 from django.utils.html import strip_tags
-from membership_core.models import SystemCurrency
+from membership_core.models import Country, SystemCurrency
 
 
 class Student(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, primary_key=True)
     organization = models.CharField(verbose_name="Organización", max_length=150)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, default=11)
+    phone_number = models.CharField("Número de teléfono", max_length=15, default="")
     key = models.UUIDField(default=uuid.uuid4)
     confirmed_at = models.DateTimeField(null=True, blank=True)
     expired_at = models.DateTimeField()
