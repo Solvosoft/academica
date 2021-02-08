@@ -37,7 +37,9 @@ def create_user(request):
             user.save()
             student = Student(
                 user=user, organization=form.cleaned_data['organization'],
-                expired_at=get_expire_date())
+                country=form.cleaned_data['country'],
+                phone_number=form.cleaned_data['phone_number'],
+                expired_at=get_expire_date(),)
             student.save()
             send_email_from_template(
                 'new_user_created_academy', user.email,

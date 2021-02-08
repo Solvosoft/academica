@@ -52,10 +52,13 @@ class StudentCreateForm(GTForm, forms.ModelForm):
         model = Student
         fields = [
             'name', 'first_name', 'last_name', 'email',
-            'password', 'password_check', 'organization']
+            'country', 'phone_number', 'password', 'password_check',
+            'organization', ]
         widgets = {
             'last_name': djgentelella.TextInput,
-            'email': djgentelella.EmailInput
+            'email': djgentelella.EmailInput,
+            'country': djgentelella.Select,
+            'phone_number': djgentelella.PhoneNumberMaskInput,
         }
 
     def clean(self):
