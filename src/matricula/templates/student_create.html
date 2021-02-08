@@ -1,6 +1,6 @@
 {% extends 'gentelella/base.html'%}
 {% load static i18n %}
-{%block content%}
+{% block content %}
 	<h1 class="text-center">Registro de usuarios</h1>
 	<div class="col-md-8 col-md-offset-2">
 		<div class="x_panel">
@@ -26,7 +26,7 @@
 			</div>
 		</div>
 	</div>
-{%endblock%}
+{% endblock %}
 {% block js %}
 	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
@@ -65,5 +65,16 @@
 				tagify.loading(false).dropdown.show.call(tagify, value); // render the suggestions dropdown
 			})
 		}
+		$(document).ready(function(){
+			$("#id_password").parent().append("<input type='checkbox' onclick='myFunction()'> Mostrar contraseña");
+		});
+		function myFunction() {
+			var x = document.getElementById("id_password");
+			if (x.type === "password") {
+				x.type = "text";
+			} else {
+				x.type = "password";
+			}
+		}
 	</script>
-{%endblock%}
+{% endblock %}
