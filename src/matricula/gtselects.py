@@ -19,10 +19,10 @@ class StudentGModelLookup(BaseSelect2View):
     fields = ['organization']
 
     def get_queryset(self):
-        queryset = Student.objects.distinct('organization').all()
+        queryset = Student.objects.order_by('organization').distinct()
         q = self.request.GET.get('q', None)
         if q is not None:
-            queryset = queryset.filter(organization__icontains=q).distinct('organization')
+            queryset = queryset.filter(organization__icontains=q).order_by('organization').distinct('organization')
         return queryset
 
 
