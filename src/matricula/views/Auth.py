@@ -6,7 +6,7 @@ Created on 17/5/2015
 '''
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render, redirect, get_object_or_404
-from matricula.forms import StudentCreateForm, StudentEditForm
+from matricula.forms import StudentCreateForm, StudentEditForm, UserEditForm
 from matricula.models import Student, Enroll
 from django.urls import reverse, reverse_lazy
 from django.contrib import messages
@@ -222,28 +222,39 @@ def get_profile(request):
 @method_decorator(login_required, name='dispatch')
 class StudentEdit(SuccessMessageMixin, UpdateView):
     model = User
-    form_class = StudentEditForm
+    form_class = UserEditForm
     template_name = "matricula/student_form.html"
-    success_message = "Perfil actualizado con exíto"
+    success_message = "Perfil actualizado con éxito"
 
     def get_context_data(self, **kwargs):
         context = UpdateView.get_context_data(self, **kwargs)
         enroll = Enroll.objects.filter(student__user=self.object).order_by('enroll_date')
         context['enroll'] = enroll.filter(enroll_activate=True, enroll_finished=True)
         context['pre_enroll'] = enroll.filter(enroll_activate=True, enroll_finished=False)
+        context['student_form'] = StudentEditForm(initial=self.request.user.student.__dict__)
         return context
 
     def get_success_url(self):
-        pk=self.kwargs['pk']
-        return reverse_lazy('myprofile', kwargs={'pk': pk}) 
+        pk = self.kwargs['pk']
+        return reverse_lazy('myprofile', kwargs={'pk': pk})
 
     def get(self, request, *args, **kwargs):
         # self.object = self.get_object()
         if not hasattr(self.request.user, 'student'):
             return redirect(reverse('courses'))
         else:
-            return super(StudentEdit, self).get(request,*args, **kwargs)
-    
+            return super(StudentEdit, self).get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        student = request.user.student
+        student_form = StudentEditForm(request.POST)
+        if student_form.is_valid():
+            student.phone_number = student_form.cleaned_data['phone_number']
+            student.country = student_form.cleaned_data['country']
+            student.organization = student_form.cleaned_data['organization']
+            student.save()
+        return super(StudentEdit, self).get(request, *args, **kwargs)
+
     def get_object(self):
         return self.request.user
 

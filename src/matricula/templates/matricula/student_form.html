@@ -1,6 +1,6 @@
 {% extends 'gentelella/base.html'%}
-{%load i18n %}
-{%block content%}
+{% load i18n %}
+{% block content %}
 	<div class="row">
 		<div class="col-md-6">
 			<h3 class="green"> Perfil de Usuario</h3>
@@ -9,6 +9,7 @@
 					{% csrf_token %}
 					<div>
 						{{form.as_table}}
+						{{student_form.as_table}}
 					</div>
 					<div class="text-right" style="margin-top:5px;">
 						<button type="submit" class="btn btn-success">{% trans 'Save' %}</button>

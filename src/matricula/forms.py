@@ -6,6 +6,7 @@ Created on 7/4/2015
 @author: luisza
 '''
 from django import forms
+from django.db.models import query
 from matricula.models import Student, Page, MenuItem, Category, Course,\
     Period, Group, Enroll, Professor
 from django.utils.translation import ugettext_lazy as _
@@ -18,7 +19,7 @@ from djgentelella.models import MenuItem as DJMenuItem
 from django.contrib.auth.models import Permission
 from djgentelella.widgets.selects import AutocompleteSelectMultiple
 from djgentelella.widgets import tinymce
-from membership_core.models import SystemCurrency
+from membership_core.models import Country, SystemCurrency
 
 
 class StudentCreateForm(GTForm, forms.ModelForm):
@@ -64,16 +65,34 @@ class StudentCreateForm(GTForm, forms.ModelForm):
             raise forms.ValidationError(_("User name exist "))
 
 
-class StudentEditForm(GTForm, forms.ModelForm):
+class UserEditForm(GTForm, forms.ModelForm):
+
     class Meta:
         model = User
-        fields = ['last_name', 'first_name', 'email']
+        fields = ['last_name', 'first_name', 'email', ]
         widgets = {
             'last_name': djgentelella.TextInput,
             'first_name': djgentelella.TextInput,
             'email': djgentelella.EmailInput,
         }
 
+
+class StudentEditForm(GTForm, forms.ModelForm):
+
+    class Meta:
+        model = Student
+        fields = ['phone_number', 'organization', 'country']
+        widgets = {
+            'phone_number': djgentelella.PhoneNumberMaskInput,
+            'organization': djgentelella.TextInput,
+            'country': djgentelella.Select,
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(StudentEditForm, self).__init__(*args, **kwargs)
+        if 'initial' in kwargs:
+            if 'country_id' in kwargs['initial']:
+                self.fields['country'].initial = kwargs['initial']['country_id']
 
 class MenuItemFormPage(forms.ModelForm):
     name = forms.ModelChoiceField(queryset=Page.objects.all(), label=_("Page"))
