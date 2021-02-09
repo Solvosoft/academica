@@ -6,7 +6,6 @@ Created on 7/4/2015
 @author: luisza
 '''
 from django import forms
-from django.db.models import query
 from matricula.models import Student, Page, MenuItem, Category, Course,\
     Period, Group, Enroll, Professor
 from django.utils.translation import ugettext_lazy as _
@@ -444,6 +443,9 @@ class StudentAdminCreateForm(GTForm, forms.ModelForm):
         label="Apellidos", widget=djgentelella.TextInput, required=True)
     email = forms.CharField(
         label="Correo", widget=djgentelella.EmailMaskInput, required=True)
+    country = forms.ModelChoiceField(
+        label="País", queryset=Country.objects.all(), required=True, widget=djgentelella.Select)
+    phone_number = forms.CharField(label="Teléfono", widget=djgentelella.PhoneNumberMaskInput)
     organization = forms.CharField(
         label="Organización", required=True
     )
@@ -452,6 +454,12 @@ class StudentAdminCreateForm(GTForm, forms.ModelForm):
         model = User
         fields = [
             'username', 'first_name', 'last_name', 'email', 'organization']
+
+    def __init__(self, *args, **kwargs):
+        super(StudentAdminCreateForm, self).__init__(*args, **kwargs)
+        if 'initial' in kwargs:
+            if 'country_id' in kwargs['initial']:
+                self.fields['country'].initial = kwargs['initial']['country_id']
 
 
 class PageSearchForm(GTForm, forms.Form):

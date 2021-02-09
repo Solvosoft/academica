@@ -939,6 +939,8 @@ def create_student(request):
             student = Student(
                 user=user, organization=form.cleaned_data['organization'],
                 created_at=now(), confirmed_at=now(),
+                phone_number=form.cleaned_data['phone_number'],
+                country=form.cleaned_data['country'],
                 expired_at=get_expire_date())
             student.save()
             send_email_from_template(
@@ -969,6 +971,8 @@ def edit_student(request, pk=None):
                 messages.success(request, "Estudiante guardada con éxito")
                 form.save()
                 instance.student.organization = form.cleaned_data['organization']
+                instance.student.country = form.cleaned_data['country']
+                instance.student.phone_number = form.cleaned_data['phone_number']
                 instance.student.save()
                 return HttpResponseRedirect(reverse('students'))
             else:
@@ -979,6 +983,8 @@ def edit_student(request, pk=None):
             if request.method == "GET":
                 instance = User.objects.get(pk=pk)
                 inst = instance.__dict__
+                inst['country'] = instance.student.country
+                inst['phone_number'] = instance.student.phone_number
                 inst['organization'] = instance.student.organization
                 form = StudentAdminCreateForm(initial=inst)
                 return render(

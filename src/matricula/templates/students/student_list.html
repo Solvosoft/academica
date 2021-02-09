@@ -94,15 +94,15 @@
 								<li>
 									<strong>Administrador: </strong>{% if object.user.is_superuser %}Si{%else%}No</i>{%endif%}
 								</li>
+								<li>
+									<strong>Teléfono: </strong>{{object.phone_number}}
+								</li>
 							</ul>
 						</div>
 						<div class="col-md-12">
 							<ul class="list-unstyled user_data">
 								<li>
-									<strong>Fecha de confirmación: </strong>{% if object.confirmed_at %}{{object.confirmed_at}}{%else%}Sin confirmar{%endif%}
-								</li>
-								<li>
-									<strong>Fecha de expiración: </strong>{{object.expired_at}}
+									<strong>País: </strong>{{object.country}}
 								</li>
 								<li>
 									<strong> Recuperar contraseña: </strong><a href="{% url 'recovery_pass_student' object.pk%}"><i class="fa fa-envelope"></i></a>
