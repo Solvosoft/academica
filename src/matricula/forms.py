@@ -73,7 +73,7 @@ class UserEditForm(GTForm, forms.ModelForm):
         widgets = {
             'last_name': djgentelella.TextInput,
             'first_name': djgentelella.TextInput,
-            'email': djgentelella.EmailInput,
+            'email': djgentelella.EmailMaskInput,
         }
 
 
@@ -93,6 +93,7 @@ class StudentEditForm(GTForm, forms.ModelForm):
         if 'initial' in kwargs:
             if 'country_id' in kwargs['initial']:
                 self.fields['country'].initial = kwargs['initial']['country_id']
+
 
 class MenuItemFormPage(forms.ModelForm):
     name = forms.ModelChoiceField(queryset=Page.objects.all(), label=_("Page"))
