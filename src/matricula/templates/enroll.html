@@ -1,8 +1,37 @@
 {% extends 'gentelella/base.html'%}
 {% load i18n %}
 {% block content %}
-	<h1 class="text-center">{% trans 'Cursos Prematriculados' %}</h1>
 	{% if student %}
+		<h1 class="text-center">{% trans 'Cursos prematriculados sin matricula activa' %}</h1>
+		<div class="x_panel">
+			{% for enroll in list_pre%}
+				<div class="x_panel">
+					<!-- end of user messages -->
+					<ul class="messages">
+						<li>
+							<div class="message_date">
+								<h3 class="date text-info green" style="text-align:left;">{{enroll.group.schedule}}</h3>
+								<a class="btn-sm btn-warning" disabled href="#">
+									{% trans 'Matricula no disponible' %}
+								</a>
+							</div>
+							<div style="margin-left:0" class="message_wrapper">
+								<h4 class="heading green">{{enroll.group }}</h4>
+								<blockquote class="message">{{enroll.group.course.content|striptags|truncatechars:300|safe}}</blockquote>
+								<br />
+							</div>
+							<div class="clearfix"></div>
+						</li>
+					</ul>
+					<!-- end of user messages -->
+				</div>
+			{% empty %}
+				<div class="alert alert-info text-center" role="alert">
+					{% trans "No tiene cursos prematriculados"%} 
+				</div>
+			{% endfor %}
+		</div>
+		<h1 class="text-center">{% trans 'Cursos prematriculados con matricula activa' %}</h1>
 		<div class="x_panel">
 			{% for enroll in list_enroll%}
 				<div class="x_panel">
@@ -25,12 +54,6 @@
 					</ul>
 					<!-- end of user messages -->
 				</div>
-				<li class="list-group-item">
-					<span class="badge">
-						
-					</span>
-					{{enroll.group }} {{enroll.group.schedule}}
-				</li>
 			{% empty %}
 				<div class="alert alert-info text-center" role="alert">
 					{% trans "No tiene cursos prematriculados"%} 
