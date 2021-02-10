@@ -230,7 +230,7 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
         context = UpdateView.get_context_data(self, **kwargs)
         enroll = Enroll.objects.filter(student__user=self.object).order_by('enroll_date')
         context['enroll'] = enroll.filter(enroll_activate=True, enroll_finished=True)
-        context['pre_enroll'] = enroll.filter(enroll_activate=True, enroll_finished=False)
+        context['pre_enroll'] = enroll.filter(enroll_finished=False)
         context['student_form'] = StudentEditForm(initial=self.request.user.student.__dict__)
         return context
 
