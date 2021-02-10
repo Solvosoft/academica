@@ -74,7 +74,12 @@ def list_enroll(request):
 
 @login_required
 def finish_enroll(request, pk):
-    enroll = get_object_or_404(Enroll, pk=pk)
+    enroll = get_object_or_404(
+        Enroll, pk=pk,
+        enroll_activate=True, enroll_finished=False,
+        group__enroll_start__lte=timezone.now(),
+        group__enroll_finish__gte=timezone.now())
+    print(enroll.__dict__)
     enroll.enroll_finished = True
 
     try:
