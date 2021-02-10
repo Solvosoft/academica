@@ -1,7 +1,7 @@
 {% extends 'gentelella/base.html'%}
-{%load i18n %}
-{%block content%}
-	<h1 class="text-center">{% trans 'List of courses to enroll' %}</h1>
+{% load i18n %}
+{% block content %}
+	<h1 class="text-center">{% trans 'Cursos Prematriculados' %}</h1>
 	{% if student %}
 		<div class="x_panel">
 			{% for enroll in list_enroll%}
@@ -31,13 +31,13 @@
 					</span>
 					{{enroll.group }} {{enroll.group.schedule}}
 				</li>
-			{%empty%}
+			{% empty %}
 				<div class="alert alert-info text-center" role="alert">
-					{% trans "You don't have any courses to enroll"%} 
+					{% trans "No tiene cursos prematriculados"%} 
 				</div>
-			{%endfor%}
+			{% endfor %}
 		</div>
-	{%else%}
+	{% else %}
 		{% if request.user.is_authenticated and not request.user.student %}
 			<form method="post" action="{% url 'add_student' %}">
 				{% csrf_token %}
@@ -47,7 +47,7 @@
 				</div>
 			</form>
 		{% endif %}
-	{%endif%}
+	{% endif %}
 	{% if student %}
 		<h1 class="text-center">{% trans "Enrolled courses"%}</h1>
 		<div class="x_panel">
@@ -68,11 +68,11 @@
 					</ul>
 					<!-- end of user messages -->
 				</div>
-			{%empty%}
+			{% empty %}
 			<div class="alert alert-info text-center" role="alert">
 				{% trans "You don't have any enrolled courses"%}
 			</div>
-			{%endfor%}
+			{% endfor %}
 		</div>
-	{%endif%}
-{%endblock%}
+	{% endif %}
+{% endblock %}
