@@ -18,7 +18,7 @@
 			</div>
 		</div>
 		<div class="col-md-6">
-			<h3 class="green">{% trans 'Pre-enrolled groups' %}</h3>
+			<h3 class="green">{% trans 'Cursos prematriculados' %}</h3>
 			<div class="x_panel">
 				{% for pre in pre_enroll%}
 					<div class="profile_title">
@@ -27,12 +27,12 @@
 				{% empty %}
 					<div style="margin:5px; padding:5px;" class="profile_title"> 
 						<h2>
-							{% trans "You don't have pre-enrolled groups yet" %}
+							{% trans "No tienes cursos prematriculados" %}
 						</h2>
 					</div>
 				{% endfor%}
 			</div>
-			<h3 class="green"> {% trans 'Enrolled groups' %}</h3>
+			<h3 class="green"> {% trans 'Cursos matriculados' %}</h3>
 			<div class="x_panel">
 				{% for en in enroll%}
 					<div style="margin:5px; padding:5px;" class="profile_title">
@@ -41,7 +41,7 @@
 				{% empty %}
 					<div class="profile_title">
 						<h2> 
-							{% trans "You don't have enrolled groups yet" %}
+							{% trans "No tienes cursos matriculados" %}
 						</h2>
 					</div>
 				{% endfor%}
