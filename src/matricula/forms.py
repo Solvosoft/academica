@@ -19,9 +19,12 @@ from django.contrib.auth.models import Permission
 from djgentelella.widgets.selects import AutocompleteSelectMultiple
 from djgentelella.widgets import tinymce
 from membership_core.models import Country, SystemCurrency
+import re
 
 
 class StudentCreateForm(GTForm, forms.ModelForm):
+    MIN_LENGTH = 8
+
     name = forms.CharField(
         label=_('Your username'), max_length=30,
         help_text=_('Required. 30 characters or fewer. Letters, digits and '
@@ -40,7 +43,8 @@ class StudentCreateForm(GTForm, forms.ModelForm):
         widget=djgentelella.TextInput)
     email = forms.EmailField(required=True, widget=djgentelella.EmailMaskInput)
     password = forms.CharField(
-        required=True, label=_("Password"), widget=djgentelella.PasswordInput)
+        required=True, label=_("Password"), widget=djgentelella.PasswordInput,
+        help_text='El password debe contener al menos 8 caracteres, mezclando mayúsculas, minúsculas, números y caracteres de puntuación')
     organization = forms.CharField(
         label="Organización", required=True
     )
@@ -62,6 +66,23 @@ class StudentCreateForm(GTForm, forms.ModelForm):
         cleaned_data = super(StudentCreateForm, self).clean()
         if User.objects.filter(username=cleaned_data.get('name')).exists():
             raise forms.ValidationError(_("User name exist "))
+    
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+
+        # At least MIN_LENGTH long
+        if len(password) < self.MIN_LENGTH:
+            raise forms.ValidationError("El password debe tener al menos %d caracteres de longitud." % self.MIN_LENGTH)
+
+        # At least one letter and one non-letter
+        first_isalpha = password[0].isalpha()
+        if all(c.isalpha() == first_isalpha for c in password):
+            raise forms.ValidationError("El password debe tener al menos una letra minúscula, un dígito y un caracter de puntuación.")
+
+        if re.search('[A-Z]', password)==None:
+            raise forms.ValidationError("El passwod debe tener al menos una letra mayúscula.")
+
+        return password
 
 
 class UserEditForm(GTForm, forms.ModelForm):
