@@ -14,6 +14,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.db import IntegrityError, transaction
+from async_notifications.utils import send_email_from_template
+
 
 @ajax
 @login_required
@@ -37,6 +39,16 @@ def enrollme(request, pk):
                                         "#group_message": '<div class="alert alert-info" role="alert">' + str(_('We have some problems with your enroll, try again')) + ' </div>'
                                         },
                     }
+        
+        send_email_from_template(
+            'email_preenroll_success',
+            [enroll.student.user.email],
+            {
+                "url": request.build_absolute_uri(reverse('enrollment')),
+                "group": group,
+            },
+            enqueued=False,
+            user=None)
 
         return { "inner-fragments": {"#count_" + str(group.pk): group.enroll_set.count(),
                                 "#group_message": '<div class="alert alert-success" role="alert">' + str(_('Enrollment success')) + '</div>'
