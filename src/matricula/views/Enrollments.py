@@ -8,7 +8,7 @@ Created on 17/5/2015
 
 from django_ajax.decorators import ajax
 from django.shortcuts import get_object_or_404, render, redirect
-from matricula.models import Group, Enroll, Student
+from matricula.models import Group, Enroll
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.utils import timezone
@@ -25,30 +25,29 @@ def enrollme(request, pk):
     list_enroll = Enroll.objects.filter(group=group, student=student)
     if not list_enroll.exists():
         try:
+            template = 'email_enroll_success'
             with transaction.atomic():
                 enroll = Enroll.objects.create(group=group, student=student)
             if group.flow == group.AUTO_PREENROLL:
                 enroll.enroll_activate = True
                 enroll.save()
+                template = 'email_preenroll_success'
             elif group.flow == group.AUTO_ENROLL:
                 enroll.enroll_activate = True
                 enroll.enroll_finished = True
                 enroll.save()
+            send_email_from_template(
+                template, [enroll.student.user.email],
+                {
+                    "url": request.build_absolute_uri(reverse('enrollment')),
+                    "group": group,
+                },
+                enqueued=False, user=None)
         except IntegrityError:
             return { "inner-fragments": {"#count_" + str(group.pk): group.enroll_set.count(),
                                         "#group_message": '<div class="alert alert-info" role="alert">' + str(_('We have some problems with your enroll, try again')) + ' </div>'
                                         },
                     }
-        
-        send_email_from_template(
-            'email_preenroll_success',
-            [enroll.student.user.email],
-            {
-                "url": request.build_absolute_uri(reverse('enrollment')),
-                "group": group,
-            },
-            enqueued=False,
-            user=None)
 
         return { "inner-fragments": {"#count_" + str(group.pk): group.enroll_set.count(),
                                 "#group_message": '<div class="alert alert-success" role="alert">' + str(_('Enrollment success')) + '</div>'

@@ -18,6 +18,10 @@ def load_email_temp_academica():
     update_template_context(
         'email_preenroll_success', 'Correo de pre-inscripción exitosa',
         [('group'), ('url')], 'email_preenroll_success.html', as_template=True)
+    
+    update_template_context(
+        'email_enroll_success', 'Correo de inscripción exitosa',
+        [('group'), ('url')], 'email_enroll_success.html', as_template=True)
 
     update_template_context(
         'email_close_group', 'Correo de cierre de grupo',
