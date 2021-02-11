@@ -572,10 +572,19 @@ def pre_enroll_group(request, pk=None):
             if group:
                 form = PreEnrollAddGroupForm(request.POST)
                 if form.is_valid():
-                    enroll = Enroll.objects.filter(pk__in=form.cleaned_data['students'], group=group)
-                    for instance in enroll:
+                    enrolls = Enroll.objects.filter(pk__in=form.cleaned_data['students'], group=group)
+                    emails = []
+                    for instance in enrolls:
                         instance.enroll_finished = True
                         instance.save()
+                        emails.append(instance.student.user.email)
+                    send_email_from_template(
+                        'email_enroll_success', [i for i in emails],
+                        {
+                            "url": request.build_absolute_uri(reverse('enrollment')),
+                            "group": group,
+                        },
+                        enqueued=False, user=None)
                     messages.success(request, "Estudiantes inscritos con éxito")
                     return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
             messages.error(request, "Error al realizar la acción")
