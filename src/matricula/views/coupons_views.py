@@ -12,6 +12,8 @@ from matricula.contrib.bills.models import Bill
 from matricula.forms import CouponsSearchForm, CouponAddForm, CouponEditForm
 from matricula.models import Coupon, Course, Group, Student, Enroll
 from django.utils.encoding import smart_text
+from django.db import transaction
+from django.core.exceptions import ValidationError
 
 redirect_coupons = False
 
@@ -134,54 +136,61 @@ def create_cupon(request):
             student_list = form.cleaned_data['student']
             discount_percentage = form.cleaned_data['discount_percentage']
 
+            student_error = ''
+            
             if course and student_list and discount_percentage:
+                try:
+                    with transaction.atomic():
 
-                for student in student_list:
+                        for student in student_list:
 
-                    code = "UP" + str(year) + str(student)[0:2] + "P" + str(discount_percentage) + str(
-                                    course)[0:2]
+                            code = "UP" + str(year) + str(student)[0:2] + "P" + str(discount_percentage) + str(
+                                            course)[0:2]
 
-                    check_coupon = Coupon.objects.filter(student=student, course=course)
+                            check_coupon = Coupon.objects.filter(student=student, course=course)
 
-                    if check_coupon:
+                            if check_coupon:
 
-                        if check_coupon.count() == 1 and check_coupon.first().discount_percentage == 50 and discount_percentage == "50":
+                                if check_coupon.count() == 1 and check_coupon.first().discount_percentage == 50 and discount_percentage == "50":
 
-                            if check_coupon.first().code[9] == "5":
-                                code = "UP" + str(year) + str(student)[0:2] + "P2" + str(discount_percentage) + str(course)[0:2]
+                                    if check_coupon.first().code[9] == "5":
+                                        code = "UP" + str(year) + str(student)[0:2] + "P2" + str(discount_percentage) + str(course)[0:2]
 
-                            coupon = Coupon(
-                                student=student,
-                                course=course,
-                                code=code,
-                                discount_percentage=int(discount_percentage)
-                            )
-                            coupons_list.append(coupon)
-                        else:
-                            student = str(student)
-                            send_coupons = False
-                            break
+                                    coupon = Coupon(
+                                        student=student,
+                                        course=course,
+                                        code=code,
+                                        discount_percentage=int(discount_percentage)
+                                    )
+                                    coupons_list.append(coupon)
+                                else:
+                                    student_error = str(student)
+                                    send_coupons = False
+                                    raise ValidationError("Something went grown with coupons assignment")
 
-                    else:
-                        coupon = Coupon(
-                                student=student,
-                                course=course,
-                                code=code,
-                                discount_percentage=int(discount_percentage)
-                            )
-                        coupons_list.append(coupon)
+                            else:
+                                coupon = Coupon(
+                                        student=student,
+                                        course=course,
+                                        code=code,
+                                        discount_percentage=int(discount_percentage)
+                                    )
+                                coupons_list.append(coupon)
 
-                if send_coupons:
+                        if send_coupons:
 
-                    if len(coupons_list) > 0:
+                            if len(coupons_list) > 0:
 
-                        Coupon.objects.bulk_create(coupons_list)
-                        send_code_notification(coupons_list, request.user)
-                        messages.success(request, "El cupón ha sido registrado y se notificó al estudiante éxitosamente.")
-                        return redirect('coupons_list')
+                                Coupon.objects.bulk_create(coupons_list)
+                                send_code_notification(coupons_list, request.user)
+                                messages.success(request, "El cupón ha sido registrado y se notificó al estudiante éxitosamente.")
+                                return redirect('coupons_list')
 
-                    else:
-                        get_error_message(request, student)
+                            else:
+                                get_error_message(request, student)
+                except ValidationError:
+                    messages.error(request, f"Error el usuario {student_error} ya tiene el 100% de cupones en este curso")
+                    return render(request, "coupons/create.html", context={'form': form})
 
     else:
         form = CouponAddForm()
