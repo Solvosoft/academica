@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
-
 from async_notifications.models import EmailTemplate
+
 
 class Command(BaseCommand):
 

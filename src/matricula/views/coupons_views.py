@@ -10,7 +10,7 @@ from django_ajax.decorators import ajax
 from async_notifications.utils import send_email_from_template
 from matricula.contrib.bills.models import Bill
 from matricula.forms import CouponsSearchForm, CouponAddForm, CouponEditForm
-from matricula.models import Coupon, Course, Group, Student, Enroll
+from matricula.models import Coupon, Group, Student, Enroll
 from django.utils.encoding import smart_text
 from django.db import transaction
 from django.core.exceptions import ValidationError
@@ -145,7 +145,7 @@ def create_cupon(request):
             discount_percentage = form.cleaned_data['discount_percentage']
 
             student_error = ''
-            
+
             if course and student_list and discount_percentage:
                 try:
                     with transaction.atomic():
