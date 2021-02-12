@@ -45,6 +45,14 @@ def save_coupon(request, course, student, discount_percentage, coupon):
     coupon.student = student
     coupon.discount_percentage = int(discount_percentage)
     coupon.save()
+    if coupon.data_changed(['student_id', 'course_id', 'discount_percentage', 'is_used', 'code', 'bill_id']):
+        send_email_from_template(
+            "coupon_code_notification_updated",
+            coupon.student.user.email,
+            enqueued=False,
+            user=student.user,
+            context={'coupon': coupon}
+        )
     messages.success(request, "El cupón ha sido actualizado éxitosamente.")
     redirect_coupons = True
 

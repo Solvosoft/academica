@@ -16,3 +16,15 @@ class Command(BaseCommand):
 
         email_template.save()
         file.close()
+
+        # Notification email when coupon is updated
+        file_update = open('matricula/templates/coupons/coupon_code_notification_update.html', 'r')
+
+        email_template_update = EmailTemplate(
+            code="coupon_code_notification_updated",
+            subject="Cupón de descuento actualizado",
+            message=file_update.read()
+        )
+
+        email_template_update.save()
+        file_update.close()
