@@ -24,7 +24,7 @@ def send_code_notification(coupons_list, user):
         send_email_from_template(
             "coupon_code_notification",
             coupon.student.user.email,
-            enqueued=False,
+            enqueued=True,
             user=user,
             context={'coupon': coupon}
         )
