@@ -30,7 +30,7 @@
 			<div class="x_panel">
 				{% for pre in pre_enroll%}
 					<div class="profile_title">
-						<h2>{{pre.group}}</h2>
+						<h2><a href="{% url 'course_detail' pre.group.pk %}">{{pre.group}}</a></h2>
 					</div>
 				{% empty %}
 					<div style="margin:5px; padding:5px;" class="profile_title"> 
@@ -44,7 +44,7 @@
 			<div class="x_panel">
 				{% for en in enroll%}
 					<div style="margin:5px; padding:5px;" class="profile_title">
-						<h2>{{en.group}}</h2>
+						<h2><a href="{% url 'course_detail' en.group.pk %}">{{en.group}}</a></h2>
 					</div>
 				{% empty %}
 					<div class="profile_title">
