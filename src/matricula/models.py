@@ -23,7 +23,7 @@ class Student(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def confirm(self, key):
-        if (now() < self.expired_at and str(self.key) == key):
+        if (str(self.key) == key):
             self.user.is_active = True
             self.user.save()
             self.confirmed_at = now()
