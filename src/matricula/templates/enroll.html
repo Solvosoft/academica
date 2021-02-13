@@ -15,7 +15,7 @@
 								</a>
 							</div>
 							<div style="margin-left:0" class="message_wrapper">
-								<h4 class="heading green">{{enroll.group }}</h4>
+								<h4 class="heading green"><a href="{% url 'course_detail' enroll.group.course.pk %}">{{enroll.group }}</a></h4>
 								<blockquote class="message">{{enroll.group.course.content|striptags|truncatechars:300|safe}}</blockquote>
 								<br />
 							</div>
@@ -43,7 +43,7 @@
 								</a>
 							</div>
 							<div style="margin-left:0" class="message_wrapper">
-								<h4 class="heading green">{{enroll.group }}</h4>
+								<h4 class="heading green"><a href="{% url 'course_detail' enroll.group.course.pk %}">{{enroll.group }}</a></h4>
 								<blockquote class="message">{{enroll.group.course.content|striptags|truncatechars:300|safe}}</blockquote>
 								<br />
 							</div>
@@ -78,7 +78,7 @@
 					<ul class="messages">
 						<li>
 							<div style="margin-left:0" class="message_wrapper">
-								<h4 class="heading green">{{enroll.group }}</h4>
+								<h4 class="heading green"><a href="{% url 'course_detail' enroll.group.course.pk %}">{{enroll.group }}</a></h4>
 								<blockquote class="message">{{enroll.group.course.content|striptags|truncatechars:300|safe}}</blockquote>
 								<br />
 							</div>
