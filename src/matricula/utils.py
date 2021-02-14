@@ -46,3 +46,8 @@ def load_email_temp_academica():
         'new_user_created_membership', 'Nueva usuaria creada en la plataforma',
         [('user'), ('domain')], 'gentelella/registration/new_user.html',
         as_template=True)
+    
+    update_template_context(
+        'new_professor_created_academy', 'Correo de bienvenida',
+        [('user'), ('professor'), ('url')],
+        'welcome_professor.html', as_template=True)
