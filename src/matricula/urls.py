@@ -33,7 +33,7 @@ from .views.coupons_views import coupons_list, create_cupon, delete_coupon, edit
 from matricula.contrib.bills.urls import urlpatterns as billurls
 from matricula.views.Auth import get_profile
 
-from .views.professor_views import ProfessorsList, CreateProfessor, EditProfessor, edit_profile, delete_professor, \
+from .views.professor_views import AddUser, ProfessorsList, CreateProfessor, EditProfessor, edit_profile, delete_professor, \
     deactivate_professor
 from .views.students_views import qualify_students, update_enroll, update_enroll_status
 
@@ -118,4 +118,5 @@ urlpatterns = [
     path('enrrolment/coupons/<int:pk>/<int:percentage>/group/', add_coupons_group, name="add_coupons_group"),
     path('enrrolment/certificate/build/<int:pk>/', build_pdf_certificate_list, name="build_pdf_certificate_list"),
     path('enrrolment/certificate/enroll/<int:pk_group>/<int:pk>/', regenerate_certificate, name="build_pdf_certificate_view"),
+    path('enrollment/users/create', AddUser.as_view(), name="create_simple_user"),
 ] + billurls

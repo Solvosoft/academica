@@ -51,3 +51,8 @@ def load_email_temp_academica():
         'new_professor_created_academy', 'Correo de bienvenida',
         [('user'), ('professor'), ('url')],
         'welcome_professor.html', as_template=True)
+
+    update_template_context(
+        'reset_password_academy', 'Correo de configuración de contraseña',
+        [('domain'), ('user')], 'set_password_academy.html',
+        as_template=True)
