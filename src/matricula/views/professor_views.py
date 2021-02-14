@@ -1,13 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required, login_required
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.urls.base import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, UpdateView
 
 from matricula.decorators import user_group_perms
-from matricula.forms import ProfessorEditForm, ProfessorSearchForm, ProfessorAddForm
+from matricula.forms import ProfessorEditForm, ProfessorSearchForm, ProfessorAddForm, UserCreateForm
 from matricula.models import Professor
 
 @login_required
@@ -80,13 +81,37 @@ class CreateProfessor(CreateView):
     template_name = "professor/create.html"
     success_url = reverse_lazy("professors_list")
 
-    def form_valid(self, form):
-        instance = form.save()
-        professor_group = Group.objects.filter(name="Profesores").first()
-        instance.user.groups.add(professor_group)
-        instance.user.user_permissions.add(*professor_group.permissions.all())
-        messages.success(self.request, "Profesora registrada exitosamente.")
-        return super().form_valid(form)
+    def get_context_data(self, **kwargs):
+        context =  {}
+        if 'form' not in kwargs:
+            context['form'] = ProfessorAddForm()
+        if 'user_form' not in kwargs:
+            context['user_form'] = UserCreateForm()
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        context = {}
+
+        form = ProfessorAddForm(request.POST)
+        user_form = UserCreateForm(request.POST)
+
+        if form.is_valid() and user_form.is_valid():
+            instance = form.save(commit=False)
+            user = user_form.save(commit=False)
+            user.set_password(user_form.cleaned_data['password'])
+            user.save()
+            professor_group = Group.objects.filter(name="Profesores").first()
+            instance.user = user
+            instance.user.groups.add(professor_group)
+            instance.user.user_permissions.add(*professor_group.permissions.all())
+            instance.save()
+            messages.success(self.request, "Profesora registrada exitosamente.")
+            return redirect(reverse('professors_list'))
+        else: 
+            context['form'] = form
+            context['user_form'] = user_form
+            messages.error(self.request, "Error al guardar los datos.")
+            return render(request, self.template_name, self.get_context_data(**context))
 
 
 @method_decorator(permission_required('matricula.change_professor'), name='dispatch')

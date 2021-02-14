@@ -97,6 +97,20 @@ class UserEditForm(GTForm, forms.ModelForm):
         }
 
 
+class UserCreateForm(GTForm, forms.ModelForm):
+    
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email', 'password']
+        widgets = {
+            'username': djgentelella.TextInput,
+            'last_name': djgentelella.TextInput,
+            'first_name': djgentelella.TextInput,
+            'email': djgentelella.EmailMaskInput,
+            'password': djgentelella.PasswordInput,
+        }
+
+
 class StudentEditForm(GTForm, forms.ModelForm):
 
     class Meta:
@@ -570,13 +584,10 @@ class ProfessorSearchForm(GTForm, forms.Form):
 
 
 class ProfessorAddForm(GTForm, forms.ModelForm):
-    user = forms.ModelChoiceField(
-        queryset=User.objects.all(), widget=djgentelella.Select,
-        required=True, label="Usuaria * ")
 
     class Meta:
         model = Professor
-        fields = "__all__"
+        fields = ("email", "description", "active")
         widgets = {
             'email': djgentelella.EmailMaskInput,
             'description': djgentelella.Textarea,
