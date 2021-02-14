@@ -7,7 +7,7 @@ from django.urls.base import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, UpdateView
 from matricula.decorators import user_group_perms
-from matricula.forms import ProfessorEditForm, ProfessorSearchForm, ProfessorAddForm, UserCreateForm
+from matricula.forms import ProfessorEditForm, ProfessorSearchForm, ProfessorAddForm, UserCreateForm, UserEditForm
 from matricula.models import Professor
 from async_notifications.utils import send_email_from_template
 
@@ -132,10 +132,36 @@ class EditProfessor(UpdateView):
     template_name = "professor/edit.html"
     success_url = reverse_lazy("professors_list")
 
-    def form_valid(self, form):
-        self.object.save()
-        messages.success(self.request, "Datos actualizados exitosamente.")
-        return super().form_valid(form)
+    def post(self, request, *args, **kwargs):
+        context = {}
+        form = ProfessorAddForm(request.POST)
+        user_form = UserEditForm(request.POST)
+        if form.is_valid() and user_form.is_valid():
+            professor = self.get_object()
+            professor.user.first_name = user_form.cleaned_data['first_name']
+            professor.user.last_name = user_form.cleaned_data['last_name']
+            professor.user.email = user_form.cleaned_data['email']
+            professor.user.save()
+            professor.email = form.cleaned_data['email']
+            professor.description = form.cleaned_data['description']
+            professor.active = form.cleaned_data['active']
+            professor.save()
+            messages.success(self.request, "Profesora actualizada exitosamente.")
+            return redirect(reverse('professors_list'))
+        else: 
+            context['form'] = form
+            context['user_form'] = user_form
+            messages.error(self.request, "Error al guardar los datos.")
+            return render(request, self.template_name, self.get_context_data(**context))
+
+    def get_context_data(self, **kwargs):
+        context =  {}
+        if 'form' not in kwargs:
+            context['form'] = self.get_form()
+        self.object = self.get_object()
+        if 'user_form' not in kwargs:
+            context['user_form'] = UserEditForm(initial=self.object.user.__dict__)
+        return context
 
 
 @permission_required('matricula.delete_professor')

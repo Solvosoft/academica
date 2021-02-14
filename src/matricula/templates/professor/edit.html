@@ -16,6 +16,7 @@
             <div class="x_content">
                 <form method="post">
                     {% csrf_token %}
+                    {{user_form.as_horizontal}}
                     {{form.as_horizontal}}
                     <br>
                     <div class="form-group" style="text-align:center">
