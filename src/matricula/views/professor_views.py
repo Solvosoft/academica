@@ -85,7 +85,7 @@ class CreateProfessor(CreateView):
     def get_context_data(self, **kwargs):
         context =  {}
         if 'form' not in kwargs:
-            context['form'] = ProfessorAddForm()
+            context['form'] = self.get_form()
         if 'user_form' not in kwargs:
             context['user_form'] = UserCreateForm()
         return context
