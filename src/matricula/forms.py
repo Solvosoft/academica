@@ -26,7 +26,7 @@ class StudentCreateForm(GTForm, forms.ModelForm):
     MIN_LENGTH = 8
 
     name = forms.CharField(
-        label=_('Your username'), max_length=30,
+        label=_('Your username')+" * ", max_length=30,
         help_text=_('Required. 30 characters or fewer. Letters, digits and '
                     '@/./+/-/_ only.'),
         validators=[
@@ -36,17 +36,17 @@ class StudentCreateForm(GTForm, forms.ModelForm):
                                         'and @/./+/-/_ characters.'), 'invalid'),
         ], required=True, widget=djgentelella.TextInput)
     first_name = forms.CharField(
-        label=_('First name'), max_length=30, required=True,
+        label=_('First name')+" * ", max_length=30, required=True,
         widget=djgentelella.TextInput)
     last_name = forms.CharField(
-        label=_('Last name'), max_length=30, required=True,
+        label=_('Last name')+" * ", max_length=30, required=True,
         widget=djgentelella.TextInput)
-    email = forms.EmailField(required=True, widget=djgentelella.EmailMaskInput)
+    email = forms.EmailField(label="Correo electrónico * ", required=True, widget=djgentelella.EmailMaskInput)
     password = forms.CharField(
-        required=True, label=_("Password"), widget=djgentelella.PasswordInput,
+        required=True, label=_("Password")+" * ", widget=djgentelella.PasswordInput,
         help_text='El password debe contener al menos 8 caracteres, mezclando mayúsculas, minúsculas, números y caracteres de puntuación')
     organization = forms.CharField(
-        label="Organización", required=True
+        label="Organización * ", required=True
     )
 
     class Meta:
@@ -244,16 +244,16 @@ class MenuItemCreateForm(forms.ModelForm, GTForm):
             'only_icon': djgentelella.YesNoInput
         }
         labels = {
-            'title': _('Title'),
-            'url_name': _('Url name'),
-            'category': _('Category'),
-            'is_reversed': _('Is reversed?'),
+            'title': _('Title')+" * ",
+            'url_name': _('Url name')+" * ",
+            'category': _('Category')+" * ",
+            'is_reversed': _('Is reversed?')+" * ",
             'reversed_kwargs': _('Reversed kwargs'),
             'reversed_args': _('Reversed args'),
             'parent': _('Parent'),
-            'is_widget': _('Is a widget?'),
+            'is_widget': _('Is a widget?')+" * ",
             'icon': _('Icon'),
-            'only_icon': _('Only icon?')
+            'only_icon': _('Only icon?')+" * "
         }
 
     def __init__(self, *args, **kwargs):
@@ -494,7 +494,7 @@ class PageCreateForm(forms.ModelForm, GTForm):
             attrs={'rel': ['#create_menu_form']}, shparent='.x_panel'),
         label="¿Agregar página al menú?")
     title = forms.CharField(
-        label="Título", required=True, widget=djgentelella.TextInput)
+        label="Título * ", required=True, widget=djgentelella.TextInput)
     content = forms.CharField(
         required=False, widget=tinymce.EditorTinymce, label="Contenido")
 
@@ -572,7 +572,7 @@ class ProfessorSearchForm(GTForm, forms.Form):
 class ProfessorAddForm(GTForm, forms.ModelForm):
     user = forms.ModelChoiceField(
         queryset=User.objects.all(), widget=djgentelella.Select,
-        required=False, label="Usuaria")
+        required=True, label="Usuaria * ")
 
     class Meta:
         model = Professor
@@ -630,15 +630,15 @@ class CouponAddForm(GTForm, forms.Form):
 
     student = forms.ModelMultipleChoiceField(
         queryset=Student.objects.all(), widget=djgentelella.SelectMultiple,
-        required=False, label="Estudiante")
+        required=False, label="Estudiante * ")
 
     course = forms.ModelChoiceField(
         queryset=Course.objects.all(), widget=djgentelella.Select,
-        required=False, label="Curso")
+        required=False, label="Curso * ")
 
     discount_percentage = forms.ChoiceField(
         choices=DISCOUNT_CHOICES, widget=djgentelella.Select,
-        required=False, label="Descuento")
+        required=False, label="Descuento * ")
 
 
 class CouponEditForm(GTForm, forms.Form):
@@ -650,15 +650,15 @@ class CouponEditForm(GTForm, forms.Form):
 
     student = forms.ModelChoiceField(
         queryset=Student.objects.all(), widget=djgentelella.Select,
-        required=False, label="Estudiante")
+        required=False, label="Estudiante * ")
 
     course = forms.ModelChoiceField(
         queryset=Course.objects.all(), widget=djgentelella.Select,
-        required=False, label="Curso")
+        required=False, label="Curso * ")
 
     discount_percentage = forms.ChoiceField(
         choices=DISCOUNT_CHOICES, widget=djgentelella.Select,
-        required=False, label="Descuento")
+        required=False, label="Descuento * ")
 
 
 class CourseMainSearchForm(GTForm, forms.Form):

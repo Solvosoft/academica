@@ -13,10 +13,10 @@ from membership_core.models import Country, SystemCurrency
 
 class Student(models.Model):
     user = models.OneToOneField(
-        User, on_delete=models.CASCADE, primary_key=True)
-    organization = models.CharField(verbose_name="Organización", max_length=150)
+        User, on_delete=models.CASCADE, primary_key=True, verbose_name="Usuario *")
+    organization = models.CharField(verbose_name="Organización * ", max_length=150)
     country = models.ForeignKey(Country, on_delete=models.CASCADE, default=11)
-    phone_number = models.CharField("Número de teléfono", max_length=15, default="")
+    phone_number = models.CharField("Número de teléfono * ", max_length=15, default="")
     key = models.UUIDField(default=uuid.uuid4)
     confirmed_at = models.DateTimeField(null=True, blank=True)
     expired_at = models.DateTimeField()
@@ -65,9 +65,9 @@ class Professor(models.Model):
 
 
 class Period(models.Model):
-    name = models.CharField(max_length=50, verbose_name=_("Name"))
-    start_date = models.DateField(verbose_name=_("Period start date"))
-    finish_date = models.DateField(verbose_name=_("Period finish date"))
+    name = models.CharField(max_length=50, verbose_name=_("Name")+" * ")
+    start_date = models.DateField(verbose_name=_("Period start date")+" * ")
+    finish_date = models.DateField(verbose_name=_("Period finish date")+" * ")
 
     def __str__(self):
         return self.name
@@ -79,8 +79,8 @@ class Period(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=300, verbose_name=_("Name"))
-    description = models.TextField(verbose_name=_("Description"))
+    name = models.CharField(max_length=300, verbose_name=_("Name")+" * ")
+    description = models.TextField(verbose_name=_("Description")+ " * ")
 
     def __str__(self):
         return self.name
@@ -93,9 +93,9 @@ class Category(models.Model):
 
 class Course(models.Model):
     category = models.ForeignKey(
-        Category, verbose_name=_("Category"), on_delete=models.CASCADE)
-    name = models.CharField(max_length=300, verbose_name=_("Name"))
-    content = models.TextField(verbose_name=_("Content"))
+        Category, verbose_name=_("Category")+" * ", on_delete=models.CASCADE)
+    name = models.CharField(max_length=300, verbose_name=_("Name")+ " * ")
+    content = models.TextField(verbose_name=_("Content")+" * ")
 
     def __str__(self):
         return self.name
@@ -132,28 +132,28 @@ class Group(models.Model):
     )
 
     period = models.ForeignKey(
-        Period, verbose_name="Período", on_delete=models.CASCADE)
+        Period, verbose_name="Período * ", on_delete=models.CASCADE)
     course = models.ForeignKey(
-        Course, verbose_name=_("Course"), on_delete=models.CASCADE)
-    name = models.CharField(max_length=50, verbose_name=_("Name"))
+        Course, verbose_name=_("Course")+" * ", on_delete=models.CASCADE)
+    name = models.CharField(max_length=50, verbose_name=_("Name")+" * ")
     schedule = models.CharField(max_length=300, verbose_name=_("Schedule"))
     pre_enroll_start = models.DateTimeField(
-        verbose_name=_("Pre enroll start hour"))
+        verbose_name=_("Pre enroll start hour")+" * ")
     pre_enroll_finish = models.DateTimeField(
-        verbose_name=_("Pre enroll finish hour"))
-    enroll_start = models.DateTimeField(verbose_name=_("Enroll start hour"))
-    enroll_finish = models.DateTimeField(verbose_name=_("Enroll finish hour"))
-    is_paid = models.BooleanField(verbose_name="Es pagado", default=True)
+        verbose_name=_("Pre enroll finish hour")+" * ")
+    enroll_start = models.DateTimeField(verbose_name=_("Enroll start hour")+" * ")
+    enroll_finish = models.DateTimeField(verbose_name=_("Enroll finish hour")+" * ")
+    is_paid = models.BooleanField(verbose_name="Es pagado * ", default=True)
     currency = models.ForeignKey(
-        SystemCurrency, verbose_name=_("Currency"), on_delete=models.CASCADE,
+        SystemCurrency, verbose_name=_("Currency")+" * ", on_delete=models.CASCADE,
         default=4)
     cost = models.DecimalField(
-        max_digits=10, decimal_places=2, verbose_name=_("Course cost"))
+        max_digits=10, decimal_places=2, verbose_name=_("Course cost")+ " * ")
     maximum = models.SmallIntegerField(
-        verbose_name=_("Maximum number of students"))
+        verbose_name=_("Maximum number of students")+ " * ")
     is_open = models.BooleanField(
-        default=True, verbose_name="¿Está abierto?")
-    flow = models.SmallIntegerField(choices=FLOWS, default=NORMAL, verbose_name=_("Enrollment behavior"))
+        default=True, verbose_name="¿Está abierto? * ")
+    flow = models.SmallIntegerField(choices=FLOWS, default=NORMAL, verbose_name=_("Enrollment behavior")+" * ")
     professors = models.ManyToManyField(Professor, blank=True, verbose_name=_("Professors"))
 
     @property
@@ -259,7 +259,7 @@ class MenuItem(models.Model):
 
 
 class Page(models.Model):
-    slug = models.SlugField()
+    slug = models.SlugField("Slug * ")
     title = models.CharField(
         max_length=300, null=True, blank=True, verbose_name="Título")
     content = models.TextField(verbose_name=_("Content"))
