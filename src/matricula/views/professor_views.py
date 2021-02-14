@@ -81,47 +81,35 @@ class CreateProfessor(CreateView):
     form_class = ProfessorAddForm
     template_name = "professor/create.html"
     success_url = reverse_lazy("professors_list")
-
-    def get_context_data(self, **kwargs):
-        context =  {}
-        if 'form' not in kwargs:
-            context['form'] = self.get_form()
-        if 'user_form' not in kwargs:
-            context['user_form'] = UserCreateForm()
-        return context
     
     def post(self, request, *args, **kwargs):
         context = {}
-
         form = ProfessorAddForm(request.POST)
-        user_form = UserCreateForm(request.POST)
-
-        if form.is_valid() and user_form.is_valid():
+        if form.is_valid():
             instance = form.save(commit=False)
-            user = user_form.save(commit=False)
-            user.set_password(user_form.cleaned_data['password'])
-            user.save()
             professor_group = Group.objects.filter(name="Profesores").first()
-            instance.user = user
             instance.user.groups.add(professor_group)
             instance.user.user_permissions.add(*professor_group.permissions.all())
             instance.save()
-            send_email_from_template(
-                'new_professor_created_academy', user.email,
-                {
-                    "url": request.build_absolute_uri(reverse('login')),
-                    "user": user,
-                    'professor': instance
-                },
-                enqueued=False,
-                user=None)
+            self.send_email(instance.user)
             messages.success(self.request, "Profesora registrada exitosamente.")
             return redirect(reverse('professors_list'))
         else: 
             context['form'] = form
-            context['user_form'] = user_form
             messages.error(self.request, "Error al guardar los datos.")
             return render(request, self.template_name, self.get_context_data(**context))
+
+    def send_email(self,  user):
+        schema = self.request.scheme+"://"
+        send_email_from_template(
+        'new_professor_created_academy', user.email,
+        {
+            "url": self.request.build_absolute_uri(reverse('login')),
+            "user": user,
+            'professor': user.professor
+        },
+        enqueued=False,
+        user=None)
 
 
 @method_decorator(permission_required('matricula.change_professor'), name='dispatch')

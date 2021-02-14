@@ -2,7 +2,7 @@ from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View
 from .models import Category, Student
 from matricula.models import Period
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, User
 from datetime import datetime
 from matricula.views.utils import get_active_period
 
@@ -39,3 +39,13 @@ class PeriodGModelLookup(BaseSelect2View):
 
     def get_queryset(self):
         return get_active_period()
+
+
+@register_lookups(prefix="studentuser", basename="studentuser")
+class UserProfessorGModelLookup(BaseSelect2View):
+    model = User
+    fields = ['username']
+
+    def get_queryset(self):
+        queryset = User.objects.filter(professor__isnull=True)
+        return queryset
