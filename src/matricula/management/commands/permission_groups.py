@@ -26,6 +26,8 @@ class Command(BaseCommand):
             content_type__app_label="matricula").all()
         djgentelella_perms = Permission.objects.filter(
             content_type__app_label="djgentelella", content_type=ct).all()
+        bill_perms = Permission.objects.filter(
+            content_type__app_label="bills").all()
         change_systemcurrency = Permission.objects.filter(codename="change_systemcurrency", content_type__app_label="membership_core").first()
         view_systemcurrency = Permission.objects.filter(codename="view_systemcurrency", content_type__app_label="membership_core").first()
         add_systemcurrency = Permission.objects.filter(codename="add_systemcurrency", content_type__app_label="membership_core").first()
@@ -37,5 +39,6 @@ class Command(BaseCommand):
         )
         enroll_group.save()
         enroll_group.permissions.add(*enroll_perms)
+        enroll_group.permissions.add(*bill_perms)
         enroll_group.permissions.add(*djgentelella_perms)
         enroll_group.permissions.add(*permissions_systemcurrency)

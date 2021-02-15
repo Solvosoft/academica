@@ -207,7 +207,7 @@
                     </li>
                 </ul>
             {% endif %}
-            {% if perms.bills.view_colonexchange %}
+            {% if perms.bills.view_bill or perms.membership_core.view_systemcurrency %}
                 <ul class="nav side-menu">
                     <li>
                         <a>
@@ -216,7 +216,7 @@
                             <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">
-                            {% if perms.bills.view_colonexchange %}
+                            {% if perms.membership_core.view_systemcurrency %}
                                 <li><a href="{% url 'colonexchange' %}">Moneda de intercambio</a></li>
                             {% endif %}
                             {% if perms.bills.view_bill %}

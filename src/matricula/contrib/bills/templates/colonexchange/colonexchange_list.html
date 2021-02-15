@@ -1,6 +1,6 @@
 {% extends 'gentelella/base.html'%}
 {% load static utils membership_code %}
-{%block content %}
+{% block content %}
 	<h1 class="text-center">Moneda de intercambio</h1>
 	<div class="row">
 		<div class="col-md-8 col-md-offset-1">
@@ -24,12 +24,12 @@
 			</div>
 		</div>
 		<div class="col-md-2">
-			{% if perms.bills.add_colonexchange %}
+			{% if perms.membership_core.add_systemcurrency %}
 				<a class="btn btn-primary" href="{% url 'create_colonexchange' %}">Crear moneda de intercambio</a>
 			{% endif %}
 		</div>
 	</div>
-	{% if perms.bills.delete_colonexchange %}
+	{% if perms.membership_core.delete_systemcurrency %}
 		<!-- modal delete category -->
 		<div id="modaldeleteitem" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
 			<div class="modal-dialog" role="document">
@@ -53,12 +53,12 @@
 				<div class="x_title">
 					<h2 class="green">{{object.currency}}</h2>
 					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
-						{% if perms.bills.change_colonexchange %}
+						{% if perms.membership_core.change_systemcurrency %}
 							<li>
 								<a title="Editar moneda de intercambio" href="{% url 'edit_colonexchange' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
 							</li>
 						{% endif %}
-						{% if perms.bills.delete_colonexchange %}
+						{% if perms.membership_core.delete_systemcurrency %}
 							<li><a title="Eliminar moneda de intercambio" data-url="{% url 'delete_colonexchange' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
 						{% endif %}
 					</ul>
@@ -95,8 +95,8 @@
 		{% endif %}
 	</div>
 	<div class="clearfix"></div>
-{%endblock%}
-{% if perms.bills.delete_colonexchange %}
+{% endblock %}
+{% if perms.membership_core.delete_systemcurrency %}
 	{% block js %}
 		<script type="text/javascript">
 			function deleteitem(element){
