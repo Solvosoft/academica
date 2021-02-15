@@ -41,6 +41,9 @@ class Student(models.Model):
         verbose_name = _("Student")
         verbose_name_plural = _("Students")
         ordering = ['user__last_name']
+        permissions = [
+            ("can_recovery_pass_student", "Can recovery pass student"),
+        ]
 
 
 class Professor(models.Model):
