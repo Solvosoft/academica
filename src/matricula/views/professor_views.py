@@ -116,13 +116,13 @@ class CreateProfessor(CreateView):
 class EditProfessor(UpdateView):
 
     model = Professor
-    form_class = ProfessorAddForm
+    form_class = ProfessorEditForm
     template_name = "professor/edit.html"
     success_url = reverse_lazy("professors_list")
 
     def post(self, request, *args, **kwargs):
         context = {}
-        form = ProfessorAddForm(request.POST)
+        form = ProfessorEditForm(request.POST)
         user_form = UserEditForm(request.POST)
         if form.is_valid() and user_form.is_valid():
             professor = self.get_object()
