@@ -178,6 +178,7 @@ class Group(models.Model):
         permissions = [
             ("can_view_pre_enroll_group", "Can view pre-enrolled in group"),
             ("can_export_enrolled_group", "Can export students group"),
+            ("can_list_students_group", "Can list students group"),
             ("can_open_group", "Can open group"),
             ("can_close_group", "Can close group"),
             ("can_view_pdf_enrolled_group", "Can view enrolled to group"),
