@@ -55,7 +55,7 @@ class BillSearchForm(GTForm, forms.Form):
 
 class BillCreateForm(forms.ModelForm, GTForm):
     is_paid = forms.CharField(
-        label="Pagado", widget=djgentelella.YesNoInput)
+        label="Pagado", widget=djgentelella.YesNoInput, required=False)
     transaction_id = forms.CharField(
         widget=djgentelella.Textarea, label="Id de transacción")
 
