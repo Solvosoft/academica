@@ -12,7 +12,7 @@
                 <li>
                     <a>
                         <i class="fa fa-credit-card"></i>
-                        Matrícula
+                        Matricula
                         <span class="fa fa-chevron-down"></span>
                     </a>
                     <ul class="nav child_menu">
@@ -42,10 +42,10 @@
                                 <li><a href="{% url 'groups_enroll' %}">Grupos</a></li>
                             {% endif %}
                             {% if perms.matricula.view_enroll %}
-                                <li><a href="{% url 'enrolls' %}">Matrículas</a></li>
+                                <li><a href="{% url 'enrolls' %}">Matriculas</a></li>
                             {% endif %}
                             {% if perms.matricula.view_period %}
-                                <li><a href="{% url 'periods' %}">Períodos</a></li>
+                                <li><a href="{% url 'periods' %}">Periodos</a></li>
                             {% endif %}
                             {% if perms.matricula.view_page %}
                                 <li><a href="{% url 'pages' %}">Páginas</a></li>
@@ -62,7 +62,7 @@
                     <li>
                         <a>
                             <i class="fa fa-credit-card"></i>
-                            Facturas
+                            Pagos
                             <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">
@@ -70,7 +70,7 @@
                                 <li><a href="{% url 'colonexchange' %}">Intercambio de Moneda</a></li>
                             {% endif %}
                             {% if perms.bills.view_bill %}
-                                <li><a href="{% url 'listbills' %}">Facturas</a></li>
+                                <li><a href="{% url 'listbills' %}">Pagos</a></li>
                             {% endif %}
                         </ul>
                     </li>
