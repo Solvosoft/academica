@@ -21,8 +21,6 @@ from membership_telbot_manager.utils import expiration_message, memberships, hel
 from .forms import ServiceTypeForm, LogEntryFilterForm
 from .utils import add_logentry
 from chunked_upload.models import ChunkedUpload
-from django.conf import settings
-import os
 
 
 def servicios_stats():
