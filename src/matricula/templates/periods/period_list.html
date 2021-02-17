@@ -1,7 +1,7 @@
 {% extends 'gentelella/base.html'%}
 {% load static membership_code %}
 {%block content%}
-	<h1 class="text-center">Períodos</h1>
+	<h1 class="text-center">Periodos</h1>
 	<div class="row">
 
 			<div class="{% if perms.matricula.add_period %}col-md-6 col-sm-12 col-lg-8{% else %}col-md-8 col-md-offset-2 col-xs-12{% endif %}">
@@ -34,11 +34,11 @@
 							<ul class="nav navbar-right panel_toolbox" style="min-width: unset;">
 								{% if perms.matricula.change_period %}
 									<li>
-										<a title="Editar período" href="{% url 'edit_period' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
+										<a title="Editar periodo" href="{% url 'edit_period' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
 									</li>
 								{% endif %}
 								{% if perms.matricula.delete_period %}
-									<li><a title="Eliminar período" data-url="{% url 'delete_period' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+									<li><a title="Eliminar periodo" data-url="{% url 'delete_period' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
 								{% endif %}
 							</ul>
 							<div class="clearfix"></div>
@@ -85,7 +85,7 @@
 					<form method="POST" action="{% url 'create_period' %}">
 						{% csrf_token %}
 						<div class="x_title">
-							<h2 class="green">Nuevo período</h2>
+							<h2 class="green">Nuevo periodo</h2>
 							<ul class="nav navbar-right panel_toolbox">
 							</ul>
 							<div class="clearfix"></div>
@@ -112,7 +112,7 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title">¿Está segura que desea eliminar el período?</h4>
+					<h4 class="modal-title">¿Está segura que desea eliminar el periodo?</h4>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary" data-dismiss="modal">Limpiar</button>

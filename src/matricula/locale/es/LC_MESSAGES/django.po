@@ -195,19 +195,19 @@ msgstr "Nombre"
 
 #: models.py:61
 msgid "Period start date"
-msgstr "Fecha de inicio de período"
+msgstr "Fecha de inicio de periodo"
 
 #: models.py:62
 msgid "Period finish date"
-msgstr "Fecha de finalización de período"
+msgstr "Fecha de finalización de periodo"
 
 #: models.py:68
 msgid "Period"
-msgstr "Período"
+msgstr "Periodo"
 
 #: models.py:69
 msgid "Periods"
-msgstr "Períodos"
+msgstr "Periodos"
 
 #: models.py:81
 msgid "Categories"
@@ -315,11 +315,11 @@ msgstr "Certificado"
 
 #: models.py:201 templates/matricula_base.html:6
 msgid "Enrollment"
-msgstr "Matrícula"
+msgstr "Matricula"
 
 #: models.py:202
 msgid "Enrollments"
-msgstr "Matrículas"
+msgstr "Matriculas"
 
 #: models.py:211
 msgid "Internal"
@@ -613,3 +613,7 @@ msgstr "Matrículado satisfactoriamente"
 #: views/Enrollments.py:47
 msgid "You are already enrolled"
 msgstr "Usted ya está matriculado"
+
+#: views/Enrollments.py:47
+msgid "Contributions allow us to continue creating courses and also accompany and support more communities."
+msgstr "Las contribuciones nos permiten seguir creando cursos y además acompañar y apoyar a más comunidades."
