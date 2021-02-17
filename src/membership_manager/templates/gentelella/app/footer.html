@@ -2,7 +2,11 @@
 {% load  gentelellamenu gtsettings  static %}
 
 <div class="pull-right">
- <img src="{% static 'logoCS.png' %}"  style="width: 250px;" />
+    {% if "bills" in request.get_full_path or "enrrolment" in request.get_full_path %}
+			<img src='/media/logo-upo.png' style="widht:60px; height: 60px;" />
+    {% else %}
+      <img src="{% static 'logoCS.png' %}"  style="width: 250px;" />
+		{% endif %}
   <p>©{% now "Y" %} {% trans "All Rights Reserved." %} </p>
 </div>
 <div class="clearfix"></div>
