@@ -445,10 +445,10 @@ def create_period(request):
         context['form'] = form
         if form.is_valid():
             form.save()
-            messages.success(request, "Período guardado con éxito")
+            messages.success(request, "Periodo guardado con éxito")
             return HttpResponseRedirect(reverse('periods'))
         else:
-            messages.error(request, "Error al guardar el período")
+            messages.error(request, "Error al guardar el periodo")
             context['object_list'] = Period.objects.all()
             return render(request, 'periods/period_list.html', context)
     return HttpResponseRedirect(reverse('periods'))
@@ -458,7 +458,7 @@ def create_period(request):
 class PeriodDelete(DeleteView):
     model = Period
     success_url = "/matricula/enrrolment/periods"
-    success_message = "Período eliminado con éxito"
+    success_message = "Periodo eliminado con éxito"
 
     def dispatch(self, *args, **kwargs):
         """ Permission check for this class """
@@ -487,7 +487,7 @@ def edit_period(request, pk=None):
             form = PeriodCreateForm(request.POST, instance=instance)
             context['form'] = form
             if form.is_valid():
-                messages.success(request, "Período guardado con éxito")
+                messages.success(request, "Periodo guardado con éxito")
                 form.save()
                 return HttpResponseRedirect(reverse('periods'))
             else:

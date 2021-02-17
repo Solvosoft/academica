@@ -1,7 +1,7 @@
 {% extends 'gentelella/base.html'%}
 {% load static membership_code %}
 {%block content%}
-	<h1 class="text-center">Períodos</h1>
+	<h1 class="text-center">Periodos</h1>
 	<div class="row">
 		<div class="col-md-6 col-sm-12 col-lg-8">
 			<div class="x_panel">
@@ -24,7 +24,7 @@
 						<div class="modal-content">
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-								<h4 class="modal-title">¿Está segura que desea eliminar este período?</h4>
+								<h4 class="modal-title">¿Está segura que desea eliminar este periodo?</h4>
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
@@ -43,11 +43,11 @@
 							<ul class="nav navbar-right panel_toolbox" style="min-width: unset;">
 								{% if perms.matricula.delete_period %}
 									<li>
-										<a title="Editar período" href="{% url 'edit_period' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
+										<a title="Editar periodo" href="{% url 'edit_period' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
 									</li>
 								{% endif %}
 								{% if perms.matricula.delete_period %}
-									<li><a title="Eliminar período" data-url="{% url 'delete_period' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+									<li><a title="Eliminar periodo" data-url="{% url 'delete_period' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
 								{% endif %}
 							</ul>
 							<div class="clearfix"></div>
@@ -89,7 +89,7 @@
 				<form method="POST">
 					{% csrf_token %}
 					<div class="x_title">
-						<h2 class="green">Editar período</h2>
+						<h2 class="green">Editar periodo</h2>
 						<ul class="nav navbar-right panel_toolbox">
 						</ul>
 						<div class="clearfix"></div>

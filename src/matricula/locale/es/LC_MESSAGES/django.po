@@ -195,19 +195,19 @@ msgstr "Nombre"
 
 #: models.py:61
 msgid "Period start date"
-msgstr "Fecha de inicio de período"
+msgstr "Fecha de inicio de periodo"
 
 #: models.py:62
 msgid "Period finish date"
-msgstr "Fecha de finalización de período"
+msgstr "Fecha de finalización de periodo"
 
 #: models.py:68
 msgid "Period"
-msgstr "Período"
+msgstr "Periodo"
 
 #: models.py:69
 msgid "Periods"
-msgstr "Períodos"
+msgstr "Periodos"
 
 #: models.py:81
 msgid "Categories"
