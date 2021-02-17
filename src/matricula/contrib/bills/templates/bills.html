@@ -6,7 +6,7 @@
 		}
 	</style>
 {% endblock %}
-{%block content%}
+{% block content %}
 	{% load i18n %}
 	{% if request.user.is_authenticated and not request.user.student %}
 		<h1 class="text-center">Facturas</h1>
@@ -18,6 +18,9 @@
 			</div>
 		</form>
 	{% else %}
+		<div class="jumbotron" style="margin-top:70px; padding:20px;">
+			<p><b>{% trans "Contributions allow us to continue creating courses and also accompany and support more communities." %}<b></p>
+		</div>
 		<h1 class="text-center"> {% trans 'Unpaid bills' %}</h1>
 		<div class="x_panel">
 			{% for bill in not_paid%}

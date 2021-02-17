@@ -613,3 +613,7 @@ msgstr "Matrículado satisfactoriamente"
 #: views/Enrollments.py:47
 msgid "You are already enrolled"
 msgstr "Usted ya está matriculado"
+
+#: views/Enrollments.py:47
+msgid "Contributions allow us to continue creating courses and also accompany and support more communities."
+msgstr "Las contribuciones nos permiten seguir creando cursos y además acompañar y apoyar a más comunidades."
