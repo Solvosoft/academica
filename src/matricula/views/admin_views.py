@@ -39,7 +39,8 @@ from matricula.forms import CategoryCreateForm, CategorySearchForm, \
 from matricula.models import Category, Course, Period, Group, \
     Enroll, Student, Page, Professor
 from matricula.views.utils import get_expire_date
-from .utils import get_active_period
+from chunked_upload.models import ChunkedUpload
+
 
 MONTHS_DICT = {
     'January': 'enero',
@@ -131,7 +132,16 @@ def create_category(request):
         form = CategoryCreateForm(request.POST)
         context['form'] = form
         if form.is_valid():
-            form.save()
+            tmpupload = ChunkedUpload.objects.filter(upload_id=request.POST.get("image")).first()
+            file = None
+            if tmpupload: file = tmpupload.get_uploaded_file()
+            category = Category.objects.create(
+                name = form.cleaned_data['name'],
+                description = form.cleaned_data['description'],
+                image = file
+            )
+            category.save()
+            if tmpupload: tmpupload.delete()
             messages.success(request, "Registro creado con éxito!")
             context['form'] = CategoryCreateForm()
             return HttpResponseRedirect(reverse('categories'))
@@ -173,8 +183,16 @@ def edit_category(request, pk=None):
             category = Category.objects.get(pk=pk)
             form = CategoryCreateForm(request.POST, instance=category)
             if form.is_valid():
+                tmpupload = ChunkedUpload.objects.filter(upload_id=request.POST.get("image")).first()
+                file = None
+                if tmpupload: 
+                    file = tmpupload.get_uploaded_file()
+                    category.image = file
+                category.name = form.cleaned_data['name']
+                category.description = form.cleaned_data['description']
+                category.save()
+                if tmpupload: tmpupload.delete()
                 messages.success(request, "Categoría guardada con éxito")
-                form.save()
                 return HttpResponseRedirect(reverse('categories'))
             else:
                 messages.error(request, "Error al actualizar")

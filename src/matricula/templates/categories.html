@@ -1,6 +1,6 @@
 {% extends 'gentelella/base.html'%}
-{%load i18n %}
-{%block content%}
+{% load i18n static %}
+{% block content %}
 	<h1 class="text-center">Lista de categorías con cursos disponibles</h1>
 	{% if request.user.is_authenticated and not request.user.student %}
 		<form method="post" action="{% url 'add_student' %}">
@@ -38,18 +38,22 @@
 	<div id="group_message"> </div>
 	<div class="row">
 		{% for category in categories%}
-			<div class="col-md-6">
-				<div class="x_panel">
-					<div class="x_title">
+			<div class="col-lg-4 col-md-6">
+				<div class="x_panel" style="text-align:center;">
+					<div style="height:110px; margin-top:10px;">
+						{% if category.image %}
+							<img src="/media/{{category.image}}" style="widht:100px; height:100px;" />
+						{% endif %}
+					</div>
+					<div class="x_title" style="border-bottom: 0;">
 						<a href="{% url 'courses' %}?cat={{category.pk}}" >
-						<h3 class="green text-center">{{category.name}}</h3></a>
+						<h4 class="text-center" style="font-size:20px; font-weight:bolder;">{{category.name}}</h4></a>
 					</div>
 					<div class="x_content">
-						<p>{{category.description|safe|striptags}}</p>
-						<div class="text-right"><a class= "btn btn-sm btn-success" href="{% url 'courses' %}?cat={{category.pk}}" >Ver cursos</a></div>
+						<p style="margin:5px;">{{category.description|truncatechars:100}}</p>
 					</div>
 				</div>
 			</div>
-		{%endfor%}
+		{% endfor %}
 	</div>
-{%endblock content%}
+{% endblock content %}

@@ -158,6 +158,7 @@ class CategoryCreateForm(forms.ModelForm, GTForm):
         widgets = {
             'name': djgentelella.TextInput,
             'description': djgentelella.Textarea,
+            'image': djgentelella.FileInput
         }
 
 
