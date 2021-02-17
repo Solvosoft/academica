@@ -20,6 +20,7 @@ from membership_telbot_manager.models import TelGroup, TelegramNotificationTempl
 from membership_telbot_manager.utils import expiration_message, memberships, help_dialog, invoices, notification_message
 from .forms import ServiceTypeForm, LogEntryFilterForm
 from .utils import add_logentry
+from chunked_upload.models import ChunkedUpload
 
 
 def servicios_stats():
@@ -72,19 +73,21 @@ def create_email_notification(request, pk, membership):
         form = EmailNotificationForm(request.POST)
 
         if form.is_valid():
-            emailnotification = EmailNotification(
+            tmpupload = ChunkedUpload.objects.filter(upload_id=request.POST.get("file")).first()
+            file = None
+            if tmpupload: file = tmpupload.get_uploaded_file()
+            obj = EmailNotification.objects.create(
                 subject = form.cleaned_data['subject'],
                 message = form.cleaned_data['message'],
                 bcc = str(", ".join(form.cleaned_data['bcc'].values_list('email', flat=True))),
                 cc = str(", ".join(form.cleaned_data['cc'].values_list('email', flat=True))),
                 user = request.user,
                 recipient = form.cleaned_data['recipient'],
-                file = form.cleaned_data['file']
+                file = file
             )
-            emailnotification.save()
-            obj = EmailNotification.objects.all().last()
-            add_logentry("async_notifications", "emailnotification", obj.pk, str(obj), request.user, 1)
+            if tmpupload: tmpupload.delete()
             send_email(obj.pk)
+            add_logentry("async_notifications", "emailnotification", obj.pk, str(obj), request.user, 1)
             messages.success(request, 'Notificación de correo electrónico generada exitosamente.')
             return redirect('memberships')
     else:
