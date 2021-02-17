@@ -315,11 +315,11 @@ msgstr "Certificado"
 
 #: models.py:201 templates/matricula_base.html:6
 msgid "Enrollment"
-msgstr "Matrícula"
+msgstr "Matricula"
 
 #: models.py:202
 msgid "Enrollments"
-msgstr "Matrículas"
+msgstr "Matriculas"
 
 #: models.py:211
 msgid "Internal"

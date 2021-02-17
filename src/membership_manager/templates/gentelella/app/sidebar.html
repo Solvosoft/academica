@@ -1,4 +1,4 @@
-{% load static menu %}
+{% load static menu i18n %}
 <div class="left_col scroll-view">
     <div class="navbar nav_title" style="border: 0;">
         <a href="{% url 'home' %}"  class="site_title" style="font-size: 17px;">Membresías de Código Sur</a>
@@ -155,7 +155,7 @@
                 <li>
                     <a>
                         <i class="fa fa-list-ul"></i>
-                        Matrícula
+                        {% trans 'Enrollment' %}
                         <span class="fa fa-chevron-down"></span>
                     </a>
                     <ul class="nav child_menu">
