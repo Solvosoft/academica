@@ -55,7 +55,6 @@ urlpatterns = [
     url('^enrollme/(?P<pk>\\d+)$', enrollme, name="enrollme"),
     url('^enrollment$', list_enroll, name="enrollment"),
     url('^finish_enroll/(?P<pk>\\d+)$', finish_enroll, name="finish_enroll"),
-    url(r'^admin/', admin_site.urls),
     url(r'^pages/(?P<pk>\d+)$', PageDetail.as_view(), name="academica_pages"),
     path('pages/<slug:slug>/', PageDetail.as_view(), name="pages_view"),
     url('enrrolment/categories', CategoryList.as_view(), name="categories"),
