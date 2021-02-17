@@ -59,8 +59,8 @@ def create_news_letter(request, pk):
                 file=file,
                 filters=form.cleaned_data['filters']
             )
-            if tmpupload: tmpupload.delete()
             news_letter.save()
+            if tmpupload: tmpupload.delete()
             add_logentry("async_notifications", "newsletter", news_letter.pk, str(news_letter), request.user, 1)
             messages.success(request, "Boletín registrado con éxito")
             return redirect('news_letter_list')
@@ -122,6 +122,7 @@ class EditNewsLetter(UpdateView):
         mails = form.cleaned_data['recipient']
         news_letter.recipient = ", ".join([mails])
         news_letter.save()
+        if tmpupload: tmpupload.delete()
         add_logentry("async_notifications", "newsletter", news_letter.pk, str(news_letter), self.request.user, 2)
         messages.success(self.request, "Boletín actualizado con éxito")
         return super().form_valid(form)
