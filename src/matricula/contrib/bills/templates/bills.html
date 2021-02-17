@@ -43,7 +43,7 @@
 			<div class="clearfix"></div>
 		</div>
 
-		<h1 class="text-center"> Facturas pagadas </h1>
+		<h1 class="text-center"> {% trans "Unpaid bills" %} </h1>
 		<div class="x_panel">
 			{% for bill in paid %}
 				<div class="product_price">
@@ -53,7 +53,7 @@
 				</div>
 			{%empty%}
 				<div class="alert alert-info text-center" role="alert">
-					No tiene facturas pagadas
+					{% trans "You don't have paid bills" %}
 				</div>
 			{%endfor%}
 		</div>

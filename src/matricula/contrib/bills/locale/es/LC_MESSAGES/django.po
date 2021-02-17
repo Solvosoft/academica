@@ -21,7 +21,7 @@ msgstr ""
 
 #: contrib/bills/admin.py:11 contrib/bills/models.py:35
 msgid "Bills"
-msgstr "Facturas"
+msgstr "Pagos"
 
 #: contrib/bills/models.py:9 contrib/bills/models.py:20
 #: contrib/bills/templates/invoice_enroll.html:17
@@ -46,7 +46,7 @@ msgstr "Moneda"
 
 #: contrib/bills/models.py:34
 msgid "Bill"
-msgstr "Factura"
+msgstr "Pago"
 
 #: contrib/bills/signals.py:41
 #, python-format
@@ -55,19 +55,19 @@ msgstr "Matriculado en %s"
 
 #: contrib/bills/templates/bills.html:21
 msgid "Unpaid bills"
-msgstr "Facturas sin pagar"
+msgstr "Pagos pendientes"
 
 #: contrib/bills/templates/bills.html:40
 msgid "You don't have Unpaid bills"
-msgstr "No tiene facturas sin pagar"
+msgstr "No tiene pagos pendientes"
 
 #: contrib/bills/templates/email_invoice.html:232
 msgid "Invoice paid"
-msgstr "Factura pagada"
+msgstr "Pagos realizados"
 
 #: contrib/bills/templates/email_invoice.html:234
 msgid "Invoice unpaid"
-msgstr "Factura no pagada"
+msgstr "Pagos pendientes"
 
 #: contrib/bills/templates/email_invoice.html:236
 msgid "Unique Transaction ID"
@@ -79,7 +79,7 @@ msgstr "Fecha de pago"
 
 #: contrib/bills/templates/invoice_enroll.html:2
 msgid "Academica Invoice"
-msgstr "Factura de Académica"
+msgstr "Pagos de Académica"
 
 #: contrib/bills/templates/invoice_enroll.html:13
 msgid "Date"
@@ -93,30 +93,17 @@ msgstr "Descuento"
 msgid "Total"
 msgstr "Total"
 
-#~ msgid "Academica Invoice paid"
-#~ msgstr "Factura de Académica pagada"
+msgid "Academica Invoice paid"
+msgstr "Pagos de Académica"
 
-#~ msgid "Go to Academica"
-#~ msgstr "Ir a Académica"
+msgid "Go to Academica"
+msgstr "Ir a Académica"
 
-#~ msgid "Paid bills"
-#~ msgstr "Facturas pagas"
+msgid "Paid bills"
+msgstr "Pagos realizados"
 
-#~ msgid "You don't have paid bills"
-#~ msgstr "No tiene facturas pagas"
+msgid "You don't have paid bills"
+msgstr "No tiene pagos pendientes"
 
-#~ msgid "Enrollment description"
-#~ msgstr "Descripción de matricula"
-
-#~ msgid ""
-#~ "\n"
-#~ "                             User %(username)s \n"
-#~ "                             Enroll in %(enroll)s\n"
-#~ "                             At %(date)s\n"
-#~ "                            "
-#~ msgstr ""
-#~ "\n"
-#~ "                             Usuario %(username)s \n"
-#~ "                             Matriculado en %(enroll)s\n"
-#~ "                             Fecha %(date)s\n"
-#~ "                            "
+msgid "Enrollment description"
+msgstr "Descripción de matricula"
