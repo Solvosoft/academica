@@ -40,7 +40,7 @@ def enrollme(request, pk):
                             "group": group,
                             'domain': schema+request.get_host(),
                         },
-                        enqueued=False, user=None)
+                        enqueued=True, user=None)
                     return { 
                         "inner-fragments": {
                             "#count_" + str(group.pk): group.enroll_set.count(),
@@ -58,7 +58,7 @@ def enrollme(request, pk):
                             "group": group,
                             'domain': schema+request.get_host(),
                         },
-                        enqueued=False, user=None)
+                        enqueued=True, user=None)
                     return {
                         "inner-fragments": {
                             "#count_" + str(group.pk): group.enroll_set.count(),
