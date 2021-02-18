@@ -240,7 +240,7 @@ class MenuItemSearchForm(GTForm, forms.Form):
         label="Título")
     parent = forms.ModelMultipleChoiceField(
         queryset=DJMenuItem.objects.all(), required=False,
-        widget=djgentelella.SelectMultiple, label="Padre"
+        widget=djgentelella.SelectMultiple, label=_("Base")
     )
 
 
