@@ -153,8 +153,8 @@ msgid "Reversed args"
 msgstr "Lista de parámetros"
 
 #: forms.py:211
-msgid "Parent"
-msgstr "Página padre"
+msgid "Base"
+msgstr "Página base"
 
 #: forms.py:212
 msgid "Is a widget?"

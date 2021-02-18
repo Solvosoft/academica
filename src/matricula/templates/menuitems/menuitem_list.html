@@ -1,6 +1,6 @@
 {% extends 'gentelella/base.html'%}
-{% load static utils membership_code %}
-{%block content %}
+{% load static utils membership_code i18n %}
+{% block content %}
 	<h1 class="text-center">Elementos del menú</h1>
 	<div class="row">
 		{% if perms.djgentelella.add_course %}
@@ -80,7 +80,7 @@
 							</ul>
 						</div>
 						<div class="col-md-6 col-sm-6 col-xs-6">
-							<p><strong>Padre: </strong>{% if object.parent %}{{object.parent}}{%else%}Ninguno{%endif%}</p>
+							<p><strong>{% trans 'Base' %}: </strong>{% if object.parent %}{{object.parent}}{%else%}Ninguno{%endif%}</p>
 						</div>
 						<div class="col-md-12">
 							<p><strong>URL: </strong><a href="{{object.url_name}}">{{object.url_name}}</a></p>

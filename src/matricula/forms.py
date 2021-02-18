@@ -145,6 +145,9 @@ class MenuItemFormPage(forms.ModelForm):
         fields = [
             "name", 'type', 'description', 'require_authentication',
             'order', 'parent', 'publicated', 'is_index']
+        labels = {
+            "parent": _("Base"),
+        }
 
     def __init__(self, *args, **kwargs):
         super(MenuItemFormPage, self).__init__(*args, **kwargs)
@@ -267,7 +270,7 @@ class MenuItemCreateForm(forms.ModelForm, GTForm):
             'is_reversed': _('Is reversed?')+" * ",
             'reversed_kwargs': _('Reversed kwargs'),
             'reversed_args': _('Reversed args'),
-            'parent': _('Parent'),
+            'parent': _('Base'),
             'is_widget': _('Is a widget?')+" * ",
             'icon': _('Icon'),
             'only_icon': _('Only icon?')+" * "
