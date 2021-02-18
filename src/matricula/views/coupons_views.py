@@ -18,15 +18,17 @@ from django.core.exceptions import ValidationError
 redirect_coupons = False
 
 
-def send_code_notification(coupons_list, user):
+def send_code_notification(coupons_list, user, request):
 
+    schema = request.scheme+"://"
+    domain = schema+request.get_host()
     for coupon in coupons_list:
         send_email_from_template(
             "coupon_code_notification",
             coupon.student.user.email,
             enqueued=True,
             user=user,
-            context={'coupon': coupon}
+            context={'coupon': coupon, 'domain': domain}
         )
 
 
@@ -46,12 +48,13 @@ def save_coupon(request, course, student, discount_percentage, coupon):
     coupon.discount_percentage = int(discount_percentage)
     coupon.save()
     if coupon.data_changed(['student_id', 'course_id', 'discount_percentage', 'is_used', 'code', 'bill_id']):
+        schema = request.scheme+"://"
         send_email_from_template(
             "coupon_code_notification_updated",
             coupon.student.user.email,
             enqueued=False,
             user=student.user,
-            context={'coupon': coupon}
+            context={'coupon': coupon, 'domain': schema+request.get_host(),}
         )
     messages.success(request, "El cupón ha sido actualizado éxitosamente.")
     redirect_coupons = True
@@ -190,7 +193,7 @@ def create_cupon(request):
                             if len(coupons_list) > 0:
 
                                 Coupon.objects.bulk_create(coupons_list)
-                                send_code_notification(coupons_list, request.user)
+                                send_code_notification(coupons_list, request.user, request)
                                 messages.success(request, "El cupón ha sido registrado y se notificó al estudiante éxitosamente.")
                                 return redirect('coupons_list')
 
@@ -293,7 +296,7 @@ def coupons_bill_list(request, pk):
     return render(request, "coupons/coupons_list.html", context={'form': form, 'coupons_list': coupons_list})
 
 
-def update_bill(bill, discount, total, percentage, code, enrollment, user):
+def update_bill(bill, discount, total, percentage, code, enrollment, user, request):
 
     coupon = Coupon(
         course=enrollment.group.course,
@@ -305,13 +308,14 @@ def update_bill(bill, discount, total, percentage, code, enrollment, user):
         coupon.bill=bill
         coupon.is_used=True
     coupon.save()
-
+    schema = request.scheme+"://"
+    domain = schema+request.get_host()
     send_email_from_template(
         "coupon_code_notification",
         coupon.student.user.email,
         enqueued=False,
         user=user,
-        context={'coupon': coupon}
+        context={'coupon': coupon, 'domain': domain}
     )
 
     if bill and enrollment:
@@ -354,10 +358,10 @@ def add_coupons_group(request, pk, percentage):
 
                    if Coupon.objects.filter(student=student, course=group.course).first().code[9] == "5" and percentage == 50:
                        code = "UP" + str(year) + str(student)[0:2] + "P2" + str(percentage) + str(group.course)[0:2]
-                       update_bill(bill, discount, total, percentage, code, enrollment, request.user)
+                       update_bill(bill, discount, total, percentage, code, enrollment, request.user, request)
            else:
                if percentage == 50:
                    discount = enrollment.group.cost /2
                    total = enrollment.group.cost /2
 
-               update_bill(bill, discount, total, percentage, code, enrollment, request.user)
+               update_bill(bill, discount, total, percentage, code, enrollment, request.user, request)
