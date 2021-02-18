@@ -28,7 +28,7 @@
 			{% for category in object_list %}
 				<div class="{% if perms.matricula.add_category %}col-md-6 col-lg-6 col-sm-12{% else %}col-md-6 col-lg-4 col-sm-12{% endif %}">
 
-					<div class="x_panel" style="height:150px;word-break: break-all;">
+					<div class="x_panel" style="height:150px;">
 						<div class="x_title">
 							<h2 class="green">{{category.name}}</h2>
 							<ul class="nav navbar-right panel_toolbox" style="min-width: unset;">
@@ -44,7 +44,7 @@
 							<div class="clearfix"></div>
 						</div>
 						<div class="x_content">
-							{{category.description|safe|striptags}}
+							{{category.description}}
 						</div>
 					</div>
 				</div>
