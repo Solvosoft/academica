@@ -85,6 +85,7 @@ class ViewsGroup:
         enrolls = Enroll.objects.filter(group=group)
         enrolls.update(enroll_activate=True)
         if request.GET.get('sendemail', '0') == '1':
+            schema = request.scheme+"://"
             send_email_from_template(
                 'email_open_group',
                 [enroll.student.user.email for enroll in enrolls],
@@ -92,6 +93,7 @@ class ViewsGroup:
                     "url": request.build_absolute_uri(
                         reverse('course', args=[group.course.pk])),
                     "group": group,
+                    'domain': schema+request.get_host(),
                 },
                 enqueued=False,
                 user=None)
@@ -107,6 +109,7 @@ class ViewsGroup:
         enrolls = Enroll.objects.filter(group=group)
         enrolls.update(enroll_activate=False)
 
+        schema = request.scheme+"://"
         if request.GET.get('sendemail', '0') == '1':
             send_email_from_template(
                 'email_close_group',
@@ -114,6 +117,7 @@ class ViewsGroup:
                 {
                     "url": request.build_absolute_uri(reverse('courses')),
                     "group": group,
+                    'domain': schema+request.get_host(),
                 },
                 enqueued=False,
                 user=None)

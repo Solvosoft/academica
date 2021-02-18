@@ -105,6 +105,7 @@ class CreateProfessor(CreateView):
         'new_professor_created_academy', user.email,
         {
             "url": self.request.build_absolute_uri(reverse('login')),
+            'domain': schema+self.request.get_host(),
             "user": user,
             'professor': user.professor
         },

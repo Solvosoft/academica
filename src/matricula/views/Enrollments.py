@@ -26,38 +26,59 @@ def enrollme(request, pk):
     if not list_enroll.exists():
         try:
             template = 'email_enroll_success'
+            schema = request.scheme+"://"
             with transaction.atomic():
                 enroll = Enroll.objects.create(group=group, student=student)
-            if group.flow == group.AUTO_PREENROLL:
-                enroll.enroll_activate = True
-                enroll.save()
-                template = 'email_preenroll_success'
-            elif group.flow == group.AUTO_ENROLL:
-                enroll.enroll_activate = True
-                enroll.enroll_finished = True
-                enroll.save()
-            send_email_from_template(
-                template, [enroll.student.user.email],
-                {
-                    "url": request.build_absolute_uri(reverse('enrollment')),
-                    "group": group,
-                },
-                enqueued=False, user=None)
+                if group.flow == group.AUTO_PREENROLL:
+                    enroll.enroll_activate = True
+                    enroll.save()
+                    template = 'email_preenroll_success'
+                    send_email_from_template(
+                        template, [enroll.student.user.email],
+                        {
+                            "url": request.build_absolute_uri(reverse('enrollment')),
+                            "group": group,
+                            'domain': schema+request.get_host(),
+                        },
+                        enqueued=False, user=None)
+                    return { 
+                        "inner-fragments": {
+                            "#count_" + str(group.pk): group.enroll_set.count(),
+                            "#group_message": '<div class="alert alert-success" role="alert">' + str(_('Pre-enrollment success')) + '</div>'
+                        },
+                    }
+                elif group.flow == group.AUTO_ENROLL:
+                    enroll.enroll_activate = True
+                    enroll.enroll_finished = True
+                    enroll.save()
+                    send_email_from_template(
+                        template, [enroll.student.user.email],
+                        {
+                            "url": request.build_absolute_uri(reverse('enrollment')),
+                            "group": group,
+                            'domain': schema+request.get_host(),
+                        },
+                        enqueued=False, user=None)
+                    return {
+                        "inner-fragments": {
+                            "#count_" + str(group.pk): group.enroll_set.count(),
+                            "#group_message": '<div class="alert alert-success" role="alert">' + str(_('Enrollment success')) + '</div>'
+                        },
+                    }
         except IntegrityError:
             return { "inner-fragments": {"#count_" + str(group.pk): group.enroll_set.count(),
                                         "#group_message": '<div class="alert alert-info" role="alert">' + str(_('We have some problems with your enroll, try again')) + ' </div>'
                                         },
                     }
-
-        return { "inner-fragments": {"#count_" + str(group.pk): group.enroll_set.count(),
-                                "#group_message": '<div class="alert alert-success" role="alert">' + str(_('Enrollment success')) + '</div>'
-                                },
-            }
-
-    return { "inner-fragments": {"#count_" + str(group.pk): group.enroll_set.count(),
-                                "#group_message": '<div class="alert alert-info" role="alert">' + str(_('You are already enrolled')) + '</div>'
-                                },
-            }
+    message = _('You are already pre-enrolled')
+    if list_enroll.first().enroll_finished:
+        message = _('You are already enrolled')
+    return { 
+        "inner-fragments": {
+            "#count_" + str(group.pk): group.enroll_set.count(),
+            "#group_message": '<div class="alert alert-info" role="alert">' + str(message) + '</div>'
+        },
+    }
 
 
 @login_required
