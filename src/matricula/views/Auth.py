@@ -41,10 +41,12 @@ def create_user(request):
                 phone_number=form.cleaned_data['phone_number'],
                 expired_at=get_expire_date(),)
             student.save()
+            schema = request.scheme+"://"
             send_email_from_template(
                 'new_user_created_academy', user.email,
                 {
                     "url": request.build_absolute_uri(reverse('confirm_email')),
+                    'domain': schema+request.get_host(),
                     "user": user,
                     'student': student
                 },
@@ -70,11 +72,13 @@ def add_student(request):
             student = Student(
                 user=request.user, confirmed_at=now(), expired_at=now())
             student.save()
+            schema = request.scheme+"://"
             send_email_from_template(
                 'email_welcome_academy', request.user.email,
                 {
                     "url": request.build_absolute_uri(reverse('courses')),
                     "student": student,
+                    'domain': schema+request.get_host(),
                 },
                 enqueued=False,
                 user=None)
@@ -192,12 +196,14 @@ def mail_recover_pass(request):
     students = Student.objects.filter(user__email__exact=email)
     if students:
         student = students[0]
+        schema = request.scheme+"://"
         send_email_from_template(
                 'email_recovery_academy', request.user.email, {
                     'url': request.build_absolute_uri(
                         reverse('recover_password')),
+                    'domain': schema+request.get_host(),
                     'user': student.user,
-                    'student': student
+                    'student': student,
                 },
                 enqueued=False,
                 user=None)

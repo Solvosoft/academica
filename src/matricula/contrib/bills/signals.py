@@ -12,6 +12,7 @@ from django.utils.encoding import smart_text
 from async_notifications.utils import send_email_from_template
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.html import mark_safe
+from django.conf import settings
 
 
 @receiver(post_save, sender=Enroll)
@@ -80,8 +81,9 @@ def paypal_bill_paid(sender, **kwargs):
             send_email_from_template(
                 'email_invoice_academy', bill.student.user.email, {
                     'bill': bill,
+                    'domain': settings.MY_PAYPAL_HOST,
                     'bill_description_safe': mark_safe(bill.description),
-                    'student': bill.student
+                    'student': bill.student,
                 },
                 enqueued=False,
                 user=None)

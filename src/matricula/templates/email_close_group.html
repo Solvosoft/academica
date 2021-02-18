@@ -1,145 +1,10 @@
-{% load i18n %}
+{% load i18n static %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
       <title>El grupo {{group.name}} se ha cerrado para matrícula</title>
-      <style type="text/css">
-      body {
-       padding-top: 0 !important;
-       padding-bottom: 0 !important;
-       padding-top: 0 !important;
-       padding-bottom: 0 !important;
-       margin:0 !important;
-       width: 100% !important;
-       -webkit-text-size-adjust: 100% !important;
-       -ms-text-size-adjust: 100% !important;
-       -webkit-font-smoothing: antialiased !important;
-     }
-     .tableContent img {
-       border: 0 !important;
-       display: block !important;
-       outline: none !important;
-     }
-     a{
-      color:#000080;
-    }
-
-    p, h1{
-      color:#382F2E;
-      margin:0;
-    }
- p{
-      text-align:left;
-      color:#000000;
-      font-size:14px;
-      font-weight:normal;
-      line-height:19px;
-    }
-
-    a.link1{
-      color:#382F2E;
-    }
-    a.link2{
-      font-size:16px;
-      text-decoration:none;
-      color:#ffffff;
-    }
-
-    h2{
-      text-align:left;
-       color:#222222;
-       font-size:19px;
-      font-weight:normal;
-    }
-    div,p,ul,h1{
-      margin:0;
-    }
-
-    .bgBody{
-      background: #ffffff;
-    }
-    .bgItem{
-      background: #ffffff;
-    }
-
-@media only screen and (max-width:480px)
-
-{
-
-table[class="MainContainer"], td[class="cell"]
-    {
-        width: 100% !important;
-        height:auto !important;
-    }
-td[class="specbundle"]
-    {
-        width:100% !important;
-        float:left !important;
-        font-size:13px !important;
-        line-height:17px !important;
-        display:block !important;
-        padding-bottom:15px !important;
-    }
-
-td[class="spechide"]
-    {
-        display:none !important;
-    }
-        img[class="banner"]
-    {
-              width: 100% !important;
-              height: auto !important;
-    }
-        td[class="left_pad"]
-    {
-            padding-left:15px !important;
-            padding-right:15px !important;
-    }
-
-}
-
-@media only screen and (max-width:540px)
-
-{
-
-table[class="MainContainer"], td[class="cell"]
-    {
-        width: 100% !important;
-        height:auto !important;
-    }
-td[class="specbundle"]
-    {
-        width:100% !important;
-        float:left !important;
-        font-size:13px !important;
-        line-height:17px !important;
-        display:block !important;
-        padding-bottom:15px !important;
-    }
-
-td[class="spechide"]
-    {
-        display:none !important;
-    }
-        img[class="banner"]
-    {
-              width: 100% !important;
-              height: auto !important;
-    }
-    .font {
-        font-size:18px !important;
-        line-height:22px !important;
-
-        }
-        .font1 {
-        font-size:18px !important;
-        line-height:22px !important;
-
-        }
-}
-
-    </style>
+      <link href="{% static 'css/email.css' %}" rel="stylesheet"/>
 <script type="colorScheme" class="swatch active">
 {
     "name":"Default",
@@ -177,15 +42,8 @@ td[class="spechide"]
   <tbody>
 
     <tr>
-      <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tbody>
-    <tr>
-      <td valign="top" align="center" class="specbundle"><div class="contentEditableContainer contentTextEditable">
-        <img src="http://www.universidadpopular.us/wp-content/uploads/2018/10/cropped-UP_logo_Square-e1539875905697-7.png" width="300" height="83" alt='Logo' data-default="placeholder" />
-      </td>
-    </tr>
-  </tbody>
-</table>
+      <td>
+        {% include 'logo_email.html' %}
 
 <table style="color: #eeeeee; font-family: Arial, Helvetica, sans-serif; font-size: 14px; border: 1px solid #999999; padding: 10px; font-weight: bold; text-align: center; margin: 20px auto; width: 680px; background: #ffffff;" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#e6e6e6">
 <tbody>

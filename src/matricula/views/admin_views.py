@@ -771,6 +771,7 @@ def open_group(request, pk):
     enrolls = Enroll.objects.filter(group=group)
     enrolls.update(enroll_activate=True)
     if request.GET.get('sendemail', '0') == '1':
+        schema = request.scheme+"://"
         send_email_from_template(
             'email_open_group',
             [enroll.student.user.email for enroll in enrolls],
@@ -778,6 +779,7 @@ def open_group(request, pk):
                 "url": request.build_absolute_uri(
                     reverse('course', args=[group.course.pk])),
                 "group": group,
+                'domain': schema+request.get_host(),
             },
             enqueued=False,
             user=None)
@@ -794,6 +796,7 @@ def close_group(request, pk):
     enrolls = Enroll.objects.filter(group=group)
     enrolls.update(enroll_activate=False)
     if request.GET.get('sendemail', '0') == '1':
+        schema = request.scheme+"://"
         send_email_from_template(
             'email_close_group',
             [enroll.student.user.email for enroll in enrolls],
@@ -801,6 +804,7 @@ def close_group(request, pk):
                 "url": request.build_absolute_uri(
                     reverse('courses')),
                 "group": group,
+                'domain': schema+request.get_host(),
             },
             enqueued=False,
             user=None)
@@ -970,12 +974,14 @@ def create_student(request):
                 country=form.cleaned_data['country'],
                 expired_at=get_expire_date())
             student.save()
+            schema = request.scheme+"://"
             send_email_from_template(
                 'set_email_first_academy', user.email,
                 {
+                    'domain': schema+request.get_host(),
                     "url": request.build_absolute_uri(
                         reverse('recover_password')),
-                    'student': student
+                    'student': student,
                 },
                 enqueued=False,
                 user=None)
@@ -1046,12 +1052,14 @@ def recovery_pass_student(request, pk=None):
     if (pk is not None):
         student = Student.objects.get(pk=pk)
         if student:
+            schema = request.scheme+"://"
             send_email_from_template(
                 'email_recovery_academy', student.user.email, {
                     'url': request.build_absolute_uri(
                         reverse('recover_password')),
+                    'domain': schema+request.get_host(),
                     'user': student.user,
-                    'student': student
+                    'student': student,
                 },
                 enqueued=False,
                 user=None)

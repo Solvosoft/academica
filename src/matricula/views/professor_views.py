@@ -105,6 +105,7 @@ class CreateProfessor(CreateView):
         'new_professor_created_academy', user.email,
         {
             "url": self.request.build_absolute_uri(reverse('login')),
+            'domain': schema+self.request.get_host(),
             "user": user,
             'professor': user.professor
         },
@@ -192,7 +193,7 @@ class AddUser(CreateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        user = form.save()
+        form.save()
         self.send_email(self.object)
         messages.success(self.request, "Usuaria registrada con éxito")
         return response

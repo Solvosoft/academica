@@ -26,6 +26,7 @@ def enrollme(request, pk):
     if not list_enroll.exists():
         try:
             template = 'email_enroll_success'
+            schema = request.scheme+"://"
             with transaction.atomic():
                 enroll = Enroll.objects.create(group=group, student=student)
             if group.flow == group.AUTO_PREENROLL:
@@ -41,6 +42,7 @@ def enrollme(request, pk):
                 {
                     "url": request.build_absolute_uri(reverse('enrollment')),
                     "group": group,
+                    'domain': schema+request.get_host(),
                 },
                 enqueued=False, user=None)
         except IntegrityError:
