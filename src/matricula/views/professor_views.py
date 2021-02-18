@@ -177,7 +177,7 @@ def deactivate_professor(request, pk):
 class AddUser(CreateView):
     model = User
     form_class = UserCreateForm
-    success_url = reverse_lazy('user_list')
+    success_url = reverse_lazy('create_simple_user')
     template_name = "user/create.html"
 
     def send_email(self,  user):
@@ -192,7 +192,7 @@ class AddUser(CreateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        user = form.save()
+        form.save()
         self.send_email(self.object)
         messages.success(self.request, "Usuaria registrada con éxito")
         return response
