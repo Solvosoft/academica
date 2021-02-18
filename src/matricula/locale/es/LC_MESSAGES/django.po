@@ -610,9 +610,17 @@ msgstr "Tenemos problemas con la matrícula, trate de nuevo"
 msgid "Enrollment success"
 msgstr "Matrículado satisfactoriamente"
 
+#: views/Enrollments.py:42
+msgid "Pre-enrollment success"
+msgstr "Pre-matríciulado satisfactoriamente"
+
 #: views/Enrollments.py:47
 msgid "You are already enrolled"
 msgstr "Usted ya está matriculado"
+
+#: views/Enrollments.py:47
+msgid "You are already pre-enrolled"
+msgstr "Usted ya está pre-matriculado"
 
 #: views/Enrollments.py:47
 msgid "Contributions allow us to continue creating courses and also accompany and support more communities."
