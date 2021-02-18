@@ -596,11 +596,13 @@ def pre_enroll_group(request, pk=None):
                         instance.enroll_finished = True
                         instance.save()
                         emails.append(instance.student.user.email)
+                    schema = request.scheme+"://"
                     send_email_from_template(
                         'email_enroll_success', [i for i in emails],
                         {
                             "url": request.build_absolute_uri(reverse('enrollment')),
                             "group": group,
+                            'domain': schema+request.get_host(), 
                         },
                         enqueued=False, user=None)
                     messages.success(request, "Estudiantes inscritos con éxito")
