@@ -182,11 +182,11 @@ msgstr "Descripción"
 
 #: models.py:52
 msgid "Professor"
-msgstr "Profesora"
+msgstr "Facilitadora"
 
 #: models.py:53 models.py:146
 msgid "Professors"
-msgstr "Profesoras"
+msgstr "Facilitadoras"
 
 #: models.py:60 models.py:73 models.py:87 models.py:127
 #: templates/Pdf/student_list.html:52
@@ -560,7 +560,7 @@ msgstr "Por favor Inicie sesión para ver esta página."
 
 #: templates/student_login.html:29
 msgid "Username"
-msgstr "Nombre de usuario"
+msgstr "Nombre de usuaria"
 
 #: templates/student_login.html:35
 msgid "Log in"
@@ -617,3 +617,9 @@ msgstr "Usted ya está matriculado"
 #: views/Enrollments.py:47
 msgid "Contributions allow us to continue creating courses and also accompany and support more communities."
 msgstr "Las contribuciones nos permiten seguir creando cursos y además acompañar y apoyar a más comunidades."
+
+msgid "Administrator"
+msgstr "Administradora"
+
+msgid "New Professor"
+msgstr "Nueva facilitadora"

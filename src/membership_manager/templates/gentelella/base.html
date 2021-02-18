@@ -1,5 +1,4 @@
-{% load static %}
-{% load  gentelellamenu gtsettings %}
+{% load static gentelellamenu gtsettings i18n %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -107,15 +106,15 @@
                     {% if "bills" in request.get_full_path or "enrrolment" in request.get_full_path %}
                         <span>Roles:</span>
                         {% if request.user.student %}
-                            <span class="badge">Estudiante</span>
+                            <span class="badge">{% trans "Student" %}</span>
                         {% endif %}
                         {% for i in request.user.groups.all %}
                             {% if i.name == "Administradores Académica" %}
-                                <span class="badge">Administrador</span>
+                                <span class="badge">{% trans "Administrator" %}</span>
                             {% endif %}
                         {% endfor %}
                         {% if request.user.student %}
-                            <span class="badge">Facilitación</span>
+                            <span class="badge">{% trans "Professor" %}</span>
                         {% endif %}
                     {% endif %}
                 </div>

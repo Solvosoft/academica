@@ -1,6 +1,6 @@
 {% extends 'gentelella/base.html' %}
 
-{% load static %}
+{% load static i18n %}
 {% block extra_css %}
     <link href="{% static 'css/membership.css' %}" rel="stylesheet">
 {% endblock extra_css %}
@@ -10,7 +10,7 @@
     <div class='col-md-8 col-md-offset-2 col-xs-12'>
         <div class="x_panel">
             <div class="x_title">
-                <h1 class="text-center">Nueva profesora</h1>
+                <h1 class="text-center">{% trans "New Professor" %}</h1>
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">

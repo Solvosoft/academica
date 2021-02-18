@@ -204,7 +204,7 @@
                             {% endif %}
 
                             {% if perms.matricula.view_professor %}
-                                <li><a href="{% url 'professors_list' %}">Profesoras</a></li>
+                                <li><a href="{% url 'professors_list' %}">{% trans "Professor" %}</a></li>
                             {% endif %}
                             {% if perms.matricula.view_coupon %}
                                 <li><a href="{% url 'coupons_list' %}">Cupones</a></li>

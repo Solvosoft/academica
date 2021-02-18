@@ -108,6 +108,9 @@ class UserCreateForm(GTForm, forms.ModelForm):
             'first_name': djgentelella.TextInput,
             'email': djgentelella.EmailMaskInput,
         }
+        labels = {
+            'username': _('username')+" * ",
+        }
 
 
 class StudentEditForm(GTForm, forms.ModelForm):
@@ -470,7 +473,7 @@ class StudentSearchForm(GTForm, forms.Form):
 
 class StudentAdminCreateForm(GTForm, forms.ModelForm):
     username = forms.CharField(
-        label="Nombre de usuario", widget=djgentelella.TextInput, required=True
+        label="Nombre de usuaria", widget=djgentelella.TextInput, required=True
     )
     first_name = forms.CharField(
         label="Nombres", widget=djgentelella.TextInput, required=True)
