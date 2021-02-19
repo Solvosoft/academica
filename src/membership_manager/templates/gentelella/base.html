@@ -113,7 +113,7 @@
                                 <span class="badge">{% trans "Administrator" %}</span>
                             {% endif %}
                         {% endfor %}
-                        {% if request.user.student %}
+                        {% if request.user.professor %}
                             <span class="badge">{% trans "Professor" %}</span>
                         {% endif %}
                     {% endif %}
