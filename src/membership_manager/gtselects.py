@@ -9,7 +9,7 @@ from membership_manager.models import Organization
 @register_lookups(prefix="organization", basename="organizationbasename")
 class OrganizationGModelLookup(BaseSelect2View):
     model = Organization
-    fields = ['name', 'initials']
+    fields = ['name', 'initials', 'email']
 
     def get_text_display(self, obj):
         return str(obj)
@@ -43,7 +43,7 @@ class ContactGModelLookup(BaseSelect2View):
         q = self.request.GET.get('term', '')
         self.selected = self.query_get('selected', '')
         self.tipo = self.query_get('tipo', '')
-        queryset = queryset.filter(Q(name__icontains=q)|Q(initials__icontains=q))
+        queryset = queryset.filter(Q(name__icontains=q)|Q(initials__icontains=q)|Q(email__icontains=q))
 
         if self.tipo:
             if self.tipo[0] == "contacto":

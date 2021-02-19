@@ -246,17 +246,14 @@ class ContactAddForm(GTForm, forms.ModelForm):
         }
 
 
-class OrganizationSearchForm(GTForm, forms.ModelForm):
+class OrganizationSearchForm(GTForm, forms.Form):
     organization = forms.ModelMultipleChoiceField(
-        queryset=Organization.objects.filter(type=False), widget=widget.SelectMultiple,
+        queryset=Organization.objects.filter(type=False),
+        widget=AutocompleteSelectMultiple('organizationbasename', attrs={'class': 'form-control'}),
         required=False, label="Organización")
     countries = forms.ModelMultipleChoiceField(
         queryset=Country.objects.all(), widget=widget.SelectMultiple,
         required=False, label="País")
-
-    class Meta:
-        model = Organization
-        fields = ['organization', 'countries']
 
 
 class OrganizationAddForm(GTForm, forms.ModelForm):
