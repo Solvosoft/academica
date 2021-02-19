@@ -12,6 +12,8 @@
 
     `python src/manage.py compilemessages`
 
+- Update email context
+    `python src/manage.py update_academy_temp`
 
 ------------------
 
