@@ -1,5 +1,22 @@
 # Pasos para deploy
 
+19/02/2021
+
+### Fixed
+    
+- Updated permssions to admins academy
+    
+    `python src/manage.py migrate`
+
+- Translations and grammar
+
+    `python src/manage.py compilemessages`
+
+
+------------------
+
+26/11/2020
+
 Ejecutar migraciones
 
     python manage.py migrate
