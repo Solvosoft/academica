@@ -26,9 +26,9 @@ class OrganizationListView(ListView):
         self.form = OrganizationSearchForm(self.request.GET)
         self.form.is_valid()
         queryset = Organization.objects.filter(type=False).order_by("-active", "name")
-        if self.form.cleaned_data['organization']:
+        if 'organization' in self.form.cleaned_data and  self.form.cleaned_data['organization']:
             queryset = queryset.filter(pk__in=self.form.cleaned_data['organization'])
-        if self.form.cleaned_data['countries']:
+        if 'countries' in self.form.cleaned_data and self.form.cleaned_data['countries']:
             queryset = queryset.filter(country__in=self.form.cleaned_data['countries'])
         return queryset
 

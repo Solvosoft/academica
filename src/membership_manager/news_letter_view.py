@@ -15,6 +15,7 @@ from async_notifications.tasks import task_send_newsletter
 from membership_manager.newsletterform import NewsLetterTemplateForm, NewsLetterForm, FilterEmailsForm, SendDateForm, \
     TemplateBaseNewsLetterForm
 from membership_manager.utils import get_emails_news_letter, add_logentry
+from chunked_upload.models import ChunkedUpload
 
 
 @permission_required('async_notifications.view_newsletter')
@@ -46,15 +47,19 @@ def create_news_letter(request, pk):
         form_filter = FilterEmailsForm(request.POST)
 
         if form.is_valid():
+            tmpupload = ChunkedUpload.objects.filter(upload_id=request.POST.get("file")).first()
+            file = None
+            if tmpupload: file = tmpupload.get_uploaded_file()
             news_letter = NewsLetter(
                 template=template,
                 subject=form.cleaned_data['subject'],
                 message=form.cleaned_data['message'],
                 recipient=form.cleaned_data['recipient'],
                 creator=request.user,
-                file=form.cleaned_data['file'],
+                file=file,
                 filters=form.cleaned_data['filters']
             )
+            if tmpupload: tmpupload.delete()
             news_letter.save()
             add_logentry("async_notifications", "newsletter", news_letter.pk, str(news_letter), request.user, 1)
             messages.success(request, "Boletín registrado con éxito")
@@ -109,7 +114,11 @@ class EditNewsLetter(UpdateView):
         news_letter.filters = form.cleaned_data['filters']
         news_letter.subject = form.cleaned_data['subject']
         news_letter.message = form.cleaned_data['message']
-        news_letter.file = form.cleaned_data['file']
+        tmpupload = ChunkedUpload.objects.filter(upload_id=self.request.POST.get("file")).first()
+        file = None
+        if tmpupload: 
+            file = tmpupload.get_uploaded_file()
+            news_letter.file = file
         mails = form.cleaned_data['recipient']
         news_letter.recipient = ", ".join([mails])
         news_letter.save()

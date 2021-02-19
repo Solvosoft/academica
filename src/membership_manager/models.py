@@ -1,4 +1,5 @@
 import textwrap
+from decimal import Decimal
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -199,7 +200,7 @@ class Invoice(models.Model):
                                        verbose_name="Periodo de renovación",
                                        related_name='inv_m_renews')
     description = models.TextField(verbose_name="Descripción")
-    amount = models.FloatField(verbose_name="Cantidad")
+    amount = models.DecimalField(verbose_name="Cantidad", max_digits=6, decimal_places=2)
     currency = models.ForeignKey(SystemCurrency, on_delete=models.SET_DEFAULT, default=4, verbose_name="Moneda")
     status = models.CharField(max_length=10, choices=STATUS, verbose_name="Estado")
     pdf_invoice = models.FileField(upload_to="invoices/", null=True, blank=True, verbose_name="Factura en PDF")
@@ -230,7 +231,7 @@ class Invoice(models.Model):
     def total_amount(self):
         amount = self.amount
         if self.membership.apply_fees:
-            amount = amount*(1+self.membership.fees/100)
+            amount = amount*(1+Decimal(self.membership.fees)/100)
         return "%.2f"%amount
 
     @property
@@ -238,7 +239,7 @@ class Invoice(models.Model):
         if not self.membership.apply_fees:
             return ''
         amount = self.amount
-        amount = amount*(self.membership.fees/100)
+        amount = amount*(Decimal(self.membership.fees) / 100)
         return "%.2f"%(amount)
 
     @property
