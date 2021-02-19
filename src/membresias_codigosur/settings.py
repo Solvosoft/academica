@@ -247,3 +247,5 @@ ASYNC_NEWSLETTER_SEVER_CONFIGS={
 PAYPAL_TEST = True
 PAYPAL_RECEIVER_EMAIL = "luisza14-buyer@gmail.com"
 MY_PAYPAL_HOST = "http://academica.ngrok.io"
+
+ASYNC_NEWSLETTER_HEADER = {'Reply-To': 'contacto@codigosur.org'}
