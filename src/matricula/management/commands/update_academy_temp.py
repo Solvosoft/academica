@@ -34,11 +34,14 @@ class Command(BaseCommand):
         # Notification email when coupon is updated
         file_update = open('src/matricula/templates/coupons/coupon_code_notification_update.html', 'r')
 
-        email_template_update = EmailTemplate(
-            code="coupon_code_notification_updated",
-            subject="Cupón de descuento actualizado",
-            message=file_update.read()
-        )
-
+        email_template_update = EmailTemplate.objects.filter(code="coupon_code_notification_updated")
+        if email_template_update.first():
+            email_template_update.message = file_update.read()
+        else:
+            email_template_update = EmailTemplate(
+                code="coupon_code_notification_updated",
+                subject="Cupón de descuento actualizado",
+                message=file_update.read()
+            )
         email_template_update.save()
         file_update.close()
