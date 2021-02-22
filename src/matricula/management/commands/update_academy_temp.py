@@ -34,10 +34,13 @@ class Command(BaseCommand):
         email_template.save()
         file.close()
 
+
         # Notification email when coupon is updated
         file_update = open(settings.BASE_NOCODE_DIR+'/src/matricula/templates/coupons/coupon_code_notification_update.html', 'r')
 
-        email_template_update = EmailTemplate.objects.get(code="coupon_code_notification_updated")
-        email_template_update.message = file_update.read()
-        email_template_update.save()
+        email_template_update = EmailTemplate.objects.create(
+            code="coupon_code_notification_updated",
+            message=file_update.read(), subject='Cupón actualizado')
+
         file_update.close()
+
