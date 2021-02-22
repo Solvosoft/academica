@@ -2,6 +2,9 @@ from django.core.management import BaseCommand
 from matricula.utils import load_email_temp_academica
 from async_notifications.models import TemplateContext, EmailTemplate
 
+from django.conf import settings
+
+
 class Command(BaseCommand):
     help = "Update email templates in académica"
 
@@ -24,7 +27,7 @@ class Command(BaseCommand):
         EmailTemplate.objects.filter(code__in=templates).delete()
         load_email_temp_academica()
 
-        file = open('src/matricula/templates/coupons/coupon_code_notification.html', 'r')
+        file = open(settings.BASE_NOCODE_DIR+'/src/matricula/templates/coupons/coupon_code_notification.html', 'r')
 
         email_template = EmailTemplate.objects.get(code="coupon_code_notification")
         email_template.message = file.read()
@@ -32,7 +35,7 @@ class Command(BaseCommand):
         file.close()
 
         # Notification email when coupon is updated
-        file_update = open('src/matricula/templates/coupons/coupon_code_notification_update.html', 'r')
+        file_update = open(settings.BASE_NOCODE_DIR+'/src/matricula/templates/coupons/coupon_code_notification_update.html', 'r')
 
         email_template_update = EmailTemplate.objects.get(code="coupon_code_notification_updated")
         email_template_update.message = file_update.read()

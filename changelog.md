@@ -6,14 +6,14 @@
     
 - Updated permssions to admins academy
     
-    `python src/manage.py migrate`
+    `python manage.py migrate`
 
 - Translations and grammar
 
-    `python src/manage.py compilemessages`
+    `python manage.py compilemessages -l es` 
 
 - Update email context
-    `python src/manage.py update_academy_temp`
+    `python manage.py update_academy_temp`
 
 ------------------
 
