@@ -442,7 +442,7 @@ class TemplateAddForm(GTForm, forms.ModelForm):
             'membership_type': widget.Select,
             'state': widget.Select,
             'renewal_period': widget.Select,
-            'annual_cost': widget.NumberInput,
+            'annual_cost': forms.NumberInput(attrs={'step': "0.01", "class": "form-control"}),
             'state': widget.Select,
             'currency': widget.Select,
             'description': widget.Textarea,
