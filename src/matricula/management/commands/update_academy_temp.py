@@ -35,7 +35,7 @@ class Command(BaseCommand):
         file.close()
 
         # Notification email when coupon is updated
-        file_update = open('src/matricula/templates/coupons/coupon_code_notification_update.html', 'r')
+        file_update = open(settings.BASE_NOCODE_DIR+'src/matricula/templates/coupons/coupon_code_notification_update.html', 'r')
 
         email_template_update = EmailTemplate.objects.filter(code="coupon_code_notification_updated")
         if email_template_update.first():
