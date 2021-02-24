@@ -251,29 +251,6 @@
         </div>
     </div>
 </div>
-
-<div id="modaltelegramtemplate" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
-
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Seleccione la plantilla de notificación de telegram.</h4>
-            </div>
-            <form method="post" id="telegramform">
-            <div class="modal-body">
-                {% csrf_token %}
-                {{ form_telegram_notification.as_horizontal }}
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                <button class="btn btn-success" type="submit">Continuar</button>
-            </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 {% endblock content %}
 {% block js %}
 <script>
