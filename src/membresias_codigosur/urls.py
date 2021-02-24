@@ -25,7 +25,6 @@ from ajax_select import urls as ajax_select_urls
 from async_notifications.markitup.views import preview_newsletter
 from membership_manager.admin_memberships import MembInvoices, OrganizationInvoices, generate_invoice, build_pdf_invoice_view
 from membership_manager.urls import urlpatterns as url_manager
-from membership_telbot_manager.views import UpdateBot
 from django.conf import settings
 from djgentelella.urls import urlpatterns as djgentelellaurls
 from matricula.urls import urlpatterns as enrollurls
@@ -35,7 +34,6 @@ urlpatterns = djgentelellaurls + [
     path('async_notifications/', include('async_notifications.urls')),
     path('api/', include('api.urls')),
     path('admin/', admin.site.urls),
-    path('telbot/', csrf_exempt(UpdateBot.as_view())),
     path('payments/membership/', MembInvoices.as_view()),
     path('payments/organization/', OrganizationInvoices.as_view()),
     path('invoice/generate/<int:pk>/', generate_invoice, name="generate_invoice"),
