@@ -1,7 +1,0 @@
-Lista de comandos
-Ingrese uno de los siguientes comandos:
-1./estado (Muestra las membresías pendientes si las hay, en caso contrario muestra fecha de vencimiento).
-2./membresias (Muestra un listado de las membresías).
-3./servicios (Muestra los servicios de cada membresía activa).
-Para el registro del grupo en la plataforma
-- Id del grupo: {{chat_id}}

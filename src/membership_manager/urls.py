@@ -44,7 +44,6 @@ urlpatterns = [
     path('newslettermembership/create/', news_letter_view.create_news_letter_membership, name="create_news_letter_membership"),
     path('emailnotification/create/<int:pk>/<int:membership>/', base_views.create_email_notification, name="create_email_notification"),
     path('emailtemplate/<int:pk>/', base_views.email_template, name="email_template"),
-    path('telegramnotification/<int:pk>/', base_views.send_telegram_notification, name="telegram_notification"),
     path('reports/', reports_view.reports, name="reports"),
     path('reports/<int:pk>/', reports_view.show_report, name='report_detail'),
     path('reports/list/', reports_view.list_report, name="report_list"),
@@ -75,6 +74,4 @@ urlpatterns = [
     path('logentry/', base_views.logentry_filter_view, name="logentry_filter"),
     path('logentry/<str:app>/<str:model>/<int:pk>', base_views.logentry_object, name="logentry_object"),
     path('renewals_list/<int:pk>/', memberships_view.renewals_list, name="renewals_list"),
-    path('messagestelegram_list/', base_views.telegram_message_list, name="telegram_message_list"),
-    path('messagestelegram/edit/<int:pk>', base_views.EditTelegramMessage.as_view(), name="edit_telegram_message"),
 ]

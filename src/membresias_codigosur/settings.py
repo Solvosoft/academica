@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'membership_core',
     'membership_manager',
-    'membership_telbot_manager',
     'django_countries',
     'ajax_select',
     'async_notifications',
@@ -201,12 +200,6 @@ ASYNC_NOTIFICATION_USER_LOOKUP_FIELDS= {'order_by': 'name',
      'filter': ['email__icontains',
                 'name__icontains']}
 
-
-TELEGRAM_BOT_API='1051485056:AAH8trHRYe31ZpHqVoswAbaxc2oQrKFANM0'
-#TELEGRAM_BOT_API='926661407:AAH_pSgLYwqzSYMtspC-nU8CoY_K_kmdmCY'
-TELEGRAM_BOT_WEBHOOK="https://ee9700fa.ngrok.io/telbot/"
-TELEGRAM_ADMIN_GROUP_ID='-1001485781572'
-TEST_TELEGRAM = False
 ASYNC_BCC  =  'membresias@codigosur.org'
 #ASYNC_SEND_ONLY_EMAIL = ['membresias@codigosur.org']
 ASYNC_SMTP_DEBUG=False

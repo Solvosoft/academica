@@ -148,11 +148,6 @@
                             <a href="{% url 'logentry_filter' %}">Bitácora</a>
                         </li>
                         {% endif %}
-                        {% if perms.membership_telbot_manager.view_telegramnotificationtemplate %}
-                        <li>
-                            <a href="{% url 'telegram_message_list' %}">Mensajes de Telegram</a>
-                        </li>
-                        {% endif %}
                     </ul>
                 </li>
                 {% endif %}

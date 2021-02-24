@@ -9,13 +9,7 @@ from membership_manager.invoice_utils import create_invoice
 from membership_manager.models import Membership, MembershipRenew, Invoice
 from membership_manager.render_pdf import generate_invoice, build_pdf_invoice
 from membership_manager.utils import get_emails
-from membership_telbot_manager.models import TelGroup
-from membership_telbot_manager.views import send_notification_message, send_deactivated_message
 
-
-def get_telegram_group(membership):
-    if membership.organization:
-        return TelGroup.objects.filter(organization_id=membership.organization.pk).first()
 
 def notify_invoice_expiration(now):
     """
@@ -47,10 +41,6 @@ def notify_invoice_expiration(now):
             change_message="Notificación de pago pendiente enviada "+ str(invoice)
         )
         dev += str(invoice)+"\n"
-        telgroup = get_telegram_group(invoice.membership)
-        if telgroup:
-            send_notification_message(telgroup.chat_id,invoice.membership.organization)
-
     return total, dev
 
 def generate_renew(now):
@@ -120,10 +110,6 @@ def invoice_creation(now, extrafilters={}):
             change_message="Factura creada pendiente de pago %s  " % (str(invoice),)
         )
         dev += str(invoice)+"\n"
-        telgroup = get_telegram_group(membership)
-        if telgroup:
-            send_notification_message(telgroup.chat_id, membership.organization)
-
     return total, dev
 
 def membership_deactivating(now):
@@ -154,9 +140,6 @@ def membership_deactivating(now):
 
         )
         dev += str(membership)+"\n"
-        telgroup = get_telegram_group(membership)
-        if telgroup:
-            send_deactivated_message(telgroup.chat_id, membership.organization)
     return total, dev
 
 def membership_deactivating_membership(id_membresia, email=True):
@@ -170,11 +153,6 @@ def membership_deactivating_membership(id_membresia, email=True):
                 invoice = create_invoice(renew)
             generate_invoice(membership, invoice, email_template='expiration_mail',
                              enqueued=True, send_email=email)
-
-            if membership.organization and email:
-                telgroup = get_telegram_group(membership)
-                if telgroup:
-                    send_deactivated_message(telgroup.chat_id, membership.organization)
 
 def create_invoice_tool(id_renew):
     renew = MembershipRenew.objects.get(pk=id_renew)

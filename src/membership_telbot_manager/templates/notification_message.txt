@@ -1,6 +1,0 @@
-Pago pendiente:
-Estimada {{organization.name}}:
-
-Por este medio se le recuerda que su membresía está proxima a vencer y tiene pendiente realizar el pago. Esperamos contar con su apoyo para seguir manteniendo la infraestructura comunitaria donde se encuentran alojados los datos y aplicaciones.
-
-Gracias por ser parte de CódigoSur

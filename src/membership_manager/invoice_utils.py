@@ -7,8 +7,6 @@ from django.contrib.contenttypes.models import ContentType
 from membership_manager.models import Invoice
 from membership_manager.render_pdf import build_pdf_invoice, generate_invoice
 from membership_manager.utils import stringcode_generator, get_emails, membership_payment_manager
-from membership_telbot_manager.utils import get_telegram_group
-from membership_telbot_manager.views import send_invoice_message, send_notification_message
 from async_notifications.utils import send_email_from_template
 
 
@@ -60,12 +58,6 @@ def action_pay_invoice(queryset, request):
             object_repr="Pago de membresía realizado.",
             action_flag=CHANGE
         )
-        if membership.organization:
-            telgroup = get_telegram_group(membership)
-            if telgroup:
-                send_notification_message(telgroup.chat_id, membership.organization)
-                if invoice.pdf_invoice:
-                    send_invoice_message(telgroup.chat_id, invoice.pdf_invoice)
 
 
 def regenerate_invoice_code(queryset, request):
@@ -96,9 +88,3 @@ def send_paid_invoice(queryset, request, templatename):
                              enqueued=False,
                              user=None,
                              upfile=invoice.pdf_invoice)
-        if membership.organization and emails:
-            telgroup = get_telegram_group(membership)
-            if telgroup:
-                send_notification_message(telgroup.chat_id, membership.organization)
-                if invoice.pdf_invoice:
-                    send_invoice_message(telgroup.chat_id, invoice.pdf_invoice)

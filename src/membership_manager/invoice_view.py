@@ -15,8 +15,6 @@ from membership_manager.invoice_utils import pay_invoice, regenerate_invoice_pdf
 from membership_manager.models import Invoice
 from membership_manager.newsletterform import FilterEmailsForm, NewsLetterTemplateForm
 from membership_manager.utils import add_logentry
-from membership_telbot_manager.utils import get_telegram_group
-from membership_telbot_manager.views import send_notification_message, send_invoice_message
 
 
 @method_decorator(permission_required('membership_manager.view_invoice'), name='dispatch')
@@ -179,14 +177,6 @@ class InvoicePayView(UpdateView):
             object_repr="Pago de membresía realizado.",
             action_flag=CHANGE
         )
-        if membership.organization:
-            if not membership.organization.type:
-                telgroup = get_telegram_group(membership)
-                if telgroup:
-                    send_notification_message(telgroup.chat_id, membership.organization)
-                    if self.object.pdf_invoice:
-                        send_invoice_message(telgroup.chat_id, self.object.pdf_invoice)
-
         messages.success(self.request, "Factura pagada satisfactoriamente")
         return HttpResponseRedirect(form.cleaned_data['next'])
 

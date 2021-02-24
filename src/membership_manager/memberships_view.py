@@ -16,7 +16,6 @@ from membership_manager.newsletterform import FilterEmailsForm, NewsLetterTempla
     EmailTemplateForm
 from membership_manager.renew_utils import create_renew
 from membership_manager.utils import add_logentry
-from membership_telbot_manager.forms import TelegramNotificationTemplateForm
 
 
 @method_decorator(permission_required('membership_manager.view_membership'), name='dispatch')
@@ -72,7 +71,6 @@ class MembershipListView(ListView):
         context['form_template_newsletter'] = NewsLetterTemplateForm()
         context['form_template_email'] = EmailTemplateForm()
         context['mem_template'] = MembershipTemplateForm()
-        context['form_telegram_notification'] = TelegramNotificationTemplateForm()
         return context
 
 

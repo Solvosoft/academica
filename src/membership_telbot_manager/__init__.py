@@ -1,1 +1,0 @@
-default_app_config = 'membership_telbot_manager.apps.MembershipTelbotManagerConfig'
