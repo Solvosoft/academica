@@ -3,24 +3,7 @@
 {% load static i18n %}
 
 {% block content %}
-<div id="content-main">
-    <h1><b style="color:red">Atención:</b> No utilice este sistema a menos de que sepa lo que esta haciendo, se recomienda usar la nueva versión. <a href="https://xochiquetzal.codigosur.com/"><b style="color:red">Ir a la nueva versión</b></a></h1>
-
-<ul id="mainul">
-    <li><a href="{% url 'admin:membership_manager_organization_changelist' %}">
-        <img width="128" height="128" src="{% static 'img/organizacion.svg' %}" />
-        <p>{% trans "Organization" %}</p></a></li>
-    <li><a href="{% url 'admin:membership_manager_membership_changelist' %}">
-        <img width="128" height="128"  src="{% static 'img/membresia.svg' %}" />
-        <p>{% trans "Memberships" %}</p></a></li>
- 
-    <li><a href="{% url 'admin:membership_manager_invoice_changelist' %}">
-        <img width="128" height="128"  src="{% static 'img/invoice.svg' %}" />
-        <p>{% trans "Invoices" %}</p></a></li>
- 
-</ul>
-<br><br>
-   <div id="otherapp">
+<div id="otherapp">
 {% if app_list %}
     {% for app in app_list %}
         {% if app.app_label != 'exchange' and app.app_label != 'membership_manager' %}
