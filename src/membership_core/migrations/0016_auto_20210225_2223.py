@@ -11,8 +11,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunSQL('''
-        drop if exists table membership_telbot_manager_tel_group;
-        drop if exists table membership_telbot_manager_telegram_user;
-        drop if exists table membership_telbot_manager_telelegram_notification_template;
+        drop table if exists membership_telbot_manager_telgroup cascade;
+        drop table if exists membership_telbot_manager_telegramuser cascade;
+        drop table if exists membership_telbot_manager_telegramnotificationtemplate cascade;
         ''')
     ]
