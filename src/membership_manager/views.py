@@ -14,7 +14,7 @@ def servicios_stats():
 
 def country_stats():
     for country in Country.objects.all().order_by('name'):
-        total = Student.objects.filter(country=country).distinct().count()
+        total = country.student_set.count()
         if total:
             yield (country.flag, country.name, total)
 

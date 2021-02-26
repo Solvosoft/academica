@@ -38,7 +38,7 @@ class EnrollStats(StatsElement):
         return _("Enroll approved")
 
     def get_count(self):
-        return Enroll.objects.count();
+        return Enroll.objects.filter(course_status="approved").count();
 
     def get_count_color(self):
         return 'green'
@@ -53,7 +53,7 @@ class EnrollStats(StatsElement):
         return "fa fa-sort-desc"
 
     def get_bottom_icon_text(self):
-        return Enroll.objects.filter(course_status="approved").count();
+        return Enroll.objects.filter(course_status="reproved").count();
 
 
 class CountryStats(StatsElement):
@@ -79,7 +79,7 @@ class CountryStats(StatsElement):
         return "fa fa-sort-asc"
 
     def get_bottom_icon_text(self):
-        return Student.objects.values('country__pk').count()
+        return Student.objects.values('country__pk').distinct().count()
 
 
 class TopStats(StatsCountList):
