@@ -1,11 +1,10 @@
 import textwrap
-
 from django import template
 from django.urls import reverse
-from django.utils.http import urlencode, urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_encode
 from django.utils.safestring import mark_safe
-
 from membership_manager.utils import stringcode_generator
+
 
 register = template.Library()
 

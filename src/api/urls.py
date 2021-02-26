@@ -1,7 +1,6 @@
 from django.urls import path
-
-from api.views import ReporteDeleteView
+from membership_manager.views import index
 
 urlpatterns = [
-    path('report/delete/', ReporteDeleteView.as_view(), name='api_report_delete'),
+   path('', index)
 ]

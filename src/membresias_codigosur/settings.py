@@ -194,16 +194,9 @@ CACHES = {
     }
 }
 
-ASYNC_NOTIFICATION_USER='membership_manager.Organization'
-ASYNC_NOTIFICATION_USER_LOOKUP_FIELDS= {'order_by': 'name',
-     'display': 'name',
-     'filter': ['email__icontains',
-                'name__icontains']}
-
 ASYNC_BCC  =  'membresias@codigosur.org'
 #ASYNC_SEND_ONLY_EMAIL = ['membresias@codigosur.org']
 ASYNC_SMTP_DEBUG=False
-ASYNC_NEWSLETTER_WIDGET = 'markitup.widgets.AdminMarkItUpWidget'
 
 
 DATE_INPUT_FORMATS = [
@@ -240,5 +233,3 @@ ASYNC_NEWSLETTER_SEVER_CONFIGS={
 PAYPAL_TEST = True
 PAYPAL_RECEIVER_EMAIL = "luisza14-buyer@gmail.com"
 MY_PAYPAL_HOST = "http://academica.ngrok.io"
-
-ASYNC_NEWSLETTER_HEADER = {'Reply-To': 'contacto@codigosur.org'}

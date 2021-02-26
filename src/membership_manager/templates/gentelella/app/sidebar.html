@@ -14,144 +14,6 @@
 
     <div class="main_menu_side hidden-print main_menu" id="sidebar-menu">
         <div class="menu_section">
-            <ul class="nav side-menu">
-                {% if perms.membership_manager.view_organization %}
-                    <li>
-                        <a>
-                            <i class="fa fa-users"></i>Contactos
-                            <span class="fa fa-chevron-down"></span>
-                        </a>
-                        <ul class="nav child_menu">
-                            <li>
-                                <a href="{% url 'contacts' %}">Lista de contactos</a>
-                            </li>
-                        </ul>
-                        <!-- /.nav-second-level -->
-                    </li>
-                {% endif %}
-                {% if perms.membership_manager.view_organization %}
-                    <li>
-                        <a>
-                            <i class="fa fa-building"></i>
-                            Organizaciones
-                            <span class="fa fa-chevron-down"></span>
-                        </a>
-                        <ul class="nav child_menu">
-                            <li>
-                                <a href="{% url 'organizations' %}">Lista de organizaciones</a>
-                            </li>
-                        </ul>
-                    </li>
-                {% endif %}
-                {% if perms.membership_manager.view_membership or perms.membership_core.view_servicetype or perms.membership_core.view_membershiptemplate or perms.membership_manager.view_activityreport%}
-                    <li>
-                        <a>
-                            <i class="fa fa-list-alt"></i>
-                            Membresías
-                            <span class="fa fa-chevron-down"></span>
-                        </a>
-                        <ul class="nav child_menu">
-                            {% if perms.membership_manager.view_membership %}
-                            <li>
-                                <a href="{% url 'memberships' %}">Lista de membresías</a>
-                            </li>
-                            {% endif %}
-                            {% if perms.membership_core.view_servicetype %}
-                            <li>
-                                <a href="{% url 'services_list' %}">Servicios</a>
-                            </li>
-                            {% endif %}
-                            {% if perms.membership_core.view_membershiptemplate %}
-                            <li>
-                                <a href="{% url 'templates' %}">Lista de plantillas</a>
-                            </li>
-                            {% endif %}
-                            {% if perms.membership_manager.view_activityreport %}
-                            <li>
-                                <a href="{% url 'activityreport-list' %}">Reporte de atención</a>
-                            </li>
-                            {% endif %}
-                        </ul>
-                    </li>
-                {% endif %}
-                {% if perms.membership_manager.view_invoice %}
-                <li>
-                    <a>
-                        <i class="fa fa-credit-card"></i>
-                        Facturas
-                        <span class="fa fa-chevron-down"></span>
-                    </a>
-                    <ul class="nav child_menu">
-                        <li>
-                            <a href="{% url 'invoice-list' %}">Lista de facturas</a>
-                        </li>
-                    </ul>
-                </li>
-                {% endif %}
-                {% if perms.async_notifications.view_newsletter %}
-
-                <li>
-                    <a>
-                        <i class="fa fa-bullhorn"></i>
-                        Boletines
-                        <span class="fa fa-chevron-down"></span>
-                    </a>
-                    <ul class="nav child_menu">
-                        <li>
-                            <a href="{% url 'news_letter_list' %}">Lista de boletines</a>
-                        </li>
-                    </ul>
-                </li>
-
-                {% endif %}
-                {% if perms.membership_manager.add_report or perms.membership_manager.view_report%}
-                <li>
-                    <a>
-                        <i class="fa fa-list"></i>
-                        Reportes
-                        <span class="fa fa-chevron-down"></span>
-                    </a>
-                    <ul class="nav child_menu">
-                        {% if perms.membership_manager.add_report %}
-                        <li>
-                            <a href="{% url 'reports' %}">Generar reporte</a>
-                        </li>
-                        {% endif %}
-                        {% if perms.membership_manager.view_report %}
-                        <li>
-                            <a href="{% url 'report_list' %}">Reportes</a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </li>
-                {% endif %}
-                {%if perms.auth.view_user or perms.auth.view_group or perms.admin.view_logentry %}
-                <li>
-                    <a>
-                        <i class="fa fa-book"></i>
-                        Administración
-                        <span class="fa fa-chevron-down"></span>
-                    </a>
-                    <ul class="nav child_menu">
-                        {% if perms.auth.view_user %}
-                        <li>
-                            <a href="{% url 'user_list' %}">Lista de usuarias</a>
-                        </li>
-                        {% endif %}
-                        {% if perms.auth.view_group %}
-                        <li>
-                            <a href="{% url 'groups_list' %}">Grupos de usuarias</a>
-                        </li>
-                        {% endif %}
-                        {% if perms.admin.view_logentry %}
-                        <li>
-                            <a href="{% url 'logentry_filter' %}">Bitácora</a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </li>
-                {% endif %}
-            </ul>
              <ul class="nav side-menu">
                 <li>
                     <a>
@@ -227,6 +89,29 @@
                     </li>
                 </ul>
             {% endif %}
+            {% if perms.auth.view_user or perms.auth.view_group %}
+                <ul class="nav side-menu">
+                    <li>
+                        <a>
+                            <i class="fa fa-book"></i>
+                            Administración
+                            <span class="fa fa-chevron-down"></span>
+                        </a>
+                        <ul class="nav child_menu">
+                            {% if perms.auth.view_user %}
+                            <li>
+                                <a href="{% url 'user_list' %}">Lista de usuarias</a>
+                            </li>
+                            {% endif %}
+                            {% if perms.auth.view_group %}
+                            <li>
+                                <a href="{% url 'groups_list' %}">Grupos de usuarias</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                </ul>
+             {% endif %}
         </div>
     </div>
     <div class="sidebar-footer hidden-print hidden-small">

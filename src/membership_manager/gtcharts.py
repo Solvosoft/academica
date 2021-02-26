@@ -2,10 +2,9 @@ from django.utils.timezone import now
 from djgentelella.chartjs import LineChart, VerticalBarChart
 from djgentelella.groute import register_lookups
 from django.db.models import Count, Q, Sum
-
-
 from membership_core.models import SystemCurrency
-from membership_manager.models import MembershipRenew, Invoice
+from matricula.models import Enroll
+
 
 default_colors = ["229, 158, 64", "240, 180, 150", "0, 168, 150", "207, 130, 182", "2, 128, 144", "1, 148, 147",
           "240, 112, 96", "153, 235, 168", "241, 179, 167", "242, 137, 76", "175, 151, 195",
@@ -68,8 +67,8 @@ class VencimientosMes(BaseChart, VerticalBarChart):
         ]
 
     def extact_data(self):
-        filtres = {'m%d'%m: Count('pk', filter=Q(end_date__month=m)) for m in range(1,13)}
-        queryset = MembershipRenew.objects.filter(end_date__year=now().year).aggregate(
+        filtres = {'m%d'%m: Count('pk', filter=Q(enroll_date__month=m)) for m in range(1,13)}
+        queryset = Enroll.objects.filter(enroll_date__year=now().year).aggregate(
             **filtres
         )
         return [queryset['m%d'%m] or 0 for m in range(1,13)]
@@ -94,8 +93,8 @@ class PagoFacturasMes(BaseChart, LineChart):
         ]
 
     def extact_data(self, currency):
-        filtres = {'m%d'%m: Sum('amount', filter=Q(payment_date__month=m)) for m in range(1,13)}
-        queryset = Invoice.objects.filter(payment_date__year=now().year, currency=currency, status='paid').aggregate(
+        filtres = {'m%d'%m: Sum('amount', filter=Q(enroll_date__month=m)) for m in range(1,13)}
+        queryset = Enroll.objects.filter(enroll_date__year=now().year, group__currency=currency).aggregate(
             **filtres
         )
         return [queryset['m%d'%m] or 0 for m in range(1,13)]
