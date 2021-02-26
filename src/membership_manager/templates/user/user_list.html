@@ -1,7 +1,6 @@
 {% extends 'gentelella/base.html' %}
 {% load membership_code %}
 {% load static %}
-{% load organization_payment_method %}
 {% block extra_css %}
     <link href="{% static 'css/membership.css' %}" rel="stylesheet">
 {% endblock extra_css %}
@@ -69,9 +68,6 @@
                 <div class="x_panel fixed_height_390 {% if not user.is_active %}inactive_contact{%endif%}">
                     <div class="x_title">
                         <ul class="nav navbar-right panel_toolbox">
-                            {% if perms.admin.view_logentry %}
-                               <li><a title="Ver historial" href="{% url 'logentry_object' app='auth' model='user' pk=user.pk %}" class="edit-link"><i class="fa fa-history green"></i></a></li>
-                            {% endif %}
                             {% if perms.auth.change_user %}
                                 <li><a title="Editar usuaria" href="{% url 'edit_user' pk=user.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
                             {% endif %}
