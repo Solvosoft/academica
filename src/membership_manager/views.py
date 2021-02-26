@@ -23,8 +23,8 @@ def country_stats():
 def index(request):
     if request.user.has_perm('membership_manager.can_show_dashboard'):
         context = {'topstat': TopStats(),
-                #'vencimientoanual_url': reverse('vencimientoanual-list'),
-                #'pagoanual_url': reverse('pagoanual-list'),
+                'vencimientoanual_url': reverse('vencimientoanual-list'),
+                'pagoanual_url': reverse('pagoanual-list'),
                 'countries': country_stats(),
                 'servicios_stats': servicios_stats()
                 }

@@ -3,7 +3,7 @@ from djgentelella.chartjs import LineChart, VerticalBarChart
 from djgentelella.groute import register_lookups
 from django.db.models import Count, Q, Sum
 from membership_core.models import SystemCurrency
-from matricula.models import Enroll
+from matricula.models import Enroll, Group
 
 
 default_colors = ["229, 158, 64", "240, 180, 150", "0, 168, 150", "207, 130, 182", "2, 128, 144", "1, 148, 147",
@@ -93,8 +93,8 @@ class PagoFacturasMes(BaseChart, LineChart):
         ]
 
     def extact_data(self, currency):
-        filtres = {'m%d'%m: Sum('amount', filter=Q(enroll_date__month=m)) for m in range(1,13)}
-        queryset = Enroll.objects.filter(enroll_date__year=now().year, group__currency=currency).aggregate(
+        filtres = {'m%d'%m: Sum('cost', filter=Q(enroll__enroll_date__month=m)) for m in range(1,13)}
+        queryset = Group.objects.filter(enroll__enroll_date__year=now().year, currency=currency).aggregate(
             **filtres
         )
         return [queryset['m%d'%m] or 0 for m in range(1,13)]
