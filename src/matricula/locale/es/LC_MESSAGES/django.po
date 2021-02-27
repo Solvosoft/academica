@@ -482,10 +482,8 @@ msgid "You don't have courses pre-enrolled"
 msgstr "No tiene cursos prematriculados"
 
 #: src/matricula/templates/enroll.html:33
-#, fuzzy
-#| msgid "Pre-enroll courses without active enroll"
 msgid "Pre-enrrolled courses in active enroll"
-msgstr "Cursos prematriculados sin matricula activa"
+msgstr "Cursos prematriculados con matricula activa"
 
 #: src/matricula/templates/enroll.html:42
 msgid "Enrollme"
