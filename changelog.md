@@ -1,4 +1,18 @@
-# Pasos para deploy
+# Change log file
+
+27/02/2021
+
+### Fixed
+    
+- Remove tables related with membership_manager and fix grammar error in legacy MenuItem model.
+    
+    `python manage.py migrate`
+
+- Translations and grammar
+
+    `python manage.py compilemessages -l es` 
+
+------------------
 
 19/02/2021
 
