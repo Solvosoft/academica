@@ -9,17 +9,13 @@
 			    <li><a href="{% url "login" %}">Iniciar sesión</a><li>
 				<li><a href="{% url "create_user_academy" %}">Registrarme</a><li>
 			{% else %}
-				{% if "bills" in request.get_full_path or "enrrolment" in request.get_full_path %}
-					<li class="nav-item dropdown" style="padding-left: 15px;">
-						<a href="#">
-						<span style="font-size:1.5em"><i class="fa fa-user"></i></span> {{request.user.first_name}} {{request.user.last_name}}
-						</a>
-					</li>
-				{% endif %}
+				<li class="nav-item dropdown" style="padding-left: 15px;">
+					<a href="#">
+					<span style="font-size:1.5em"><i class="fa fa-user"></i></span> {{request.user.first_name}} {{request.user.last_name}}
+					</a>
+				</li>
             {% endif %}
-			{% if "bills" in request.get_full_path or "enrrolment" in request.get_full_path %}
-				{% top_menu  %}
-			{% endif %}
+			{% top_menu  %}
 		</ul>
 	</div>
 {% endblock top_navigation %}
