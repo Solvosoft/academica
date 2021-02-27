@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-26 22:49-0600\n"
+"POT-Creation-Date: 2021-02-27 13:24-0600\n"
 "PO-Revision-Date: 2020-01-09 08:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -147,7 +147,7 @@ msgid "Students"
 msgstr "Estudiantes"
 
 #: src/membership_core/templates/gentelella/app/sidebar.html:58
-#: src/membership_core/templates/gentelella/base.html:117
+#: src/membership_core/templates/gentelella/base.html:120
 msgid "Professor"
 msgstr "Profesor"
 
@@ -183,7 +183,11 @@ msgstr "Lista de grupos"
 msgid "Student"
 msgstr "Estudiante"
 
-#: src/membership_core/templates/gentelella/base.html:113
+#: src/membership_core/templates/gentelella/base.html:112
+msgid "Superadmin"
+msgstr "Super administrador"
+
+#: src/membership_core/templates/gentelella/base.html:116
 msgid "Administrator"
 msgstr "Administrador"
 

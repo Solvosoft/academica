@@ -108,6 +108,9 @@
                         {% if request.user.student %}
                             <span class="badge">{% trans "Student" %}</span>
                         {% endif %}
+                        {% if request.user.is_superuser %}
+                            <span class="badge">{% trans "Superadmin" %}</span>
+                        {% endif %}
                         {% for i in request.user.groups.all %}
                             {% if i.name == "Administradores Académica" %}
                                 <span class="badge">{% trans "Administrator" %}</span>
