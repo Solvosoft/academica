@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Matricula Bills\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-26 21:59-0600\n"
+"POT-Creation-Date: 2021-02-26 22:49-0600\n"
 "PO-Revision-Date: 2020-11-27 14:57-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: ES <es@solvosoft.com>\n"
@@ -139,8 +139,6 @@ msgid "Not available"
 msgstr "No disponible"
 
 #: src/matricula/contrib/bills/templates/bills/bill_list.html:104
-#, fuzzy
-#| msgid "Invoice paid"
 msgid "Is paid?"
 msgstr "Pagado?"
 

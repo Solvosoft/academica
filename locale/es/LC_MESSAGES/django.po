@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-26 21:59-0600\n"
+"POT-Creation-Date: 2021-02-26 22:49-0600\n"
 "PO-Revision-Date: 2020-01-09 08:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -39,6 +39,18 @@ msgstr "Reprobados"
 #: src/membership_core/templates/dashboard.html:30
 msgid "Countries"
 msgstr "Países"
+
+#: src/membership_core/gtcharts.py:57
+msgid "Enrollments"
+msgstr "Inscripciones"
+
+#: src/membership_core/gtcharts.py:62
+msgid "Number of monthy enrollments"
+msgstr ""
+
+#: src/membership_core/gtcharts.py:83
+msgid "Monthy income"
+msgstr ""
 
 #: src/membership_core/models.py:10 src/membership_core/models.py:21
 msgid "Currency"
@@ -161,7 +173,7 @@ msgstr "Administración"
 
 #: src/membership_core/templates/gentelella/app/sidebar.html:97
 msgid "User list"
-msgstr "Lista de usuarios"
+msgstr "Lista de usuarias"
 
 #: src/membership_core/templates/gentelella/app/sidebar.html:102
 msgid "Group list"
@@ -181,7 +193,7 @@ msgstr "Iniciar Sesión"
 
 #: src/membership_core/templates/gentelella/registration/login.html:24
 msgid "Your username and password didn't match. Please try again."
-msgstr "Su usuario y contraseña no son iguales. Intentelo nuevamente."
+msgstr "Su usuaria y contraseña no son iguales. Intentelo nuevamente."
 
 #: src/membership_core/templates/gentelella/registration/login.html:29
 msgid ""

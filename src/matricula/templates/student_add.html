@@ -2,13 +2,13 @@
 {% load socialaccount static i18n %}
 {% block extra_css%}
 	<link rel="stylesheet" href="{% static 'css/auth-buttons.css'%}">
-{%endblock%}
-{%block content%}
-	<h1>Crear estudiante</h1>
+{% endblock %}
+{% block content %}
+	<h1>{% trans 'New student' %}</h1>
 	<div class="col-md-6 col-md-offset-3">
 		<div class="x_panel">
 			<div class="x_title">
-				<h2 class="green">Confirmación de creación</h2>
+				<h2 class="green">{% trans 'Confirm you want to create it.' %}</h2>
 				<ul></ul>
 				<div class="clearfix"></div>
 			</div>
@@ -17,11 +17,12 @@
 					<div>
 						<form method="post" id="{% url 'create_user' %}">
 							{% csrf_token %}
-							Estas a punto de crear un estudiante para tu usuario ya validado, con él podrás acceder a la plataforma de cursos
+							{% trans 'You are about to create a student to you validated user, you wil be able to access to the courses platform with it.' %}
+							
 							<div class="text-right" style="margin-top:10px;">
-								<a class="btn btn-dark" href="{% url 'courses' %}">Cancelar</a>
-								<button type="submit" class="btn btn-success" value="Save" >
-									<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Crear
+								<a class="btn btn-dark" href="{% url 'courses' %}">{% trans 'Cancel' %}</a>
+								<button type="submit" class="btn btn-success" value="{% trans 'Save' %}" >
+									<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> {% trans 'Save' %}
 								</button>
 							</div>
 						</form>
@@ -30,7 +31,7 @@
 			</div>
 		</div>
 	</div>
-{%endblock%}
+{% endblock %}
 {% block js %}
 	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>

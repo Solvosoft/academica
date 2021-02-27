@@ -1,7 +1,7 @@
 {% extends 'gentelella/base.html'%}
-{% load static utils membership_code %}
-{%block content %}
-	<h1 class="text-center">Matrículas</h1>
+{% load static utils membership_code i18n %}
+{% block content %}
+	<h1 class="text-center">{% trans 'Enrollments' %}</h1>
 	<div class="row">
 		<div class="col-sm-12 col-xs-12 col-md-8 col-md-offset-2">
 			<div class="x_panel">
@@ -14,8 +14,8 @@
 							{% include 'field.html' with field=form_search.group %}
 						</div>
 						<div style="text-align:right">
-							<a href="{% url 'enrolls' %}" class="btn btn-dark">Limpiar</a>
-							<button class="btn btn-success" type="submit">Buscar</button>
+							<a href="{% url 'enrolls' %}" class="btn btn-dark">{% trans 'Clear' %}</a>
+							<button class="btn btn-success" type="submit">{% trans 'Search' %}</button>
 						</div>
 					</form>
 				</div>
@@ -23,7 +23,7 @@
 		</div>
 		{% if perms.matricula.add_enroll %}
 			<div class="col-sm-2 col-xs-12 col-lg-2 col-md-3 text-right">
-				<a class="btn btn-primary" href="{% url 'create_enroll' %}">Crear Matrícula</a>
+				<a class="btn btn-primary" href="{% url 'create_enroll' %}">{% trans 'New enrollment' %}</a>
 			</div>
 		{% endif %}
 	</div>
@@ -54,11 +54,11 @@
 					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
 						{% if perms.matricula.change_enroll %}
 							<li>
-								<a title="Editar matrícula" href="{% url 'edit_enroll' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
+								<a title="{% trans 'Edit enrollment'%}" href="{% url 'edit_enroll' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
 							</li>
 						{% endif %}
 						{% if perms.matricula.delete_enroll %}
-							<li><a title="Eliminar matrícula" data-url="{% url 'delete_enroll' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+							<li><a title="{% trans 'Delete enrollment'%}" data-url="{% url 'delete_enroll' pk=object.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
 						{% endif %}
 					</ul>
 					<div class="clearfix"></div>
@@ -68,24 +68,23 @@
 						<div class="col-md-6 col-sm-6 col-xs-6">
 							<ul class="list-unstyled user_data">
 								<li>
-									<strong>Nombre: </strong>{{object.student.user.first_name}} {{object.student.user.last_name}}
+									<strong>{% trans 'Name' %}: </strong>{{object.student.user.first_name}} {{object.student.user.last_name}}
 								</li>
 								<li>
-									<strong>Usuario: </strong>{{object.student.user.username}}
+									<strong>{% trans 'User' %}: </strong>{{object.student.user.username}}
 								</li>
 								<li>
-									<strong>Correo: </strong>{{object.student.user.email}}
+									<strong>{% trans 'Email' %}: </strong>{{object.student.user.email}}
 								</li>
 								<li>
-									<strong>Grupo: </strong>{{object.group.name}}
+									<strong>{% trans 'Group' %}: </strong>{{object.group.name}}
 								</li>
 							</ul>
 						</div>
 						<div class="col-md-6 col-sm-6 col-xs-6">
 							<ul class="list-unstyled user_data">
 								<li>
-									<strong>¿Matrícula finalizada?: </strong>{% if object.enroll_finished %}Si{%else%}No{%endif%}
-									
+									<strong>¿Matrícula finalizada?: </strong>{% if object.enroll_finished %}Si{%else%}No{%endif%}	
 								</li>
 								<li>
 									<strong>¿Activa para matrícula?: </strong>{% if object.enroll_activate%}Si{%else%}No{%endif%}

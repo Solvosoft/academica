@@ -1,7 +1,7 @@
 {% extends 'gentelella/base.html'%}
 {% load static i18n %}
 {% block content %}
-	<h1 class="text-center">Registro de usuarios</h1>
+	<h1 class="text-center">{% trans 'New user' %}</h1>
 	<div class="col-md-8 col-md-offset-2">
 		<div class="x_panel">
 			<div class="x_title">
@@ -16,8 +16,8 @@
 								{% csrf_token %}
 								{{form.as_horizontal}}
 							<div style="margin-top:10px; text-align:right;">
-								<button type="submit" class="btn btn-success" value="Save" >
-									<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Registar
+								<button type="submit" class="btn btn-success" value="{% trans 'Save'%}" >
+									<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> {% trans 'Save'%}
 								</button>
 							</div>
 						</form>
@@ -66,7 +66,7 @@
 			})
 		}
 		$(document).ready(function(){
-			$("#id_password").after("<input type='checkbox' onclick='myFunction()'> Mostrar contraseña<br/>");
+			$("#id_password").after("<input type='checkbox' onclick='myFunction()'>{% trans 'Show password' %}<br/>");
 		});
 		function myFunction() {
 			var x = document.getElementById("id_password");
