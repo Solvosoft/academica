@@ -46,11 +46,11 @@ msgstr "Inscripciones"
 
 #: src/membership_core/gtcharts.py:62
 msgid "Number of monthy enrollments"
-msgstr ""
+msgstr "Número de inscripciones mensuales"
 
 #: src/membership_core/gtcharts.py:83
 msgid "Monthy income"
-msgstr ""
+msgstr "Recaudación mensual"
 
 #: src/membership_core/models.py:10 src/membership_core/models.py:21
 msgid "Currency"

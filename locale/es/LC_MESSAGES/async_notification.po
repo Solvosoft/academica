@@ -21,7 +21,7 @@ msgstr ""
 
 #: admin.py:16 models.py:18
 msgid "User"
-msgstr "Usuario"
+msgstr "Usuaria"
 
 #: admin.py:21
 msgid "All mails"
@@ -61,7 +61,7 @@ msgstr "Agregar correo externo"
 
 #: lookups.py:124
 msgid "External user"
-msgstr "Usuario externo"
+msgstr "Usuaria externo"
 
 #: models.py:11 models.py:38
 msgid "Subject"
@@ -127,38 +127,3 @@ msgstr "Diccionario de contexto"
 msgid "Context of template"
 msgstr "Contexto de la plantilla"
 
-#~ msgid "Write email"
-#~ msgstr "Escribir correo"
-
-#~ msgid "Email list"
-#~ msgstr "lista de correo"
-
-#~ msgid "Email template list"
-#~ msgstr "Lista de plantillas de correo"
-
-#~ msgid "Write template email"
-#~ msgstr "Escribir plantilla de correo"
-
-#~ msgid "Send this page by email"
-#~ msgstr "Enviar esta página por correo"
-
-#~ msgid "Close"
-#~ msgstr "Cerrar"
-
-#~ msgid "Send email"
-#~ msgstr "Enviar correo"
-
-#~ msgid "Article url"
-#~ msgstr "Url de artículo"
-
-#~ msgid "Article object [title, lead_in,                              content, author, owner, publishing_date,                              is_published, is_featured ]"
-#~ msgstr "Objeto articulo [title, lead_in,                              content, author, owner, publishing_date,                              is_published, is_featured ]"
-
-#~ msgid "User extra message"
-#~ msgstr "Mensaje extra del usuario"
-
-#~ msgid "Sender user"
-#~ msgstr "usuario enviante"
-
-#~ msgid "<div id=\"div_success\">Email sent successfully</div>"
-#~ msgstr "<div id=\"div_success\">Correo enviado satisfactoriamente</div>"

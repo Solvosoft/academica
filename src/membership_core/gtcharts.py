@@ -4,6 +4,7 @@ from djgentelella.groute import register_lookups
 from django.db.models import Count, Q, Sum
 from .models import SystemCurrency
 from matricula.models import Enroll, Group
+from django.utils.translation import gettext as _
 
 
 default_colors = ["229, 158, 64", "240, 180, 150", "0, 168, 150", "207, 130, 182", "2, 128, 144", "1, 148, 147",
@@ -53,12 +54,12 @@ class BaseChart:
 class VencimientosMes(BaseChart, VerticalBarChart):
     def get_title(self):
         return {'display': True,
-                'text': 'Vencimientos por mes'
+                'text': _('Enrollments')
                 }
 
     def get_datasets(self):
         self.index = 3
-        return [{'label': 'Cantidad de vencimientos',
+        return [{'label': _('Number of monthy enrollments'),
                 'backgroundColor': self.get_color(),
                 'borderColor': self.get_color(),
                 'borderWidth': 1,
@@ -79,7 +80,7 @@ class PagoFacturasMes(BaseChart, LineChart):
 
     def get_title(self):
         return {'display': True,
-                'text': 'Recaudación mensual'
+                'text': _('Monthy income')
                 }
 
     def get_datasets(self):
