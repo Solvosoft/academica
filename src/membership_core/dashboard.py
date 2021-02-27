@@ -1,5 +1,5 @@
 from djgentelella.elements import StatsElement, StatsCountList
-from membership_core.models import Country
+from .models import Country
 from matricula.models import Enroll, Student
 from django.utils.translation import gettext as _
 

@@ -32,7 +32,6 @@ class UserAddForm(GTForm, forms.ModelForm):
             'email': genwidgets.EmailMaskInput,
             'is_active': genwidgets.YesNoInput,
             'groups': genwidgets.SelectMultiple
-
         }
 
 

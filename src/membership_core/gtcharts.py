@@ -2,7 +2,7 @@ from django.utils.timezone import now
 from djgentelella.chartjs import LineChart, VerticalBarChart
 from djgentelella.groute import register_lookups
 from django.db.models import Count, Q, Sum
-from membership_core.models import SystemCurrency
+from .models import SystemCurrency
 from matricula.models import Enroll, Group
 
 

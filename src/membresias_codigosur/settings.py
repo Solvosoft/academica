@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'membership_core',
-    'membership_manager',
     'django_countries',
     'ajax_select',
     'async_notifications',

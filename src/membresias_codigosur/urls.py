@@ -20,7 +20,7 @@ from django.views.generic import RedirectView
 from django.views.static import serve
 from ajax_select import urls as ajax_select_urls
 from async_notifications.markitup.views import preview_newsletter
-from membership_manager.urls import urlpatterns as url_manager
+from membership_core.urls import urlpatterns as url_core
 from django.conf import settings
 from djgentelella.urls import urlpatterns as djgentelellaurls
 from matricula.urls import urlpatterns as enrollurls
@@ -37,4 +37,4 @@ urlpatterns = djgentelellaurls + [
             {'document_root': settings.MEDIA_ROOT,}
             ),
     re_path(r'^markitup/preview/$', login_required(preview_newsletter), name="markitup_preview"),
-    ] + url_manager + enrollurls
+    ] + url_core + enrollurls
