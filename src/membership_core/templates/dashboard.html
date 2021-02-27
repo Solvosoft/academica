@@ -1,5 +1,5 @@
 {% extends 'gentelella/base.html' %}
-{% load gtsettings %}
+{% load gtsettings i18n %}
 
 {% block pre_head %}
 {% define_true  "use_chartjs" %}
@@ -16,7 +16,7 @@
         <div class="col-md-8">
             <div class="x_panel">
                 <div class="x_title">
-                    <h2>Pagos del año <small>mensuales</small></h2>
+                    <h2>{% trans 'Annual paids' %}<small>{% trans 'monthly' %}</small></h2>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
@@ -27,7 +27,7 @@
         <div class="col-md-4">
             <div class="x_panel">
                     <div class="x_title">
-                        <h2>Países</h2>
+                        <h2>{% trans 'Countries' %}</h2>
                         <div class="clearfix"></div>
                     </div>
                 <div class="x_content">
@@ -39,8 +39,8 @@
                         </a>
                         <div class="media-body">
                         <a class="title" href="#">{{pais.1}}</a>
-                        <p><strong>{{pais.2}} </strong> Membresías  </p>
-                        <p> <small>Cobrado este año</small>
+                        <p><strong>{{pais.2}} </strong> {% trans 'Enrolled' %}  </p>
+                        <p> <small>{% trans 'this year' %}</small>
                         </p>
                         </div>
                         </li>
@@ -53,7 +53,7 @@
         <div class="col-md-8">
                 <div class="x_panel">
                     <div class="x_title">
-                        <h2>Vencimientos del año <small>mensuales</small></h2>
+                        <h2>{% trans 'Enrollments in this year' %} <small>{% trans 'monthly' %}</small></h2>
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
@@ -65,7 +65,7 @@
         <div class="col-md-4">
             <div class="x_panel">
                     <div class="x_title">
-                        <h2>Servicios</h2>
+                        <h2>{% trans 'Categories' %}</h2>
                         <div class="clearfix"></div>
                     </div>
                 <div class="x_content">

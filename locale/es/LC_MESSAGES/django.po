@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-09 08:10-0600\n"
+"POT-Creation-Date: 2021-02-26 21:59-0600\n"
 "PO-Revision-Date: 2020-01-09 08:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,246 +18,203 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.0.6\n"
 
-#: src/membership_manager/adminfilters.py:108
-msgid "All"
-msgstr ""
+#: src/membership_core/dashboard.py:12
+msgid "Active students"
+msgstr "Estudiantes activos"
 
-#: src/membership_manager/templates/activity_description.html:4
-msgid "Read more"
-msgstr "Leer más"
+#: src/membership_core/dashboard.py:24
+msgid "Inactive"
+msgstr "Inactivo"
 
-#: src/membership_manager/templates/activity_description.html:9
-msgid "Read less"
-msgstr "Leer menos"
+#: src/membership_core/dashboard.py:38
+msgid "Enroll approved"
+msgstr "Inscritos aprobados"
 
-#: src/membership_manager/templates/admin/admin_form_filter.html:2
-#, python-format
-msgid " By %(filter_title)s "
-msgstr ""
+#: src/membership_core/dashboard.py:50
+msgid "Fail"
+msgstr "Reprobados"
 
-#: src/membership_manager/templates/admin/admin_form_filter.html:19
-msgid "Remove"
-msgstr "Remover"
+#: src/membership_core/dashboard.py:64 src/membership_core/dashboard.py:76
+#: src/membership_core/models.py:38
+#: src/membership_core/templates/dashboard.html:30
+msgid "Countries"
+msgstr "Países"
 
-#: src/membership_manager/templates/admin/admin_form_filter.html:22
-msgid "filtrar"
-msgstr ""
-
-#: src/membership_manager/templates/admin/dashboard/welcome.html:11
-msgid "Organization"
-msgstr "Organización"
-
-#: src/membership_manager/templates/admin/dashboard/welcome.html:14
-msgid "Memberships"
-msgstr "Membresías"
-
-#: src/membership_manager/templates/admin/dashboard/welcome.html:17
-#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:78
-#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:81
-msgid "Invoices"
-msgstr "Facturas"
-
-#: src/membership_manager/templates/admin/dashboard/welcome.html:20
-msgid "Contacts"
-msgstr "Contactos"
-
-#: src/membership_manager/templates/admin/dashboard/welcome.html:30
-#, python-format
-msgid "Models in the %(name)s application"
-msgstr ""
-
-#: src/membership_manager/templates/admin/dashboard/welcome.html:41
-msgid "Add"
-msgstr "Añadir"
-
-#: src/membership_manager/templates/admin/dashboard/welcome.html:48
-msgid "View"
-msgstr "Vista"
-
-#: src/membership_manager/templates/admin/dashboard/welcome.html:50
-msgid "Change"
-msgstr "Cambiar"
-
-#: src/membership_manager/templates/admin/dashboard/welcome.html:63
-msgid "You don't have permission to view or edit anything."
-msgstr "No tienes permiso para ver o editar."
-
-#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:27
-#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:30
-msgid "Home"
-msgstr "Inicio"
-
-#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:46
-#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:60
-#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:49
-#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:63
-msgid "Filter"
-msgstr "Filtrar"
-
-#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:47
-#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:50
-msgid "Search by state"
-msgstr "Búsqueda por estado"
-
-#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:76
-#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:79
-msgid "Pending"
-msgstr "Pendiente"
-
-#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:90
-#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:93
-msgid "Membership"
-msgstr "Membresía"
-
-#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:93
-#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:96
-msgid "Expiration date"
-msgstr "Fecha de expiración"
-
-#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:96
-#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:99
-msgid "Amount"
-msgstr "Monto"
-
-#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:99
-msgid "currency"
-msgstr "moneda"
-
-#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:102
-#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:105
-msgid "State"
-msgstr "Estado"
-
-#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:105
-#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:108
-msgid "Payment date"
-msgstr "Fecha de pago"
-
-#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:113
-#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:116
-msgid "More"
-msgstr "Más"
-
-#: src/membership_manager/templates/admin/membership_admin/invoice/change_list.html:135
-msgid "Show membership information"
-msgstr "Ver información de la membresía"
-
-#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:79
-msgid "Paid"
-msgstr "Pagado"
-
-#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:102
+#: src/membership_core/models.py:10 src/membership_core/models.py:21
 msgid "Currency"
 msgstr "Moneda"
 
-#: src/membership_manager/templates/admin/membership_admin/organization/change_list.html:138
-msgid "Show organization information"
-msgstr "Ver información de la organización"
+#: src/membership_core/models.py:14
+msgid "Change type"
+msgstr "Tipo de cambio"
 
-#~ msgid "Administration"
-#~ msgstr "Administración"
+#: src/membership_core/models.py:15
+msgid "1 USD is equal to X in local currency"
+msgstr "1 dolar equivale a X en moneda local"
 
-#~ msgid "Administración del gestor de membresías"
-#~ msgstr "Administración del gestor de membresías"
+#: src/membership_core/models.py:22
+msgid "Currencies"
+msgstr "Monedas"
 
-#~ msgid "Gestion de membresías"
-#~ msgstr "Gestion de membresías"
+#: src/membership_core/models.py:24
+msgid "Can show dashboard"
+msgstr "Puede ver el dashboard"
 
-#~ msgid "Gestion de correo"
-#~ msgstr "Gestion de correo"
+#: src/membership_core/models.py:37
+msgid "Country"
+msgstr "País"
 
-#~ msgid "Open All Items"
-#~ msgstr "Abrir todo"
+#: src/membership_core/templates/dashboard.html:19
+msgid "Annual paids"
+msgstr "Pagos anuales"
 
-#~ msgid "Close All Items"
-#~ msgstr "Cerrar todo"
+#: src/membership_core/templates/dashboard.html:19
+#: src/membership_core/templates/dashboard.html:56
+msgid "monthly"
+msgstr "mensuales"
 
-#~ msgid "History"
-#~ msgstr "Historial"
+#: src/membership_core/templates/dashboard.html:42
+msgid "Enrolled"
+msgstr "Inscritos"
 
-#~ msgid "View on site"
-#~ msgstr "Ver en sitio"
+#: src/membership_core/templates/dashboard.html:43
+msgid "this year"
+msgstr "este año"
 
-#~ msgid "Please correct the error below."
-#~ msgstr "Por favor corrija los errores siguientes."
+#: src/membership_core/templates/dashboard.html:56
+msgid "Enrollments in this year"
+msgstr "Inscripciones en este año"
 
-#~ msgid "Please correct the errors below."
-#~ msgstr "Por favor corrija los errores siguientes."
+#: src/membership_core/templates/dashboard.html:68
+#: src/membership_core/templates/gentelella/app/sidebar.html:33
+msgid "Categories"
+msgstr "Categorías"
 
-#~ msgid "User"
-#~ msgstr "Usuario"
+#: src/membership_core/templates/gentelella/app/footer.html:5
+msgid "All Rights Reserved."
+msgstr "Todos los derechos reservados"
 
-#~ msgid "All mails"
-#~ msgstr "Todos los correos"
+#: src/membership_core/templates/gentelella/app/sidebar.html:4
+msgid "UPO"
+msgstr "UPO"
 
-#~ msgid "My mails"
-#~ msgstr "Mis correos"
+#: src/membership_core/templates/gentelella/app/sidebar.html:15
+msgid "Enrollment"
+msgstr "Inscripciones"
 
-#~ msgid "Send email now"
-#~ msgstr "Enviar correo ahora"
+#: src/membership_core/templates/gentelella/app/sidebar.html:28
+msgid "Academic"
+msgstr "Académica"
 
-#~ msgid "Recipients"
-#~ msgstr "Lista de recibo"
+#: src/membership_core/templates/gentelella/app/sidebar.html:36
+msgid "Courses"
+msgstr "Cursos"
 
-#~ msgid "Template context"
-#~ msgstr "Contexto de plantilla"
+#: src/membership_core/templates/gentelella/app/sidebar.html:39
+msgid "Groups"
+msgstr "Grupos"
 
-#~ msgid "Email Notification"
-#~ msgstr "Notificación por correo"
+#: src/membership_core/templates/gentelella/app/sidebar.html:42
+msgid "Menu items"
+msgstr "Elementos del menú"
 
-#~ msgid "Recipient list"
-#~ msgstr "Lista de recibo"
+#: src/membership_core/templates/gentelella/app/sidebar.html:45
+msgid "Enrolls"
+msgstr "Inscritos"
 
-#~ msgid "Add external email"
-#~ msgstr "Agregar correo externo"
+#: src/membership_core/templates/gentelella/app/sidebar.html:48
+msgid "Periods"
+msgstr "Peridos"
 
-#~ msgid "External user"
-#~ msgstr "Usuario externo"
+#: src/membership_core/templates/gentelella/app/sidebar.html:51
+msgid "Pages"
+msgstr "Páginas"
 
-#~ msgid "Subject"
-#~ msgstr "Asunto"
+#: src/membership_core/templates/gentelella/app/sidebar.html:54
+msgid "Students"
+msgstr "Estudiantes"
 
-#~ msgid "Message"
-#~ msgstr "Mensaje"
+#: src/membership_core/templates/gentelella/app/sidebar.html:58
+#: src/membership_core/templates/gentelella/base.html:117
+msgid "Professor"
+msgstr "Profesor"
 
-#~ msgid "Enqueued"
-#~ msgstr "Encolado"
+#: src/membership_core/templates/gentelella/app/sidebar.html:61
+msgid "Coupons"
+msgstr "Cupones"
 
-#~ msgid "Sended"
-#~ msgstr "Enviado"
+#: src/membership_core/templates/gentelella/app/sidebar.html:72
+msgid "Bills"
+msgstr "Pagos"
 
-#~ msgid "File"
-#~ msgstr "Archivo"
+#: src/membership_core/templates/gentelella/app/sidebar.html:77
+msgid "Currency Exchange"
+msgstr "Moneda de intercambio"
 
-#~ msgid "Problems"
-#~ msgstr "Problemas"
+#: src/membership_core/templates/gentelella/app/sidebar.html:80
+msgid "Bill list"
+msgstr "Lista de pagos"
 
-#~ msgid "Create datetime"
-#~ msgstr "Fecha de creación"
+#: src/membership_core/templates/gentelella/app/sidebar.html:91
+msgid "Administration"
+msgstr "Administración"
 
-#~ msgid "sended"
-#~ msgstr "enviado"
+#: src/membership_core/templates/gentelella/app/sidebar.html:97
+msgid "User list"
+msgstr "Lista de usuarios"
 
-#~ msgid "Not sended"
-#~ msgstr "No enviado"
+#: src/membership_core/templates/gentelella/app/sidebar.html:102
+msgid "Group list"
+msgstr "Lista de grupos"
 
-#~ msgid "Email notification"
-#~ msgstr "Notificación por correo"
+#: src/membership_core/templates/gentelella/base.html:109
+msgid "Student"
+msgstr "Estudiante"
 
-#~ msgid "Email notifications"
-#~ msgstr "Notificaciones por correo"
+#: src/membership_core/templates/gentelella/base.html:113
+msgid "Administrator"
+msgstr "Administrador"
 
-#~ msgid "Code"
-#~ msgstr "Código"
+#: src/membership_core/templates/gentelella/registration/login.html:21
+msgid "Login"
+msgstr "Iniciar Sesión"
 
-#~ msgid "Email template"
-#~ msgstr "Plantilla de correo"
+#: src/membership_core/templates/gentelella/registration/login.html:24
+msgid "Your username and password didn't match. Please try again."
+msgstr "Su usuario y contraseña no son iguales. Intentelo nuevamente."
 
-#~ msgid "Email templates"
-#~ msgstr "Plantillas de correo"
+#: src/membership_core/templates/gentelella/registration/login.html:29
+msgid ""
+"Your account doesn't have access to this page. To proceed,\n"
+"                                please login with an account that has access."
+msgstr ""
+"Su cuenta no tiene acceso a esta página. Para continuar,\n"
+"   inicie sesión con una cuenta que tenga acceso."
 
-#~ msgid "Context dictionary"
-#~ msgstr "Diccionario de contexto"
+#: src/membership_core/templates/gentelella/registration/login.html:32
+msgid "Please login to see this page."
+msgstr "Por favor inicie sesión para ver esta página."
 
-#~ msgid "Context of template"
-#~ msgstr "Contexto de la plantilla"
+#: src/membership_core/templates/gentelella/registration/login.html:37
+msgid "Username"
+msgstr "Usuaria"
+
+#: src/membership_core/templates/gentelella/registration/login.html:40
+msgid "Password"
+msgstr "Contraseña"
+
+#: src/membership_core/templates/gentelella/registration/login.html:43
+msgid "Log in"
+msgstr "Iniciar sesión"
+
+#: src/membership_core/templates/gentelella/registration/login.html:44
+msgid "Lost your password?"
+msgstr "¿Perdió su contraseña?"
+
+#: src/membresias_codigosur/settings.py:142
+msgid "Spanish"
+msgstr "Español"
+
+#: src/membresias_codigosur/settings.py:143
+msgid "English"
+msgstr "Ingles"

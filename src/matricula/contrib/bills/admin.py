@@ -7,5 +7,5 @@ from matricula.contrib.bills.models import Bill
 
 
 admin.site.register(Bill)
-add_main_menu((_("Pagos"), 'bills', True, 3, True))
+add_main_menu((_("Bills"), 'bills', True, 3, True))
 admin_site.register(Bill)

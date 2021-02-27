@@ -1,7 +1,7 @@
 {% load static menu i18n %}
 <div class="left_col scroll-view">
     <div class="navbar nav_title" style="border: 0;">
-        <a href="{% url 'home' %}"  class="site_title" style="font-size: 17px;">UPO</a>
+        <a href="{% url 'home' %}"  class="site_title" style="font-size: 17px;">{% trans 'UPO' %}</a>
     </div>
 
     <div class="clearfix"></div>
@@ -25,40 +25,40 @@
                     <li>
                         <a>
                             <i class="fa fa-university"></i>
-                            Académica
+                            {% trans 'Academic' %}
                             <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">
                             {% if perms.matricula.view_category %}
-                                <li><a href="{% url 'categories' %}">Categorías</a></li>
+                                <li><a href="{% url 'categories' %}">{% trans 'Categories' %}</a></li>
                             {% endif %}
                             {% if perms.matricula.view_course %}
-                                <li><a href="{% url 'enrrolment_courses' %}">Cursos</a></li>
+                                <li><a href="{% url 'enrrolment_courses' %}">{% trans 'Courses' %}</a></li>
                             {% endif %}
                             {% if perms.matricula.view_group %}
-                                <li><a href="{% url 'groups_enroll' %}">Grupos</a></li>
+                                <li><a href="{% url 'groups_enroll' %}">{% trans "Groups" %}</a></li>
                             {% endif %}
                             {% if perms.djgentelella.view_menuitem %}
-                                <li><a href="{% url 'menuitems' %}">Elementos del menú</a></li>
+                                <li><a href="{% url 'menuitems' %}">{% trans 'Menu items' %}</a></li>
                             {% endif %}
                             {% if perms.matricula.view_enroll %}
-                                <li><a href="{% url 'enrolls' %}">Matrículas</a></li>
+                                <li><a href="{% url 'enrolls' %}">{% trans 'Enrolls' %}</a></li>
                             {% endif %}
                             {% if perms.matricula.view_period %}
-                                <li><a href="{% url 'periods' %}">Periodos</a></li>
+                                <li><a href="{% url 'periods' %}">{% trans 'Periods' %}</a></li>
                             {% endif %}
                             {% if perms.matricula.view_page %}
-                                <li><a href="{% url 'pages' %}">Páginas</a></li>
+                                <li><a href="{% url 'pages' %}">{% trans 'Pages' %}</a></li>
                             {% endif %}
                             {% if perms.matricula.view_student %}
-                                <li><a href="{% url 'students' %}">Estudiantes</a></li>
+                                <li><a href="{% url 'students' %}">{% trans 'Students' %}</a></li>
                             {% endif %}
 
                             {% if perms.matricula.view_professor %}
                                 <li><a href="{% url 'professors_list' %}">{% trans "Professor" %}</a></li>
                             {% endif %}
                             {% if perms.matricula.view_coupon %}
-                                <li><a href="{% url 'coupons_list' %}">Cupones</a></li>
+                                <li><a href="{% url 'coupons_list' %}">{% trans 'Coupons' %}</a></li>
                             {% endif %}
                         </ul>
                     </li>
@@ -69,15 +69,15 @@
                     <li>
                         <a>
                             <i class="fa fa-money"></i>
-                            Pagos
+                            {% trans 'Bills' %}
                             <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">
                             {% if perms.membership_core.view_systemcurrency %}
-                                <li><a href="{% url 'colonexchange' %}">Moneda de intercambio</a></li>
+                                <li><a href="{% url 'colonexchange' %}">{% trans "Currency Exchange"%}</a></li>
                             {% endif %}
                             {% if perms.bills.view_bill %}
-                                <li><a href="{% url 'listbills' %}">Lista de pagos</a></li>
+                                <li><a href="{% url 'listbills' %}">{% trans 'Bill list' %}</a></li>
                             {% endif %}
                         </ul>
                     </li>
@@ -88,18 +88,18 @@
                     <li>
                         <a>
                             <i class="fa fa-book"></i>
-                            Administración
+                            {% trans 'Administration' %}
                             <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">
                             {% if perms.auth.view_user %}
                             <li>
-                                <a href="{% url 'user_list' %}">Lista de usuarias</a>
+                                <a href="{% url 'user_list' %}">{% trans 'User list' %}</a>
                             </li>
                             {% endif %}
                             {% if perms.auth.view_group %}
                             <li>
-                                <a href="{% url 'groups_list' %}">Grupos de usuarias</a>
+                                <a href="{% url 'groups_list' %}">{% trans 'Group list' %}</a>
                             </li>
                             {% endif %}
                         </ul>
