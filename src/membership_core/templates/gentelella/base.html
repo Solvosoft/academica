@@ -103,23 +103,21 @@
             {% block content_block_wrap %}
               {% if request.user.is_authenticated %}
                 <div>
-                    {% if "bills" in request.get_full_path or "enrrolment" in request.get_full_path %}
-                        <span>Roles:</span>
-                        {% if request.user.student %}
-                            <span class="badge">{% trans "Student" %}</span>
-                        {% endif %}
-                        {% if request.user.is_superuser %}
-                            <span class="badge">{% trans "Superadmin" %}</span>
-                        {% endif %}
-                        {% for i in request.user.groups.all %}
-                            {% if i.name == "Administradores Académica" %}
-                                <span class="badge">{% trans "Administrator" %}</span>
-                            {% endif %}
-                        {% endfor %}
-                        {% if request.user.professor %}
-                            <span class="badge">{% trans "Professor" %}</span>
-                        {% endif %}
-                    {% endif %}
+                  <span>Roles:</span>
+                  {% if request.user.student %}
+                      <span class="badge">{% trans "Student" %}</span>
+                  {% endif %}
+                  {% if request.user.is_superuser %}
+                      <span class="badge">{% trans "Superadmin" %}</span>
+                  {% endif %}
+                  {% for i in request.user.groups.all %}
+                      {% if i.name == "Administradores Académica" %}
+                          <span class="badge">{% trans "Administrator" %}</span>
+                      {% endif %}
+                  {% endfor %}
+                  {% if request.user.professor %}
+                      <span class="badge">{% trans "Professor" %}</span>
+                  {% endif %}
                 </div>
             {% endif %}
               {% block content %}
