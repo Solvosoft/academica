@@ -55,7 +55,7 @@
                             {% endif %}
 
                             {% if perms.matricula.view_professor %}
-                                <li><a href="{% url 'professors_list' %}">{% trans "Professor" %}</a></li>
+                                <li><a href="{% url 'professors_list' %}">{% trans "Professors" %}</a></li>
                             {% endif %}
                             {% if perms.matricula.view_coupon %}
                                 <li><a href="{% url 'coupons_list' %}">{% trans 'Coupons' %}</a></li>
@@ -74,7 +74,7 @@
                         </a>
                         <ul class="nav child_menu">
                             {% if perms.membership_core.view_systemcurrency %}
-                                <li><a href="{% url 'colonexchange' %}">{% trans "Currency Exchange"%}</a></li>
+                                <li><a href="{% url 'colonexchange' %}">{% trans "Currency Exchanges"%}</a></li>
                             {% endif %}
                             {% if perms.bills.view_bill %}
                                 <li><a href="{% url 'listbills' %}">{% trans 'Bill list' %}</a></li>

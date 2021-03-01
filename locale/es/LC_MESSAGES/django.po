@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-27 13:24-0600\n"
+"POT-Creation-Date: 2021-03-01 11:44-0600\n"
 "PO-Revision-Date: 2020-01-09 08:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -147,9 +147,8 @@ msgid "Students"
 msgstr "Estudiantes"
 
 #: src/membership_core/templates/gentelella/app/sidebar.html:58
-#: src/membership_core/templates/gentelella/base.html:120
-msgid "Professor"
-msgstr "Profesor"
+msgid "Professors"
+msgstr "Facilitadoras"
 
 #: src/membership_core/templates/gentelella/app/sidebar.html:61
 msgid "Coupons"
@@ -160,8 +159,8 @@ msgid "Bills"
 msgstr "Pagos"
 
 #: src/membership_core/templates/gentelella/app/sidebar.html:77
-msgid "Currency Exchange"
-msgstr "Moneda de intercambio"
+msgid "Currency Exchanges"
+msgstr "Monedas de intercambio"
 
 #: src/membership_core/templates/gentelella/app/sidebar.html:80
 msgid "Bill list"
@@ -190,6 +189,10 @@ msgstr "Super administrador"
 #: src/membership_core/templates/gentelella/base.html:116
 msgid "Administrator"
 msgstr "Administrador"
+
+#: src/membership_core/templates/gentelella/base.html:120
+msgid "Professor"
+msgstr "Facilitadora"
 
 #: src/membership_core/templates/gentelella/registration/login.html:21
 msgid "Login"
