@@ -492,7 +492,7 @@ class StudentAdminCreateForm(GTForm, forms.ModelForm):
         label="Correo", widget=djgentelella.EmailMaskInput, required=True)
     country = forms.ModelChoiceField(
         label="País", queryset=Country.objects.all(), required=True, widget=djgentelella.Select)
-    phone_number = forms.CharField(label="Teléfono", widget=djgentelella.PhoneNumberMaskInput)
+    phone_number = forms.CharField(label="Teléfono", widget=djgentelella.TextInput)
     organization = forms.CharField(
         label="Organización", required=True
     )
