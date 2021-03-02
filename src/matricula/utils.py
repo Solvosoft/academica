@@ -20,7 +20,7 @@ def load_email_temp_academica():
         [('group'), ('url'), ('domain')], 'email_preenroll_success.html', as_template=True)
     
     update_template_context(
-        'email_enroll_success', 'Correo de inscripción exitosa',
+        'email_enroll_success', 'Tu MATRÍCULA en el curso ha sido aceptada - UPo',
         [('group'), ('url'),("domain")], 'email_enroll_success.html', as_template=True)
 
     update_template_context(
