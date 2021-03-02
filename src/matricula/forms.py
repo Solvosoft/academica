@@ -602,6 +602,24 @@ class ProfessorEditForm(GTForm, forms.ModelForm):
         }
 
 
+class ProfessorEditProfileForm(GTForm, forms.ModelForm):
+    email_professor = forms.CharField(
+        label="Correo electrónico para estudiantes: ",
+        required=True, widget=djgentelella.EmailMaskInput)
+    
+    class Meta:
+        model = Professor
+        fields = ("description", 'email_professor', )
+        widgets = {
+            'description': djgentelella.Textarea,
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(ProfessorEditProfileForm, self).__init__(*args, **kwargs)
+        if 'initial' in kwargs:
+            if 'email' in kwargs['initial']:
+                self.fields['email_professor'].initial = kwargs['initial']['email']
+
 class CouponsSearchForm(GTForm, forms.Form):
     DISCOUNT_CHOICES = (
         (None, "Todos"),

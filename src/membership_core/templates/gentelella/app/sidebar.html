@@ -110,7 +110,7 @@
     </div>
     <div class="sidebar-footer hidden-print hidden-small">
         {% if request.user.is_authenticated %}
-            {% if request.user.student %}
+            {% if request.user.student or request.user.professor %}
                 <a title="" href="{% url 'profile' %}">
                     <span class="fa fa-user" aria-hidden="true"></span>
                 </a>

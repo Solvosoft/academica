@@ -6,7 +6,7 @@ Created on 17/5/2015
 '''
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render, redirect, get_object_or_404
-from matricula.forms import StudentCreateForm, StudentEditForm, UserEditForm
+from matricula.forms import ProfessorEditForm, ProfessorEditProfileForm, StudentCreateForm, StudentEditForm, UserEditForm
 from matricula.models import Student, Enroll
 from django.urls import reverse, reverse_lazy
 from django.contrib import messages
@@ -237,35 +237,47 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
         enroll = Enroll.objects.filter(student__user=self.object).order_by('enroll_date')
         context['enroll'] = enroll.filter(enroll_activate=True, enroll_finished=True)
         context['pre_enroll'] = enroll.filter(enroll_finished=False)
-        context['student_form'] = StudentEditForm(initial=self.request.user.student.__dict__)
+        if hasattr(self.request.user, 'student'):
+            context['student_form'] = StudentEditForm(initial=self.request.user.student.__dict__)
+        if hasattr(self.request.user, 'professor'):
+            context['professor_form'] = ProfessorEditProfileForm(initial=self.request.user.professor.__dict__)
         return context
 
     def get_success_url(self):
         pk = self.kwargs['pk']
         return reverse_lazy('myprofile', kwargs={'pk': pk})
 
-    def get(self, request, *args, **kwargs):
-        # self.object = self.get_object()
-        if not hasattr(self.request.user, 'student'):
-            return redirect(reverse('courses'))
-        else:
-            return super(StudentEdit, self).get(request, *args, **kwargs)
-
     def post(self, request, *args, **kwargs):
-        student = request.user.student
-        user = request.user
-        student_form = StudentEditForm(request.POST)
+        errors = False;
+        if hasattr(request.user, 'professor'):
+            professor_form = ProfessorEditProfileForm(request.POST)
+            if professor_form.is_valid():
+                professor = request.user.professor
+                professor.email = professor_form.cleaned_data['email_professor']
+                professor.description = professor_form.cleaned_data['description']
+                professor.save()
+            else:
+                errors = True;
+        if hasattr(request.user, 'student'):
+            student_form = StudentEditForm(request.POST)
+            if student_form.is_valid():
+                student = request.user.student
+                student.phone_number = student_form.cleaned_data['phone_number']
+                student.country = student_form.cleaned_data['country']
+                student.organization = student_form.cleaned_data['organization']
+                student.save()
+            else:
+                errors = False
         form = UserEditForm(request.POST)
-        if student_form.is_valid() and form.is_valid():
-            student.phone_number = student_form.cleaned_data['phone_number']
-            student.country = student_form.cleaned_data['country']
-            student.organization = student_form.cleaned_data['organization']
-            student.save()
+        user = request.user
+        if form.is_valid():
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name']
             user.email = form.cleaned_data['email']
             user.save()
         else:
+            errors = True
+        if errors:
             messages.error(request, "We have some validation errors")
         return super(StudentEdit, self).get(request, *args, **kwargs)
 
