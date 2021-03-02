@@ -253,12 +253,20 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         student = request.user.student
+        user = request.user
         student_form = StudentEditForm(request.POST)
-        if student_form.is_valid():
+        form = UserEditForm(request.POST)
+        if student_form.is_valid() and form.is_valid():
             student.phone_number = student_form.cleaned_data['phone_number']
             student.country = student_form.cleaned_data['country']
             student.organization = student_form.cleaned_data['organization']
             student.save()
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name']
+            user.email = form.cleaned_data['email']
+            user.save()
+        else:
+            messages.error(request, "We have some validation errors")
         return super(StudentEdit, self).get(request, *args, **kwargs)
 
     def get_object(self):
