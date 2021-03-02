@@ -46,6 +46,6 @@ class Command(BaseCommand):
                 subject="Cupón de descuento actualizado",
                 message=file_update.read()
             )
-        email_template_update.save()
+            email_template_update.save()
         file_update.close()
 
