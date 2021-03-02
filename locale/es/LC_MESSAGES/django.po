@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-01 11:44-0600\n"
+"POT-Creation-Date: 2021-03-02 11:29-0600\n"
 "PO-Revision-Date: 2020-01-09 08:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -86,8 +86,8 @@ msgid "monthly"
 msgstr "mensuales"
 
 #: src/membership_core/templates/dashboard.html:42
-msgid "Enrolled"
-msgstr "Inscritos"
+msgid "Registered"
+msgstr "Registrados"
 
 #: src/membership_core/templates/dashboard.html:43
 msgid "this year"
@@ -178,19 +178,19 @@ msgstr "Lista de usuarias"
 msgid "Group list"
 msgstr "Lista de grupos"
 
-#: src/membership_core/templates/gentelella/base.html:109
+#: src/membership_core/templates/gentelella/base.html:108
 msgid "Student"
 msgstr "Estudiante"
 
-#: src/membership_core/templates/gentelella/base.html:112
+#: src/membership_core/templates/gentelella/base.html:111
 msgid "Superadmin"
-msgstr "Super administrador"
+msgstr "Super administradora"
 
-#: src/membership_core/templates/gentelella/base.html:116
+#: src/membership_core/templates/gentelella/base.html:115
 msgid "Administrator"
-msgstr "Administrador"
+msgstr "Administradora"
 
-#: src/membership_core/templates/gentelella/base.html:120
+#: src/membership_core/templates/gentelella/base.html:119
 msgid "Professor"
 msgstr "Facilitadora"
 
