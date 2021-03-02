@@ -1,5 +1,47 @@
-{% block top_navigation %}
-	{% load  gentelellamenu %}
+{% load  gentelellamenu i18n %}
+{% block extra_css %}
+	<style>
+		.dropdown-toggle::after {
+			display: inline-block;
+			margin-left: .255em;
+			vertical-align: .255em;
+			content: "";
+			border-top: .3em solid;
+			border-right: .3em solid transparent;
+			border-bottom: 0;
+			border-left: .3em solid transparent;
+		}
+
+		.dropdown-menu a {
+			cursor: pointer;
+		}
+		.dropdown-item {
+			width: 100%;
+			padding: 12px 20px;
+		}
+
+		.dropdown-item {
+			display: block;
+			width: 100%;
+			padding: .25rem 1.5rem;
+			clear: both;
+			font-weight: 400;
+			color: #212529;
+			text-align: inherit;
+			white-space: nowrap;
+			background-color: transparent;
+			border: 0;
+			line-height:30px;
+		}
+
+		a {
+			color: #5A738E;
+			text-decoration: none;
+		}
+
+	</style>
+{% endblock %}
+{% block top_navigation %}	
 	<div class="nav_menu">
 		<div class="nav toggle">
 			<a id="menu_toggle"><i class="fa fa-bars"></i></a>
@@ -10,9 +52,13 @@
 				<li><a href="{% url "create_user_academy" %}">Registrarme</a><li>
 			{% else %}
 				<li class="nav-item dropdown" style="padding-left: 15px;">
-					<a href="{% url 'profile' %}">
-					<span style="font-size:1.5em"><i class="fa fa-user"></i></span> {{request.user.first_name}} {{request.user.last_name}}
+					<a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
+						<span style="font-size:1.5em"><i class="fa fa-user"></i></span> {{request.user.first_name}} {{request.user.last_name}}
 					</a>
+					<div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="{% url 'profile' %}">{% trans 'Profile' %}</a>
+						<a class="dropdown-item" href="{% url 'logout' %}">{% trans 'Log out' %}</a>
+					</div>
 				</li>
             {% endif %}
 			{% top_menu  %}
