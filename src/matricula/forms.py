@@ -59,7 +59,7 @@ class StudentCreateForm(GTForm, forms.ModelForm):
             'last_name': djgentelella.TextInput,
             'email': djgentelella.EmailInput,
             'country': djgentelella.Select,
-            'phone_number': djgentelella.PhoneNumberMaskInput,
+            'phone_number': djgentelella.TextInput,
         }
 
     def clean(self):
