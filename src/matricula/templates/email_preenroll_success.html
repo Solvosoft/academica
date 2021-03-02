@@ -162,17 +162,7 @@
     <tr>
       <td>
         {% include 'logo_email.html' %}
-
-<table style="color: #eeeeee; font-family: Arial, Helvetica, sans-serif; font-size: 14px; border: 1px solid #999999; padding: 10px; font-weight: bold; text-align: center; margin: 20px auto; width: 680px; background: #ffffff;" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#e6e6e6">
-<tbody>
-<tr>
-<td style="color: #d40000;">Se ha pre-inscrito en el grupo: {{group.name}} de forma exitosa.</td>
-</tr>
-</tbody>
-</table>
-
-
-</td>
+      </td>
     </tr>
   </tbody>
 </table>
@@ -185,7 +175,7 @@
                             <td align='left'>
                               <div class="contentEditableContainer contentTextEditable">
                                 <div class="contentEditable" align='center'>
-                                  <h2 style="font-weight:700;">Estimado estudiante,</h2>
+                                  <h2 style="font-weight:700;">¡Hola!</h2>
                                 </div>
                               </div>
                             </td>
@@ -200,20 +190,18 @@
 
 
 
-<p>
-Se le notifica que su pre-inscripción en el grupo: {{group.course.name}} -- {{group.name}} ha sido realizada exitosamente, recuerde estar pendiente para completar su inscripción cuando esta este disponible en la plataforma.
-</p>
-<p style="color: #FF0000;">
-
-Para dar seguimiento al estado de la pre-inscripción puede seguir el siguiente enlace:
-<a href="{{url}}">Acceder</a></p>
-
-<p>
-{% blocktrans %}if your email service block links  then copy and paste this url in a new tab{% endblocktrans %}
-<br>{{url}}</p> 
+<p style="text-align: justify;text-justify: inter-word;">
+Ya ha sido aceptada tu PRE-MATRÍCULA en el curso {{group.course.name}} -- {{group.name}}, eso significa que estás en una lista de espera de personas interesadas en tomar el curso. 
+</p><br/><br/>
+<p style="text-align: justify;text-justify: inter-word;">
+  En breve recibirás un mail donde se informará de si finalmente estás o no en les estudiantes aceptades, es decir, si estás o no matriculade en el curso.
+<p><br/><br/>
 
 <br><br>
-{% trans 'Best regards' %}
+<div style="text-align:center">
+  ¡Muchas gracias por tu tiempo e interés!<br/> 
+  ¡Abrazos solidarios de todo el equipo!
+</div>
 </div>
                               </div>
                             </td>
