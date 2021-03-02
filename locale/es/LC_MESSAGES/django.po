@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-02 11:29-0600\n"
+"POT-Creation-Date: 2021-03-02 13:09-0600\n"
 "PO-Revision-Date: 2020-01-09 08:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -177,6 +177,14 @@ msgstr "Lista de usuarias"
 #: src/membership_core/templates/gentelella/app/sidebar.html:102
 msgid "Group list"
 msgstr "Lista de grupos"
+
+#: src/membership_core/templates/gentelella/app/top_navigation.html:59
+msgid "Profile"
+msgstr "Perfil"
+
+#: src/membership_core/templates/gentelella/app/top_navigation.html:60
+msgid "Log out"
+msgstr "Cerrar sesión"
 
 #: src/membership_core/templates/gentelella/base.html:108
 msgid "Student"

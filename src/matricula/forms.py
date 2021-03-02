@@ -84,6 +84,12 @@ class StudentCreateForm(GTForm, forms.ModelForm):
 
         return password
 
+    def clean_email(self):
+        data = self.cleaned_data['email']
+        if User.objects.filter(email=data).exists():
+            raise forms.ValidationError(_("This email already used"))
+        return data
+
 
 class UserEditForm(GTForm, forms.ModelForm):
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-26 23:00-0600\n"
+"POT-Creation-Date: 2021-03-02 13:12-0600\n"
 "PO-Revision-Date: 2020-11-27 20:41-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -114,7 +114,11 @@ msgstr "Contraseña"
 msgid "User name exist "
 msgstr "El nombre de usuaria existe "
 
-#: src/matricula/forms.py:112
+#: src/matricula/forms.py:90
+msgid "This email already used"
+msgstr "Este correo ya esta registrado"
+
+#: src/matricula/forms.py:118
 msgid "username"
 msgstr "Nombre de usuaria"
 
