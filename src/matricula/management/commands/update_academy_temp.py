@@ -31,6 +31,7 @@ class Command(BaseCommand):
 
         email_template = EmailTemplate.objects.get(code="coupon_code_notification")
         email_template.message = file.read()
+        email_template.subject = "¡Felicidades! Has recibido un cupón de descuento para tu curso - UPo"
         email_template.save()
         file.close()
 
@@ -38,12 +39,15 @@ class Command(BaseCommand):
         file_update = open(settings.BASE_NOCODE_DIR+'/src/matricula/templates/coupons/coupon_code_notification_update.html', 'r')
 
         email_template_update = EmailTemplate.objects.filter(code="coupon_code_notification_updated")
-        if email_template_update.first():
-            email_template_update.message = file_update.read()
+        template = email_template_update.first()
+        if template:
+            template.message = file_update.read()
+            template.subject = "¡Felicidades de nuevo! Tu cupón de descuento ha sido actualizado - UPo"
+            template.save()
         else:
             email_template_update = EmailTemplate(
                 code="coupon_code_notification_updated",
-                subject="Cupón de descuento actualizado",
+                subject="¡Felicidades de nuevo! Tu cupón de descuento ha sido actualizado - UPo",
                 message=file_update.read()
             )
             email_template_update.save()

@@ -181,21 +181,11 @@ td[class="spechide"]
   <tbody>
     <tr>
       <td valign="top" align="center" class="specbundle"><div class="contentEditableContainer contentTextEditable">
-        <img src="{{domain}}{% static 'logo-upo.png' %}" width="300" height="83" alt='Logo' data-default="placeholder" />
+        <img src="{{domain}}{% static 'logo-upo.png' %}" style="max-width: 300px; height: auto;" alt='Logo' data-default="placeholder" />
       </td>
     </tr>
   </tbody>
 </table>
-
-<table style="color: #eeeeee; font-family: Arial, Helvetica, sans-serif; font-size: 14px; border: 1px solid #999999; padding: 10px; font-weight: bold; text-align: center; margin: 20px auto; width: 680px; background: #ffffff;" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#e6e6e6">
-<tbody>
-<tr>
-<td style="color: #d40000;">CUPÓN DE DESCUENTO</td>
-</tr>
-</tbody>
-</table>
-
-
 </td>
     </tr>
   </tbody>
@@ -209,7 +199,7 @@ td[class="spechide"]
                             <td align='left'>
                               <div class="contentEditableContainer contentTextEditable">
                                 <div class="contentEditable" align='center'>
-                                  <h2 style="font-weight:700;">At. {{coupon.student}}</h2>
+                                  <h2 style="font-weight:700;">!Hola {{coupon.student}}!</h2>
                                 </div>
                               </div>
                             </td>
@@ -221,19 +211,14 @@ td[class="spechide"]
                             <td align='left'>
                               <div class="contentEditableContainer contentTextEditable">
                                 <div class="contentEditable" align='center'>
-                                  <p>
-                                    Reciba un saludo fraterno de la Universidad Popular.
-                                         <br><br>
-                                    Por medio de la presente le informamos que le ha sido otorgado un cupón de descuento.<br>
-                                    Dicho cupón es del {{coupon.discount_percentage}}% sobre el valor del curso {{coupon.course}}.<br>
-                                    Su código para canjear el cupón es el siguiente: {{coupon.code}}<br>
-                                    Tenga en cuenta que este código solo puede ser usado una vez y respectivamente para el curso antes mencionado.
-                                         <br><br>
-                                    Ante cualquier duda contáctenos.<br>
-                                    Muy cordialmente,
-                                      <br><br>
-                                    <span style='color:#000000;'>Universidad Popular</span><br>
+                                  <p style="text-align: justify;text-justify: inter-word;">
+                                    Todo el equipo de la Universidad Popular (UPo) estamos felices de poder ofrecerte un cupón del {{coupon.discount_percentage}}% sobre el valor del curso {{coupon.course}}. El código que usarás será: {{coupon.code}}
+                                    <br><br>
+                                    Recuerda que este cupón sólo se puede usar una vez y sólo para este curso en particular.
+                                    <br><br>
                                   </p>
+                                  Esperamos que disfrutes mucho el curso.<br>
+                                  ¡Abrazos solidarios de todo el equipo!
                                 </div>
                               </div>
                             </td>
@@ -258,26 +243,33 @@ td[class="spechide"]
       <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tbody>
     <tr>
-      <td valign="top" class="specbundle">
-          <div class="contentEditableContainer contentTextEditable">
-                                      <div class="contentEditable" align='center'>
-                                        <p  style='text-align:center;color:#000;font-size:12px;font-weight:normal;line-height:20px;'>
-                                          <span style='font-weight:bold;'>Universidad Popular</span>
-                                          <br>
-                                          Correo electrónico: secretaria@universidadpopular.red<br>
-                                          Teléfono (Wire, Telegram, Whatsapp, Signal): +506 8569 1676<br>
-                                          Canal Telegram: <a target='_blank' href="https://t.me/CanalResistenciaDigital">https://t.me/CanalResistenciaDigital</a><br>
-                                          Web: <a target='_blank' href="https://universidadpopular.red">https://universidadpopular.red/</a><br>
-                                          <br>
-                                        </p>
-                                      </div>
-                                    </div></td>
-      <td valign="top" width="30" class="specbundle">&nbsp;</td>
-      <td valign="top" class="specbundle"><table width="100%" border="0" cellspacing="0" cellpadding="0">
-
-
-</table>
-</td>
+      <td>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr>
+              <td valign="top" class="specbundle">
+                <div class="contentEditableContainer contentTextEditable">
+                    <div class="contentEditable" align='center'>
+                    <p  style='text-align:center;color:#000;font-size:12px;font-weight:normal;line-height:20px;'>
+                        <span style='font-weight:bold;'>Universidad Popular (UPo)</span>
+                        <br>
+                        Podemos apoyarte en:<br/>
+                        secretaria@universidadpopular.red<br>
+                        Telegram, Whatsapp, Signal: +52 1 9671718262<br>
+                        <br/>
+                        Los cursos se comparten en:<br/>
+                        <a target='_blank' href="https://www.campus.universidadpopular.red">www.campus.universidadpopular.red</a><br>
+                        <br>
+                    </p>
+                    </div>
+                </div>
+              </td>
+              <td valign="top" width="30" class="specbundle">&nbsp;</td>
+              <td valign="top" class="specbundle"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+            </tr>
+          </tbody>
+        </table>
+      </td>
     </tr>
   </tbody>
 </table>
