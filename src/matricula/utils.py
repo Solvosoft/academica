@@ -3,7 +3,7 @@ from async_notifications.register import update_template_context
 
 def load_email_temp_academica():
     update_template_context(
-        'new_user_created_academy', 'Correo de bienvenida',
+        'new_user_created_academy', 'Sólo un paso más para registrarte - UPo.',
         [('user'), ('student'), ('url'), ('domain')],
         'email_confirmation.html', as_template=True)
 
@@ -38,7 +38,7 @@ def load_email_temp_academica():
         'email_invoice.html', as_template=True)
 
     update_template_context(
-        'set_email_first_academy', 'Correo de configuración de contraseña',
+        'set_email_first_academy', 'Sólo un paso más para registrarte - UPo.',
         [('url'), ('student'),("domain")], 'set_email_first.html',
         as_template=True)
 
