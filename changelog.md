@@ -1,6 +1,6 @@
 # Change log file
 
-27/02/2021
+02/03/2021
 
 ### Fixed
     
@@ -11,6 +11,14 @@
 - Translations and grammar
 
     `python manage.py compilemessages -l es` 
+
+- Update email templates
+
+    `python manage.py update_academy_temp`
+
+- Update permission groups
+
+    `python manage.py permission_groups`
 
 ------------------
 
