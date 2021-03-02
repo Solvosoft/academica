@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-02 13:12-0600\n"
+"POT-Creation-Date: 2021-03-02 14:58-0600\n"
 "PO-Revision-Date: 2020-11-27 20:41-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -472,29 +472,24 @@ msgid "Dear"
 msgstr "Estimado"
 
 #: src/matricula/templates/enroll.html:5
-msgid "Pre-enroll courses without active enroll"
-msgstr "Cursos prematriculados sin matricula activa"
+msgid "Pre-enroll courses"
+msgstr "Cursos prematriculados"
 
 #: src/matricula/templates/enroll.html:14
 msgid "Enroll not available"
 msgstr "Matricula no disponible"
 
-#: src/matricula/templates/enroll.html:29
-#: src/matricula/templates/enroll.html:57
-#: src/matricula/templates/matricula/student_form.html:38
-msgid "You don't have courses pre-enrolled"
-msgstr "No tiene cursos prematriculados"
-
-#: src/matricula/templates/enroll.html:33
-msgid "Pre-enrrolled courses in active enroll"
-msgstr "Cursos prematriculados con matricula activa"
-
-#: src/matricula/templates/enroll.html:42
+#: src/matricula/templates/enroll.html:19
 msgid "Enrollme"
 msgstr "Matricularme"
 
-#: src/matricula/templates/enroll.html:73
+#: src/matricula/templates/enroll.html:35
 #: src/matricula/templates/matricula/student_form.html:43
+msgid "You don't have courses pre-enrolled"
+msgstr "No tiene cursos prematriculados"
+
+#: src/matricula/templates/enroll.html:51
+#: src/matricula/templates/matricula/student_form.html:48
 msgid "Enrolled courses"
 msgstr "Cursos matriculados"
 

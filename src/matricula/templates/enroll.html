@@ -2,9 +2,9 @@
 {% load i18n %}
 {% block content %}
 	{% if student %}
-		<h1 class="text-center">{% trans 'Pre-enroll courses without active enroll' %}</h1>
+		<h1 class="text-center">{% trans 'Pre-enroll courses' %}</h1>
 		<div class="x_panel">
-			{% for enroll in list_pre%}
+			{% for enroll in list_pre %}
 				<div class="x_panel">
 					<!-- end of user messages -->
 					<ul class="messages">
@@ -24,14 +24,7 @@
 					</ul>
 					<!-- end of user messages -->
 				</div>
-			{% empty %}
-				<div class="alert alert-info text-center" role="alert">
-					{% trans "You don't have courses pre-enrolled"%} 
-				</div>
 			{% endfor %}
-		</div>
-		<h1 class="text-center">{% trans 'Pre-enrrolled courses in active enroll' %}</h1>
-		<div class="x_panel">
 			{% for enroll in list_enroll%}
 				<div class="x_panel">
 					<!-- end of user messages -->
@@ -52,11 +45,12 @@
 					</ul>
 					<!-- end of user messages -->
 				</div>
-			{% empty %}
+			{% endfor %}
+			{% if not list_pre and not list_enroll%}
 				<div class="alert alert-info text-center" role="alert">
 					{% trans "You don't have courses pre-enrolled"%} 
 				</div>
-			{% endfor %}
+			{% endif %}
 		</div>
 	{% else %}
 		{% if request.user.is_authenticated and not request.user.student %}
