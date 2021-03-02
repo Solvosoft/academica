@@ -508,6 +508,12 @@ class StudentAdminCreateForm(GTForm, forms.ModelForm):
             if 'country_id' in kwargs['initial']:
                 self.fields['country'].initial = kwargs['initial']['country_id']
 
+    def clean_email(self):
+        data = self.cleaned_data['email']
+        if User.objects.filter(email=data).exists():
+            raise forms.ValidationError(_("This email already used"))
+        return data
+
 
 class PageSearchForm(GTForm, forms.Form):
     slug = forms.CharField(
