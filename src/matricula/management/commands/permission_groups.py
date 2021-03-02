@@ -14,9 +14,9 @@ class Command(BaseCommand):
         qualify_students = Permission.objects.filter(codename="can_qualify_students", content_type__app_label="matricula").first()
 
         permissions_professor = [change_profile, view_group, view_qualifications, qualify_students]
-        professor_group = Group(
-            name="Profesores"
-        )
+        professor_group = Group.objects.filter(name="Profesores").first()
+        if not professor_group:
+            professor_group = Group(name="Profesores")
         professor_group.save()
         professor_group.permissions.add(*permissions_professor)
 
@@ -34,9 +34,11 @@ class Command(BaseCommand):
         delete_systemcurrency = Permission.objects.filter(codename="delete_systemcurrency", content_type__app_label="membership_core").first()
         add_user = Permission.objects.filter(codename="add_user", content_type__app_label="auth").first()
         permissions_systemcurrency = [change_systemcurrency, view_systemcurrency, add_systemcurrency, delete_systemcurrency, add_user]
-        enroll_group = Group(
-            name="Administradores Académica"
-        )
+        enroll_group = Group.objects.filter(name="Administradores Académica").first()
+        if not enroll_group:
+            enroll_group = Group(
+                name="Administradores Académica"
+            )
         enroll_group.save()
         enroll_group.permissions.add(*enroll_perms)
         enroll_group.permissions.add(*bill_perms)
