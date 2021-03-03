@@ -164,15 +164,6 @@
                                             <tr>
                                               <td>
                                                 {% include 'logo_email.html' %}
-
-                                                <table style="color: #eeeeee; font-family: Arial, Helvetica, sans-serif; font-size: 14px; border: 1px solid #999999; padding: 10px; font-weight: bold; text-align: center; margin: 20px auto; width: 680px; background: #ffffff;" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#e6e6e6">
-                                                  <tbody>
-                                                    <tr>
-                                                      <td style="color: #d40000;">{% trans 'Welcome to Academica' %}</td>
-                                                    </tr>
-                                                  </tbody>
-                                                </table>
-
                                               </td>
                                             </tr>
                                           </tbody>
@@ -186,7 +177,7 @@
                                             <td align='left'>
                                               <div class="contentEditableContainer contentTextEditable">
                                                 <div class="contentEditable" align='center'>
-                                                  <h2 style="font-weight:700;">{% trans 'Dear' %}: {{student}},</h2>
+                                                  <h2 style="font-weight:700;">¡Hola {{student}}!</h2>
                                                 </div>
                                               </div>
                                             </td>
@@ -199,22 +190,22 @@
                                               <div class="contentEditableContainer contentTextEditable">
                                                 <div class="contentEditable" align='center'>
 
-                                                  <p>
+                                                  <p style="text-align: justify;text-justify: inter-word;">
                                                     Gracias por registrarte en nuestra plataforma de cursos, se confirma que el estudiante ha sido creado, 
                                                     puedes iniciar sesión e inscribirte a cualquiera de nuestros cursos.
-                                                  </p>
-                                                  <p style="color: #FF0000;">
+                                                  </p><br/>
+                                                  <p style="text-align: justify;text-justify: inter-word;">
 
                                                     Accede a los cursos en el siguiente enlace:
                                                     <a href="{{url}}">Acceder</a></p>
 
-                                                  <p>
+                                                  <p style="text-align: justify;text-justify: inter-word;">
                                                     {% blocktrans %}if your email service block links  then copy and paste this url in a new tab{% endblocktrans %}
                                                     <br>{{url}}
                                                   </p> 
-
                                                   <br><br>
-                                                  {% trans 'Best regards' %}
+                                                  ¡Muchas gracias por acercarte a la UPo! <br/>
+                                                  ¡Abrazos solidarios de todo el equipo!.
                                                 </div>
                                               </div>
                                             </td>

@@ -67,7 +67,7 @@
                             <td align='left'>
                               <div class="contentEditableContainer contentTextEditable">
                                 <div class="contentEditable" align='center'>
-                                  <h2 style="font-weight:700;">Estimado {{bill.student}},</h2>
+                                  <h2 style="font-weight:700;">¡Hola {{bill.student}}!</h2>
                                 </div>
                               </div>
                             </td>
@@ -80,7 +80,7 @@
                               <div class="contentEditableContainer contentTextEditable">
                                 <div class="contentEditable" align='center'>
 <br>
-<p>A continuación se comparte el detalle de la factura.</p>
+<p style="text-align: justify;text-justify: inter-word;">A continuación se comparte el detalle de la factura.</p>
 {{bill_description_safe}}
 <center>
 	<div class="status" style="background-color: #66FF99;">
@@ -94,10 +94,11 @@
 </center>
 <br>
 {% if bill.paid_date %}
-	<div class="paid_date"> {%trans "Paid Date"%} : {{ bill.paid_date}}</div>
+	<div class="paid_date"> {% trans "Paid Date"%} : {{ bill.paid_date}}</div>
 {% endif %}
-
-
+<br><br>
+¡Muchas gracias por tu confianza!<br/>
+¡Abrazos solidarios de todo el equipo!
 </div>
                               </div>
                             </td>
@@ -111,9 +112,6 @@
         <div class="movableContent" style="border: 0px; padding-top: 0px; position: relative;">
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tbody>
-    <tr>
-      <td height='65'>
-    </tr>
     <tr>
       <td  style='border-bottom:1px solid #DDDDDD;'></td>
     </tr>
