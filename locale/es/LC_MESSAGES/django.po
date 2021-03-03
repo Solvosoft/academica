@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-02 13:09-0600\n"
+"POT-Creation-Date: 2021-03-03 12:50-0600\n"
 "PO-Revision-Date: 2020-01-09 08:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -40,17 +40,19 @@ msgstr "Reprobados"
 msgid "Countries"
 msgstr "Países"
 
-#: src/membership_core/gtcharts.py:57
-msgid "Enrollments"
-msgstr "Matrículas"
+#: src/membership_core/gtcharts.py:54
+#: src/membership_core/templates/dashboard.html:56
+#: src/membership_core/templates/gentelella/app/sidebar.html:36
+msgid "Courses"
+msgstr "Cursos"
 
-#: src/membership_core/gtcharts.py:62
-msgid "Number of monthy enrollments"
-msgstr "Número de matriculas mensuales"
+#: src/membership_core/gtcharts.py:59
+msgid "Number of courses by period"
+msgstr "Número de cursos por periodos"
 
 #: src/membership_core/gtcharts.py:83
-msgid "Monthy income"
-msgstr "Recaudación mensual"
+msgid "Courses by period"
+msgstr "Cursos por periodo"
 
 #: src/membership_core/models.py:10 src/membership_core/models.py:21
 msgid "Currency"
@@ -77,13 +79,13 @@ msgid "Country"
 msgstr "País"
 
 #: src/membership_core/templates/dashboard.html:19
-msgid "Annual paids"
-msgstr "Pagos anuales"
+#: src/membership_core/templates/gentelella/app/sidebar.html:45
+msgid "Enrolls"
+msgstr "Matrículas"
 
 #: src/membership_core/templates/dashboard.html:19
-#: src/membership_core/templates/dashboard.html:56
-msgid "monthly"
-msgstr "mensuales"
+msgid "by group"
+msgstr "por grupo"
 
 #: src/membership_core/templates/dashboard.html:42
 msgid "Registered"
@@ -94,8 +96,8 @@ msgid "this year"
 msgstr "este año"
 
 #: src/membership_core/templates/dashboard.html:56
-msgid "Enrollments in this year"
-msgstr "Matrículas en este año"
+msgid "by period"
+msgstr "por periodo"
 
 #: src/membership_core/templates/dashboard.html:68
 #: src/membership_core/templates/gentelella/app/sidebar.html:33
@@ -118,10 +120,6 @@ msgstr "Matrícula"
 msgid "Academic"
 msgstr "Académica"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:36
-msgid "Courses"
-msgstr "Cursos"
-
 #: src/membership_core/templates/gentelella/app/sidebar.html:39
 msgid "Groups"
 msgstr "Grupos"
@@ -129,10 +127,6 @@ msgstr "Grupos"
 #: src/membership_core/templates/gentelella/app/sidebar.html:42
 msgid "Menu items"
 msgstr "Elementos del menú"
-
-#: src/membership_core/templates/gentelella/app/sidebar.html:45
-msgid "Enrolls"
-msgstr "Matrículas"
 
 #: src/membership_core/templates/gentelella/app/sidebar.html:48
 msgid "Periods"

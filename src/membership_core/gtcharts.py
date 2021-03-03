@@ -1,9 +1,7 @@
-from django.utils.timezone import now
 from djgentelella.chartjs import LineChart, VerticalBarChart
 from djgentelella.groute import register_lookups
-from django.db.models import Count, Q, Sum
-from .models import SystemCurrency
-from matricula.models import Enroll, Group
+from django.db.models import Count, Q
+from matricula.models import Enroll, Group, Period
 from django.utils.translation import gettext as _
 
 
@@ -25,8 +23,7 @@ class BaseChart:
         return color
 
     def get_labels(self):
-        return ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio',
-                'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+        return [i.name for i in Period.objects.all().order_by('-id')[:10]]
 
     def get_datasets(self):
         self.index = 0
@@ -54,12 +51,12 @@ class BaseChart:
 class VencimientosMes(BaseChart, VerticalBarChart):
     def get_title(self):
         return {'display': True,
-                'text': _('Enrollments')
+                'text': _('Courses')
                 }
 
     def get_datasets(self):
         self.index = 3
-        return [{'label': _('Number of monthy enrollments'),
+        return [{'label': _('Number of courses by period'),
                 'backgroundColor': self.get_color(),
                 'borderColor': self.get_color(),
                 'borderWidth': 1,
@@ -67,12 +64,15 @@ class VencimientosMes(BaseChart, VerticalBarChart):
                 },
         ]
 
+    def get_scales(self):
+        return {'xAxes': [{'stacked': True, }], 'yAxes': [{'stacked': True},{"beginAtZero":True}]}
+
     def extact_data(self):
-        filtres = {'m%d'%m: Count('pk', filter=Q(enroll_date__month=m)) for m in range(1,13)}
-        queryset = Enroll.objects.filter(enroll_date__year=now().year).aggregate(
+        filtres = {'m%s'%m: Count('pk', filter=Q(period__name=m)) for m in self.get_labels()}
+        queryset = Group.objects.filter(period__name__in=self.get_labels()).aggregate(
             **filtres
         )
-        return [queryset['m%d'%m] or 0 for m in range(1,13)]
+        return [queryset['m%s'%m] or 0 for m in self.get_labels()]
 
 
 @register_lookups(prefix="pagoanual", basename="pagoanual")
@@ -80,22 +80,28 @@ class PagoFacturasMes(BaseChart, LineChart):
 
     def get_title(self):
         return {'display': True,
-                'text': _('Monthy income')
+                'text': _('Courses by period')
                 }
+
+    def get_scales(self):
+        return {'yAxes': [{"ticks":{"beginAtZero":True}}]}
+
+    def get_labels(self):
+        return [i.name for i in Group.objects.all().order_by('-id')[:10]]
 
     def get_datasets(self):
         self.index = 6
-        return [{'label': x.currency,
+        return [{'label': x,
                 'backgroundColor': self.get_color(),
                 'borderColor': self.get_color(),
                 'borderWidth': 1,
-                'data': self.extact_data(x)
-                } for x in SystemCurrency.objects.all()
+                'data': self.extact_data()
+                } for x in ['total']
         ]
 
-    def extact_data(self, currency):
-        filtres = {'m%d'%m: Sum('cost', filter=Q(enroll__enroll_date__month=m)) for m in range(1,13)}
-        queryset = Group.objects.filter(enroll__enroll_date__year=now().year, currency=currency).aggregate(
+    def extact_data(self):
+        filtres = {'m%s'%m: Count('pk', filter=Q(group__name=m)) for m in self.get_labels()}
+        queryset = Enroll.objects.filter(rejected=False).aggregate(
             **filtres
         )
-        return [queryset['m%d'%m] or 0 for m in range(1,13)]
+        return [queryset['m%s'%m] or 0 for m in self.get_labels()]

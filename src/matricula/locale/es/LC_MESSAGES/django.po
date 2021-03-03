@@ -430,44 +430,32 @@ msgstr "Matricularme"
 msgid "Pre-enroll me"
 msgstr "Pre-matricularme"
 
-#: src/matricula/templates/email_close_group.html:211
-#: src/matricula/templates/email_open_group.html:212
-#: src/matricula/templates/email_recovery.html:206
-#: src/matricula/templates/email_welcome.html:212
+#: src/matricula/templates/email_close_group.html:200
+#: src/matricula/templates/email_open_group.html:202
+#: src/matricula/templates/email_recovery.html:196
+#: src/matricula/templates/email_welcome.html:203
 msgid ""
 "if your email service block links  then copy and paste this url in a new tab"
 msgstr ""
 "si su servicio de correo bloquea enlaces entonces copie y pegue esta url en "
 "una nueva pestaña"
 
-#: src/matricula/templates/email_close_group.html:215
-#: src/matricula/templates/email_open_group.html:216
-#: src/matricula/templates/email_recovery.html:210
-#: src/matricula/templates/email_welcome.html:217
-msgid "Best regards"
-msgstr "Saludos cordiales"
-
-#: src/matricula/templates/email_recovery.html:202
+#: src/matricula/templates/email_recovery.html:192
 msgid "Please use"
 msgstr "Por favor use"
 
-#: src/matricula/templates/email_recovery.html:203
-#: src/matricula/templates/set_email_first.html:208
+#: src/matricula/templates/email_recovery.html:193
+#: src/matricula/templates/set_email_first.html:198
 msgid "this link"
 msgstr "este enlace"
 
-#: src/matricula/templates/email_recovery.html:203
+#: src/matricula/templates/email_recovery.html:193
 msgid "to recovery the password."
 msgstr "para recuperar contraseña."
 
 #: src/matricula/templates/email_welcome.html:6
-#: src/matricula/templates/email_welcome.html:171
 msgid "Welcome to Academica"
 msgstr "Bienvenido a Académica"
-
-#: src/matricula/templates/email_welcome.html:189
-msgid "Dear"
-msgstr "Estimado"
 
 #: src/matricula/templates/enroll.html:5
 msgid "Pre-enroll courses"
