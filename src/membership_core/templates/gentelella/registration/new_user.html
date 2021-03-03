@@ -3,20 +3,54 @@
 
 {% block content %}
 
-    <tr><td>
-        <h3 style="margin:0; mso-line-height-rule:exactly;">Bienvenida {{user.get_full_name}}</h3>
-        <br>
-    </td></tr>
-
-    <tr><td>
-        <p style="margin:0;">
-            Este correo electrónico fue enviado porque alguien creo una usuaria con su correo electrónico en
-            <a href="{{domain}}" target="_blank"> {{domain}} </a>  <br><br>
-            Su nombre de usuaria es: {{user.username}}<br><br>
-            Por razones de seguridad la contraseña se creó al azar y no se proporciona aquí, por favor, utilice este enlace
-            <br><a href="{{domain}}{% url 'password_reset' %}" target="_blank">{{domain}}{% url 'password_reset' %} </a>
-            para generar una nueva contraseña e iniciar sesión en la plataforma
-        </p>
-    </td></tr>
+    <tr>
+        <td>
+            <div class="movableContent" style="border: 0px; padding-top: 0px; position: relative;">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tbody>
+                        <tr>
+                            <td>
+                                {% include 'logo_email.html' %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+        <td>
+            <h2 style="margin:0; mso-line-height-rule:exactly;">¡Hola {{user.get_full_name}}!</h2>
+            <br>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p style="text-align: justify;text-justify: inter-word;">
+                Este correo electrónico fue enviado porque alguien creo una usuaria con su correo electrónico en
+                <a href="{{domain}}" target="_blank"> {{domain}} </a>  <br><br>
+                Su nombre de usuaria es: {{user.username}}<br><br>
+                Por razones de seguridad la contraseña se creó al azar y no se proporciona aquí, por favor, utilice este enlace
+                <br><a href="{{domain}}{% url 'password_reset' %}" target="_blank">{{domain}}{% url 'password_reset' %} </a>
+                para generar una nueva contraseña e iniciar sesión en la plataforma
+            </p>
+            <br><br>
+            <div style="text-align:center">
+                <br><br>
+                ¡Muchas gracias por tu confianza!<br/>
+                ¡Abrazos solidarios de todo el equipo!
+            </div>
+        </td>
+        <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <td  style='border-bottom:1px solid #DDDDDD;'></td>
+                    </tr>
+                    <tr><td height='25'></td></tr>
+                    {% include 'footer_email.html' %}
+                    <tr><td height='88'></td></tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
 
 {% endblock %}
