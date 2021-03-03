@@ -21,7 +21,8 @@ class Command(BaseCommand):
             'set_email_first_academy',
             'new_user_created_membership',
             'new_professor_created_academy',
-            'reset_password_academy'
+            'reset_password_academy',
+            'email_enroll_rejected',
         ]
         TemplateContext.objects.filter(code__in=templates).delete()
         EmailTemplate.objects.filter(code__in=templates).delete()

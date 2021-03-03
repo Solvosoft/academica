@@ -63,7 +63,6 @@
 								<th class="column-title">Para matricular</th>
 								<th class="column-title">Matriculado</th>
 								<th class="column-title">Factura Generada</th>
-								<th class="column-title no-link last"><span class="nobr">Acciones</span>
 								</th>
 								<th class="bulk-actions" colspan="7">
 									<a class="antoo" style="color:#fff; font-weight:500;">Acciones masivas ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
@@ -78,12 +77,11 @@
 										</td>
 										<td class="">{{enroll.student}}</td>
 										<td class="">{{enroll.enroll_date}}</td>
-										<td class="">{% if enroll.enroll_activate%}Si{%else%}No{%endif%}</td>
-										<td class="">{% if enroll.enroll_finished%}Si{%else%}No{%endif%}</td>
-										<td class="">{% if enroll.bill_created %}Si{%else%}No{%endif%}</td>
-										<td class="last"><a href="#">Matricular</a></td>
+										<td class="">{% if enroll.enroll_activate%}Si{% else %}No{% endif %}</td>
+										<td class="">{% if enroll.enroll_finished%}Si{% else %}No{% endif %}</td>
+										<td class="">{% if enroll.bill_created %}Si{% else %}No{% endif %}</td>
 									</tr>
-								{%endfor%}
+								{% endfor %}
 							</tbody>
 						</table>	
 					</div>
@@ -91,6 +89,7 @@
 						<a class="btn btn-dark" href="{% url 'groups_enroll' %}">Atras</a>
 						<a class="btn btn-success" id="assigncouponsbutton" title="Asignar cupones" data-toggle="modal" data-target="#assigncouponsmodal" style="display:none;">Asignar cupones</a>
 						<input class="btn btn-primary" type="submit" name="action" value="Matricular">
+						<input class="btn btn-danger" type="submit" name="action" value="Rechazar prematricula">
 					</div>
 				</form>
 			</div>

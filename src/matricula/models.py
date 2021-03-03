@@ -204,6 +204,8 @@ class Enroll(models.Model):
         default=False, verbose_name=_("Is enroll finished?"))
     enroll_activate = models.BooleanField(
         default=False, verbose_name=_("Is active for enroll?"))
+    rejected = models.BooleanField(
+        default=False, verbose_name=_("Enroll rejected?"))
     group = models.ForeignKey(
         Group, verbose_name=_("Group"), on_delete=models.CASCADE)
     student = models.ForeignKey(

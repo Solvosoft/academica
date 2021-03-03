@@ -590,22 +590,41 @@ def pre_enroll_group(request, pk=None):
             if group:
                 form = PreEnrollAddGroupForm(request.POST)
                 if form.is_valid():
-                    enrolls = Enroll.objects.filter(pk__in=form.cleaned_data['students'], group=group)
-                    emails = []
-                    for instance in enrolls:
-                        instance.enroll_finished = True
-                        instance.save()
-                        emails.append(instance.student.user.email)
-                    schema = request.scheme+"://"
-                    send_email_from_template(
-                        'email_enroll_success', [i for i in emails],
-                        {
-                            "url": request.build_absolute_uri(reverse('enrollment')),
-                            "group": group,
-                            'domain': schema+request.get_host(), 
-                        },
-                        enqueued=False, user=None)
-                    messages.success(request, "Estudiantes inscritos con éxito")
+                    action = request.POST.get('action')
+                    if action == "Matricular":
+                        enrolls = Enroll.objects.filter(pk__in=form.cleaned_data['students'], group=group)
+                        emails = []
+                        for instance in enrolls:
+                            instance.enroll_finished = True
+                            instance.save()
+                            emails.append(instance.student.user.email)
+                        schema = request.scheme+"://"
+                        send_email_from_template(
+                            'email_enroll_success', [i for i in emails],
+                            {
+                                "url": request.build_absolute_uri(reverse('enrollment')),
+                                "group": group,
+                                'domain': schema+request.get_host(), 
+                            },
+                            enqueued=False, user=None)
+                        messages.success(request, "Estudiantes inscritos con éxito")
+                    elif action == "Rechazar prematricula":
+                        enrolls = Enroll.objects.filter(pk__in=form.cleaned_data['students'], group=group)
+                        emails = []
+                        for instance in enrolls:
+                            instance.rejected = True
+                            instance.save()
+                            emails.append(instance.student.user.email)
+                        schema = request.scheme+"://"
+                        send_email_from_template(
+                            'email_enroll_rejected', [i for i in emails],
+                            {
+                                "url": request.build_absolute_uri(reverse('enrollment')),
+                                "group": group,
+                                'domain': schema+request.get_host(), 
+                            },
+                            enqueued=False, user=None)
+                        messages.success(request, "Estudiantes notificados con éxito")
                     return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
             messages.error(request, "Error al realizar la acción")
             return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
@@ -613,7 +632,8 @@ def pre_enroll_group(request, pk=None):
             if request.method == "GET":
                 instance = Group.objects.get(pk=pk)
                 context['object'] = instance
-                context['pre_enroll_list'] = Enroll.objects.filter(group=instance, enroll_finished=False)
+                context['pre_enroll_list'] = Enroll.objects.filter(
+                    group=instance, enroll_finished=False, rejected=False)
                 return render(
                     request, 'groups/pre_enroll_group_list.html', context)
     return HttpResponseRedirect(reverse('periods'))

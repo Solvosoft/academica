@@ -56,3 +56,7 @@ def load_email_temp_academica():
         'reset_password_academy', 'Correo de configuración de contraseña',
         [('domain'), ('user'), "domain"], 'set_password_academy.html',
         as_template=True)
+
+    update_template_context(
+        'email_enroll_rejected', 'Lo sentimos, Tu MATRÍCULA en el curso NO ha sido aceptada - UPo',
+        [('group'), ('url'),("domain")], 'email_enroll_rejected.html', as_template=True)
