@@ -1,8 +1,10 @@
+from django.utils.timezone import now
 from djgentelella.chartjs import LineChart, VerticalBarChart
 from djgentelella.groute import register_lookups
 from django.db.models import Count, Q
-from matricula.models import Enroll, Group, Period
+from matricula.models import Enroll, Group
 from django.utils.translation import gettext as _
+from matricula.views.utils import get_active_period
 
 
 default_colors = ["229, 158, 64", "240, 180, 150", "0, 168, 150", "207, 130, 182", "2, 128, 144", "1, 148, 147",
@@ -23,7 +25,7 @@ class BaseChart:
         return color
 
     def get_labels(self):
-        return [i.name for i in Period.objects.all().order_by('-id')[:10]]
+        return [i.name for i in get_active_period()]
 
     def get_datasets(self):
         self.index = 0
@@ -87,7 +89,8 @@ class PagoFacturasMes(BaseChart, LineChart):
         return {'xAxes': [{'stacked': True, }], 'yAxes': [{"beginAtZero":True, 'stacked': True}]}
 
     def get_labels(self):
-        return [i.name for i in Group.objects.all().order_by('-id')[:10]]
+        periods = get_active_period()
+        return [i.name for i in Group.objects.filter(period__in=periods).order_by('-id')]
 
     def get_datasets(self):
         self.index = 6
