@@ -65,7 +65,7 @@ class VencimientosMes(BaseChart, VerticalBarChart):
         ]
 
     def get_scales(self):
-        return {'xAxes': [{'stacked': True, }], 'yAxes': [{'stacked': True},{"beginAtZero":True}]}
+        return {'xAxes': [{'stacked': True, }], 'yAxes': [{"beginAtZero":True, 'stacked': True}]}
 
     def extact_data(self):
         filtres = {'m%s'%m: Count('pk', filter=Q(period__name=m)) for m in self.get_labels()}
@@ -84,7 +84,7 @@ class PagoFacturasMes(BaseChart, LineChart):
                 }
 
     def get_scales(self):
-        return {'yAxes': [{"ticks":{"beginAtZero":True}}]}
+        return {'xAxes': [{'stacked': True, }], 'yAxes': [{"beginAtZero":True, 'stacked': True}]}
 
     def get_labels(self):
         return [i.name for i in Group.objects.all().order_by('-id')[:10]]
