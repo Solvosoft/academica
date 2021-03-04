@@ -60,3 +60,11 @@ def load_email_temp_academica():
     update_template_context(
         'email_enroll_rejected', 'Lo sentimos, Tu MATRÍCULA en el curso NO ha sido aceptada - UPo',
         [('group'), ('url'),("domain")], 'email_enroll_rejected.html', as_template=True)
+
+    update_template_context("coupon_code_notification",  "¡Felicidades! Has recibido un cupón de descuento para tu curso - UPO",
+                            [('coupon'),  ("domain")], 'coupons/coupon_code_notification.html',
+                            as_template=True)
+
+    update_template_context("coupon_code_notification_updated",  "¡Felicidades de nuevo! Tu cupón de descuento ha sido actualizado - UPO",
+                            [('coupon'),  ("domain")], 'coupons/coupon_code_notification_update.html',
+                            as_template=True)
