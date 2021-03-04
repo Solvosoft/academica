@@ -32,7 +32,7 @@ class Command(BaseCommand):
 
         email_template = EmailTemplate.objects.get(code="coupon_code_notification")
         email_template.message = file.read()
-        email_template.subject = "¡Felicidades! Has recibido un cupón de descuento para tu curso - UPo"
+        email_template.subject = "¡Felicidades! Has recibido un cupón de descuento para tu curso - UPO"
         email_template.save()
         file.close()
 
@@ -43,12 +43,12 @@ class Command(BaseCommand):
         template = email_template_update.first()
         if template:
             template.message = file_update.read()
-            template.subject = "¡Felicidades de nuevo! Tu cupón de descuento ha sido actualizado - UPo"
+            template.subject = "¡Felicidades de nuevo! Tu cupón de descuento ha sido actualizado - UPO"
             template.save()
         else:
             email_template_update = EmailTemplate(
                 code="coupon_code_notification_updated",
-                subject="¡Felicidades de nuevo! Tu cupón de descuento ha sido actualizado - UPo",
+                subject="¡Felicidades de nuevo! Tu cupón de descuento ha sido actualizado - UPO",
                 message=file_update.read()
             )
             email_template_update.save()
