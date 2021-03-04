@@ -22,9 +22,7 @@ restart the server
 
     sudo systemctrl postgresql restart 
 
-Install pgadmin III
 
-    sudo apt install pgadmin3
 
 Clone the repository
 
@@ -38,6 +36,7 @@ Install django code
  Create the database
  
      python manage.py migrate
+     python manage.py createcachetable
      
  Create a superuser 
  
@@ -54,3 +53,10 @@ Install django code
 o también ver https://github.com/mailhog/MailHog
  
  
+
+# Create Rabbitmq 
+
+    rabbitmqctl add_user upo upopass
+    rabbitmqctl add_vhost upovhost
+    rabbitmqctl set_user_tags upo upotag
+    rabbitmqctl set_permissions -p upovhost upo ".*" ".*" ".*"
