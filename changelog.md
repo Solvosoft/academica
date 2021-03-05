@@ -7,6 +7,10 @@
 
     `python manage.py update_academy_temp`
 
+- Translations and grammar
+
+    `python manage.py compilemessages -l es` 
+
 -------------------
 
 02/03/2021
