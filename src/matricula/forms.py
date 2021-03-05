@@ -93,6 +93,8 @@ class StudentCreateForm(GTForm, forms.ModelForm):
 
 class UserEditForm(GTForm, forms.ModelForm):
 
+    username = None;
+ 
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email', ]
@@ -101,6 +103,19 @@ class UserEditForm(GTForm, forms.ModelForm):
             'first_name': djgentelella.TextInput,
             'email': djgentelella.EmailMaskInput,
         }
+
+    def __init__(self, *args, **kwargs):
+        super(UserEditForm, self).__init__(*args, **kwargs)
+        if 'initial' in kwargs:
+            if 'username' in kwargs['initial']:
+                self.username = kwargs['initial']['username']
+
+    def clean_email(self):
+        data = self.cleaned_data['email']
+        username = self.username
+        if User.objects.filter(email=data).exclude(username=username).exists() and self.username:
+            raise forms.ValidationError(_("This email already used"))
+        return data
 
 
 class UserCreateForm(GTForm, forms.ModelForm):
@@ -510,7 +525,8 @@ class StudentAdminCreateForm(GTForm, forms.ModelForm):
 
     def clean_email(self):
         data = self.cleaned_data['email']
-        if User.objects.filter(email=data).exists():
+        username = self.cleaned_data['username']
+        if User.objects.filter(email=data).exclude(username=username).exists():
             raise forms.ValidationError(_("This email already used"))
         return data
 

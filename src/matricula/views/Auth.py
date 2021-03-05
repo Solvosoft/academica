@@ -268,7 +268,7 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
                 student.save()
             else:
                 errors = False
-        form = UserEditForm(request.POST)
+        form = UserEditForm(request.POST, initial={"username":request.user.username})
         user = request.user
         if form.is_valid():
             user.first_name = form.cleaned_data['first_name']
@@ -279,6 +279,8 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
             errors = True
         if errors:
             messages.error(request, "We have some validation errors")
+        else:
+            messages.success(request, "Profile updated successfully")
         return super(StudentEdit, self).get(request, *args, **kwargs)
 
     def get_object(self):
