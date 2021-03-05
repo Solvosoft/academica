@@ -1118,7 +1118,7 @@ class PageList(ListView):
         pages = []
         for page in self.get_queryset():
             page.menu = DJMenuItem.objects.filter(
-                url_name="/pages/" + page.slug).first()
+                url_name=reverse('pages_view', kwargs={'slug': page.slug})).first()
             pages.append(page)
         context['object_list'] = pages
         return context
@@ -1143,7 +1143,7 @@ def create_page(request):
                 menu = DJMenuItem(
                     title=page.title,
                     category='main',
-                    url_name='/pages/' + page.slug,
+                    url_name=reverse('pages_view', kwargs={'slug': page.slug}),
                     is_reversed=False,
                     reversed_args='',
                     reversed_kwargs='',
@@ -1174,7 +1174,7 @@ def create_menupage(request, pk=None):
                 menu = DJMenuItem(
                     title=page.title,
                     category='main',
-                    url_name='/pages/' + page.slug,
+                    url_name=reverse('pages_view', kwargs={'slug': page.slug}),
                     is_reversed=False,
                     reversed_args='',
                     reversed_kwargs='',
@@ -1221,7 +1221,7 @@ def edit_page(request, pk=None):
 @method_decorator(permission_required('matricula.delete_page'), name='dispatch')
 class PageDelete(DeleteView):
     model = Page
-    success_url = "/matricula/enrrolment/pages"
+    success_url = '/enrrolment/pages/'
     success_message = "Página eliminada con éxito"
 
     def dispatch(self, *args, **kwargs):
@@ -1233,7 +1233,7 @@ class PageDelete(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         page = self.get_object()
-        DJMenuItem.objects.filter(url_name="/pages/"+page.slug).all().delete()
+        DJMenuItem.objects.filter(url_name="/enrrolment/pages/"+page.slug+"/").delete()
         messages.success(self.request, self.success_message)
         return super(PageDelete, self).delete(request, *args, **kwargs)
 
@@ -1241,7 +1241,7 @@ class PageDelete(DeleteView):
 @method_decorator(permission_required('matricula.delete_page'), name='dispatch')
 class MenuPageDelete(DeleteView):
     model = DJMenuItem
-    success_url = "/matricula/enrrolment/pages"
+    success_url = "/enrrolment/pages/"
     success_message = "Menú eliminado con éxito"
 
     def dispatch(self, *args, **kwargs):
