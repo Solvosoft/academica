@@ -1,6 +1,6 @@
-# Gestor de membresías de Código Sur
+# Gestor de cursos de la UPo
 
-Este proyecto ayuda a gestionar membresías de diferentes organizaciones para códigosur
+Este proyecto ayuda a gestionar cursos de la Universidad Popular.
 
 
 # Installation 
@@ -26,11 +26,11 @@ restart the server
 
 Clone the repository
 
-    git clone git@gitlab.com:solvosoft/membresias.git
+    git clone git@gitlab.com:solvosoft/upo.git
     
 Install django code 
 
-     virtualenv -p python3 ~/entornos/membresias
+     virtualenv -p python3 ~/entornos/upo
      pip install -r requirements.txt
      
  Create the database
