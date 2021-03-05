@@ -125,7 +125,7 @@ class StudentEditForm(GTForm, forms.ModelForm):
         model = Student
         fields = ['phone_number', 'organization', 'country']
         widgets = {
-            'phone_number': djgentelella.PhoneNumberMaskInput,
+            'phone_number': djgentelella.TextInput,
             'organization': djgentelella.TextInput,
             'country': djgentelella.Select,
         }
