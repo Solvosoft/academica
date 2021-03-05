@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-03 12:50-0600\n"
+"POT-Creation-Date: 2021-03-05 16:40-0600\n"
 "PO-Revision-Date: 2020-01-09 08:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -40,17 +40,17 @@ msgstr "Reprobados"
 msgid "Countries"
 msgstr "Países"
 
-#: src/membership_core/gtcharts.py:54
+#: src/membership_core/gtcharts.py:56
 #: src/membership_core/templates/dashboard.html:56
 #: src/membership_core/templates/gentelella/app/sidebar.html:36
 msgid "Courses"
 msgstr "Cursos"
 
-#: src/membership_core/gtcharts.py:59
+#: src/membership_core/gtcharts.py:61
 msgid "Number of courses by period"
 msgstr "Número de cursos por periodos"
 
-#: src/membership_core/gtcharts.py:83
+#: src/membership_core/gtcharts.py:85
 msgid "Courses by period"
 msgstr "Cursos por periodo"
 
@@ -232,10 +232,28 @@ msgstr "Iniciar sesión"
 msgid "Lost your password?"
 msgstr "¿Perdió su contraseña?"
 
-#: src/membresias_codigosur/settings.py:142
+#: src/membership_core/templates/gentelella/registration/password_reset_email.html:37
+msgid "Reseting password at UPo"
+msgstr "Contraseña restablecida en UPo"
+
+#: src/membership_core/templates/gentelella/registration/password_reset_email.html:40
+msgid "Use the follow link to reset the password in the platform"
+msgstr "Use el siguiente enlace para reiniciar la contraseña en la plataforma"
+
+#: src/membership_core/templates/gentelella/registration/password_reset_email.html:42
+msgid "Here"
+msgstr "Aquí"
+
+#: src/membership_core/templates/gentelella/registration/password_reset_email.html:45
+msgid ""
+"This email was send because someone try to reset your password, if you "
+"didn't request a reset, please delete this email and do not more actions."
+msgstr "Este correo fue enviado por que alguien, posiblemente usted trató de reiniciar la contraseña. Si no ha hecho la petición de reinicio, por favor elimine este correo y no realice ninguna otra acción."
+
+#: src/upo/settings.py:130
 msgid "Spanish"
 msgstr "Español"
 
-#: src/membresias_codigosur/settings.py:143
+#: src/upo/settings.py:131
 msgid "English"
 msgstr "Ingles"
