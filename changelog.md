@@ -5,7 +5,7 @@
 
 - Update email templates
 
-    `python manage.py update_academy_temp`
+    `python manage.py update_academy_temp
 
 - Translations and grammar
 
