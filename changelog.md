@@ -1,5 +1,14 @@
 # Change log file
 
+05/03/2021
+### Fixed 
+
+- Update email templates
+
+    `python manage.py update_academy_temp`
+
+-------------------
+
 02/03/2021
 
 ### Fixed
