@@ -278,9 +278,9 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
         else:
             errors = True
         if errors:
-            messages.error(request, "We have some validation errors")
+            messages.error(request, _("We have some validation errors"))
         else:
-            messages.success(request, "Profile updated successfully")
+            messages.success(request, _("Profile updated successfully"))
         return super(StudentEdit, self).get(request, *args, **kwargs)
 
     def get_object(self):

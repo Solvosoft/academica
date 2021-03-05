@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-02 18:31-0600\n"
+"POT-Creation-Date: 2021-03-05 14:45-0600\n"
 "PO-Revision-Date: 2020-11-27 20:41-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -114,64 +114,65 @@ msgstr "Contraseña"
 msgid "User name exist "
 msgstr "El nombre de usuaria existe "
 
-#: src/matricula/forms.py:90 src/matricula/forms.py:514
+#: src/matricula/forms.py:90 src/matricula/forms.py:117
+#: src/matricula/forms.py:530
 msgid "This email already used"
 msgstr "Este correo ya esta registrado"
 
-#: src/matricula/forms.py:118
+#: src/matricula/forms.py:133
 msgid "username"
 msgstr "Nombre de usuaria"
 
-#: src/matricula/forms.py:141 src/matricula/forms.py:162
+#: src/matricula/forms.py:156 src/matricula/forms.py:177
 #: src/matricula/models.py:239 src/matricula/models.py:278
 msgid "Page"
 msgstr "Página"
 
-#: src/matricula/forms.py:155 src/matricula/forms.py:249
-#: src/matricula/forms.py:279
+#: src/matricula/forms.py:170 src/matricula/forms.py:264
+#: src/matricula/forms.py:294
 #: src/matricula/templates/menuitems/menuitem_list.html:83
 msgid "Base"
 msgstr "Página base"
 
-#: src/matricula/forms.py:212 src/matricula/forms.py:354
-#: src/matricula/forms.py:393 src/matricula/models.py:143
+#: src/matricula/forms.py:227 src/matricula/forms.py:369
+#: src/matricula/forms.py:408 src/matricula/models.py:143
 msgid "Schedule"
 msgstr "Horario"
 
-#: src/matricula/forms.py:273
+#: src/matricula/forms.py:288
 msgid "Title"
 msgstr "Título"
 
-#: src/matricula/forms.py:274
+#: src/matricula/forms.py:289
 msgid "Url name"
 msgstr "Nombre de la url"
 
-#: src/matricula/forms.py:275 src/matricula/models.py:93
+#: src/matricula/forms.py:290 src/matricula/models.py:93
 #: src/matricula/models.py:100
 msgid "Category"
 msgstr "Categoría"
 
-#: src/matricula/forms.py:276
+#: src/matricula/forms.py:291
 msgid "Is reversed?"
 msgstr "¿Es reversible?"
 
-#: src/matricula/forms.py:277
+#: src/matricula/forms.py:292
 msgid "Reversed kwargs"
 msgstr "Diccionario de parámetros"
 
-#: src/matricula/forms.py:278
+#: src/matricula/forms.py:293
 msgid "Reversed args"
 msgstr "Lista de parámetros"
 
-#: src/matricula/forms.py:280
+#: src/matricula/forms.py:295
 msgid "Is a widget?"
 msgstr "¿Es un widget?"
 
-#: src/matricula/forms.py:281
+#: src/matricula/forms.py:296
 msgid "Icon"
 msgstr "Icono"
 
-#: src/matricula/forms.py:282
+#: src/matricula/forms.py:297
 msgid "Only icon?"
 msgstr "¿Solo ícono?"
 
@@ -702,7 +703,7 @@ msgstr "¿Olvidó su contraseña?"
 msgid "Thank you, We will send you an email soon"
 msgstr "Gracias, pronto le enviaremos un correo de confirmación"
 
-#: src/matricula/views/Auth.py:63 src/matricula/views/Auth.py:290
+#: src/matricula/views/Auth.py:63 src/matricula/views/Auth.py:292
 msgid "Your user have not permission for see this page"
 msgstr "Su usuaria no tiene permiso para ver esta página"
 
@@ -729,6 +730,14 @@ msgstr "Usted recibirá pronto un correo, revise su bandeja de entrada"
 #: src/matricula/views/Auth.py:214
 msgid "User not found"
 msgstr "No existe usuaria"
+
+#: src/matricula/views/Auth.py:281
+msgid "We have some validation errors"
+msgstr "El formulario contiene errores de validación"
+
+#: src/matricula/views/Auth.py:283
+msgid "Profile updated successfully"
+msgstr "Perfil actualizado con éxito"
 
 #: src/matricula/views/Enrollments.py:47
 msgid "Pre-enrollment success"
