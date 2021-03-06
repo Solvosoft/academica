@@ -1,6 +1,6 @@
 {% extends 'gentelella/base.html'%}
 {% load static %}
-{%block content%}
+{% block content %}
 	<h1 class="text-center">Cursos</h1>
 	<div class="col-md-10 col-md-offset-1">
 		<div class="x_panel">
@@ -22,8 +22,9 @@
 			</form>
 		</div>
 	</div>
-{%endblock%}
-{%block js%}
+	<div class="clearfix"></div>
+{% endblock %}
+{% block js %}
 	<script>
 		$(document).ready(function(){
 			$('#id_is_paid').change(function () {
@@ -39,4 +40,4 @@
 			$('#id_period').parent().append(bntItem);
 		});
 	</script>
-{%endblock%}
+{% endblock %}
