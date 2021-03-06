@@ -1221,7 +1221,7 @@ def edit_page(request, pk=None):
 @method_decorator(permission_required('matricula.delete_page'), name='dispatch')
 class PageDelete(DeleteView):
     model = Page
-    success_url = '/enrrolment/pages/'
+    success_url = '/enrrolment/pages'
     success_message = "Página eliminada con éxito"
 
     def dispatch(self, *args, **kwargs):
@@ -1241,7 +1241,7 @@ class PageDelete(DeleteView):
 @method_decorator(permission_required('matricula.delete_page'), name='dispatch')
 class MenuPageDelete(DeleteView):
     model = DJMenuItem
-    success_url = "/enrrolment/pages/"
+    success_url = "/enrrolment/pages"
     success_message = "Menú eliminado con éxito"
 
     def dispatch(self, *args, **kwargs):
