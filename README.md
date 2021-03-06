@@ -41,6 +41,18 @@ Install django code
  Create a superuser 
  
      python manage.py createsuperuser 
+
+Compile translations
+
+    python manage.py compilemessages -l es
+
+Update email templates
+
+    python manage.py update_academy_temp
+
+Create permission groups
+
+    python manage.py permission_groups
  
  Run the development server 
  
