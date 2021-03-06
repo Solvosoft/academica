@@ -130,7 +130,7 @@ msgstr "Elementos del menú"
 
 #: src/membership_core/templates/gentelella/app/sidebar.html:48
 msgid "Periods"
-msgstr "Peridos"
+msgstr "Periodos"
 
 #: src/membership_core/templates/gentelella/app/sidebar.html:51
 msgid "Pages"
