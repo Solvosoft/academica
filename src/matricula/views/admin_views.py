@@ -155,7 +155,7 @@ def create_category(request):
 @method_decorator(permission_required('matricula.delete_category'), name='dispatch')
 class CategoryDelete(DeleteView):
     model = Category
-    success_url = "/matricula/enrrolment/categories/"
+    success_url = "/enrrolment/categories/"
     success_message = "Categoría eliminada con éxito"
 
     def dispatch(self, *args, **kwargs):
@@ -263,7 +263,7 @@ def create_course(request):
 @method_decorator(permission_required('matricula.delete_course'), name='dispatch')
 class CourseDelete(DeleteView):
     model = Course
-    success_url = "/matricula/enrrolment/courses/"
+    success_url = "/enrrolment/courses/"
     success_message = "Curso eliminada con éxito"
 
     def dispatch(self, *args, **kwargs):
@@ -385,7 +385,7 @@ def create_menuitem(request):
 @method_decorator(permission_required('djgentelella.delete_menuitem'), name='dispatch')
 class MenuItemDelete(DeleteView):
     model = DJMenuItem
-    success_url = "/matricula/enrrolment/menuitems"
+    success_url = "/enrrolment/menuitems"
     success_message = "Menú eliminado con éxito"
 
     def dispatch(self, *args, **kwargs):
@@ -475,7 +475,7 @@ def create_period(request):
 @method_decorator(permission_required('matricula.delete_period'), name='dispatch')
 class PeriodDelete(DeleteView):
     model = Period
-    success_url = "/matricula/enrrolment/periods"
+    success_url = "/enrrolment/periods"
     success_message = "Periodo eliminado con éxito"
 
     def dispatch(self, *args, **kwargs):
@@ -674,7 +674,7 @@ def create_group(request):
 @method_decorator(permission_required('matricula.delete_group'), name='dispatch')
 class GroupDelete(DeleteView):
     model = Group
-    success_url = "/matricula/enrrolment/groups"
+    success_url = "/enrrolment/groups"
     success_message = "Grupo eliminado con éxito"
 
     def dispatch(self, *args, **kwargs):
@@ -926,7 +926,7 @@ def edit_enroll(request, pk=None):
 @method_decorator(permission_required('matricula.delete_enroll'), name='dispatch')
 class EnrollDelete(DeleteView):
     model = Enroll
-    success_url = "/matricula/enrrolment/enrolls"
+    success_url = "/enrrolment/enrolls"
     success_message = "Matrícula eliminada con éxito"
 
     def dispatch(self, *args, **kwargs):
@@ -1050,7 +1050,7 @@ def edit_student(request, pk=None):
 @method_decorator(permission_required('matricula.delete_student'), name='dispatch')
 class StudentDelete(DeleteView):
     model = Student
-    success_url = "/matricula/enrrolment/students"
+    success_url = "/enrrolment/students"
     success_message = "Estudiante eliminada con éxito"
 
     def dispatch(self, *args, **kwargs):
