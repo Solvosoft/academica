@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-05 14:45-0600\n"
+"POT-Creation-Date: 2021-03-05 18:32-0600\n"
 "PO-Revision-Date: 2020-11-27 20:41-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -419,13 +419,13 @@ msgstr "Correo electrónico"
 msgid "%(certificate_date)s"
 msgstr ""
 
-#: src/matricula/templates/course.html:82
+#: src/matricula/templates/course.html:81
 #: src/matricula/templates/course_detail.html:66
 #: src/matricula/templates/groups.html:28
 msgid "Enroll me"
 msgstr "Matricularme"
 
-#: src/matricula/templates/course.html:82
+#: src/matricula/templates/course.html:81
 #: src/matricula/templates/course_detail.html:66
 #: src/matricula/templates/groups.html:28
 msgid "Pre-enroll me"
@@ -739,22 +739,22 @@ msgstr "El formulario contiene errores de validación"
 msgid "Profile updated successfully"
 msgstr "Perfil actualizado con éxito"
 
-#: src/matricula/views/Enrollments.py:47
+#: src/matricula/views/Enrollments.py:49
 msgid "Pre-enrollment success"
-msgstr "Pre-matríciulado satisfactoriamente"
+msgstr "Pre-matriciulado satisfactoriamente"
 
-#: src/matricula/views/Enrollments.py:65
+#: src/matricula/views/Enrollments.py:67
 msgid "Enrollment success"
-msgstr "Matrículado satisfactoriamente"
+msgstr "Matriculado satisfactoriamente"
 
-#: src/matricula/views/Enrollments.py:70 src/matricula/views/Enrollments.py:121
+#: src/matricula/views/Enrollments.py:72 src/matricula/views/Enrollments.py:139
 msgid "We have some problems with your enroll, try again"
 msgstr "Tenemos problemas con la matrícula, trate de nuevo"
 
-#: src/matricula/views/Enrollments.py:73
+#: src/matricula/views/Enrollments.py:75
 msgid "You are already pre-enrolled"
 msgstr "Usted ya está pre-matriculado"
 
-#: src/matricula/views/Enrollments.py:75
+#: src/matricula/views/Enrollments.py:77
 msgid "You are already enrolled"
 msgstr "Usted ya está matriculado"
