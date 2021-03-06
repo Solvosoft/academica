@@ -17,14 +17,16 @@
                 </table>
             </div>
         </td>
+    </tr>
+    <tr>
         <td>
-            <h2 style="margin:0; mso-line-height-rule:exactly;">¡Hola {{user.get_full_name}}!</h2>
+            <h2 style="text-align:center;">¡Hola {{user.get_full_name}}!</h2>
             <br>
         </td>
     </tr>
     <tr>
         <td>
-            <p style="text-align: justify;text-justify: inter-word;">
+            <p style="text-align: justify;text-justify: inter-word; max-width:600px; margin: 0 auto;">
                 Este correo electrónico fue enviado porque alguien creo una usuaria con su correo electrónico en
                 <a href="{{domain}}" target="_blank"> {{domain}} </a>  <br><br>
                 Su nombre de usuaria es: {{user.username}}<br><br>
@@ -39,6 +41,8 @@
                 ¡Abrazos solidarios de todo el equipo!
             </div>
         </td>
+    </tr>
+    <tr>
         <td>
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tbody>
