@@ -150,7 +150,7 @@ class Group(models.Model):
     is_paid = models.BooleanField(verbose_name="Es pagado * ", default=True)
     currency = models.ForeignKey(
         SystemCurrency, verbose_name=_("Currency")+" * ", on_delete=models.CASCADE,
-        default=4)
+        blank=True, null=True)
     cost = models.DecimalField(
         max_digits=10, decimal_places=2, verbose_name=_("Course cost")+ " * ")
     maximum = models.SmallIntegerField(

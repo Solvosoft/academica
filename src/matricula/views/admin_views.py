@@ -644,6 +644,8 @@ def create_group(request):
     context = {}
     if request.method == 'POST':
         form = GroupCreateForm(request.POST)
+        if request.POST.get("is_paid") == 'on':
+            form.fields['currency'].required = True
         context['form'] = form
         if form.is_valid():
             group = Group(
@@ -695,6 +697,8 @@ def edit_group(request, pk=None):
         instance = Group.objects.get(pk=pk)
         if request.method == "POST":
             form = GroupEditForm(request.POST, instance=instance)
+            if request.POST.get("is_paid") == 'on':
+                form.fields['currency'].required = True
             if form.is_valid():
                 messages.success(request, "Grupo guardado con éxito")
                 form.save()

@@ -30,8 +30,11 @@
 		$(document).ready(function(){
 			$('#id_is_paid').change(function () {
 				if (!$(this).prop("checked")) {
-					$("#id_cost").val(0)	
+					$("#id_cost").val(0)
+					$('#id_currency').prop('required',false);	
 					return;
+				}else{
+					$('#id_currency').prop('required',true);	
 				}
 			});
 		});
