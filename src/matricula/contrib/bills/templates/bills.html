@@ -38,11 +38,11 @@
 					</div>
 					<div class="clearfix"></div>
 				</div>
-			{%empty%}
+			{% empty %}
 				<div class="alert alert-info text-center" role="alert">
 					{% trans "You don't have Unpaid bills" %}
 				</div>
-			{%endfor%}
+			{% endfor %}
 			<div class="clearfix"></div>
 		</div>
 
@@ -54,11 +54,11 @@
 						{{bill.description|safe}}
 					</div>
 				</div>
-			{%empty%}
+			{% empty %}
 				<div class="alert alert-info text-center" role="alert">
 					{% trans "You don't have paid bills" %}
 				</div>
-			{%endfor%}
+			{% endfor %}
 		</div>
-	{%endif%}
-{%endblock%}
+	{% endif %}
+{% endblock %}

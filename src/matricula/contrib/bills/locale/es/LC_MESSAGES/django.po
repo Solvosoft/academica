@@ -83,7 +83,7 @@ msgstr "Pagos realizados"
 
 #: src/matricula/contrib/bills/templates/bills.html:59
 msgid "You don't have paid bills"
-msgstr "No tiene pagos pendientes"
+msgstr "No ha realizado ningún pago"
 
 #: src/matricula/contrib/bills/templates/bills/bill_create.html:10
 #: src/matricula/contrib/bills/templates/bills/bill_list.html:30
