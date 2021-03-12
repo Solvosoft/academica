@@ -438,7 +438,7 @@ msgstr "Pre-matricularme"
 msgid ""
 "if your email service block links  then copy and paste this url in a new tab"
 msgstr ""
-"si su servicio de correo bloquea enlaces entonces copie y pegue esta url en "
+"Si su servicio de correo bloquea enlaces entonces copie y pegue esta url en "
 "una nueva pestaña"
 
 #: src/matricula/templates/email_recovery.html:192
