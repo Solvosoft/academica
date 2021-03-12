@@ -1,3 +1,6 @@
 .inline-first > p {
     display: inline-block;
 }
+.login_wrapper{
+    max-width: 400px !important;
+}
