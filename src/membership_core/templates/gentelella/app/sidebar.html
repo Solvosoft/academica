@@ -109,19 +109,8 @@
         </div>
     </div>
     <div class="sidebar-footer hidden-print hidden-small">
-        {% if request.user.is_authenticated %}
-            {% if request.user.student or request.user.professor %}
-                <a title="" href="{% url 'profile' %}">
-                    <span class="fa fa-user" aria-hidden="true"></span>
-                </a>
-            {% endif%}
-                <a id="fsb_50" title="" href="{% url 'logout' %}">
-                    <span class="fa fa-power-off" aria-hidden="true"></span>
-                </a>
-        {% else %}
-            <a id="fsb_50" title="">
-                <span class="fa" aria-hidden="true"></span>
-            </a>
-        {% endif %}
+        <a style="visibility:hidden" id="fsb_50" title="">
+            <span class="fa" aria-hidden="true"></span>
+        </a>
     </div>
 </div>
