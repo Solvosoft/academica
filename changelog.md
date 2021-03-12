@@ -1,5 +1,17 @@
 # Change log file
 
+12/03/2021
+
+### Fixed 
+
+- Update translations in emails
+
+    `python manage.py compilemessages -l es` 
+
+- Update email templates
+
+    `python manage.py update_academy_temp` 
+
 05/03/2021
 ### Fixed 
 
