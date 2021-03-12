@@ -33,10 +33,10 @@
     <script>
         $(document).ready(function(){
             $("#id_password").after("<input type='checkbox' onclick='myFunction()'> Mostrar contraseña<br/>");
-            //Button add organization
+            //Button add User
             btnNewOrg = "<div class='text-right' style='margin-top:5px'>"+
                 "<a target='_blank' id='show_organization' style='display:none; text-align: center;'><strong>Ver información de la organización</strong></a>"+
-                "<a title='Nueva organización' href='/enrollment/users/create'" +
+                "<a title='Nueva usuaria' href='/enrollment/users/create'" +
                 " style='font-size:2em' target='_blank'><i class='fa fa-plus-square'></i></a></div>";
             $('#id_user').parent().append(btnNewOrg);
         });
