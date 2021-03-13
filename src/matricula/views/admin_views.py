@@ -896,6 +896,18 @@ def create_enroll(request):
         form = EnrollCreateForm(request.POST)
         context['form'] = form
         if form.is_valid():
+            schema = request.scheme+"://"
+            template = 'email_preenroll_success'
+            if form.cleaned_data['enroll_finished']:
+                template = 'email_enroll_success'
+            send_email_from_template(
+                template, [request.user.email],
+                {
+                    "url": request.build_absolute_uri(reverse('enrollment')),
+                    "group": form.cleaned_data['group'],
+                    'domain': schema+request.get_host(),
+                },
+                enqueued=True, user=None)
             form.save()
             messages.success(request, "Matrícula guardada con éxito")
             return HttpResponseRedirect(reverse('enrolls'))
