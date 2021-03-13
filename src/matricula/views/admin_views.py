@@ -786,7 +786,7 @@ def list_students_group(request, pk=None):
                 context['show_buttons_certificates'] = show_buttons_certificates
                 return render(
                     request, 'groups/group_students_list.html', context)
-    return HttpResponseRedirect(reverse('periods'))
+        return HttpResponseRedirect(reverse('groups'))
 
 
 @permission_required('matricula.can_open_group')
