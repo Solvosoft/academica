@@ -923,8 +923,19 @@ def edit_enroll(request, pk=None):
     if pk is not None:
         if request.method == "POST":
             instance = Enroll.objects.get(pk=pk)
+            enroll_finished = instance.enroll_finished
             form = EnrollCreateForm(request.POST, instance=instance)
             if form.is_valid():
+                if not enroll_finished and form.cleaned_data['enroll_finished']:
+                    schema = request.scheme+"://"
+                    send_email_from_template(
+                        'email_enroll_success', [request.user.email],
+                        {
+                            "url": request.build_absolute_uri(reverse('enrollment')),
+                            "group": form.cleaned_data['group'],
+                            'domain': schema+request.get_host(),
+                        },
+                        enqueued=True, user=None)
                 messages.success(request, "Matrícula guardada con éxito")
                 form.save()
                 return HttpResponseRedirect(reverse('enrolls'))
