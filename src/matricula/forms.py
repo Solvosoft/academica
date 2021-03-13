@@ -531,6 +531,15 @@ class StudentAdminCreateForm(GTForm, forms.ModelForm):
         return data
 
 
+class StudentChangePasswordForm(GTForm, forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ['password']
+        widgets = {
+            'password': djgentelella.PasswordInput
+        }
+
 class PageSearchForm(GTForm, forms.Form):
     slug = forms.CharField(
         label="Nombre", widget=djgentelella.TextInput, required=False)

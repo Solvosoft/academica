@@ -97,6 +97,9 @@
 								<li>
 									<strong>Teléfono: </strong>{{object.phone_number}}
 								</li>
+								<li>
+									<strong>Cambiar contraseña: </strong><a href="{% url 'change_password_student' object.pk%}"><i class="fa fa-lock"></i></a>
+								</li>
 							</ul>
 						</div>
 						<div class="col-md-12">
@@ -105,7 +108,7 @@
 									<strong>País: </strong>{{object.country}}
 								</li>
 								<li>
-									<strong> Recuperar contraseña: </strong><a href="{% url 'recovery_pass_student' object.pk%}"><i class="fa fa-envelope"></i></a>
+									<strong>Recuperar contraseña: </strong><a href="{% url 'recovery_pass_student' object.pk%}"><i class="fa fa-envelope"></i></a>
 								</li>
 							</ul>
 						</div>

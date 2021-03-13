@@ -35,7 +35,8 @@ from matricula.forms import CategoryCreateForm, CategorySearchForm, \
     MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, \
     GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentSearchForm, \
     StudentAdminCreateForm, PageCreateForm, PageSearchForm, MenuItemAddForm, \
-    PreEnrollAddGroupForm, GroupAddForm, GroupEditForm, PermissionForm
+    PreEnrollAddGroupForm, GroupAddForm, GroupEditForm, PermissionForm,\
+    StudentChangePasswordForm
 from matricula.models import Category, Course, Period, Group, \
     Enroll, Student, Page, Professor
 from matricula.views.utils import get_expire_date
@@ -1071,6 +1072,31 @@ def edit_student(request, pk=None):
                 form = StudentAdminCreateForm(initial=inst)
                 return render(
                     request, 'students/student_update.html', {'form': form})
+    return HttpResponseRedirect(reverse('students'))
+
+
+@permission_required('matricula.change_student')
+def edit_password_student(request, pk=None):
+    if pk is not None:
+        if request.method == "POST":
+            instance = User.objects.get(pk=pk)
+            form = StudentChangePasswordForm(request.POST, instance=instance)
+            if form.is_valid():
+                instance.set_password(form.cleaned_data['password'])
+                instance.save()
+                messages.success(request, "Contraseña actualizada con éxito")
+                return HttpResponseRedirect(reverse('students'))
+            else:
+                messages.error(request, "Error al actualizar")
+                return render(
+                    request, 'students/student_change_password.html', {'form': form})
+        else:
+            if request.method == "GET":
+                instance = User.objects.get(pk=pk)
+                inst = instance.__dict__
+                form = StudentChangePasswordForm(initial=inst)
+                return render(
+                    request, 'students/student_change_password.html', {'form': form})
     return HttpResponseRedirect(reverse('students'))
 
 
