@@ -63,6 +63,7 @@
 								<th class="column-title">Para matricular</th>
 								<th class="column-title">Matriculado</th>
 								<th class="column-title">Factura Generada</th>
+								<th class="column-title">Pago realizado</th>
 								</th>
 								<th class="bulk-actions" colspan="7">
 									<a class="antoo" style="color:#fff; font-weight:500;">Acciones masivas ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
@@ -80,6 +81,7 @@
 										<td class="">{% if enroll.enroll_activate%}Sí{% else %}No{% endif %}</td>
 										<td class="">{% if enroll.enroll_finished%}Sí{% else %}No{% endif %}</td>
 										<td class="">{% if enroll.bill_created %}Sí{% else %}No{% endif %}</td>
+										<td class="">{% if enroll.bill.is_paid %}Sí{% else %}No{% endif %}</td>
 									</tr>
 								{% endfor %}
 							</tbody>
