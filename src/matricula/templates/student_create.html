@@ -41,6 +41,7 @@
 		function onAdd(e){
 			input.value=e.detail.data.value
 		}
+		input.value = JSON.parse(input.value)[0].value
 		function onInput( e ){
 			var value = e.detail.value;
 			tagify.settings.whitelist.length = 0; // reset the whitelist
@@ -60,7 +61,6 @@
 				for(var i=0; i<whitelist.total_count; i++){
 					whitelst.push(whitelist.results[i].text)
 				}
-				console.log(whitelst)
 				tagify.settings.whitelist.splice(0, whitelist.total_count, ...whitelst)
 				tagify.loading(false).dropdown.show.call(tagify, value); // render the suggestions dropdown
 			})
