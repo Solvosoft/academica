@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-05 18:32-0600\n"
+"POT-Creation-Date: 2021-03-12 19:44-0600\n"
 "PO-Revision-Date: 2020-11-27 20:41-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -68,8 +68,8 @@ msgid "Student List"
 msgstr "Lista de estudiantes"
 
 #: src/matricula/admins/Group.py:84 src/matricula/admins/Group.py:108
-#: src/matricula/views/admin_views.py:792
-#: src/matricula/views/admin_views.py:817
+#: src/matricula/views/admin_views.py:796
+#: src/matricula/views/admin_views.py:821
 msgid "Group Not Found"
 msgstr "Grupo no encontrado"
 
@@ -425,7 +425,7 @@ msgstr ""
 msgid "Enroll me"
 msgstr "Matricularme"
 
-#: src/matricula/templates/course.html:81
+#: src/matricula/templates/course.html:85
 #: src/matricula/templates/course_detail.html:66
 #: src/matricula/templates/groups.html:28
 msgid "Pre-enroll me"
@@ -739,22 +739,26 @@ msgstr "El formulario contiene errores de validación"
 msgid "Profile updated successfully"
 msgstr "Perfil actualizado con éxito"
 
-#: src/matricula/views/Enrollments.py:49
+#: src/matricula/views/Enrollments.py:50
 msgid "Pre-enrollment success"
 msgstr "Pre-matriciulado satisfactoriamente"
 
-#: src/matricula/views/Enrollments.py:67
+#: src/matricula/views/Enrollments.py:68
 msgid "Enrollment success"
 msgstr "Matriculado satisfactoriamente"
 
-#: src/matricula/views/Enrollments.py:72 src/matricula/views/Enrollments.py:139
+#: src/matricula/views/Enrollments.py:73 src/matricula/views/Enrollments.py:141
 msgid "We have some problems with your enroll, try again"
 msgstr "Tenemos problemas con la matrícula, trate de nuevo"
 
-#: src/matricula/views/Enrollments.py:75
+#: src/matricula/views/Enrollments.py:77
 msgid "You are already pre-enrolled"
 msgstr "Usted ya está pre-matriculado"
 
-#: src/matricula/views/Enrollments.py:77
+#: src/matricula/views/Enrollments.py:79
 msgid "You are already enrolled"
 msgstr "Usted ya está matriculado"
+
+#: src/matricula/views/Enrollments.py:144
+msgid "Enrollment successfully"
+msgstr "Matriculado satisfactoriamente"

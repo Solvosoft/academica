@@ -139,5 +139,5 @@ def finish_enroll(request, pk):
         return { "inner-fragments": {"#group_message": '<div class="alert alert-info" role="alert">' + str(_('We have some problems with your enroll, try again')) + ' </div>'
                                     },
                 }
-    messages.success(request, "Enrrollment successfully")
+    messages.success(request, _("Enrollment successfully"))
     return redirect(reverse('enrollment'))

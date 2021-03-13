@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-05 18:32-0600\n"
+"POT-Creation-Date: 2021-03-12 19:44-0600\n"
 "PO-Revision-Date: 2020-01-09 08:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -105,6 +105,8 @@ msgid "Categories"
 msgstr "Categorías"
 
 #: src/membership_core/templates/gentelella/app/footer.html:5
+#: src/membership_core/templates/gentelella/registration/password_reset_confirm.html:23
+#: src/membership_core/templates/gentelella/registration/password_reset_form.html:33
 msgid "All Rights Reserved."
 msgstr "Todos los derechos reservados"
 
@@ -232,6 +234,18 @@ msgstr "Iniciar sesión"
 msgid "Lost your password?"
 msgstr "¿Perdió su contraseña?"
 
+#: src/membership_core/templates/gentelella/registration/password_reset_confirm.html:14
+msgid "Password change"
+msgstr "Cambiar contraseña"
+
+#: src/membership_core/templates/gentelella/registration/password_reset_confirm.html:19
+msgid "Submit"
+msgstr "Enviar"
+
+#: src/membership_core/templates/gentelella/registration/password_reset_confirm.html:28
+msgid "Password reset failed"
+msgstr "El cambio de contraseña fallo"
+
 #: src/membership_core/templates/gentelella/registration/password_reset_email.html:37
 msgid "Reseting password at UPo"
 msgstr "Contraseña restablecida en UPo"
@@ -252,6 +266,22 @@ msgstr ""
 "Este correo fue enviado por que alguien, posiblemente usted trató de "
 "reiniciar la contraseña. Si no ha hecho la petición de reinicio, por favor "
 "elimine este correo y no realice ninguna otra acción."
+
+#: src/membership_core/templates/gentelella/registration/password_reset_form.html:17
+msgid "Reset password"
+msgstr "Restablecer contraseña"
+
+#: src/membership_core/templates/gentelella/registration/password_reset_form.html:19
+msgid "Please insert the user email registered in platform"
+msgstr "Por favor ingrese el correo de usuario registrado en la plataforma"
+
+#: src/membership_core/templates/gentelella/registration/password_reset_form.html:24
+msgid "We will send you a email to verify you are were you say you are"
+msgstr "Le enviaremos un correo para verificar que usted es quien dice ser"
+
+#: src/membership_core/templates/gentelella/registration/password_reset_form.html:28
+msgid "Send email"
+msgstr "Enviar correo"
 
 #: src/upo/settings.py:130
 msgid "Spanish"
