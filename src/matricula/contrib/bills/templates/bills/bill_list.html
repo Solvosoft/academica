@@ -101,7 +101,7 @@
 									<strong>{% trans 'Transaction id'%}: </strong>{% if object.transaction_id %}{{object.transaction_id}}{% else %}{% trans 'Not available'%}{% endif %}
 								</li>
 								<li>
-									<strong>{% trans 'Is paid?'%}: </strong>{% if object.is_paid %}{% trans 'Yes' %}{% else %}{% trans 'No' %}{% endif %}
+									<strong>Pagado: </strong>{% if object.is_paid %}{% trans 'Yes' %}{% else %}{% trans 'No' %}{% endif %}
 								</li>
 							</ul>
 						</div>

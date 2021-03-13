@@ -84,13 +84,16 @@
 						<div class="col-md-6 col-sm-6 col-xs-6">
 							<ul class="list-unstyled user_data">
 								<li>
-									<strong>¿Matrícula finalizada?: </strong>{% if object.enroll_finished %}Si{%else%}No{%endif%}	
+									<strong>Matrícula finalizada: </strong>{% if object.enroll_finished %}Sí{%else%}No{%endif%}	
 								</li>
 								<li>
-									<strong>¿Activa para matrícula?: </strong>{% if object.enroll_activate%}Si{%else%}No{%endif%}
+									<strong>Activa para matrícula: </strong>{% if object.enroll_activate%}Sí{%else%}No{%endif%}
 								</li>
 								<li>
-									<strong>Factura generada?: </strong>{% if object.bill_created%}Si{%else%}No{%endif%}
+									<strong>Factura generada: </strong>{% if object.bill_created%}Sí{%else%}No{%endif%}
+								</li>
+								<li>
+									<strong>Pagado: </strong>{% if object.bill.is_paid%}Sí{% else %}No{% endif %}
 								</li>
 							</ul>
 						</div>
