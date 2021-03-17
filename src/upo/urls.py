@@ -24,10 +24,11 @@ from membership_core.urls import urlpatterns as url_core
 from django.conf import settings
 from djgentelella.urls import urlpatterns as djgentelellaurls
 from matricula.urls import urlpatterns as enrollurls
+from matricula.views.Courses import list_courses
 
 
 urlpatterns = djgentelellaurls + [
-    path('', RedirectView.as_view(url="/home/")),
+    path('', list_courses, name='root'),
     path('async_notifications/', include('async_notifications.urls')),
     path('api/', include('api.urls')),
     path('admin/', admin.site.urls),
