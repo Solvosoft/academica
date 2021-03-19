@@ -1,4 +1,4 @@
-{% load static gentelellamenu gtsettings i18n %}
+{% load static gentelellamenu gtsettings i18n utils %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -111,9 +111,7 @@
                       <span class="badge">{% trans "Superadmin" %}</span>
                   {% endif %}
                   {% for i in request.user.groups.all %}
-                      {% if i.name == "Administradores Académica" %}
-                          <span class="badge">{% trans "Administrator" %}</span>
-                      {% endif %}
+                      {% is_admin i.name "ADMIN_GROUP_NAME" %}
                   {% endfor %}
                   {% if request.user.professor %}
                       <span class="badge">{% trans "Professor" %}</span>

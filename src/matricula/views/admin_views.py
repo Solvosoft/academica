@@ -559,7 +559,7 @@ class GroupList(ListView):
             else:
                 queryset = queryset.filter(is_open=False)
 
-        if not user.is_superuser and not user.groups.filter(name="Administradores Académica").exists():
+        if not user.is_superuser and not user.groups.filter(name=settings.ADMIN_GROUP_NAME).exists():
             if professor:
                 queryset = queryset.filter(professors=professor)
 

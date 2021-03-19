@@ -6,10 +6,14 @@ from django.urls import reverse_lazy
 from django.urls.base import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, UpdateView
+from django.conf import settings
+
 from matricula.decorators import user_group_perms
 from matricula.forms import ProfessorEditForm, ProfessorSearchForm, ProfessorAddForm, UserCreateForm, UserEditForm
 from matricula.models import Professor
+
 from async_notifications.utils import send_email_from_template
+
 
 
 @login_required
@@ -87,7 +91,7 @@ class CreateProfessor(CreateView):
         form = ProfessorAddForm(request.POST)
         if form.is_valid():
             instance = form.save(commit=False)
-            professor_group = Group.objects.filter(name="Profesores").first()
+            professor_group = Group.objects.filter(name=settings.PROFESSOR_GROUP_NAME).first()
             instance.user.groups.add(professor_group)
             instance.user.user_permissions.add(*professor_group.permissions.all())
             instance.save()

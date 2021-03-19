@@ -1,7 +1,8 @@
 # encoding: utf-8
 from decimal import Decimal
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group as AuthGroup
+from django.db.models.fields.related import ForeignKey, OneToOneField
 from django.utils.encoding import smart_text
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -330,3 +331,16 @@ class Coupon(models.Model):
                     return True
             return False
         return True
+
+
+class FakeGroup(models.Model):
+    name = models.CharField(_('Name'), max_length=200)
+    group = OneToOneField(AuthGroup, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.name}"
+
+    class Meta:
+        verbose_name = _("Fake Group")
+        verbose_name_plural = _("Fake Groups")
+        ordering = ['name']

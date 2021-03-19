@@ -44,3 +44,9 @@ class GroupAddForm(GTForm, forms.ModelForm):
             'name': genwidgets.Input,
             'permissions': genwidgets.SelectMultiple
         }
+
+    def __init__(self, *args, **kwargs):
+        super(GroupAddForm, self).__init__(*args, **kwargs)
+        if 'initial' in kwargs:
+            if 'name' in kwargs['initial']:
+                self.fields['name'].initial = kwargs['initial']['name']

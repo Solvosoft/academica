@@ -1,7 +1,5 @@
-from django.shortcuts import render
-
-
 # -*- coding: UTF8 -*-
+from django.shortcuts import render
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.auth.models import User, Group
@@ -9,11 +7,16 @@ from django.shortcuts import redirect, render
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, UpdateView, CreateView
+from django.http.response import HttpResponseRedirect
+
 from .forms import UserSearchForm, UserAddForm, GroupAddForm
-from async_notifications.utils import send_email_from_template
 from .dashboard import TopStats
-from matricula.models import Category
 from .models import Country
+
+from async_notifications.utils import send_email_from_template
+
+from matricula.models import Category, FakeGroup
+
 
 
 def servicios_stats():
@@ -134,9 +137,9 @@ def groups_list(request):
 
     if request.method == "POST":
         form = GroupAddForm(request.POST)
-
         if form.is_valid():
             group = form.save()
+            FakeGroup.objects.create(group=group, name=group.name)
             messages.success(request, "Grupo registrado con éxito")
             return redirect('groups_list')
     else:
@@ -159,16 +162,21 @@ class EditGroup(UpdateView):
         context = super().get_context_data(**kwargs)
         context['group_edit'] = 1
         context['groups_list'] = Group.objects.all()
+        group = Group.objects.get(pk=self.kwargs['pk'])
+        context['form'] = GroupAddForm(instance=group, initial={'name':group.fakegroup.name})
         return context
 
     def form_valid(self, form):
-        group = form.save()
+        group = form.save(commit=False)
+        fakegroup = FakeGroup.objects.get(group=group)
+        fakegroup.name = group.name
+        fakegroup.save()
         users = User.objects.filter(groups__in=[group])
         if users:
             for user in users:
                 user.user_permissions.add(*group.permissions.all())
         messages.success(self.request, "Grupo actualizado con éxito")
-        return super().form_valid(form)
+        return HttpResponseRedirect(self.success_url)
 
 
 @permission_required('auth.delete_group')

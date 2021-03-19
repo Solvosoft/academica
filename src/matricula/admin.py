@@ -1,20 +1,26 @@
 # encoding: utf-8
 
 from django.contrib import admin
-from matricula.models import Student, Course, Group, Enroll, Period, Category, \
-    MenuItem, Page, Professor, Coupon
-
 from django.utils.translation import ugettext_lazy as _
 from django.conf.urls import url
 from django.urls import reverse
 from django.utils.html import format_html
-from matricula.admins import BaseGroup
 from django_ajax.decorators import ajax
-
 from django.contrib.admin import AdminSite
+from django.contrib.auth.admin import GroupAdmin
+from django.contrib.auth.models import Group
+
+from matricula.models import Student, Course, Group as GroupUPO, Enroll, Period, Category, \
+    MenuItem, Page, Professor, Coupon, FakeGroup
+from matricula.admins import BaseGroup
 from matricula.forms import MenuItemFormPage
 
-# Register your models here.
+
+class GroupsAdmin(GroupAdmin):
+    list_display = ["fakegroup__name", "pk"]
+
+    def fakegroup__name(self, obj):
+        return obj.fakegroup.name
 
 
 class EnrollAdmin(admin.ModelAdmin):
@@ -124,14 +130,16 @@ class MenuItemAdmin(admin.ModelAdmin):
 admin.site.register(Student)
 admin.site.register(Coupon)
 admin.site.register(Course)
-admin.site.register(Group, GroupAdmin)
+admin.site.register(GroupUPO)
 admin.site.register(Enroll, EnrollAdmin)
 admin.site.register(Period)
 admin.site.register(Category)
 admin.site.register(MenuItem)
 admin.site.register(Page)
 admin.site.register(Professor)
-
+admin.site.register(FakeGroup)
+admin.site.unregister(Group)
+#admin.site.register(Group, GroupsAdmin)
 admin.site.site_header = _("Academica administrator site")
 
 
@@ -141,10 +149,9 @@ admin_site.site_header = _("Academica administrator site")
 
 admin_site.register(Student)
 admin_site.register(Course)
-admin_site.register(Group, GroupAdmin)
+admin_site.register(GroupUPO)
 admin_site.register(Enroll, EnrollAdmin)
 admin_site.register(Period)
 admin_site.register(Category)
 admin_site.register(MenuItem, MenuItemAdmin)
 admin_site.register(Page)
-
