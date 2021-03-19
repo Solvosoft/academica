@@ -221,3 +221,5 @@ ASYNC_NEWSLETTER_SEVER_CONFIGS={
     #use_tls=my_use_tls
 }
 """
+PROFESSOR_GROUP_NAME = "Profesores"
+ADMIN_GROUP_NAME = "Administradores Académica"
