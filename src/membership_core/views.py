@@ -56,8 +56,8 @@ class UserListView(ListView):
         queryset = super().get_queryset().order_by("-is_active", "first_name", "last_name")
         if self.form.cleaned_data['user']:
             queryset = queryset.filter(pk__in=self.form.cleaned_data['user'])
-        if self.form.cleaned_data['group']:
-            queryset = queryset.filter(groups__in=self.form.cleaned_data['group'])
+        if self.form.cleaned_data['fakegroup']:
+            queryset = queryset.filter(groups__fakegroup__in=self.form.cleaned_data['fakegroup'])
         return queryset
 
     def get_context_data(self, **kwargs):

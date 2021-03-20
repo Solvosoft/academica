@@ -1,16 +1,20 @@
 from django import forms
 from django.contrib.auth.models import User, Group
+
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets import core as widget
+from djgentelella.widgets.selects import AutocompleteSelectMultiple
+
+from matricula.models import FakeGroup
 
 
 class UserSearchForm(GTForm, forms.Form):
     user = forms.ModelMultipleChoiceField(
         queryset=User.objects.all(), widget=widget.SelectMultiple,
         required=False, label="Buscar por nombre de usuario")
-    group = forms.ModelMultipleChoiceField(
-        queryset=Group.objects.all(), widget=widget.SelectMultiple,
+    fakegroup = forms.ModelMultipleChoiceField(
+        queryset=FakeGroup.objects.all(), widget=AutocompleteSelectMultiple('fakegroupsbase'),
         required=False, label="Grupo")
 
 

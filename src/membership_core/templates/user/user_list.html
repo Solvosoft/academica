@@ -17,7 +17,7 @@
                             {% include 'field.html' with field=formsearch.user  %}
                         </div>
                         <div class="col-md-6">
-                            {% include 'field.html' with field=formsearch.group  %}
+                            {% include 'field.html' with field=formsearch.fakegroup  %}
                         </div>
                     </div>
                     <br/>
@@ -79,22 +79,22 @@
                         </div>
                         <div>Nombre de usuaria: {% if user.username %} {{user.username}} {% else %} Sin especificar {% endif %}</div>
                         <div>Correo: {% if user.email %} {{user.email}} {% else %} Sin especificar {% endif %}</div>
-                        <div>Estado: {% if user.is_active%} Activo {%else%} Inactivo {% endif %}</div>
-                        {% if user.groups.all.count == 0 %} <div>Grupos: Ninguno </div>{%else%}
-
-                        <div class="form-group row">
-                            <div class="col-sm-3">
-                                Grupos:
+                        <div>Estado: {% if user.is_active%} Activo {% else %} Inactivo {% endif %}</div>
+                        {% if user.groups.all.count == 0 %}
+                            <div>Grupos: Ninguno </div>
+                        {% else %}
+                            <div class="form-group row">
+                                <div class="col-sm-3">
+                                    Grupos:
+                                </div>
+                                <div class="col-sm-9">
+                                    {% for group in user.groups.all %}
+                                        <p style="text-align: left;">* {{group.fakegroup.name}}</p>
+                                        {% empty %}
+                                        <p style="text-align: left;">Ninguno</p>
+                                    {% endfor %}
+                                </div>
                             </div>
-                            <div class="col-sm-9">
-                                {% for group in user.groups.all %}
-                                    <p style="text-align: left;">* {{group.name}}</p>
-                                    {% empty %}
-                                    <p style="text-align: left;">Ninguno</p>
-                                {% endfor %}
-                            </div>
-                        </div>
-
                         {% endif %}
 
                        <div class="clearfix"></div>
