@@ -9,7 +9,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView, UpdateView, CreateView
 from django.http.response import HttpResponseRedirect
 
-from .forms import UserSearchForm, UserAddForm, GroupAddForm
+from .forms import UserEditForm, UserSearchForm, UserAddForm, GroupAddForm
 from .dashboard import TopStats
 from .models import Country
 
@@ -85,17 +85,19 @@ class AddUser(CreateView):
             user=None)
 
     def form_valid(self, form):
-        response = super().form_valid(form)
         user = form.save()
-        self.send_email(self.object)
+        groups = Group.objects.filter(fakegroup__in=form.cleaned_data['fakegroups'])
+        user.groups.add(*groups)
+        user.save()
+        self.send_email(user)
         messages.success(self.request, "Usuaria registrada con éxito")
-        return response
+        return HttpResponseRedirect(self.success_url)
 
 
 @method_decorator(permission_required('auth.change_user'), name='dispatch')
 class EditUser(UpdateView):
     model = User
-    form_class = UserAddForm
+    form_class = UserEditForm
     template_name = 'user/edit.html'
     success_url = reverse_lazy('user_list')
 
