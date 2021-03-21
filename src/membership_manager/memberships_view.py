@@ -14,6 +14,10 @@ from membership_manager.forms import MembershipServiceForm, MembershipForm, Memb
 from membership_manager.models import Membership, Service
 from membership_manager.newsletterform import FilterEmailsForm, NewsLetterTemplateForm, \
     EmailTemplateForm
+from membership_manager.renew_utils import create_renew
+from django.utils import timezone
+
+from membership_manager.task_utils import invoice_creation
 
 
 @method_decorator(permission_required('membership_manager.view_membership'), name='dispatch')
@@ -136,6 +140,10 @@ class EditMembership(UpdateView):
         membership.membership_type = form.cleaned_data['membership_type']
         membership.save()
 
+        if not membership.renews.exists():
+            create_renew(membership)
+
+
         formset = modelformset_factory(
             Service, form=MembershipServiceForm, formset=GTBaseModelFormSet,
             can_delete=True, extra=1, can_order=True)
@@ -211,6 +219,10 @@ def create_membership(request):
             )
 
             membership.save()
+
+            if not membership.renews.exists():
+                create_renew(membership)
+
             instances = fset.save(commit=False)
             for instance in instances:
                 instance.membership = membership
@@ -230,6 +242,7 @@ def create_membership(request):
         # if there is a template load initial data
         if template is not None and template != "":
             m_template = MembershipTemplate.objects.get(pk=template).__dict__
+            m_template['contact_type'] = 'organization'
             form = MembershipForm(initial=m_template)
             servicesmt = ServiceMT.objects.filter(membership__pk=template)
             templateinitial = []
@@ -253,7 +266,7 @@ def create_membership(request):
 
         # load the data without initial information
         else:
-            form = MembershipForm()
+            form = MembershipForm(initial={'contact_type': 'organization'})
             fset = formset(queryset=Service.objects.none(), prefix='mts')
     context = {
         'form': form,
