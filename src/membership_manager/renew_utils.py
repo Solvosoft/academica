@@ -24,8 +24,7 @@ def get_expired_renew(now=None):
     if now is None:
         now = timezone.localdate(timezone.now())
 
-    return MembershipRenew.objects.filter(
-        Q(membership__contact__active=True) | Q(membership__organization__active=True),
+    return MembershipRenew.objects.filter(membership__organization__active=True,
         end_date__lte=now, encobro=False, active=True, membership__state="active")
 
 
@@ -33,8 +32,7 @@ def get_renew_without_inovice(now=None):
     if now is None:
         now = timezone.localdate(timezone.now())
     today_date = now + relativedelta(days=60)
-    return MembershipRenew.objects.filter(
-        Q(membership__contact__active=True) | Q(membership__organization__active=True),
+    return MembershipRenew.objects.filter(membership__organization__active=True,
         start_date__lte=today_date,
         active=True, encobro=True,
         membership__state="active",
@@ -50,12 +48,10 @@ def get_today_expired_renew(now=None):
     if now is None:
         now = timezone.localdate(timezone.now())
 
-    membs = MembershipRenew.objects.filter(
-        Q(membership__contact__active=True) | Q(membership__organization__active=True),
+    membs = MembershipRenew.objects.filter(membership__organization__active=True,
         end_date=now, active=True, membership__state="active")
 
-    memb_none_end = MembershipRenew.objects.filter(
-        Q(membership__contact__active=True) | Q(membership__organization__active=True),
+    memb_none_end = MembershipRenew.objects.filter(membership__organization__active=True,
         membership__renewal_period__months__lt=60,
         end_date__lt=now, end_date__gt=now+relativedelta(days=-60),   active=True, membership__state="active")
 
