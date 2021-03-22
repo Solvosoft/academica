@@ -133,8 +133,7 @@ def deactivate_user(request, pk):
         return redirect('user_list')
 
 
-@permission_required('auth.view_group')
-@permission_required('auth.add_group')
+@permission_required(['auth.add_group','auth.view_group'])
 def groups_list(request):
 
     if request.method == "POST":
@@ -172,6 +171,8 @@ class EditGroup(UpdateView):
         group = form.save(commit=False)
         fakegroup = FakeGroup.objects.get(group=group)
         fakegroup.name = group.name
+        fakegroup.group.permissions.clear()
+        fakegroup.group.permissions.add(*form.cleaned_data['permissions'])
         fakegroup.save()
         users = User.objects.filter(groups__in=[group])
         if users:
@@ -189,9 +190,6 @@ def delete_group(request, pk):
         for user in User.objects.all():
             if group in user.groups.all():
                 user.groups.remove(group)
-
-        object_pk = group.pk
-        object_repr = str(group)
         group.delete()
         messages.success(request, "Grupo eliminado con éxito")
         return redirect('groups_list')
