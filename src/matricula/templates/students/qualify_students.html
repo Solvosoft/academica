@@ -32,8 +32,6 @@
                                     </th>
                                     <th class="text-center">Nombre completo</th>
                                     <th class="text-center">Correo electrónico</th>
-                                    <th class="text-center">Factura generada</th>
-                                    <th class="text-center">Pagado</th>
                                     <th class="text-center">Nota</th>
                                     <th class="text-center">Estado</th>
                                 </tr>
@@ -47,8 +45,6 @@
                                 </td>
                                 <td>{{ enroll.student.user.get_full_name }}</td>
                                 <td>{{ enroll.student.user.email }}</td>
-                                <td>{% if enroll.bill_created %}Sí{% else %}No{% endif %}</td>
-                                <td>{% if enroll.bill.is_paid %}Sí{% else %}No{% endif %}</td>
                                 <td>
                                     <input type="number" step="any" name="course_score" value="{{ enroll.course_score }}" required id="id_course_score{{enroll.pk}}">
                                 </td>
