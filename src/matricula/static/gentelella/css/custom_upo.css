@@ -4447,3 +4447,15 @@ html , body{
        font-size: 1.5em;
        margin: 0em 1em;
    }
+
+.pre_enroll{
+    border-top: 5px solid #ee4a4c;
+}
+
+.enrolled{
+    border-top: 5px solid #f58a1e;
+}
+
+.paid{
+    border-top: 5px solid #009145;
+}
