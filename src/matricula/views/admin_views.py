@@ -7,11 +7,10 @@ Created on 18/10/2020
 import csv
 import io
 import os
+
 from django.conf import settings
 from django.views.generic import ListView, DeleteView
 from django.utils.translation import ugettext_lazy as _
-from django.shortcuts import render
-from djgentelella.models import MenuItem as DJMenuItem
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required
@@ -19,17 +18,20 @@ from django.contrib.auth.models import User
 from django.contrib.staticfiles import finders
 from django.core.files.base import File
 from django.core.paginator import Paginator
-from django.db.models import Q
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404
-from django.shortcuts import redirect
+from django.db.models import Q, Count
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import get_template, render_to_string
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
+
+from djgentelella.models import MenuItem as DJMenuItem
+
 from xhtml2pdf import pisa
+
 from async_notifications.utils import send_email_from_template
+
 from matricula.forms import CategoryCreateForm, CategorySearchForm, \
     CourseSearchForm, CourseCreateForm, MenuItemSearchForm, \
     MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, \
@@ -40,6 +42,7 @@ from matricula.forms import CategoryCreateForm, CategorySearchForm, \
 from matricula.models import Category, Course, Period, Group, \
     Enroll, Student, Page, Professor
 from matricula.views.utils import get_expire_date
+
 from chunked_upload.models import ChunkedUpload
 
 
@@ -562,7 +565,14 @@ class GroupList(ListView):
         if not user.is_superuser and not user.groups.filter(name=settings.ADMIN_GROUP_NAME).exists():
             if professor:
                 queryset = queryset.filter(professors=professor)
-
+        queryset = queryset.annotate(
+            enrolled_students_paid=Count(
+                'pk', filter=Q(enroll__bill__is_paid=True)
+            ),
+            enrolled_students_free=Count(
+                'pk', filter=Q(enroll__enroll_finished=True)
+            )
+        )
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -723,7 +733,9 @@ def export_group(request, pk=None):
     writer = csv.writer(response)
     if pk is not None:
         group = Group.objects.get(pk=pk)
-        enrolls = group.enroll_set.all()
+        enrolls = Enroll.objects.filter(group=group, enroll_finished=True)
+        if group.is_paid:
+            enrolls = enrolls.filter(bill__is_paid=True)
         writer.writerow([
             'username',
             'firstname',
@@ -762,8 +774,7 @@ def list_students_group(request, pk=None):
                 return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
         else:
             instance = Group.objects.get(pk=pk)
-            enroll_list = Enroll.objects.filter(group=instance)
-            enroll_list = enroll_list.filter(enroll_finished=True)
+            enroll_list = Enroll.objects.filter(group=instance, enroll_finished=True)
             if instance.is_paid:
                 enroll_list = enroll_list.filter(bill__is_paid=True)
             context['object'] = enroll_list
@@ -881,6 +892,8 @@ class EnrollList(ListView):
             queryset = queryset.filter(student__in=self.form.cleaned_data['student'])
         if self.form.cleaned_data['group']:
             queryset = queryset.filter(group__in=self.form.cleaned_data['group'])
+        if self.form.cleaned_data['paid']:
+            queryset = queryset.filter(bill__is_paid=True)
         return queryset
 
     def get_context_data(self, **kwargs):

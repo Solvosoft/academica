@@ -96,7 +96,12 @@
 							<ul class="list-unstyled user_data">
 								<li>
 									<strong>Inscritos: </strong>
-									{{object.enroll_set.all.count}} de {{object.maximum}}
+									{% if object.is_paid %}
+										{{object.enrolled_students_paid}}
+									{% else %}
+										{{ object.enrolled_students_free }}
+									{% endif %} 
+									de {{object.maximum}}
 								</li>
 								<li>
 									<strong>Moneda: </strong>{{object.currency}}
@@ -119,7 +124,12 @@
 								<li><strong>Calificar estudiantes: </strong><a title="Calificar" href="{% url 'qualify_students' pk=object.pk %}"><i class="fa fa-check-square"></i></a></li>
 								{% endif %}
 								{% if perms.matricula.can_export_enrolled_group %}
-									<li><strong>Exportar estudiantes: </strong>{{object.enroll_set.all.count}} <a title="Exportar estudiantes a moodle" href="{% url 'export_group' object.pk%}"><i class="fa fa-file-text-o"></i></a></li>
+									<li><strong>Exportar estudiantes: </strong>
+										{% if object.is_paid %}
+											{{object.enrolled_students_paid}}
+										{% else %}
+											{{ object.enrolled_students_free }}
+										{% endif %}  <a title="Exportar estudiantes a moodle" href="{% url 'export_group' object.pk%}"><i class="fa fa-file-text-o"></i></a></li>
 								{% endif %}
 								{% if perms.matricula.can_view_pre_enroll_group %}
 									<li><strong>Estudiantes pre-matriculados: </strong><a title="Lista de estudiantes pre-matriculados" href="{% url 'pre_enroll_group' object.pk%}"><i class="fa fa-filter"></i></a></li>

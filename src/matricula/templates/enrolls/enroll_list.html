@@ -13,6 +13,9 @@
 						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 							{% include 'field.html' with field=form_search.group %}
 						</div>
+						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+							{% include 'field.html' with field=form_search.paid %}
+						</div>
 						<div style="text-align:right">
 							<a href="{% url 'enrolls' %}" class="btn btn-dark">{% trans 'Clear' %}</a>
 							<button class="btn btn-success" type="submit">{% trans 'Search' %}</button>
@@ -93,7 +96,7 @@
 									<strong>Factura generada: </strong>{% if object.bill_created%}Sí{%else%}No{%endif%}
 								</li>
 								<li>
-									<strong>Pagado: </strong>{% if object.bill.is_paid%}Sí{% else %}No{% endif %}
+									<strong>Pagado: </strong>{% if object.bill_set.first.is_paid%}Sí{% else %}No{% endif %}
 								</li>
 							</ul>
 						</div>

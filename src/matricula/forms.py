@@ -443,6 +443,10 @@ class GroupEditForm(forms.ModelForm, GTForm):
 
 
 class EnrollSearchForm(GTForm, forms.Form):
+    PAID = (
+        (None, "Todos"),
+        (True, "Solo pagados"),
+    )
     student = forms.ModelMultipleChoiceField(
         queryset=Student.objects.all(), label="Estudiante",
         widget=djgentelella.SelectMultiple, required=False
@@ -451,6 +455,7 @@ class EnrollSearchForm(GTForm, forms.Form):
         queryset=Group.objects.all(), widget=djgentelella.SelectMultiple,
         label="Grupo", required=False
     )
+    paid = forms.ChoiceField(label="Pagado",choices=PAID, widget=djgentelella.Select, required=False)
 
 
 class EnrollCreateForm(forms.ModelForm, GTForm):
