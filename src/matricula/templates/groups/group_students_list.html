@@ -56,7 +56,7 @@
 		}
 	</style>
 {% endblock %}
-{%block content %}
+{% block content %}
 	<h1 class="text-center">Lista de estudiantes del curso</h1>
 	<div class="col-sm-12">
 		<div class="x_panel">
@@ -77,69 +77,69 @@
 								<th class="column-title">Certificado</th>
 								{% if show_column_action %}
 									<th class="column-title">Acción</th>
-								{%endif%}
+								{% endif %}
 							</tr>
 						</thead>
 						<tbody>
-							{% for enroll in object.enroll_set.all %}
+							{% for enroll in object %}
 								<tr class="{% cycle 'odd' 'even' %} pointer">
 									<td class="">{{enroll.student}}</td>
 									<td class="">{{enroll.enroll_date}}</td>
-									<td class="">{% if enroll.enroll_activate%}Sí{%else%}No{%endif%}</td>
-									<td class="">{% if enroll.enroll_finished%}Sí{%else%}No{%endif%}</td>
-									<td class="">{% if enroll.bill_created %}Sí{%else%}No{%endif%}</td>
+									<td class="">{% if enroll.enroll_activate%}Sí{% else %}No{% endif %}</td>
+									<td class="">{% if enroll.enroll_finished%}Sí{% else %}No{% endif %}</td>
+									<td class="">{% if enroll.bill_created %}Sí{% else %}No{% endif %}</td>
 									<td class="">{% if enroll.bill.is_paid %}Sí{% else %}No{% endif %}</td>
 									<td class="">
 										{% if enroll.pdf_certificate %}
 											<a title="Certificado" href="{{ enroll.pdf_certificate.url }}" target="_blank" class="btn btn-sm">
 											  <i class="fa s-2 fa-file-pdf-o"></i></a>
-										{%else%}
+										{% else %}
 											{% if enroll.enroll_finished %}
 												{% if enroll.course_status == "reproved" %}
 													Estudiante reprobado.
 												{% elif enroll.course_status == "approved" %}
 													Estudiante aprobado, debe generar el certificado.
-												{%else%}
+												{% else %}
 													Estudiante no calificado.
-												{%endif%}
-											{%else%}
+												{% endif %}
+											{% else %}
 												Matrícula no finalizada.
-											{%endif%}
-										{%endif%}
+											{% endif %}
+										{% endif %}
 									</td>
 									{% if show_column_action %}
 										<td class="">
 											{% if enroll.pdf_certificate %}
 											<a title="Regenerar certificado" href="{% url 'build_pdf_certificate_view' pk_group=enroll.group.pk pk=enroll.pk %}" class="btn btn-sm">
 												  <i class="fa fa-refresh green fa-2x"></i></a>
-											{%endif%}
+											{% endif %}
 										</td>
-									{%endif%}
+									{% endif %}
 								</tr>
-							{%endfor%}
+							{% endfor %}
 						</tbody>
 					</table>	
 				</div>
 				<div class="text-center">
 					<a class="btn btn-dark" href="{% url 'groups_enroll' %}">Atras</a>
 					{% if perms.matricula.can_open_group %}
-						<a class="btn btn-primary" href="{% url 'open_group' object.pk %}">Abrir grupo</a>
-						<a class="btn btn-primary" href="{% url 'open_group' object.pk %}?sendemail=1">Abrir grupo y notificar</a>
+						<a class="btn btn-primary" href="{% url 'open_group' group.pk %}">Abrir grupo</a>
+						<a class="btn btn-primary" href="{% url 'open_group' group.pk %}?sendemail=1">Abrir grupo y notificar</a>
 					{% endif %}
 					{% if perms.matricula.can_close_group %}
-						<a class="btn btn-primary" href="{% url 'close_group' object.pk %}">Cerrar grupo</a>
-						<a class="btn btn-primary" href="{% url 'close_group' object.pk %}?sendemail=1">Cerrar grupo y notificar</a>
+						<a class="btn btn-primary" href="{% url 'close_group' group.pk %}">Cerrar grupo</a>
+						<a class="btn btn-primary" href="{% url 'close_group' group.pk %}?sendemail=1">Cerrar grupo y notificar</a>
 					{% endif %}
 					{% if show_buttons_certificates %}
-						<a class="btn btn-primary" href="{% url 'build_pdf_certificate_list' pk=object.pk %}">Generar certificados</a>
+						<a class="btn btn-primary" href="{% url 'build_pdf_certificate_list' pk=group.pk %}">Generar certificados</a>
 					{% endif %}
 					{% if perms.matricula.can_view_pdf_enrolled_group %}
 						<div class="btn-group">
 							<button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">PDF</button>
 							<div class="dropdown-menu">
-								<a class="dropdown-item" href="{% url 'export_enrolled_group' object.pk %}?finished=1">Inscritos</a>
-								<a class="dropdown-item" href="{% url 'export_enrolled_group' object.pk %}">Pre-inscritos</a>
-								<a class="dropdown-item" href="{% url 'export_enrolled_group' object.pk %}?finished=2&activate=1">Pre-inscritos sin inscribir</a>
+								<a class="dropdown-item" href="{% url 'export_enrolled_group' group.pk %}?finished=1">Inscritos</a>
+								<a class="dropdown-item" href="{% url 'export_enrolled_group' group.pk %}">Pre-inscritos</a>
+								<a class="dropdown-item" href="{% url 'export_enrolled_group' group.pk %}?finished=2&activate=1">Pre-inscritos sin inscribir</a>
 							</div>
 							<div class="clearfix"></div>
 						</div>
@@ -174,7 +174,7 @@
 		{% endif %}
 	</div>
 	<div class="clearfix"></div>
-{%endblock%}
+{% endblock %}
 {% block js %}
 <script>
 	$(document).ready(function(){

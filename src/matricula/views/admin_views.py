@@ -748,44 +748,43 @@ def list_students_group(request, pk=None):
     context = {}
     show_buttons_certificates = False
     show_column_action = False
-    if pk is not None:
+    if pk != None:
         context = {}
         if request.method == "POST":
-            group = Group.objects.get(pk=pk)
-            if group:
-                form = PreEnrollAddGroupForm(request.POST)
-                if form.is_valid():
-                    enroll = Enroll.objects.filter(pk__in=form.cleaned_data['students'])
-                    for instance in enroll:
-                        instance.enroll_finished = True
-                        instance.save()
-                    messages.success(request, "Estudiantes inscritos con éxito")
-                    return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
-            messages.error(request, "Error al realizar la acción")
-            return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
+            Group.objects.get(pk=pk)
+            form = PreEnrollAddGroupForm(request.POST)
+            if form.is_valid():
+                enroll = Enroll.objects.filter(pk__in=form.cleaned_data['students'])
+                for instance in enroll:
+                    instance.enroll_finished = True
+                    instance.save()
+                messages.success(request, "Estudiantes inscritos con éxito")
+                return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
         else:
-            if request.method == "GET":
-                instance = Group.objects.get(pk=pk)
-                context['object'] = instance
+            instance = Group.objects.get(pk=pk)
+            enroll_list = Enroll.objects.filter(group=instance)
+            enroll_list = enroll_list.filter(enroll_finished=True)
+            if instance.is_paid:
+                enroll_list = enroll_list.filter(bill__is_paid=True)
+            context['object'] = enroll_list
+            context['group'] = instance
+            approved_students = enroll_list.filter(course_status="approved")
+            enroll_finished = enroll_list.filter(enroll_finished=True)
+            enroll_list_with_certificates = enroll_list.filter(pdf_certificate__isnull=False).exclude(pdf_certificate="")
 
-                enroll_list = Enroll.objects.filter(group=instance)
-                approved_students = enroll_list.filter(course_status="approved")
-                enroll_finished = enroll_list.filter(enroll_finished=True)
-                enroll_list_with_certificates = enroll_list.filter(pdf_certificate__isnull=False).exclude(pdf_certificate="")
+            for enroll in enroll_list:
 
-                for enroll in enroll_list:
+                if enroll.pdf_certificate is None or enroll.pdf_certificate == "" and approved_students and enroll_finished and request.user.is_superuser:
+                    show_buttons_certificates = True
+                    break
 
-                    if enroll.pdf_certificate is None or enroll.pdf_certificate == "" and approved_students and enroll_finished and request.user.is_superuser:
-                        show_buttons_certificates = True
-                        break
+            if enroll_list_with_certificates:
+                show_column_action = True
 
-                if enroll_list_with_certificates:
-                    show_column_action = True
-
-                context['show_column_action'] = show_column_action
-                context['show_buttons_certificates'] = show_buttons_certificates
-                return render(
-                    request, 'groups/group_students_list.html', context)
+            context['show_column_action'] = show_column_action
+            context['show_buttons_certificates'] = show_buttons_certificates
+            return render(
+                request, 'groups/group_students_list.html', context)
         return HttpResponseRedirect(reverse('groups'))
 
 

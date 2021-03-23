@@ -13,7 +13,8 @@ def qualify_students(request, pk):
 
     group = get_object_or_404(Group, pk=pk)
     enroll_list = Enroll.objects.filter(group=group)
-
+    if group.is_paid:
+        enroll_list = enroll_list.filter(bill__is_paid=True)
     context = {'group': group,
                'form': QualifyStudentForm(),
                'enroll_list': enroll_list}
