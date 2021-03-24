@@ -91,6 +91,8 @@ def enrollme(request, pk):
                 message = _('Enrollment success')
             elif enroll.enroll_activate and enroll.enroll_finished:
                 message = _('You are already enrolled')
+            else:
+                message = _('You are already pre-enrolled')
         else:
             message = _('You are already pre-enrolled')
         return { 
