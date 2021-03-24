@@ -71,7 +71,6 @@ class UserEditForm(GTForm, forms.ModelForm):
             'last_name': genwidgets.TextInput,
             'email': genwidgets.EmailMaskInput,
             'is_active': genwidgets.YesNoInput,
-            'groups': genwidgets.SelectMultiple
         }
 
     def clean_email(self):

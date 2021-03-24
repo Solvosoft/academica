@@ -105,10 +105,16 @@ class EditUser(UpdateView):
         context = super().get_context_data(**kwargs)
         user = context['object']
         context['user'] = user.pk
+        fakeinitial = FakeGroup.objects.filter(group__user=self.get_object())
+        context['form'].fields['fakegroups'].initial = fakeinitial
         return context
 
     def form_valid(self, form):
         user = form.save()
+        fakegroups = form.cleaned_data['fakegroups']
+        groups = Group.objects.filter(fakegroup__in=fakegroups)
+        user.groups.clear()
+        user.groups.add(*groups)
         messages.success(self.request, "Usuaria actualizada con éxito")
         return super().form_valid(form)
 
