@@ -24,7 +24,7 @@ class UserAddForm(GTForm, forms.ModelForm):
 
     fakegroups = forms.ModelMultipleChoiceField(
         queryset=FakeGroup.objects.all(), widget=AutocompleteSelectMultiple('fakegroupsbase'),
-        required=False, label="Grupo")
+        required=True, label="Grupo")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
