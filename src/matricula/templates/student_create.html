@@ -28,8 +28,6 @@
 	</div>
 {% endblock %}
 {% block js %}
-	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
 	<script>
 		var input = document.querySelector('#id_organization'),
 		tagify = new Tagify(input, {whitelist:[]}),
@@ -41,7 +39,6 @@
 		function onAdd(e){
 			input.value=e.detail.data.value
 		}
-		input.value = JSON.parse(input.value)[0].value
 		function onInput( e ){
 			var value = e.detail.value;
 			tagify.settings.whitelist.length = 0; // reset the whitelist
