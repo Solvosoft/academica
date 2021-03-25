@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-12 19:44-0600\n"
+"POT-Creation-Date: 2021-03-25 14:01-0600\n"
 "PO-Revision-Date: 2020-11-27 20:41-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,35 +18,35 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.4.1\n"
 
-#: src/matricula/admin.py:34
+#: src/matricula/admin.py:40
 msgid "Active user for enrollment"
 msgstr "Activar usuaria para matricular"
 
-#: src/matricula/admin.py:38
+#: src/matricula/admin.py:44
 msgid "Active user for pre-enrollment"
 msgstr "Activar usuaria para prematricula"
 
-#: src/matricula/admin.py:64
+#: src/matricula/admin.py:70
 msgid "Student list don't exist yet"
 msgstr "La lista de estudiantes no existe aún"
 
-#: src/matricula/admin.py:70
+#: src/matricula/admin.py:76
 msgid "List students"
 msgstr "Lista de estudiantes"
 
-#: src/matricula/admin.py:78
+#: src/matricula/admin.py:84
 msgid "# student pre-enroll"
 msgstr "# estudiante prematriculados"
 
-#: src/matricula/admin.py:87
+#: src/matricula/admin.py:93
 msgid "# student enroll"
 msgstr "# estudiantes matriculados"
 
-#: src/matricula/admin.py:91
+#: src/matricula/admin.py:97
 msgid "Total cash"
 msgstr "Dinero total"
 
-#: src/matricula/admin.py:135 src/matricula/admin.py:139
+#: src/matricula/admin.py:143 src/matricula/admin.py:147
 msgid "Academica administrator site"
 msgstr "Sitio administrativo de Académica"
 
@@ -68,8 +68,8 @@ msgid "Student List"
 msgstr "Lista de estudiantes"
 
 #: src/matricula/admins/Group.py:84 src/matricula/admins/Group.py:108
-#: src/matricula/views/admin_views.py:796
-#: src/matricula/views/admin_views.py:821
+#: src/matricula/views/admin_views.py:812
+#: src/matricula/views/admin_views.py:839
 msgid "Group Not Found"
 msgstr "Grupo no encontrado"
 
@@ -115,7 +115,7 @@ msgid "User name exist "
 msgstr "El nombre de usuaria existe "
 
 #: src/matricula/forms.py:90 src/matricula/forms.py:117
-#: src/matricula/forms.py:530
+#: src/matricula/forms.py:535
 msgid "This email already used"
 msgstr "Este correo ya esta registrado"
 
@@ -124,7 +124,7 @@ msgid "username"
 msgstr "Nombre de usuaria"
 
 #: src/matricula/forms.py:156 src/matricula/forms.py:177
-#: src/matricula/models.py:239 src/matricula/models.py:278
+#: src/matricula/models.py:240 src/matricula/models.py:279
 msgid "Page"
 msgstr "Página"
 
@@ -135,7 +135,7 @@ msgid "Base"
 msgstr "Página base"
 
 #: src/matricula/forms.py:227 src/matricula/forms.py:369
-#: src/matricula/forms.py:408 src/matricula/models.py:143
+#: src/matricula/forms.py:408 src/matricula/models.py:144
 msgid "Schedule"
 msgstr "Horario"
 
@@ -147,8 +147,8 @@ msgstr "Título"
 msgid "Url name"
 msgstr "Nombre de la url"
 
-#: src/matricula/forms.py:290 src/matricula/models.py:93
-#: src/matricula/models.py:100
+#: src/matricula/forms.py:290 src/matricula/models.py:94
+#: src/matricula/models.py:101
 msgid "Category"
 msgstr "Categoría"
 
@@ -213,6 +213,7 @@ msgstr "Facilitadoras"
 
 #: src/matricula/models.py:71 src/matricula/models.py:85
 #: src/matricula/models.py:101 src/matricula/models.py:142
+#: src/matricula/models.py:337
 #: src/matricula/templates/Pdf/student_list.html:237
 #: src/matricula/templates/enrolls/enroll_list.html:71
 msgid "Name"
@@ -291,123 +292,130 @@ msgstr "Costo del curso"
 msgid "Maximum number of students"
 msgstr "Máximo número de estudiantes"
 
-#: src/matricula/models.py:160
+#: src/matricula/models.py:161
 msgid "Enrollment behavior"
 msgstr "Comportamiento de matrícula"
 
-#: src/matricula/models.py:180 src/matricula/models.py:210
-#: src/matricula/templates/enrolls/enroll_list.html:80
+#: src/matricula/models.py:181 src/matricula/models.py:211
+#: src/matricula/templates/enrolls/enroll_list.html:83
 msgid "Group"
 msgstr "Grupo"
 
-#: src/matricula/models.py:181
+#: src/matricula/models.py:182
 msgid "Groups"
 msgstr "Grupos"
 
-#: src/matricula/models.py:199
+#: src/matricula/models.py:200
 msgid "Approved"
 msgstr "Aprobado"
 
-#: src/matricula/models.py:200
+#: src/matricula/models.py:201
 msgid "Reproved"
 msgstr "Reprobado"
 
-#: src/matricula/models.py:204
+#: src/matricula/models.py:205
 msgid "Is enroll finished?"
 msgstr "¿Está finalizada la matrícula?"
 
-#: src/matricula/models.py:206
+#: src/matricula/models.py:207
 msgid "Is active for enroll?"
 msgstr "¿Está activo para la matrícula?"
 
-#: src/matricula/models.py:208
+#: src/matricula/models.py:209
 msgid "Enroll rejected?"
 msgstr "¿Matricula rechazada?"
 
-#: src/matricula/models.py:214
+#: src/matricula/models.py:215
 msgid "Enroll date"
 msgstr "Fecha de matricula"
 
-#: src/matricula/models.py:217
+#: src/matricula/models.py:218
 msgid "Bill created"
 msgstr "Factura creada"
 
-#: src/matricula/models.py:218
+#: src/matricula/models.py:219
 msgid "Note"
 msgstr "Nota"
 
-#: src/matricula/models.py:220
+#: src/matricula/models.py:221
 msgid "Status"
 msgstr "Estado"
 
-#: src/matricula/models.py:221
+#: src/matricula/models.py:222
 msgid "Certificate"
 msgstr "Certificado"
 
-#: src/matricula/models.py:227 src/matricula/templates/matricula_base.html:6
+#: src/matricula/models.py:228 src/matricula/templates/matricula_base.html:6
 msgid "Enrollment"
 msgstr "Matrícula"
 
-#: src/matricula/models.py:228
+#: src/matricula/models.py:229
 #: src/matricula/templates/enrolls/enroll_list.html:4
 msgid "Enrollments"
 msgstr "Matrículas"
 
-#: src/matricula/models.py:238
+#: src/matricula/models.py:239
 msgid "Internal"
 msgstr "Interno"
 
-#: src/matricula/models.py:243
+#: src/matricula/models.py:244
 msgid "Type"
 msgstr "Tipo"
 
-#: src/matricula/models.py:247
+#: src/matricula/models.py:248
 msgid "Authentication is required"
 msgstr "Se requiere autenticación"
 
-#: src/matricula/models.py:248
+#: src/matricula/models.py:249
 msgid "Menu order"
 msgstr "Orden en el menú"
 
-#: src/matricula/models.py:250
+#: src/matricula/models.py:251
 msgid "Page parent"
 msgstr "Página padre"
 
-#: src/matricula/models.py:253
+#: src/matricula/models.py:254
 msgid "Publicated"
 msgstr "Publicado"
 
-#: src/matricula/models.py:254
+#: src/matricula/models.py:255
 msgid "Index page"
 msgstr "Página de inicio"
 
-#: src/matricula/models.py:263
+#: src/matricula/models.py:264
 msgid "Menu Item"
 msgstr "Elemento del menú"
 
-#: src/matricula/models.py:264
+#: src/matricula/models.py:265
 msgid "Menu Items"
 msgstr "Elementos del menú"
 
-#: src/matricula/models.py:279
+#: src/matricula/models.py:280
 msgid "Pages"
 msgstr "Páginas"
 
-#: src/matricula/models.py:293
+#: src/matricula/models.py:294
 msgid "Is used?"
 msgstr "¿Utilizado?"
 
-#: src/matricula/models.py:294
+#: src/matricula/models.py:295
 msgid "Discount code"
 msgstr "Código de descuento"
 
-#: src/matricula/models.py:301
+#: src/matricula/models.py:302
 msgid "Coupon"
 msgstr "Cupón"
 
-#: src/matricula/models.py:302
+#: src/matricula/models.py:303
 msgid "Coupons"
 msgstr "Cupones"
+
+#: src/matricula/models.py:344
+msgid "Fake Group"
+msgstr "Grupo"
+
+msgid "Fake Groups"
+msgstr "Grupos"
 
 #: src/matricula/templates/Pdf/student_list.html:238
 #: src/matricula/templates/enrolls/enroll_list.html:77
@@ -420,13 +428,13 @@ msgid "%(certificate_date)s"
 msgstr ""
 
 #: src/matricula/templates/course.html:81
-#: src/matricula/templates/course_detail.html:66
+#: src/matricula/templates/course_detail.html:79
 #: src/matricula/templates/groups.html:28
 msgid "Enroll me"
 msgstr "Matricularme"
 
 #: src/matricula/templates/course.html:85
-#: src/matricula/templates/course_detail.html:66
+#: src/matricula/templates/course_detail.html:80
 #: src/matricula/templates/groups.html:28
 msgid "Pre-enroll me"
 msgstr "Pre-matricularme"
@@ -471,12 +479,12 @@ msgid "Enrollme"
 msgstr "Matricularme"
 
 #: src/matricula/templates/enroll.html:51
-#: src/matricula/templates/matricula/student_form.html:43
+#: src/matricula/templates/matricula/student_form.html:44
 msgid "You don't have courses pre-enrolled"
 msgstr "No tiene cursos prematriculados"
 
 #: src/matricula/templates/enroll.html:67
-#: src/matricula/templates/matricula/student_form.html:48
+#: src/matricula/templates/matricula/student_form.html:49
 msgid "Enrolled courses"
 msgstr "Cursos matriculados"
 
@@ -484,29 +492,29 @@ msgstr "Cursos matriculados"
 msgid "You don't have any enrolled courses"
 msgstr "No tiene cursos matriculados"
 
-#: src/matricula/templates/enrolls/enroll_list.html:17
-#: src/matricula/templates/professor/professors_list.html:28
+#: src/matricula/templates/enrolls/enroll_list.html:20
+#: src/matricula/templates/professor/professors_list.html:24
 msgid "Clear"
 msgstr "Limpiar"
 
-#: src/matricula/templates/enrolls/enroll_list.html:18
-#: src/matricula/templates/professor/professors_list.html:29
+#: src/matricula/templates/enrolls/enroll_list.html:21
+#: src/matricula/templates/professor/professors_list.html:25
 msgid "Search"
 msgstr "Buscar"
 
-#: src/matricula/templates/enrolls/enroll_list.html:26
+#: src/matricula/templates/enrolls/enroll_list.html:29
 msgid "New enrollment"
 msgstr "Nueva matrícula"
 
-#: src/matricula/templates/enrolls/enroll_list.html:57
+#: src/matricula/templates/enrolls/enroll_list.html:60
 msgid "Edit enrollment"
 msgstr "Modificar matrícula"
 
-#: src/matricula/templates/enrolls/enroll_list.html:61
+#: src/matricula/templates/enrolls/enroll_list.html:64
 msgid "Delete enrollment"
 msgstr "Eliminar matrícula"
 
-#: src/matricula/templates/enrolls/enroll_list.html:74
+#: src/matricula/templates/enrolls/enroll_list.html:77
 #: src/matricula/templates/recover_password.html:11
 msgid "User"
 msgstr "Usuaria"
@@ -525,6 +533,10 @@ msgid "User profile"
 msgstr "Perfil de usuaria"
 
 #: src/matricula/templates/matricula/student_form.html:28
+msgid "Inicio"
+msgstr "Inicio"
+
+#: src/matricula/templates/matricula/student_form.html:29
 #: src/matricula/templates/student_add.html:24
 #: src/matricula/templates/student_add.html:25
 #: src/matricula/templates/student_create.html:19
@@ -532,11 +544,11 @@ msgstr "Perfil de usuaria"
 msgid "Save"
 msgstr "Guardar"
 
-#: src/matricula/templates/matricula/student_form.html:34
+#: src/matricula/templates/matricula/student_form.html:35
 msgid "Pre-enrolled courses"
 msgstr "Cursos prematriculados"
 
-#: src/matricula/templates/matricula/student_form.html:57
+#: src/matricula/templates/matricula/student_form.html:58
 msgid "You don't have enrolled courses"
 msgstr "No tiene cursos matriculados"
 
@@ -552,12 +564,12 @@ msgstr "Ingresar"
 msgid "Sing up"
 msgstr "Registrate"
 
-#: src/matricula/templates/professor/create.html:13
-#: src/matricula/templates/professor/professors_list.html:37
+#: src/matricula/templates/professor/create.html:9
+#: src/matricula/templates/professor/professors_list.html:33
 msgid "New Professor"
 msgstr "Nueva facilitadora"
 
-#: src/matricula/templates/professor/professors_list.html:50
+#: src/matricula/templates/professor/professors_list.html:46
 msgid ""
 "Are you sure you want to delete this professor? It is recommended that it be "
 "deactivated instead."
@@ -565,16 +577,16 @@ msgstr ""
 "¿Esta segura que desea eliminar esta profesora? Es recomendable que en lugar "
 "de eliminar esta profesora, la desactive."
 
-#: src/matricula/templates/professor/professors_list.html:53
+#: src/matricula/templates/professor/professors_list.html:49
 #: src/matricula/templates/student_add.html:23
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: src/matricula/templates/professor/professors_list.html:54
+#: src/matricula/templates/professor/professors_list.html:50
 msgid "Deactivate"
 msgstr "Desactivar"
 
-#: src/matricula/templates/professor/professors_list.html:55
+#: src/matricula/templates/professor/professors_list.html:51
 msgid "Delete"
 msgstr "Eliminar"
 
@@ -699,11 +711,15 @@ msgstr "Ingresar"
 msgid "Lost your password?"
 msgstr "¿Olvidó su contraseña?"
 
+#: src/matricula/templatetags/utils.py:15
+msgid "Administrator"
+msgstr "Administradora"
+
 #: src/matricula/views/Auth.py:57 src/matricula/views/Auth.py:86
 msgid "Thank you, We will send you an email soon"
 msgstr "Gracias, pronto le enviaremos un correo de confirmación"
 
-#: src/matricula/views/Auth.py:63 src/matricula/views/Auth.py:292
+#: src/matricula/views/Auth.py:63 src/matricula/views/Auth.py:294
 msgid "Your user have not permission for see this page"
 msgstr "Su usuaria no tiene permiso para ver esta página"
 
@@ -731,34 +747,34 @@ msgstr "Usted recibirá pronto un correo, revise su bandeja de entrada"
 msgid "User not found"
 msgstr "No existe usuaria"
 
-#: src/matricula/views/Auth.py:281
-msgid "We have some validation errors"
-msgstr "El formulario contiene errores de validación"
-
-#: src/matricula/views/Auth.py:283
+#: src/matricula/views/Auth.py:285
 msgid "Profile updated successfully"
 msgstr "Perfil actualizado con éxito"
 
-#: src/matricula/views/Enrollments.py:50
-msgid "Pre-enrollment success"
-msgstr "Pre-matriciulado satisfactoriamente"
-
-#: src/matricula/views/Enrollments.py:68
+#: src/matricula/views/Enrollments.py:49 src/matricula/views/Enrollments.py:91
 msgid "Enrollment success"
 msgstr "Matriculado satisfactoriamente"
 
-#: src/matricula/views/Enrollments.py:73 src/matricula/views/Enrollments.py:141
+#: src/matricula/views/Enrollments.py:68
+msgid "Pre-enrollment success"
+msgstr "Pre-matriciulado satisfactoriamente"
+
+#: src/matricula/views/Enrollments.py:74 src/matricula/views/Enrollments.py:168
 msgid "We have some problems with your enroll, try again"
 msgstr "Tenemos problemas con la matrícula, trate de nuevo"
 
-#: src/matricula/views/Enrollments.py:77
-msgid "You are already pre-enrolled"
-msgstr "Usted ya está pre-matriculado"
-
-#: src/matricula/views/Enrollments.py:79
+#: src/matricula/views/Enrollments.py:93
 msgid "You are already enrolled"
 msgstr "Usted ya está matriculado"
 
-#: src/matricula/views/Enrollments.py:144
+#: src/matricula/views/Enrollments.py:95 src/matricula/views/Enrollments.py:97
+msgid "You are already pre-enrolled"
+msgstr "Usted ya está pre-matriculado"
+
+#: src/matricula/views/Enrollments.py:169
 msgid "Enrollment successfully"
 msgstr "Matriculado satisfactoriamente"
+
+#: src/matricula/views/students_views.py:26
+msgid "The professor associated with this user is not active"
+msgstr "El profesor asociado con este usuario no esta activo"
