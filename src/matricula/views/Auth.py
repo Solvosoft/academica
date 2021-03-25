@@ -249,7 +249,7 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         errors = False
-        msg_error = ''
+        self.object = self.get_object()
         if hasattr(request.user, 'professor'):
             professor_form = ProfessorEditProfileForm(request.POST)
             if professor_form.is_valid():
@@ -258,7 +258,6 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
                 professor.description = professor_form.cleaned_data['description']
                 professor.save()
             else:
-                msg_error = parse_form_errors(professor_form)
                 errors = True
         if hasattr(request.user, 'student'):
             student_form = StudentEditForm(request.POST)
@@ -269,7 +268,6 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
                 student.organization = student_form.cleaned_data['organization']
                 student.save()
             else:
-                msg_error = parse_form_errors(student_form)
                 errors = False
         form = UserEditForm(request.POST, initial={"username":request.user.username})
         user = request.user
@@ -279,10 +277,10 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
             user.email = form.cleaned_data['email']
             user.save()
         else:
-            msg_error += parse_form_errors(form)
             errors = True
         if errors:
-            messages.error(request, _("We have some validation errors") + msg_error)
+            return self.render_to_response(self.get_context_data(
+                form=form, student_form=student_form, professor_form=professor_form))
         else:
             messages.success(request, _("Profile updated successfully"))
         return super(StudentEdit, self).get(request, *args, **kwargs)
