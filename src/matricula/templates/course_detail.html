@@ -1,98 +1,113 @@
-{% extends 'gentelella/base.html'%}
+{% extends 'gentelella/base.html' %}
 {% load static i18n %}
+{% load utils %}
 {% block extra_css %}
-	<style>
-		#html_content img, #html_content video{
-			max-width:100% !important;
-		}
-	</style>
-{% endblock%}
+    <style>
+        #html_content img, #html_content video {
+            max-width: 100% !important;
+        }
+    </style>
+{% endblock %}
 {% block content %}
-	<div class="row" style="margin-bottom:3%; margin-top:5%;">
-		<h1 class="text-center" style="margin-bottom: -2%;">{{course}}</h1>
-		<br/><br/><div class="text-center" style="font-size:15px;"><strong>Grupos y descripción del curso</strong></div>
-	</div>
-	{% if request.user.is_authenticated and not request.user.student %}
-		<form method="post" action="{% url 'add_student' %}">
-			{% csrf_token %}
-			<div class="alert alert-warning alert-dismissible" role="alert">
-				<strong>Advertencia!</strong> Para tomar cursos usted debe tener rol de estudiante. 
-				<button type="submit" class="btn btn-sm btn-primary">Crear</button>
-			</div>
-		</form>
-	{% endif %}
-	<div id="group_message"></div>
-	<div class="row" style="margin-bottom:3%;">
-		{% for group in course.group_set.all %}
-			<div class="col-md-6">
-				<div class="x_panel" style="height:250px;">
-					<div class="x_title">
-						<h2 class="green">{{group.name}}</h2>
-						<div class="clearfix"></div>
-					</div>
-					<div class="x_content">
-						<div class="col-md-6">
-							<strong>Curso: </strong>{{group.course}}
-						</div>
-						<div class="col-md-6">
-							<strong>Categoría: </strong>{{group.course.category}}
-						</div>
-						<div class="col-md-6">
-							<strong>Inscritos: </strong>{{group.enroll_set.count}} de {{ group.maximum }}
-						</div>
-						<div class="col-md-6">
-							<strong>Inversión: </strong>{{group.cost}} {{group.currency}}
-						</div>
-						<div class="col-md-12">
-							<strong>Horario: </strong>{{group.schedule}}
-						</div>
-						<div class="col-md-12">
-							<strong>Rango pre-inscripción: </strong>{{group.pre_enroll_start}} - {{group.pre_enroll_finish}}
-						</div>
-						<div class="col-md-12">
-							<strong>Rango inscripción: </strong>{{group.enroll_start}} - {{group.enroll_finish}}
-						</div>
-						<div class="col-md-6 text-left">
-							{% if group.is_paid %}
-								<span class="badge bg-green">Curso pagado</span>
-							{% else %}
-								<span class="badge bg-blue">Curso gratis</span>
-							{% endif %}
-						</div>
-						<div class="col-md-6 text-right">
-							{% if request.user.is_authenticated and request.user.student %}
-								{% if group.in_preenrollment or group.in_enrollment %}
-									<a class="btn btn-primary btn-sm" data-href="{% url 'enrollme' group.pk%}"  data-ajax="true">
-										{% if group.flow == group.AUTO_ENROLL %}{% trans 'Enroll me' %}{% else %}{% trans 'Pre-enroll me' %}{% endif %}
-									</a>
-								{% endif %}
-							{% endif%}
-						</div>
-					</div>
-				</div>
-			</div>
-		{% endfor %}
-	</div>
+    <div class="row" style="margin-bottom:3%; margin-top:5%;">
+        <h1 class="text-center" style="margin-bottom: -2%;">{{ course }}</h1>
+        <br/><br/>
+        <div class="text-center" style="font-size:15px;"><strong>Grupos y descripción del curso</strong></div>
+    </div>
+    {% if request.user.is_authenticated and not request.user.student %}
+        <form method="post" action="{% url 'add_student' %}">
+            {% csrf_token %}
+            <div class="alert alert-warning alert-dismissible" role="alert">
+                <strong>Advertencia!</strong> Para tomar cursos usted debe tener rol de estudiante.
+                <button type="submit" class="btn btn-sm btn-primary">Crear</button>
+            </div>
+        </form>
+    {% endif %}
+    <div id="group_message"></div>
+    <div class="row" style="margin-bottom:3%;">
+        {% if not course|is_open %}
+            <div class="row">
+                <div class="form-group" style="text-align:center; margin-top:3%; margin-bottom:3%;">
+                  <div class="alert alert-warning alert-dismissible" role="alert">
+                <strong></strong> No hay grupos disponibles para {{course}}.
+            </div>
+                </div>
+            </div>
+        {% else %}
+            {% for group in course|is_open %}
+                <div class="col-md-6">
+                    <div class="x_panel" style="height:250px;">
+                        <div class="x_title">
+                            <h2 class="green">{{ group.name }}</h2>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <div class="col-md-6">
+                                <strong>Curso: </strong>{{ group.course }}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Categoría: </strong>{{ group.course.category }}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Inscritos: </strong>{{ group.enroll_set.count }} de {{ group.maximum }}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Inversión: </strong>{{ group.cost }} {{ group.currency }}
+                            </div>
+                            <div class="col-md-12">
+                                <strong>Horario: </strong>{{ group.schedule }}
+                            </div>
+                            <div class="col-md-12">
+                                <strong>Rango pre-inscripción: </strong>{{ group.pre_enroll_start }}
+                                - {{ group.pre_enroll_finish }}
+                            </div>
+                            <div class="col-md-12">
+                                <strong>Rango inscripción: </strong>{{ group.enroll_start }} - {{ group.enroll_finish }}
+                            </div>
+                            <div class="col-md-6 text-left">
+                                {% if group.is_paid %}
+                                    <span class="badge bg-green">Curso pagado</span>
+                                {% else %}
+                                    <span class="badge bg-blue">Curso gratis</span>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 text-right">
+                                {% if request.user.is_authenticated and request.user.student %}
+                                    {% if group.in_preenrollment or group.in_enrollment %}
+                                        <a class="btn btn-primary btn-sm" data-href="{% url 'enrollme' group.pk %}"
+                                           data-ajax="true">
+                                            {% if group.flow == group.AUTO_ENROLL %}{% trans 'Enroll me' %}{% else %}
+                                                {% trans 'Pre-enroll me' %}{% endif %}
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
     <div class="row">
         <div class='col-md-10 col-md-offset-1 col-xs-12'>
-			<div class="x_panel">
-				<div class="x_title">
-					<h1 class="text-center" style="float:none;">Descripción del curso</h1>
-					<div class="clearfix"></div>
-				</div>
-				<div id="html_content" class="x_content">
-					{{ course.content | safe }}
-				</div>
-        	</div>
+            <div class="x_panel">
+                <div class="x_title">
+                    <h1 class="text-center" style="float:none;">Descripción del curso</h1>
+                    <div class="clearfix"></div>
+                </div>
+                <div id="html_content" class="x_content">
+                    {{ course.content | safe }}
+                </div>
+            </div>
         </div>
     </div>
-	<div class="row">
-		<div class="form-group" style="text-align:center; margin-top:3%; margin-bottom:3%;">
-			<a class="btn btn-primary" type="button" href="{% url 'courses' %}">Atrás</a>
-		</div>
-	</div>
-{%endblock%}
+    <div class="row">
+        <div class="form-group" style="text-align:center; margin-top:3%; margin-bottom:3%;">
+            <a class="btn btn-primary" type="button" href="{% url 'courses' %}">Atrás</a>
+        </div>
+    </div>
+{% endblock %}
 {% block js %}
-	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
 {% endblock %}

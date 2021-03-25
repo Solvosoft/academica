@@ -13,7 +13,7 @@ from matricula.forms import ProfessorEditForm, ProfessorSearchForm, ProfessorAdd
 from matricula.models import Professor
 
 from async_notifications.utils import send_email_from_template
-
+from matricula.views.utils import checking_user
 
 
 @login_required
@@ -116,6 +116,11 @@ class CreateProfessor(CreateView):
         enqueued=False,
         user=None)
 
+def change_state_user(professor):
+    professor.user.is_active = True
+    if not professor.active:
+        professor.user.is_active = False
+    professor.user.save()
 
 @method_decorator(permission_required('matricula.change_professor'), name='dispatch')
 class EditProfessor(UpdateView):
@@ -139,6 +144,8 @@ class EditProfessor(UpdateView):
             professor.description = form.cleaned_data['description']
             professor.active = form.cleaned_data['active']
             professor.save()
+            if not checking_user(professor.user):
+                change_state_user(professor)
             messages.success(self.request, "Profesora actualizada exitosamente.")
             return redirect(reverse('professors_list'))
         else: 
@@ -148,7 +155,7 @@ class EditProfessor(UpdateView):
             return render(request, self.template_name, self.get_context_data(**context))
 
     def get_context_data(self, **kwargs):
-        context =  {}
+        context = {}
         if 'form' not in kwargs:
             context['form'] = self.get_form()
         self.object = self.get_object()
