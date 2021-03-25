@@ -80,6 +80,7 @@ def view_course(request, pk=None):
                 Q(name__icontains=form_search.cleaned_data['name'])|
                 Q(course__name__icontains=form_search.cleaned_data['name'])|
                 Q(course__category__name__icontains=form_search.cleaned_data['name']))
+        groups = groups.filter(is_open=True)
         groups = sorted(groups, key=lambda t: t.in_preenrollment, reverse=True)
     return render(request, 'course.html', {
             'course': {'course': course, 'groups': groups},
