@@ -22,7 +22,7 @@
                 </li>
             </ul>
 
-            {% if request.user|checking_user == True %}
+            {% if request.user.is_active or request.user.professor.active %}
                 {% if perms.matricula.view_category or perms.matricula.view_course or perms.djgentelella.view_menuitem or  perms.matricula.view_group or perms.matricula.view_enroll or perms.matricula.view_period or perms.matricula.view_page or perms.matricula.view_student %}
                     <ul class="nav side-menu">
                         <li>

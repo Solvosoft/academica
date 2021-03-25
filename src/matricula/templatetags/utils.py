@@ -1,8 +1,6 @@
 from django import template
 from django.conf import settings
 
-from ..models import Professor
-
 register = template.Library()
 @register.filter(name='index')
 def index(array, index):
@@ -30,13 +28,4 @@ def group_state(state):
     result = 'Abierto'
     if not state:
         result = 'Cerrado'
-    return result
-
-@register.filter
-def checking_user(user):
-    result = True
-    if user.groups.filter(name='Profesores'):
-        professor = Professor.objects.filter(user_id=user.pk).first()
-        if professor and not professor.active:
-            result = False
     return result
