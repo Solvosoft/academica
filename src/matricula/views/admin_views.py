@@ -45,8 +45,6 @@ from matricula.views.utils import get_expire_date
 
 from chunked_upload.models import ChunkedUpload
 
-from matricula.views.utils import checking_professor
-
 MONTHS_DICT = {
     'January': 'enero',
     'February': 'febrero',
@@ -532,9 +530,9 @@ class GroupList(ListView):
     paginate_by = 30
 
     def get(self, *args, **kwargs):
-        if not checking_professor(self.request):
-            return redirect(reverse('courses'))
-        return super(GroupList, self).get(self.request, *args, **kwargs)
+        if hasattr(self.request.user, 'professor') and self.request.user.professor.active or self.request.user.is_active:
+            return super(GroupList, self).get(self.request, *args, **kwargs)
+        return redirect(reverse('courses'))
 
     def dispatch(self, *args, **kwargs):
         """ Permission check for this class """

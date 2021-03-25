@@ -1,4 +1,3 @@
-# -*- coding: UTF8 -*-
 from django.shortcuts import render
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required, login_required
