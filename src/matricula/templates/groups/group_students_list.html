@@ -77,7 +77,7 @@
         <div class="x_panel">
             <h2 class="green text-center">{{ object.name }}</h2>
             <div class="group_meta">
-                <span class="badge">Estudiantes: {{ object.enroll_set.all.count }}</span>
+                <span class="badge">Estudiantes: {{ object.count }}</span>
                 <span class="badge">Estado: {{ object.is_open|group_state }}</span>
             </div>
             <div class="x_content">
@@ -144,17 +144,17 @@
                 <div class="text-center">
                     <a class="btn btn-dark" href="{% url 'groups_enroll' %}">Atras</a>
                     {% if perms.matricula.can_open_group %}
-                        <a class="btn btn-primary" href="{% url 'open_group' object.pk %}">Abrir grupo</a>
-                        <a class="btn btn-primary" href="{% url 'open_group' object.pk %}?sendemail=1">Abrir grupo y
+                        <a class="btn btn-primary" href="{% url 'open_group' group.pk %}">Abrir grupo</a>
+                        <a class="btn btn-primary" href="{% url 'open_group' group.pk %}?sendemail=1">Abrir grupo y
                             notificar</a>
                     {% endif %}
                     {% if perms.matricula.can_close_group %}
-                        <a class="btn btn-primary" href="{% url 'close_group' object.pk %}">Cerrar grupo</a>
-                        <a class="btn btn-primary" href="{% url 'close_group' object.pk %}?sendemail=1">Cerrar grupo y
+                        <a class="btn btn-primary" href="{% url 'close_group' group.pk %}">Cerrar grupo</a>
+                        <a class="btn btn-primary" href="{% url 'close_group' group.pk %}?sendemail=1">Cerrar grupo y
                             notificar</a>
                     {% endif %}
                     {% if show_buttons_certificates %}
-                        <a class="btn btn-primary" href="{% url 'build_pdf_certificate_list' pk=object.pk %}">Generar
+                        <a class="btn btn-primary" href="{% url 'build_pdf_certificate_list' pk=group.pk %}">Generar
                             certificados</a>
                     {% endif %}
                     {% if perms.matricula.can_view_pdf_enrolled_group %}
@@ -163,10 +163,10 @@
                                     aria-haspopup="true" aria-expanded="false">PDF
                             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{% url 'export_enrolled_group' object.pk %}?finished=1">Inscritos</a>
-                                <a class="dropdown-item" href="{% url 'export_enrolled_group' object.pk %}">Pre-inscritos</a>
+                                <a class="dropdown-item" href="{% url 'export_enrolled_group' group.pk %}?finished=1">Inscritos</a>
+                                <a class="dropdown-item" href="{% url 'export_enrolled_group' group.pk %}">Pre-inscritos</a>
                                 <a class="dropdown-item"
-                                   href="{% url 'export_enrolled_group' object.pk %}?finished=2&activate=1">Pre-inscritos
+                                   href="{% url 'export_enrolled_group' group.pk %}?finished=2&activate=1">Pre-inscritos
                                     sin inscribir</a>
                             </div>
                             <div class="clearfix"></div>
