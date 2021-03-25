@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-12 19:44-0600\n"
+"POT-Creation-Date: 2021-03-25 14:01-0600\n"
 "PO-Revision-Date: 2020-01-09 08:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -39,6 +39,10 @@ msgstr "Reprobados"
 #: src/membership_core/templates/dashboard.html:30
 msgid "Countries"
 msgstr "Países"
+
+#: src/membership_core/forms.py:50 src/membership_core/forms.py:82
+msgid "This email already used"
+msgstr "Este correo ya esta registrado"
 
 #: src/membership_core/gtcharts.py:56
 #: src/membership_core/templates/dashboard.html:56
@@ -190,11 +194,7 @@ msgstr "Estudiante"
 msgid "Superadmin"
 msgstr "Super administradora"
 
-#: src/membership_core/templates/gentelella/base.html:115
-msgid "Administrator"
-msgstr "Administradora"
-
-#: src/membership_core/templates/gentelella/base.html:119
+#: src/membership_core/templates/gentelella/base.html:117
 msgid "Professor"
 msgstr "Facilitadora"
 

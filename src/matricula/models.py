@@ -83,7 +83,7 @@ class Period(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=300, verbose_name=_("Name")+" * ")
+    name = models.CharField(max_length=300, unique=True, verbose_name=_("Name")+" * ")
     description = models.TextField(verbose_name=_("Description")+ " * ")
     image = models.FileField(upload_to="categories/", verbose_name=_("Image"), blank=True, null=True)
 

@@ -248,7 +248,8 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
         return reverse_lazy('myprofile', kwargs={'pk': pk})
 
     def post(self, request, *args, **kwargs):
-        errors = False;
+        errors = False
+        self.object = self.get_object()
         if hasattr(request.user, 'professor'):
             professor_form = ProfessorEditProfileForm(request.POST)
             if professor_form.is_valid():
@@ -257,7 +258,7 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
                 professor.description = professor_form.cleaned_data['description']
                 professor.save()
             else:
-                errors = True;
+                errors = True
         if hasattr(request.user, 'student'):
             student_form = StudentEditForm(request.POST)
             if student_form.is_valid():
@@ -278,7 +279,8 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
         else:
             errors = True
         if errors:
-            messages.error(request, _("We have some validation errors"))
+            return self.render_to_response(self.get_context_data(
+                form=form, student_form=student_form, professor_form=professor_form))
         else:
             messages.success(request, _("Profile updated successfully"))
         return super(StudentEdit, self).get(request, *args, **kwargs)
@@ -294,3 +296,13 @@ def login_user(request):
 
     else:
         return render(request, 'student_login.html')
+
+
+def parse_form_errors(form):
+    msgs = ' - '
+    fields = list(form.fields.keys())
+    for field in fields:
+        if form[field].errors:
+            for message in form[field].errors:
+                msgs += message
+    return msgs

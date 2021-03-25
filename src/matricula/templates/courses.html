@@ -1,5 +1,6 @@
 {% extends 'gentelella/base.html'%}
 {%load i18n static %}
+{% load utils %}
 {% block extra_css %} 
 	<link href="{% static 'css/matricula.css' %}" rel="stylesheet">
 {% endblock %}
@@ -56,11 +57,17 @@
 								<div class=" col-md-6">
 									<strong>Grupos registrados: </strong>{{course.groups|length}}
 								</div>
-								<div class=" col-sm-6" style="text-align:right;">
-									<a class="btn btn-link btn-lg green" href="{% url 'course' course.course.pk%}">
-										<i class="fa fa-eye"> </i> Ver Grupos...
-									</a>
-								</div>
+                                    <div class=" col-sm-6" style="text-align:right;">
+                                        {% if course.course|is_open %}
+                                        <a class="btn btn-link btn-lg green" href="{% url 'course' course.course.pk%}">
+                                            <i class="fa fa-eye"> </i> Ver Grupos...
+                                        </a>
+                                        {% else %}
+                                         <a disabled="true" class="btn btn-link btn-lg green">
+                                            No hay grupos abiertos...
+                                        </a>
+                                        {% endif %}
+                                    </div>
 							</div>
 							<div class="clearfix"></div>
 						</div>

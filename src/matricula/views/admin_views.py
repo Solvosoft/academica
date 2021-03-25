@@ -45,7 +45,6 @@ from matricula.views.utils import get_expire_date
 
 from chunked_upload.models import ChunkedUpload
 
-
 MONTHS_DICT = {
     'January': 'enero',
     'February': 'febrero',
@@ -530,13 +529,17 @@ class GroupList(ListView):
     model = Group
     paginate_by = 30
 
+    def get(self, *args, **kwargs):
+        if hasattr(self.request.user, 'professor') and self.request.user.professor.active or self.request.user.is_active:
+            return super(GroupList, self).get(self.request, *args, **kwargs)
+        return redirect(reverse('courses'))
+
     def dispatch(self, *args, **kwargs):
         """ Permission check for this class """
         return super(GroupList, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
         queryset = super().get_queryset()
-
         user = self.request.user
         professor = Professor.objects.filter(user=user).first()
 
@@ -807,6 +810,8 @@ def open_group(request, pk):
         messages.error(_("Group Not Found"))
     enrolls = Enroll.objects.filter(group=group)
     enrolls.update(enroll_activate=True)
+    group.is_open = True
+    group.save()
     if request.GET.get('sendemail', '0') == '1':
         schema = request.scheme+"://"
         send_email_from_template(
@@ -832,6 +837,8 @@ def close_group(request, pk):
         messages.error(_("Group Not Found"))
     enrolls = Enroll.objects.filter(group=group)
     enrolls.update(enroll_activate=False)
+    group.is_open = False
+    group.save()
     if request.GET.get('sendemail', '0') == '1':
         schema = request.scheme+"://"
         send_email_from_template(
