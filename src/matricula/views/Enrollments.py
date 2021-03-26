@@ -8,15 +8,18 @@ Created on 17/5/2015
 
 from django_ajax.decorators import ajax
 from django.shortcuts import get_object_or_404, render, redirect
-from matricula.models import Group, Enroll
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.db import IntegrityError, transaction
-from async_notifications.utils import send_email_from_template
 from django.db.models import Q
 from django.contrib import messages
+from django.conf import settings
+
+from async_notifications.utils import send_email_from_template
+
+from matricula.models import Group, Enroll
 
 
 @ajax
@@ -46,7 +49,7 @@ def enrollme(request, pk):
                     return {
                         "inner-fragments": {
                             "#count_" + str(group.pk): group.enroll_set.count(),
-                            "#group_message": '<div class="alert alert-success" role="alert">' + str(_('Enrollment success')) + '</div>'
+                            "#group_message": '<div class="alert alert-success" role="alert">' + str(_('Enrollment success you have 20 minutes from now to complete the payment')) +' <a class="btn btn-primary" href="'+ reverse('bills')+'">'+str(_('Pay Now')) +'</a>'+'</div>'
                         },
                     }
                 elif group.in_preenrollment:

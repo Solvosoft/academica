@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-25 14:01-0600\n"
+"POT-Creation-Date: 2021-03-26 11:32-0600\n"
 "PO-Revision-Date: 2020-11-27 20:41-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -414,6 +414,7 @@ msgstr "Cupones"
 msgid "Fake Group"
 msgstr "Grupo"
 
+#: src/matricula/models.py:345
 msgid "Fake Groups"
 msgstr "Grupos"
 
@@ -751,9 +752,13 @@ msgstr "No existe usuaria"
 msgid "Profile updated successfully"
 msgstr "Perfil actualizado con éxito"
 
-#: src/matricula/views/Enrollments.py:49 src/matricula/views/Enrollments.py:91
-msgid "Enrollment success"
-msgstr "Matriculado satisfactoriamente"
+#: src/matricula/views/Enrollments.py:52
+msgid "Enrollment success you have 20 minutes from now to complete the payment"
+msgstr "Matriculado satisfactoriamente. a partir de este momento tiene 20 minutos para realizar el pago."
+
+#: src/matricula/views/Enrollments.py:52
+msgid "Pay Now"
+msgstr "Pagar ahora"
 
 #: src/matricula/views/Enrollments.py:68
 msgid "Pre-enrollment success"
@@ -763,7 +768,11 @@ msgstr "Pre-matriciulado satisfactoriamente"
 msgid "We have some problems with your enroll, try again"
 msgstr "Tenemos problemas con la matrícula, trate de nuevo"
 
-#: src/matricula/views/Enrollments.py:93
+#: src/matricula/views/Enrollments.py:94
+msgid "Enrollment success"
+msgstr "Matriculado satisfactoriamente"
+
+#: src/matricula/views/Enrollments.py:96
 msgid "You are already enrolled"
 msgstr "Usted ya está matriculado"
 
