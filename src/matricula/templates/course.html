@@ -54,9 +54,11 @@
 						<div class="col-md-6">
 							<strong>Inscritos: </strong>{{group.enroll_set.count}} de {{ group.maximum }}
 						</div>
-						<div class="col-md-6">
-							<strong>Inversión: </strong>{{group.cost}} {{group.currency}}
-						</div>
+						{% if group.is_paid %}
+							<div class="col-md-6">
+								<strong>Inversión: </strong>{{group.cost}} {{group.currency}}
+							</div>
+						{% endif %}
 						<div class="col-md-12">
 							<strong>Horario: </strong>{{group.schedule}}
 						</div>
