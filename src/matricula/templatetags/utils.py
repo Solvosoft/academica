@@ -1,5 +1,8 @@
 from django import template
 from django.conf import settings
+from django.utils.translation import gettext as _
+from django.utils.safestring import mark_safe
+
 
 register = template.Library()
 @register.filter(name='index')
@@ -12,7 +15,7 @@ def index(array, index):
 def is_admin(group_name, name):
     name_settings = getattr(settings, name, "")
     if name_settings == group_name:
-        return "<span class='badge'>"+_("Administrator")+"</span>"
+        return mark_safe("<span class='badge'>"+_("Administrator")+"</span>")
     return ''
 
 @register.filter
