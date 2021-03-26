@@ -75,10 +75,10 @@
     <h1 class="text-center">Lista de estudiantes del curso</h1>
     <div class="col-sm-12">
         <div class="x_panel">
-            <h2 class="green text-center">{{ object.name }}</h2>
+            <h2 class="green text-center">{{ group.name }}</h2>
             <div class="group_meta">
                 <span class="badge">Estudiantes: {{ object.count }}</span>
-                <span class="badge">Estado: {{ object.is_open|group_state }}</span>
+                <span class="badge">Estado: {{ group.is_open|group_state }}</span>
             </div>
             <div class="x_content">
                 <div class="dashboard-widget-content">
@@ -99,7 +99,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for enroll in object.enroll_set.all %}
+                        {% for enroll in enroll_set.all %}
                             <tr class="{% cycle 'odd' 'even' %} pointer">
                                 <td class="">{{ enroll.student }}</td>
                                 <td class="">{{ enroll.enroll_date }}</td>

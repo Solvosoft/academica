@@ -231,7 +231,7 @@ class GroupAddForm(forms.ModelForm, GTForm):
         fields = [
             'name', 'period', 'schedule', 'pre_enroll_start', 'pre_enroll_finish',
             'enroll_start', 'enroll_finish', 'is_paid', 'currency', 'cost',
-            'maximum', 'is_open', 'flow'
+            'maximum', 'is_open', 'flow', 'professors'
         ]
         widgets = {
             "name": djgentelella.TextInput,
@@ -247,7 +247,8 @@ class GroupAddForm(forms.ModelForm, GTForm):
             "cost": djgentelella.NumberInput,
             "maximum": djgentelella.NumberInput,
             "is_open": djgentelella.YesNoInput,
-            "flow": djgentelella.Select
+            "flow": djgentelella.Select,
+            'professors': djgentelella.SelectMultiple
         }
 
     def __init__(self, *args, **kwargs):
@@ -433,6 +434,7 @@ class GroupEditForm(forms.ModelForm, GTForm):
 
     def __init__(self, *args, **kwargs):
         super(GroupEditForm, self).__init__(*args, **kwargs)
+        self.fields['period'].disabled = True
         if 'initial' in kwargs:
             if 'period_id' in kwargs['initial']:
                 self.fields['period'].initial = kwargs['initial']['period_id']
