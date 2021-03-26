@@ -327,6 +327,7 @@ def add_group_course(request, pk=None):
                     flow=form.cleaned_data['flow']
                 )
                 group.save()
+                group.professors.set(form.cleaned_data['professors'])
                 messages.success(request, "Grupo agregado con éxito")
                 return HttpResponseRedirect(reverse('enrrolment_courses'))
             else:
@@ -678,6 +679,7 @@ def create_group(request):
                 flow=form.cleaned_data['flow']
             )
             group.save()
+            group.professors.set(form.cleaned_data['professors'])
             messages.success(request, "Grupo guardado con éxito")
             return HttpResponseRedirect(reverse('groups_enroll'))
         else:

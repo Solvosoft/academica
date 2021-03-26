@@ -60,7 +60,7 @@ def view_course(request, pk=None):
     form_search.is_valid()
     if pk is not None:
         course = get_object_or_404(Course, pk=pk)
-        groups = Group.objects.filter(period__in=period, course=course).all()
+        groups = Group.objects.filter(period__in=period, course=course, is_open=True).all()
         groups = sorted(groups, key=lambda t: t.in_preenrollment, reverse=True)
     else:
         course = Course.objects.none()

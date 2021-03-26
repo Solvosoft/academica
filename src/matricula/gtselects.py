@@ -36,11 +36,9 @@ class PermissionGModelLookup(BaseSelect2View):
 @register_lookups(prefix="period", basename="periodbasename")
 class PeriodGModelLookup(BaseSelect2View):
     model = Period
-    fields = ['name']
 
     def get_queryset(self):
         return get_active_period()
-
 
 @register_lookups(prefix="studentuser", basename="studentuser")
 class UserProfessorGModelLookup(BaseSelect2View):

@@ -74,7 +74,7 @@ class Period(models.Model):
     finish_date = models.DateField(verbose_name=_("Period finish date")+" * ")
 
     def __str__(self):
-        return self.name
+        return self.name + ' ({} - {})'.format(self.start_date, self.finish_date)
 
     class Meta:
         verbose_name = _("Period")
