@@ -23,6 +23,7 @@ class Command(BaseCommand):
             'new_professor_created_academy',
             'reset_password_academy',
             'email_enroll_rejected',
+            'invoice_not_found',
         ]
         TemplateContext.objects.filter(code__in=templates).delete()
         EmailTemplate.objects.filter(code__in=templates).delete()

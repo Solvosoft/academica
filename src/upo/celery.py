@@ -23,8 +23,11 @@ from celery.schedules import crontab
 app.conf.CELERYBEAT_SCHEDULE = {
     'send_daily_emails': {  # this sends the emails in the email notifications list
         'task': 'async_notifications.tasks.send_daily',
-        'schedule': crontab(minute='*/5'),  # execute 01:00h
+        'schedule': crontab(minute='*/5'),  # execute every 5 minutes
     },
-
+    'remove_invoices': {  # remove invoices generated that were not paid in the grace period
+        'task': 'matricula.tasks.remove_invoices',
+        'schedule': crontab(minute='*/20'),  # execute every 20 minutes
+    },
 }
 app.conf.CELERY_TIMEZONE = settings.TIME_ZONE

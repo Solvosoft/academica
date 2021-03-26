@@ -68,3 +68,11 @@ def load_email_temp_academica():
     update_template_context("coupon_code_notification_updated",  "¡Felicidades de nuevo! Tu cupón de descuento ha sido actualizado - UPO",
                             [('coupon'),  ("domain")], 'coupons/coupon_code_notification_update.html',
                             as_template=True)
+    update_template_context(
+        'email_enroll_removed', 'Lo sentimos, Tu MATRÍCULA ha sido eliminada por no realizarse el pago',
+        [('group'),("domain")], 'email_enroll_removed.html', as_template=True)
+    
+    update_template_context(
+        'invoice_not_found', 'Correo de notificación de error en pago paypal',
+        [('student'), ('domain'), ('transaction_id'),("group"),('amount'), ('currency')],
+        'email_invoice_error.html', as_template=True)

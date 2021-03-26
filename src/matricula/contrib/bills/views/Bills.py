@@ -39,8 +39,9 @@ def get_my_bills(request):
                         "business": settings.PAYPAL_RECEIVER_EMAIL,
                         "amount": "%.2f" % (amount),
                         "currency_code": 'USD',
-                        "item_name": bill.short_description,
+                        "item_name": str(bill.enrollment.group.pk),
                         "invoice": str(bill.pk),
+                        "item_number": str(bill.enrollment.student.pk),
                         "notify_url":
                             settings.MY_PAYPAL_HOST + reverse('paypal-ipn'),
                         "return_url": settings.MY_PAYPAL_HOST + reverse('bills'),

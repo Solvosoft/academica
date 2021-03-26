@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Matricula Bills\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-25 14:01-0600\n"
+"POT-Creation-Date: 2021-03-25 23:42-0600\n"
 "PO-Revision-Date: 2020-11-27 14:57-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: ES <es@solvosoft.com>\n"
@@ -38,17 +38,20 @@ msgstr "Descripción"
 
 #: src/matricula/contrib/bills/models.py:13
 #: src/matricula/contrib/bills/templates/bills/bill_list.html:88
+#: src/matricula/contrib/bills/templates/email_invoice_error.html:91
 #: src/matricula/contrib/bills/templates/invoice_enroll.html:17
 msgid "Amount"
 msgstr "Monto"
 
 #: src/matricula/contrib/bills/models.py:15
+#: src/matricula/contrib/bills/templates/email_invoice_error.html:83
 #: src/matricula/contrib/bills/templates/invoice_enroll.html:5
 msgid "Student"
 msgstr "Estudiante"
 
 #: src/matricula/contrib/bills/models.py:17
 #: src/matricula/contrib/bills/templates/bills/bill_list.html:98
+#: src/matricula/contrib/bills/templates/email_invoice_error.html:95
 msgid "Currency"
 msgstr "Moneda"
 
@@ -165,6 +168,14 @@ msgstr "ID único de transacción"
 #: src/matricula/contrib/bills/templates/email_invoice.html:97
 msgid "Paid Date"
 msgstr "Fecha de pago"
+
+#: src/matricula/contrib/bills/templates/email_invoice_error.html:75
+msgid "Course Name"
+msgstr "Nombre del curso"
+
+#: src/matricula/contrib/bills/templates/email_invoice_error.html:87
+msgid "Email"
+msgstr "Correo electrónico"
 
 #: src/matricula/contrib/bills/templates/invoice_enroll.html:2
 msgid "Academica Invoice"

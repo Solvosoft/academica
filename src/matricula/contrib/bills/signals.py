@@ -2,7 +2,7 @@
 from django.db.models.signals import post_save
 from django.template.loader import render_to_string
 from django.dispatch import receiver
-from matricula.models import Enroll, Coupon
+from matricula.models import Enroll, Coupon, Group, Student
 from .models import Bill
 from django.utils.translation import ugettext_lazy as _
 from paypal.standard.ipn.signals import valid_ipn_received
@@ -66,18 +66,12 @@ def create_bill(sender, **kwargs):
 def paypal_bill_paid(sender, **kwargs):
     ipn_obj = sender
     if ipn_obj.payment_status == ST_PP_COMPLETED:
-        try:
-            bill = Bill.objects.get(pk=ipn_obj.invoice)
+        bill = Bill.objects.filter(pk=ipn_obj.invoice).first()
+        if bill:
             bill.is_paid = True
             bill.paid_date = datetime.now()
             bill.transaction_id = ipn_obj.txn_id
             bill.save()
-            ok = True
-        except Exception as e:
-            print(e)
-            ok = False
-            # FIXME do something here
-        if ok:
             send_email_from_template(
                 'email_invoice_academy', bill.student.user.email, {
                     'bill': bill,
@@ -87,6 +81,22 @@ def paypal_bill_paid(sender, **kwargs):
                 },
                 enqueued=False,
                 user=None)
-
+        else:
+            group = Group.objects.filter(pk=ipn_obj.item_name).first()
+            student = Student.objects.filter(pk=ipn_obj.item_number).first()
+            transaction_id = ipn_obj.txn_id
+            amount = ipn_obj.mc_gross
+            currency = ipn_obj.mc_currency
+            send_email_from_template(
+                'invoice_not_found', student.user.email, {
+                    'student': student,
+                    'domain': settings.MY_PAYPAL_HOST,
+                    'transaction_id': transaction_id,
+                    'group': group,
+                    'amount': amount,
+                    'currency': currency,
+                },
+                enqueued=False,
+                user=None)
 
 valid_ipn_received.connect(paypal_bill_paid)

@@ -50,13 +50,13 @@
         </div>
 
         <div class="movableContent" style="border: 0px; padding-top: 0px; position: relative;">
-            <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
 
                           <tr>
                             <td align='left'>
                               <div class="contentEditableContainer contentTextEditable">
-                                <div class="contentEditable" align='center'>
-                                  <h2 style="font-weight:700;">¡Hola {{bill.student}}!</h2>
+                                <div class="contentEditable" align='left'>
+                                  <h2 style="font-weight:700;">¡Hola {{student}}!</h2>
                                 </div>
                               </div>
                             </td>
@@ -67,27 +67,40 @@
                           <tr>
                             <td align='left'>
                               <div class="contentEditableContainer contentTextEditable">
-                                <div class="contentEditable" align='center'>
+                                <div class="contentEditable" align='left'>
 <br>
-<p style="text-align: center;">A continuación se comparte el detalle de la factura.</p>
-{{bill_description_safe}}
-<center>
-	<div>
-		{% if bill.is_paid %} 
-			{% trans 'Invoice paid' %} 
-		{% else %} 
-			{% trans 'Invoice unpaid' %}
-		{% endif %}<br>
-		{% trans 'Unique Transaction ID'%} {{bill.transaction_id}}
-	</div>
-</center>
+<p style="text-align: left;">Se han tenido problemas al procesar tu pago, un administrador de UPo ya esta al tanto de la situación, adjuntamos los detalles de tu pago para que puedas tenerlos en caso que te sean solicitados.</p>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><strong>{% trans 'Course Name' %}:</strong></td>
+      <td>{{group}} -- {{group.course}}</td>
+    </tr>
+    <tr>
+      <td><strong>{% trans 'Unique Transaction ID' %}:</strong></td>
+      <td>{{transaction_id}}</td>
+    </tr>
+    <tr>
+      <td><strong>{% trans 'Student' %}:</strong></td>
+      <td>{{student}}</td>
+    </tr>
+    <tr>
+      <td><strong>{% trans 'Email' %}:</strong></td>
+      <td>{{student.user.email}}</td>
+    </tr>
+    <tr>
+      <td><strong>{% trans 'Amount' %}:</strong></td>
+      <td>{{amount}}</td>
+    </tr>
+    <tr>
+      <td><strong>{% trans 'Currency' %}:</strong></td>
+      <td>{{currency}}</td>
+    </tr>
+  </table>
 <br>
-{% if bill.paid_date %}
-	<div class="paid_date"> {% trans "Paid Date"%} : {{ bill.paid_date}}</div>
-{% endif %}
 <br><br>
-¡Muchas gracias por tu confianza!<br/>
-¡Abrazos solidarios de todo el equipo!
+  <div style="text-align:center;">
+  ¡Muchas gracias por tu comprensión!<br/>
+  ¡Abrazos solidarios de todo el equipo!
 </div>
                               </div>
                             </td>

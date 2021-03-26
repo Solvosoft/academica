@@ -21,7 +21,8 @@ class Bill(models.Model):
     transaction_id = models.TextField(max_length=300, null=True, blank=True)
     # FIXME This relation has to be changed to OneToOneField
     enrollment = models.ForeignKey("matricula.Enroll", null=True, on_delete=models.CASCADE, verbose_name=("Enrollment"))
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    
     def __str__(self):
         return self.short_description
 
