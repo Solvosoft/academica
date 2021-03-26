@@ -221,5 +221,6 @@ ASYNC_NEWSLETTER_SEVER_CONFIGS={
     #use_tls=my_use_tls
 }
 """
+PAYPAL_ERROR_EMAIL_NOFIFY = ("secretaria@universidadpopular.red",)
 PROFESSOR_GROUP_NAME = "Profesores"
 ADMIN_GROUP_NAME = "Administradores Académica"

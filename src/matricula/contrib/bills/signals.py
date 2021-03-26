@@ -1,18 +1,21 @@
 # -*- coding: UTF-8 -*-
+from datetime import datetime
+
 from django.db.models.signals import post_save
 from django.template.loader import render_to_string
 from django.dispatch import receiver
-from matricula.models import Enroll, Coupon, Group, Student
-from .models import Bill
 from django.utils.translation import ugettext_lazy as _
-from paypal.standard.ipn.signals import valid_ipn_received
-from paypal.standard.models import ST_PP_COMPLETED
-from datetime import datetime
 from django.utils.encoding import smart_text
-from async_notifications.utils import send_email_from_template
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.html import mark_safe
 from django.conf import settings
+
+from paypal.standard.ipn.signals import valid_ipn_received
+from paypal.standard.models import ST_PP_COMPLETED
+
+from matricula.models import Enroll, Coupon, Group, Student
+from async_notifications.utils import send_email_from_template
+from .models import Bill
 
 
 @receiver(post_save, sender=Enroll)
@@ -87,8 +90,10 @@ def paypal_bill_paid(sender, **kwargs):
             transaction_id = ipn_obj.txn_id
             amount = ipn_obj.mc_gross
             currency = ipn_obj.mc_currency
+            emails = list(settings.PAYPAL_ERROR_EMAIL_NOFIFY)
+            emails.append(bill.student.user.email)
             send_email_from_template(
-                'invoice_not_found', student.user.email, {
+                'invoice_not_found', emails, {
                     'student': student,
                     'domain': settings.MY_PAYPAL_HOST,
                     'transaction_id': transaction_id,
