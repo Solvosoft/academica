@@ -4,6 +4,7 @@ from django.conf import settings
 from upo.celery import app
 
 from matricula.contrib.bills.models import Bill
+from matricula.models import Enroll
 
 from async_notifications.utils import send_email_from_template
 
@@ -23,4 +24,5 @@ def remove_invoices():
                 'domain': settings.MY_PAYPAL_HOST,
             },
             enqueued=False, user=None)
+    Enroll.objects.filter(bill__in=bills).delete()
     bills.delete()
