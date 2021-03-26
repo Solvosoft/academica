@@ -4,13 +4,12 @@ Created on 17/5/2015
 
 @author: luisza
 '''
+import uuid
+
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render, redirect, get_object_or_404
-from matricula.forms import ProfessorEditForm, ProfessorEditProfileForm, StudentCreateForm, StudentEditForm, UserEditForm
-from matricula.models import Student, Enroll
 from django.urls import reverse, reverse_lazy
-from django.contrib import messages
-from django.contrib import auth
+from django.contrib import messages, auth
 from django.http.response import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -19,9 +18,13 @@ from django.template.loader import render_to_string
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
-from django.utils.timezone import now
-from matricula.views.utils import get_expire_date
+
 from async_notifications.utils import send_email_from_template
+
+from matricula.models import Student, Enroll
+from matricula.views.utils import get_expire_date
+from matricula.forms import ProfessorEditProfileForm, StudentCreateForm, StudentEditForm, UserEditForm, \
+    StudentResetPasswordForm
 
 
 def create_user(request):
@@ -159,35 +162,22 @@ def login(request):
 
 
 def recover_password(request):
-    new_pass = None
-    message = None
-    form_message = ''
     if request.method == 'GET':
-        key = request.GET.get('key', '')
-        id = request.GET.get('id', -1)
+        token = request.GET.get('key','')
+        student = get_object_or_404(Student, key=token)
+        form = StudentResetPasswordForm(initial=student.__dict__)
     else:
-        key = request.POST.get('key', '')
-        id = request.POST.get('id', -1)
-        new_pass = request.POST.get('password', '')
-    student = get_object_or_404(Student, pk=id)
-    if str(student.key) == str(key):
-        if new_pass:
-            student.user.set_password(new_pass)
+        form = StudentResetPasswordForm(request.POST)
+        if form.is_valid():
+            student = get_object_or_404(Student, key=form.cleaned_data['key'])
+            student.user.set_password(form.cleaned_data['password'])
+            student.key = uuid.uuid4()
             student.save()
-            student.user.save()
-            return render(request, 'messages.html',
-                          {'message': "La contraseña ha sido cambiada con éxito.",
-                           'mtype': 'success'}
-                          )
-        if not new_pass and request.method == 'POST':
-            messages.error(request, _("Wrong password"))
-        return render(request, 'recover_password.html', {'student': student, 'change': 'form',
-                                                         'message': message,
-                                                         'form_message': form_message})
-    else:
-        return render(request, 'recover_password.html', {'student': student, 'change': 'error',
-                                                         'message': _("Wrong confirmation key") 
-                                                         })
+            messages.success(request, "La contraseña ha sido cambiada con éxito.")
+            return render(request, 'recover_password.html', {"student": student})
+        else:
+            messages.error(request, "No fue posible actualizar la contraseña.")
+    return render(request, 'recover_password.html', {"form": form, "student": student})
 
 
 @ajax

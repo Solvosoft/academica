@@ -576,6 +576,38 @@ class StudentChangePasswordForm(GTForm, forms.ModelForm):
 
         return password
 
+
+class StudentResetPasswordForm(GTForm, forms.Form):
+    
+    MIN_LENGTH = 8
+
+    key = forms.CharField(widget=forms.HiddenInput(), max_length=255, required=False)
+    password = forms.CharField(
+        label=_("Password"), widget=djgentelella.PasswordInput,
+        required=True, min_length=8)
+
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+
+        # At least MIN_LENGTH long
+        if len(password) < self.MIN_LENGTH:
+            raise forms.ValidationError("El password debe tener al menos %d caracteres de longitud." % self.MIN_LENGTH)
+
+        # At least one letter and one non-letter
+        first_isalpha = password[0].isalpha()
+        if all(c.isalpha() == first_isalpha for c in password):
+            raise forms.ValidationError("El password debe tener al menos una letra minúscula y un dígito.")
+
+        if re.search('[A-Z]', password)==None:
+            raise forms.ValidationError("El password debe tener al menos una letra mayúscula.")
+
+        if not re.findall('[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
+            raise forms.ValidationError(
+                _("The password must contain at least 1 symbol: ")+"()[]{}|\`~!@#$%^&*_-+=;:'\",<>./?"
+            )
+        return password
+
+
 class PageSearchForm(GTForm, forms.Form):
     slug = forms.CharField(
         label="Nombre", widget=djgentelella.TextInput, required=False)
