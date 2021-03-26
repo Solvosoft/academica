@@ -434,6 +434,7 @@ class GroupEditForm(forms.ModelForm, GTForm):
 
     def __init__(self, *args, **kwargs):
         super(GroupEditForm, self).__init__(*args, **kwargs)
+        self.fields['period'].disabled = True
         if 'initial' in kwargs:
             if 'period_id' in kwargs['initial']:
                 self.fields['period'].initial = kwargs['initial']['period_id']
