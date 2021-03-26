@@ -162,14 +162,13 @@ def login(request):
 
 
 def recover_password(request):
+    token = request.GET.get('key','')
+    student = get_object_or_404(Student, key=token)
     if request.method == 'GET':
-        token = request.GET.get('key','')
-        student = get_object_or_404(Student, key=token)
         form = StudentResetPasswordForm(initial=student.__dict__)
     else:
         form = StudentResetPasswordForm(request.POST)
         if form.is_valid():
-            student = get_object_or_404(Student, key=form.cleaned_data['key'])
             student.user.set_password(form.cleaned_data['password'])
             student.key = uuid.uuid4()
             student.save()
