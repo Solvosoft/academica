@@ -306,8 +306,8 @@ def edit_course(request, pk=None):
 @permission_required('matricula.can_add_group_course')
 def add_group_course(request, pk=None):
     if pk is not None:
+        course = Course.objects.get(pk=pk)
         if request.method == "POST":
-            course = Course.objects.get(pk=pk)
             form = GroupAddForm(request.POST)
             if form.is_valid():
                 group = Group(
@@ -332,9 +332,9 @@ def add_group_course(request, pk=None):
                 return HttpResponseRedirect(reverse('enrrolment_courses'))
             else:
                 messages.error(request, "Error al crear grupo")
-                return render(request, 'courses/course_group_create.html', {'form': form})
+                return render(request, 'courses/course_group_create.html', {'form': form, 'course':course})
         form = GroupAddForm()
-        return render(request, 'courses/course_group_create.html', {'form': form})
+        return render(request, 'courses/course_group_create.html', {'form': form, 'course': course})
     return HttpResponseRedirect(reverse('enrrolment_courses'))
 
 
