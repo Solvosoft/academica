@@ -13,13 +13,14 @@ from django.contrib import messages, auth
 from django.http.response import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django_ajax.decorators import ajax
 from django.template.loader import render_to_string
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
+from django.utils.timezone import now
 
 from async_notifications.utils import send_email_from_template
+from django_ajax.decorators import ajax
 
 from matricula.models import Student, Enroll
 from matricula.views.utils import get_expire_date
