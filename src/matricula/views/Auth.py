@@ -170,6 +170,7 @@ def recover_password(request):
         form = StudentResetPasswordForm(request.POST)
         if form.is_valid():
             student.user.set_password(form.cleaned_data['password'])
+            student.user.save()
             student.key = uuid.uuid4()
             student.save()
             messages.success(request, "La contraseña ha sido cambiada con éxito.")
