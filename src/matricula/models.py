@@ -2,7 +2,6 @@
 from decimal import Decimal
 from django.db import models
 from django.contrib.auth.models import User, Group as AuthGroup
-from django.db.models.fields.related import ForeignKey, OneToOneField
 from django.utils.encoding import smart_text
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -14,7 +13,7 @@ from membership_core.models import Country, SystemCurrency
 
 class Student(models.Model):
     user = models.OneToOneField(
-        User, on_delete=models.CASCADE, primary_key=True, verbose_name="Usuario *")
+        User, on_delete=models.CASCADE, primary_key=True, verbose_name="Usuaria *")
     organization = models.CharField(verbose_name="Organización * ", max_length=150)
     country = models.ForeignKey(Country, on_delete=models.CASCADE, default=50)
     phone_number = models.CharField("Número de teléfono * ", max_length=15, default="")
@@ -335,7 +334,7 @@ class Coupon(models.Model):
 
 class FakeGroup(models.Model):
     name = models.CharField(_('Name'), max_length=200)
-    group = OneToOneField(AuthGroup, on_delete=models.CASCADE)
+    group = models.OneToOneField(AuthGroup, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.name}"
