@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Matricula Bills\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-25 23:42-0600\n"
+"POT-Creation-Date: 2021-03-28 09:21-0600\n"
 "PO-Revision-Date: 2020-11-27 14:57-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: ES <es@solvosoft.com>\n"
@@ -161,7 +161,8 @@ msgstr "Pagos completados"
 msgid "Invoice unpaid"
 msgstr "Pagos pendientes"
 
-#: src/matricula/contrib/bills/templates/email_invoice.html:92
+#: src/matricula/contrib/bills/templates/email_invoice.html:81
+#: src/matricula/contrib/bills/templates/email_invoice_error.html:79
 msgid "Unique Transaction ID"
 msgstr "ID único de transacción"
 

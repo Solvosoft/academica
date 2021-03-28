@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-26 14:06-0600\n"
+"POT-Creation-Date: 2021-03-28 09:21-0600\n"
 "PO-Revision-Date: 2020-11-27 20:41-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -114,8 +114,13 @@ msgstr "Contraseña"
 msgid "User name exist "
 msgstr "El nombre de usuaria existe "
 
-#: src/matricula/forms.py:90 src/matricula/forms.py:117
-#: src/matricula/forms.py:535
+#: src/matricula/forms.py:87 src/matricula/forms.py:574
+#: src/matricula/forms.py:606
+msgid "The password must contain at least 1 symbol: "
+msgstr "La contraseña debe contener al menos un simbolo: "
+
+#: src/matricula/forms.py:95 src/matricula/forms.py:122
+#: src/matricula/forms.py:542
 msgid "This email already used"
 msgstr "Este correo ya esta registrado"
 
@@ -160,7 +165,7 @@ msgstr "¿Es reversible?"
 msgid "Reversed kwargs"
 msgstr "Diccionario de parámetros"
 
-#: src/matricula/forms.py:293
+#: src/matricula/forms.py:299
 msgid "Reversed args"
 msgstr "Lista de parámetros"
 
@@ -175,10 +180,6 @@ msgstr "Icono"
 #: src/matricula/forms.py:297
 msgid "Only icon?"
 msgstr "¿Solo ícono?"
-
-#: src/matricula/forms.py:569
-msgid "The password must contain at least 1 symbol: "
-msgstr "La contraseña debe contener al menos un simbolo: "
 
 #: src/matricula/menues.py:13 src/matricula/models.py:110
 msgid "Courses"
@@ -615,12 +616,13 @@ msgid "Password recovery"
 msgstr "Recuperar contraseña"
 
 #: src/matricula/templates/recover_password.html:21
-msgid "New Password"
-msgstr "Nueva contraseña"
-
-#: src/matricula/templates/recover_password.html:22
 msgid "Change password"
 msgstr "Cambiar contraseña"
+
+#: src/matricula/templates/recover_password.html:33
+#: src/matricula/templates/student_create.html:66
+msgid "Show password"
+msgstr "Mostrar contraseña"
 
 #: src/matricula/templates/student_add.html:7
 msgid "New student"
@@ -645,10 +647,6 @@ msgstr "Nueva usuaria"
 #: src/matricula/templates/student_create.html:8
 msgid "Your data"
 msgstr "Sus datos"
-
-#: src/matricula/templates/student_create.html:69
-msgid "Show password"
-msgstr "Mostrar contraseña"
 
 #: src/matricula/templates/student_list.html:7
 msgid "Home"
@@ -736,15 +734,7 @@ msgstr "Clave no existe"
 msgid "Login failed"
 msgstr "Falló la autenticación"
 
-#: src/matricula/views/Auth.py:183
-msgid "Wrong password"
-msgstr "Contraseña inválida"
-
-#: src/matricula/views/Auth.py:189
-msgid "Wrong confirmation key"
-msgstr "Clave de confirmación errónea"
-
-#: src/matricula/views/Auth.py:211
+#: src/matricula/views/Auth.py:202
 msgid "You will recive a message soon, check your email"
 msgstr "Usted recibirá pronto un correo, revise su bandeja de entrada"
 
@@ -752,7 +742,11 @@ msgstr "Usted recibirá pronto un correo, revise su bandeja de entrada"
 msgid "User not found"
 msgstr "No existe usuaria"
 
-#: src/matricula/views/Auth.py:285
+#: src/matricula/views/Auth.py:273
+msgid "We have some validations errors"
+msgstr "El formulario contiene errores"
+
+#: src/matricula/views/Auth.py:277
 msgid "Profile updated successfully"
 msgstr "Perfil actualizado con éxito"
 

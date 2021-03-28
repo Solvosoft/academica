@@ -270,6 +270,7 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
         else:
             errors = True
         if errors:
+            messages.error(request, _("We have some validations errors"))
             return self.render_to_response(self.get_context_data(
                 form=form, student_form=student_form, professor_form=professor_form))
         else:
