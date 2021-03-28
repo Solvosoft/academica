@@ -162,16 +162,11 @@ class Group(models.Model):
 
     @property
     def in_preenrollment(self):
-        if timezone.localtime(self.pre_enroll_start) <= timezone.localtime() <= timezone.localtime(self.pre_enroll_finish):
-            return True
-        return False
+        return timezone.localtime(self.pre_enroll_start) <= timezone.localtime() <= timezone.localtime(self.pre_enroll_finish)
 
     @property
     def in_enrollment(self):
-        if timezone.localtime(self.enroll_start) <= timezone.localtime() <= timezone.localtime(
-                self.enroll_finish):
-            return True
-        return False
+        return timezone.localtime(self.enroll_start) <= timezone.localtime() <= timezone.localtime(self.enroll_finish)
 
     def __str__(self):
         return self.name
