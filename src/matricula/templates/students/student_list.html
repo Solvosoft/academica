@@ -90,6 +90,9 @@
 								<li>
 									<strong>Estado: </strong>{% if object.user.is_active %}Activo <i class="fa fa-check"></i>{%else%}Inactivo <i class="fa fa-times"></i>{%endif%}
 								</li>
+								<li>
+									<strong>País: </strong>{{object.country}}
+								</li>
 							</ul>
 						</div>
 						<div class="col-md-6 col-sm-6 col-xs-6">
@@ -110,9 +113,6 @@
 						</div>
 						<div class="col-md-12">
 							<ul class="list-unstyled user_data">
-								<li>
-									<strong>País: </strong>{{object.country}}
-								</li>
 								<li>
 									<strong>Recuperar contraseña: </strong><a href="{% url 'recovery_pass_student' object.pk%}"><i class="fa fa-envelope"></i></a>
 								</li>
