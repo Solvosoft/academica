@@ -119,29 +119,9 @@ def list_enroll(request):
         student = request.user.student
         list_enr = Enroll.objects.filter(
             student=student, enroll_activate=True, enroll_finished=False)
-        list_enr = list_enr.filter(
-            Q(
-                group__enroll_start__lte=timezone.now(),
-                group__enroll_finish__gte=timezone.now()
-            ) | 
-            Q(
-                group__pre_enroll_start__lte=timezone.now(),
-                group__pre_enroll_finish__gte=timezone.now()
-            )
-        )
         context['list_enroll'] = list_enr
         list_pre = Enroll.objects.filter(
             student=student, enroll_activate=False, enroll_finished=False)
-        list_pre = list_pre.filter(
-            Q(
-                group__enroll_start__lte=timezone.now(),
-                group__enroll_finish__gte=timezone.now()
-            ) | 
-            Q(
-                group__pre_enroll_start__lte=timezone.now(),
-                group__pre_enroll_finish__gte=timezone.now()
-            )
-        )
         context['list_pre'] = list_pre
         context['finished_enroll'] = Enroll.objects.filter(student=student, enroll_finished=True).order_by("-enroll_date")
     return render(request, 'enroll.html', context)

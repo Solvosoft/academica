@@ -25,16 +25,24 @@
 					<!-- end of user messages -->
 				</div>
 			{% endfor %}
-			{% for enroll in list_enroll%}
+			{% for enroll in list_enroll %}
 				<div class="x_panel">
 					<!-- end of user messages -->
 					<ul class="messages">
 						<li>
-							<div class="message_date">
-								<a class="btn-sm btn-primary" href="{% url 'finish_enroll' enroll.pk %}">
-									{% trans 'Enrollme' %}
-								</a>
-							</div>
+							{% if enroll.group.in_enrollment %}
+								<div class="message_date">
+									<a class="btn-sm btn-primary" href="{% url 'finish_enroll' enroll.pk %}">
+										{% trans 'Enrollme' %}
+									</a>
+								</div>
+							{% else %}
+								<div class="message_date">
+									<a class="btn-sm btn-warning" disabled href="#">
+										{% trans 'Enroll not available' %}
+									</a>
+								</div>
+							{% endif %}
 							<div style="margin-left:0" class="message_wrapper">
 								<h4 class="heading green"><a href="{% url 'course_detail' enroll.group.course.pk %}">{{enroll.group }}</a></h4>
 								<blockquote class="message">{{enroll.group.course.content|striptags|truncatechars:300|safe}}</blockquote>
