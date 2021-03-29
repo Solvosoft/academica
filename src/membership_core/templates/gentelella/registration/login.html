@@ -10,8 +10,6 @@
 {% endblock %}
 {% block body %}
     <div>
-        <a class="hiddenanchor" id="signup"></a>
-        <a class="hiddenanchor" id="signin"></a>
         <div class="login_wrapper">
             <div class="animate form login_form">
                 <section class="login_content">
@@ -41,9 +39,9 @@
                         </div>
                         <div>
                             <button type="submit" class="btn btn-default submit" >{% trans 'Log in' %}</button>
-                            <a class="reset_pass" href="{% url 'password_reset' %}">{% trans 'Lost your password?' %}</a>
+                            <a href="{% url 'password_reset' %}">{% trans 'Lost your password?' %}</a>
+                            <a href="{% url 'root' %}">{% trans 'Go to home' %}</a>
                         </div>
-
                         {% include 'gentelella/registration/footer.html' %}
                     </form>
                 </section>
