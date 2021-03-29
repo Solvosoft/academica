@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-25 14:01-0600\n"
+"POT-Creation-Date: 2021-03-28 19:04-0600\n"
 "PO-Revision-Date: 2020-01-09 08:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -46,7 +46,7 @@ msgstr "Este correo ya esta registrado"
 
 #: src/membership_core/gtcharts.py:56
 #: src/membership_core/templates/dashboard.html:56
-#: src/membership_core/templates/gentelella/app/sidebar.html:36
+#: src/membership_core/templates/gentelella/app/sidebar.html:39
 msgid "Courses"
 msgstr "Cursos"
 
@@ -83,7 +83,7 @@ msgid "Country"
 msgstr "País"
 
 #: src/membership_core/templates/dashboard.html:19
-#: src/membership_core/templates/gentelella/app/sidebar.html:45
+#: src/membership_core/templates/gentelella/app/sidebar.html:48
 msgid "Enrolls"
 msgstr "Matrículas"
 
@@ -104,7 +104,7 @@ msgid "by period"
 msgstr "por periodo"
 
 #: src/membership_core/templates/dashboard.html:68
-#: src/membership_core/templates/gentelella/app/sidebar.html:33
+#: src/membership_core/templates/gentelella/app/sidebar.html:36
 msgid "Categories"
 msgstr "Categorías"
 
@@ -245,6 +245,22 @@ msgstr "Enviar"
 #: src/membership_core/templates/gentelella/registration/password_reset_confirm.html:28
 msgid "Password reset failed"
 msgstr "El cambio de contraseña fallo"
+
+#: src/membership_core/templates/gentelella/registration/password_reset_done.html:9
+msgid "Password reseted"
+msgstr "Contraseña restablecida"
+
+#: src/membership_core/templates/gentelella/registration/password_reset_done.html:10
+msgid "The password has been reset successfully."
+msgstr "La contraseña ha sido restablecida con éxito"
+
+#: src/membership_core/templates/gentelella/registration/password_reset_done.html:12
+msgid "Go to home"
+msgstr "Ir a inicio"
+
+#: src/membership_core/templates/gentelella/registration/password_reset_done.html:13
+msgid "Log In"
+msgstr "Iniciar sesión"
 
 #: src/membership_core/templates/gentelella/registration/password_reset_email.html:37
 msgid "Reseting password at UPo"
