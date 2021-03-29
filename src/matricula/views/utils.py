@@ -22,7 +22,5 @@ def get_expire_date():
     return now() + timedelta(days=settings.TOKEN_CONFIRMATION_EXPIRE_DAYS)
 
 def checking_user(user):
-    result = False
-    if Student.objects.filter(user=user) or user.groups.filter(name='Administradores Académica'):
-        result = True
-    return result
+    return  Student.objects.filter(user=user).exists() or \
+            user.groups.filter(name=settings.ADMIN_GROUP_NAME).exists()

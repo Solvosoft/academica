@@ -2,6 +2,7 @@ from django.contrib.auth.models import Group, Permission
 from django.core.management import BaseCommand
 from djgentelella.models import MenuItem
 from django.contrib.contenttypes.models import ContentType
+from django.conf import settings
 
 
 class Command(BaseCommand):
@@ -14,10 +15,10 @@ class Command(BaseCommand):
         qualify_students = Permission.objects.filter(codename="can_qualify_students", content_type__app_label="matricula").first()
 
         permissions_professor = [change_profile, view_group, view_qualifications, qualify_students]
-        professor_group = Group.objects.filter(name="Profesores").first()
+        professor_group = Group.objects.filter(name=settings.PROFESSOR_GROUP_NAME).exists()
         if not professor_group:
-            professor_group = Group(name="Profesores")
-        professor_group.save()
+            professor_group = Group(name=settings.PROFESSOR_GROUP_NAME)
+            professor_group.save()
         professor_group.permissions.add(*permissions_professor)
 
         ct = ContentType.objects.get_for_model(MenuItem)
@@ -35,12 +36,10 @@ class Command(BaseCommand):
         dashboard_systemcurrency = Permission.objects.filter(codename="can_show_dashboard", content_type__app_label="membership_core").first()
         add_user = Permission.objects.filter(codename="add_user", content_type__app_label="auth").first()
         permissions_systemcurrency = [dashboard_systemcurrency, change_systemcurrency, view_systemcurrency, add_systemcurrency, delete_systemcurrency, add_user]
-        enroll_group = Group.objects.filter(name="Administradores Académica").first()
+        enroll_group = Group.objects.filter(name=settings.ADMIN_GROUP_NAME).exists()
         if not enroll_group:
-            enroll_group = Group(
-                name="Administradores Académica"
-            )
-        enroll_group.save()
+            enroll_group = Group(name=settings.ADMIN_GROUP_NAME)
+            enroll_group.save()
         enroll_group.permissions.add(*enroll_perms)
         enroll_group.permissions.add(*bill_perms)
         enroll_group.permissions.add(*djgentelella_perms)
