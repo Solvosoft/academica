@@ -9,23 +9,29 @@
                 {% else %}
                     <div class="col-md-10">
                 {% endif %}
-                <div class="x_panel">
-                    <form method="GET">
-                    <div class="row">
-                        <div class="col-md-6">
-                            {% include 'field.html' with field=formsearch.professor  %}
+                {% if object_list %}
+                    <div class="x_panel">
+                        <form method="GET">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'field.html' with field=formsearch.professor  %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'field.html' with field=formsearch.status  %}
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            {% include 'field.html' with field=formsearch.status  %}
+                        <br/>
+                        <div style="text-align:right;">
+                            <a href="{% url 'professors_list' %}" class="btn btn-dark">{% trans 'Clear' %}</a>
+                            <button class="btn btn-success" type="submit">{% trans 'Search' %}</button>
                         </div>
+                        </form>
                     </div>
-                    <br/>
-                    <div style="text-align:right;">
-                        <a href="{% url 'professors_list' %}" class="btn btn-dark">{% trans 'Clear' %}</a>
-                        <button class="btn btn-success" type="submit">{% trans 'Search' %}</button>
-                    </div>
-                    </form>
-                </div>
+                {% else %}
+                    <div class="alert alert-info" role="alert">
+					{% trans 'There are not professors available' %}
+				</div>
+                {% endif %}
             </div>
             {% if perms.matricula.add_professor %}
                 <div class="col-md-2">

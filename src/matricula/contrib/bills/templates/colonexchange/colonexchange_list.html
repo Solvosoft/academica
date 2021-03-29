@@ -1,27 +1,33 @@
 {% extends 'gentelella/base.html'%}
-{% load static utils membership_code %}
+{% load static utils membership_code i18n %}
 {% block content %}
 	<h1 class="text-center">Moneda de intercambio</h1>
 	<div class="row">
 		<div class="col-md-8 col-md-offset-1">
-		<div class="x_panel">
-				<div class="x_content">
-					<form method="GET">
-						<div>
-							<div class="col-md-6">
-								{% include 'field.html' with field=form_search.rates %}
+			{% if obect_list %}
+				<div class="x_panel">
+					<div class="x_content">
+						<form method="GET">
+							<div>
+								<div class="col-md-6">
+									{% include 'field.html' with field=form_search.rates %}
+								</div>
+								<div class="col-md-6">
+									{% include 'field.html' with field=form_search.currency %}
+								</div>
 							</div>
-							<div class="col-md-6">
-								{% include 'field.html' with field=form_search.currency %}
+							<div class="text-right">
+								<a style="margin-top:10px;" href="{% url 'colonexchange' %}" class="btn btn-dark">Limpiar</a>
+								<button style="margin-top:10px;" class="btn btn-success" type="submit">Buscar</button>
 							</div>
-						</div>
-						<div class="text-right">
-							<a style="margin-top:10px;" href="{% url 'colonexchange' %}" class="btn btn-dark">Limpiar</a>
-							<button style="margin-top:10px;" class="btn btn-success" type="submit">Buscar</button>
-						</div>
-					</form>
+						</form>
+					</div>
 				</div>
-			</div>
+			{% else %}
+				<div class="alert alert-info" role="alert">
+					{% trans 'There are not currencies available' %}
+				</div>
+			{% endif %}
 		</div>
 		<div class="col-md-2">
 			{% if perms.membership_core.add_systemcurrency %}

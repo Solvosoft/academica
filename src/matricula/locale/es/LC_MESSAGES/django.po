@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-28 21:22-0600\n"
+"POT-Creation-Date: 2021-03-29 01:52-0600\n"
 "PO-Revision-Date: 2020-11-27 20:41-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -114,7 +114,9 @@ msgstr "Contraseña"
 msgid ""
 "It can be your company or organization where you work or the community that "
 "you represent."
-msgstr "Puede ser el nombre de la empresa u organización donde trabaje o la comunidad que represente."
+msgstr ""
+"Puede ser el nombre de la empresa u organización donde trabaje o la "
+"comunidad que represente."
 
 #: src/matricula/forms.py:68
 msgid "User name exist "
@@ -134,7 +136,7 @@ msgstr "Este correo ya esta registrado"
 msgid "username"
 msgstr "Nombre de usuaria"
 
-#: src/matricula/forms.py:161 src/matricula/forms.py:182
+#: src/matricula/forms.py:162 src/matricula/forms.py:183
 #: src/matricula/models.py:234 src/matricula/models.py:273
 msgid "Page"
 msgstr "Página"
@@ -434,10 +436,23 @@ msgstr "Grupos"
 msgid "Email"
 msgstr "Correo electrónico"
 
+#: src/matricula/templates/categories.html:40
+#: src/matricula/templates/courses/course_list.html:33
+msgid "There are not courses available"
+msgstr "No hay cursos registrados"
+
+#: src/matricula/templates/categories/category_list.html:79
+msgid "There are not categories available"
+msgstr "No hay categorías registradas"
+
 #: src/matricula/templates/certificate.html:118
 #, python-format
 msgid "%(certificate_date)s"
 msgstr ""
+
+#: src/matricula/templates/coupons/coupons_list.html:40
+msgid "There are not coupons available"
+msgstr "No hay cupones registrados"
 
 #: src/matricula/templates/course.html:83
 #: src/matricula/templates/course_detail.html:81
@@ -515,6 +530,10 @@ msgid "Search"
 msgstr "Buscar"
 
 #: src/matricula/templates/enrolls/enroll_list.html:29
+msgid "There are not enrollments available"
+msgstr "No hay matrículas registradas"
+
+#: src/matricula/templates/enrolls/enroll_list.html:35
 msgid "New enrollment"
 msgstr "Nueva matrícula"
 
@@ -534,6 +553,10 @@ msgstr "Usuaria"
 #: src/matricula/templates/gentelella/app/footer.html:6
 msgid "All Rights Reserved."
 msgstr "Todos los derechos reservados."
+
+#: src/matricula/templates/groups/group_list.html:38
+msgid "There are not groups available"
+msgstr "No hay grupos registrados"
 
 #: src/matricula/templates/login.html:12
 #: src/matricula/templates/student_login.html:12
@@ -576,12 +599,28 @@ msgstr "Ingresar"
 msgid "Sing up"
 msgstr "Registrate"
 
+#: src/matricula/templates/menuitems/menuitem_list.html:30
+msgid "There are not menu items available"
+msgstr "No hay elementos de menús registrados"
+
+#: src/matricula/templates/pages/page_list.html:27
+msgid "There are not pages available"
+msgstr "No hay páginas registradas"
+
+#: src/matricula/templates/periods/period_list.html:24
+msgid "There are not periods available"
+msgstr "No hay periodos registrados"
+
 #: src/matricula/templates/professor/create.html:9
 #: src/matricula/templates/professor/professors_list.html:33
 msgid "New Professor"
 msgstr "Nueva facilitadora"
 
-#: src/matricula/templates/professor/professors_list.html:46
+#: src/matricula/templates/professor/professors_list.html:32
+msgid "There are not professors available"
+msgstr "No hay facilitadoras registradas"
+
+#: src/matricula/templates/professor/professors_list.html:52
 msgid ""
 "Are you sure you want to delete this professor? It is recommended that it be "
 "deactivated instead."
@@ -719,6 +758,10 @@ msgstr "Ingresar"
 #: src/matricula/templates/student_login.html:36
 msgid "Lost your password?"
 msgstr "¿Olvidó su contraseña?"
+
+#: src/matricula/templates/students/student_list.html:34
+msgid "There are not students available"
+msgstr "No hay estudiantes registrados"
 
 #: src/matricula/templatetags/utils.py:18
 msgid "Administrator"

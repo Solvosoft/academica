@@ -1,10 +1,10 @@
 {% extends 'gentelella/base.html'%}
-{%load i18n static %}
+{% load i18n static %}
 {% load utils %}
 {% block extra_css %} 
 	<link href="{% static 'css/matricula.css' %}" rel="stylesheet">
 {% endblock %}
-{%block content%}
+{% block content %}
 	<div class="row">
 		<h1 class="text-center">Lista de cursos disponibles</h1>
 		{% if request.user.is_authenticated and not request.user.student %}
@@ -17,31 +17,38 @@
 			</form>
 		{% endif %}
 		<div class="col-md-10 col-md-offset-1">
-			<div class="x_panel">
-				<div class="x_content">
-					<form method="GET" action="{% url 'course_list' %}">
-						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-							{% include 'field.html' with field=form_search.name %}
-						</div>
-						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-							{% include 'field.html' with field=form_search.category %}
-						</div>
-						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-							{% include 'field.html' with field=form_search.course %}
-						</div>
-						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-							{% include 'field.html' with field=form_search.is_paid %}
-						</div>
-						<div style="text-align:right">
-							<a href="{% url 'course_list' %}" class="btn btn-dark">Limpiar</a>
-							<button class="btn btn-success" type="submit">Buscar</button>
-						</div>
-					</form>
+			{% if courses.items %}
+				<div class="x_panel">
+					<div class="x_content">
+						<form method="GET" action="{% url 'course_list' %}">
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								{% include 'field.html' with field=form_search.name %}
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								{% include 'field.html' with field=form_search.category %}
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								{% include 'field.html' with field=form_search.course %}
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								{% include 'field.html' with field=form_search.is_paid %}
+							</div>
+							<div style="text-align:right">
+								<a href="{% url 'course_list' %}" class="btn btn-dark">Limpiar</a>
+								<button class="btn btn-success" type="submit">Buscar</button>
+							</div>
+						</form>
+					</div>
 				</div>
-			</div>
+			{% else %}
+				<div class="alert alert-info" role="alert">
+					No hay cursos disponibles
+				</div>
+			{% endif %}
 		</div>
 		<div id="group_message"></div>
 		<div class="clearfix"></div>
+		{% if courses.items %}
 		<div class="x_panel">
 			<div class="x_content">
 				{% for pk, course in courses.items %}
@@ -73,13 +80,10 @@
 						</div>
 						<div class="clearfix"></div>
 					</div>
-				{% empty %}
-					<div class="alert alert-info" role="alert">
-						No hay cursos disponibles
-					</div>
-				{%endfor%}
+				{% endfor %}
 			</div>
 		</div>
+		{% endif %}
 	</div>
 	<div id="infoprofessormodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
 		<div class="modal-dialog" role="document">

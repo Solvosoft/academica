@@ -4,25 +4,31 @@
 	<h1 class="text-center">{% trans 'Enrollments' %}</h1>
 	<div class="row">
 		<div class="col-sm-12 col-xs-12 col-md-8 col-md-offset-2">
-			<div class="x_panel">
-				<div class="x_content">
-					<form method="GET">
-						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-							{% include 'field.html' with field=form_search.student %}
-						</div>
-						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-							{% include 'field.html' with field=form_search.group %}
-						</div>
-						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-							{% include 'field.html' with field=form_search.paid %}
-						</div>
-						<div style="text-align:right">
-							<a href="{% url 'enrolls' %}" class="btn btn-dark">{% trans 'Clear' %}</a>
-							<button class="btn btn-success" type="submit">{% trans 'Search' %}</button>
-						</div>
-					</form>
+			{% if object_list %}
+				<div class="x_panel">
+					<div class="x_content">
+						<form method="GET">
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								{% include 'field.html' with field=form_search.student %}
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								{% include 'field.html' with field=form_search.group %}
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								{% include 'field.html' with field=form_search.paid %}
+							</div>
+							<div style="text-align:right">
+								<a href="{% url 'enrolls' %}" class="btn btn-dark">{% trans 'Clear' %}</a>
+								<button class="btn btn-success" type="submit">{% trans 'Search' %}</button>
+							</div>
+						</form>
+					</div>
 				</div>
-			</div>
+			{% else %}
+				<div class="alert alert-info" role="alert">
+					{% trans 'There are not enrollments available' %}
+				</div>
+			{% endif %}
 		</div>
 		{% if perms.matricula.add_enroll %}
 			<div class="col-sm-2 col-xs-12 col-lg-2 col-md-3 text-right">
@@ -131,7 +137,7 @@
 		{% endif %}
 	</div>
 	<div class="clearfix"></div>
-{%endblock%}
+{% endblock %}
 {% if perms.matricula.delete_enroll %}
 	{% block js %}
 		<script type="text/javascript">

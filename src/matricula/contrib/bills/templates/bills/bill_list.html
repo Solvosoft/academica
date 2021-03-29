@@ -8,22 +8,28 @@
 		{% else %}
 			<div class="col-sm-12 col-xs-12 col-lg-12 col-md-12">
 		{% endif %}
-			<div class="x_panel">
-				<div class="x_content">
-					<form method="GET">
-						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-							{% include 'field.html' with field=form_search.student %}
-						</div>
-						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-							{% include 'field.html' with field=form_search.is_paid %}
-						</div>
-						<div style="text-align:right">
-							<a href="{% url 'listbills' %}" class="btn btn-dark">{% trans 'Clear' %}</a>
-							<button class="btn btn-success" type="submit">{% trans 'Search' %}</button>
-						</div>
-					</form>
+			{% if object_list %}
+				<div class="x_panel">
+					<div class="x_content">
+						<form method="GET">
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								{% include 'field.html' with field=form_search.student %}
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								{% include 'field.html' with field=form_search.is_paid %}
+							</div>
+							<div style="text-align:right">
+								<a href="{% url 'listbills' %}" class="btn btn-dark">{% trans 'Clear' %}</a>
+								<button class="btn btn-success" type="submit">{% trans 'Search' %}</button>
+							</div>
+						</form>
+					</div>
 				</div>
-			</div>
+			{% else %}
+				<div class="alert alert-info" role="alert">
+					{% trans 'There are not bills available' %}
+				</div>
+			{% endif %}
 		</div>
 		<div class="col-sm-12 col-xs-12 col-lg-2 col-md-3">
 			{% if perms.bills.add_bill %}

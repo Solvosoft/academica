@@ -1,24 +1,29 @@
 {% extends 'gentelella/base.html'%}
-{% load static membership_code %}
-{%block content%}
+{% load static membership_code i18n %}
+{% block content%}
 	<h1 class="text-center">Periodos</h1>
 	<div class="row">
 
 			<div class="{% if perms.matricula.add_period %}col-md-6 col-sm-12 col-lg-8{% else %}col-md-8 col-md-offset-2 col-xs-12{% endif %}">
-
-			<div class="x_panel">
-				<div class="x_content">
-					<form method="GET">
-						<div>
-							{% include 'field.html' with field=form_search.name %}
-						</div>
-						<div class="text-right">
-							<a style="margin-top:10px;" href="{% url 'periods' %}" class="btn btn-dark">Limpiar</a>
-							<button style="margin-top:10px;" class="btn btn-success" type="submit">Buscar</button>
-						</div>
-					</form>
+			{% if page_obj %}
+				<div class="x_panel">
+					<div class="x_content">
+						<form method="GET">
+							<div>
+								{% include 'field.html' with field=form_search.name %}
+							</div>
+							<div class="text-right">
+								<a style="margin-top:10px;" href="{% url 'periods' %}" class="btn btn-dark">Limpiar</a>
+								<button style="margin-top:10px;" class="btn btn-success" type="submit">Buscar</button>
+							</div>
+						</form>
+					</div>
 				</div>
-			</div>
+			{% else %}
+				<div class="alert alert-info" role="alert">
+					{% trans 'There are not periods available' %}
+				</div>
+			{% endif %}
 
 				{% if not perms.matricula.add_period %}
 					</div>
@@ -26,7 +31,7 @@
 				{% endif %}
 
 			<div class="row">
-				{% for object in page_obj %}
+				{% for object in object_list %}
 					<div class="{% if perms.matricula.add_period %}col-md-6 col-lg-6 col-sm-12{% else %}col-md-6 col-lg-4 col-sm-12{% endif %}">
 						<div class="x_panel">
 						<div class="x_title">
@@ -123,7 +128,7 @@
 	</div>
 	<!-- end delete modal-->
 {% endif %}
-{%endblock%}
+{% endblock%}
 
 {% block js %}
 {% if perms.matricula.delete_period %}

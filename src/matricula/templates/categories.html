@@ -12,6 +12,7 @@
 		</form>
 	{% endif %}
 	<div class="col-md-10 col-md-offset-1">
+		{% if categories %}
 		<div class="x_panel">
 			<div class="x_content">
 				<form method="GET" action="{% url 'course_list' %}">
@@ -34,6 +35,11 @@
 				</form>
 			</div>
 		</div>
+		{% else %}
+			<div class="alert alert-info" role="alert">
+				{% trans 'There are not courses available' %}
+			</div>
+		{% endif %}
 	</div>
 	<div id="group_message"> </div>
 	<div class="row">

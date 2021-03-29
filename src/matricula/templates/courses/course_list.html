@@ -1,9 +1,9 @@
 {% extends 'gentelella/base.html'%}
-{% load membership_code static %}
+{% load membership_code static i18n %}
 {% block pre_head%}
 	<meta charset="UTF-8">
 {% endblock%}
-{%block content%}
+{% block content %}
 	<h1 class="text-center">Cursos</h1>
 	<div class="row">
 		{% if perms.matricula.add_course %}
@@ -11,22 +11,28 @@
 		{% else %}
 			<div class="col-sm-12 col-xs-12 col-md-8 col-md-offset-2">
 		{% endif %}
-			<div class="x_panel">
-				<div class="x_content">
-					<form method="GET" action="{% url 'enrrolment_courses'%}">
-						<div class="col-lg-6 col-md-6 col-sm-12">
-							{% include 'field.html' with field=form_search.name %}
-						</div>
-						<div class="col-lg-6 col-md-6 col-sm-12">
-							{% include 'field.html' with field=form_search.category %}
-						</div>
-						<div class="text-right">
-							<a style="margin-top:10px;" href="{% url 'enrrolment_courses' %}" class="btn btn-dark">Limpiar</a>
-							<button style="margin-top:10px;" class="btn btn-success" type="submit">Buscar</button>
-						</div>
-					</form>
+			{% if object_list %}
+				<div class="x_panel">
+					<div class="x_content">
+						<form method="GET" action="{% url 'enrrolment_courses'%}">
+							<div class="col-lg-6 col-md-6 col-sm-12">
+								{% include 'field.html' with field=form_search.name %}
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-12">
+								{% include 'field.html' with field=form_search.category %}
+							</div>
+							<div class="text-right">
+								<a style="margin-top:10px;" href="{% url 'enrrolment_courses' %}" class="btn btn-dark">Limpiar</a>
+								<button style="margin-top:10px;" class="btn btn-success" type="submit">Buscar</button>
+							</div>
+						</form>
+					</div>
 				</div>
-			</div>
+			{% else %}
+				<div class="alert alert-info" role="alert">
+					{% trans 'There are not courses available' %}
+				</div>
+			{% endif %}
 		</div>
 		{% if perms.matricula.add_course %}
 			<div class="col-sm-2 col-lg-2 col-md-3 text-right">
@@ -116,7 +122,7 @@
 			{% endif %}
 		</div>
 	</div>
-{%endblock%}
+{% endblock %}
 {% block js %}
 	{% if perms.matricula.delete_course %}
 		<script type="text/javascript">

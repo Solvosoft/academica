@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-28 19:04-0600\n"
+"POT-Creation-Date: 2021-03-29 01:52-0600\n"
 "PO-Revision-Date: 2020-01-09 08:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -234,6 +234,11 @@ msgstr "Iniciar sesión"
 msgid "Lost your password?"
 msgstr "¿Perdió su contraseña?"
 
+#: src/membership_core/templates/gentelella/registration/login.html:43
+#: src/membership_core/templates/gentelella/registration/password_reset_done.html:12
+msgid "Go to home"
+msgstr "Ir a inicio"
+
 #: src/membership_core/templates/gentelella/registration/password_reset_confirm.html:14
 msgid "Password change"
 msgstr "Cambiar contraseña"
@@ -253,10 +258,6 @@ msgstr "Contraseña restablecida"
 #: src/membership_core/templates/gentelella/registration/password_reset_done.html:10
 msgid "The password has been reset successfully."
 msgstr "La contraseña ha sido restablecida con éxito"
-
-#: src/membership_core/templates/gentelella/registration/password_reset_done.html:12
-msgid "Go to home"
-msgstr "Ir a inicio"
 
 #: src/membership_core/templates/gentelella/registration/password_reset_done.html:13
 msgid "Log In"
@@ -298,6 +299,10 @@ msgstr "Le enviaremos un correo para verificar que usted es quien dice ser"
 #: src/membership_core/templates/gentelella/registration/password_reset_form.html:28
 msgid "Send email"
 msgstr "Enviar correo"
+
+#: src/membership_core/templates/user/user_list.html:32
+msgid "There are not users available"
+msgstr "No hay usuarios registrados"
 
 #: src/upo/settings.py:130
 msgid "Spanish"

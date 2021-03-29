@@ -1,79 +1,88 @@
 {% extends 'gentelella/base.html'%}
-{% load membership_code static %}
-{%block content%}
+{% load membership_code static i18n %}
+{% block content %}
 	<div class="row">
 		<h1 class="text-center">Categorías</h1>
 		<div class="{% if perms.matricula.add_category %}col-md-6 col-sm-12 col-lg-8{% else %}col-md-8 col-md-offset-2 col-xs-12{% endif %}">
-
-			<div class="x_panel">
-				<div class="x_content">
-					<form method="GET" action="{% url 'categories'%}">
-						<div>
-							{{form_search.as_inline}}
-						</div>
-						<div class="text-right">
-							<a style="margin-top:10px;" href="{% url 'categories' %}" class="btn btn-dark">Limpiar</a>
-							<button style="margin-top:10px;" class="btn btn-success" type="submit">Buscar</button>
-						</div>
-					</form>
-				</div>
-			</div>
-
-			{% if not perms.matricula.add_category %}
-					</div>
-					</div>
-				{% endif %}
-
-				<div class="row">
-			{% for category in object_list %}
-				<div class="{% if perms.matricula.add_category %}col-md-6 col-lg-6 col-sm-12{% else %}col-md-6 col-lg-4 col-sm-12{% endif %}">
-
-					<div class="x_panel" style="height:150px;">
-						<div class="x_title">
-							<h2 class="green">{{category.name}}</h2>
-							<ul class="nav navbar-right panel_toolbox" style="min-width: unset;">
-								{% if perms.matricula.change_category %}
-									<li>
-										<a title="Editar categoría" href="{% url 'edit_category' category.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
-									</li>
-								{% endif %}
-								{% if perms.matricula.delete_category %}
-									<li><a title="Eliminar categoría" data-url="{% url 'delete_category' pk=category.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
-								{% endif %}
-							</ul>
-							<div class="clearfix"></div>
-						</div>
-						<div class="x_content">
-							{{category.description}}
-						</div>
+			{% if object_list %}
+				<div class="x_panel">
+					<div class="x_content">
+						<form method="GET" action="{% url 'categories'%}">
+							<div>
+								{{form_search.as_inline}}
+							</div>
+							<div class="text-right">
+								<a style="margin-top:10px;" href="{% url 'categories' %}" class="btn btn-dark">Limpiar</a>
+								<button style="margin-top:10px;" class="btn btn-success" type="submit">Buscar</button>
+							</div>
+						</form>
 					</div>
 				</div>
-			{% endfor %}
+
+				{% if not perms.matricula.add_category %}
+						</div>
+						</div>
+					{% endif %}
+
+					<div class="row">
+				{% for category in object_list %}
+					<div class="{% if perms.matricula.add_category %}col-md-6 col-lg-6 col-sm-12{% else %}col-md-6 col-lg-4 col-sm-12{% endif %}">
+
+						<div class="x_panel" style="height:150px;">
+							<div class="x_title">
+								<h2 class="green">{{category.name}}</h2>
+								<ul class="nav navbar-right panel_toolbox" style="min-width: unset;">
+									{% if perms.matricula.change_category %}
+										<li>
+											<a title="Editar categoría" href="{% url 'edit_category' category.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
+										</li>
+									{% endif %}
+									{% if perms.matricula.delete_category %}
+										<li><a title="Eliminar categoría" data-url="{% url 'delete_category' pk=category.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+									{% endif %}
+								</ul>
+								<div class="clearfix"></div>
+							</div>
+							<div class="x_content">
+								{{category.description}}
+							</div>
+						</div>
 					</div>
-			<div class="clearfix"></div>
-			<div class="paginator_container text-center">
-				{% if is_paginated %}
-					<ul class="pagination">
-						{% if paginator.has_previous %}
-							<li><a href="?{% url_replace request 'page' paginator.previous_page_number %}">&laquo;</a></li>
-						{% else %}
-							<li class="disabled"><span>&laquo;</span></li>
-						{% endif %}
-						{% for i in paginator.page_range %}
-							{% if page_obj.number == i %}
-								<li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+				{% endfor %}
+						</div>
+				<div class="clearfix"></div>
+				<div class="paginator_container text-center">
+					{% if is_paginated %}
+						<ul class="pagination">
+							{% if paginator.has_previous %}
+								<li><a href="?{% url_replace request 'page' paginator.previous_page_number %}">&laquo;</a></li>
 							{% else %}
-								<li><a href="?{% url_replace request 'page' i %}">{{ i }}</a></li>
+								<li class="disabled"><span>&laquo;</span></li>
 							{% endif %}
-						{% endfor %}
-						{% if paginator.has_next %}
-							<li><a href="?{% url_replace request 'page' paginator.next_page_number %}">&raquo;</a></li>
-						{% else %}
-							<li class="disabled"><span>&raquo;</span></li>
-						{% endif %}
-					</ul>
+							{% for i in paginator.page_range %}
+								{% if page_obj.number == i %}
+									<li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+								{% else %}
+									<li><a href="?{% url_replace request 'page' i %}">{{ i }}</a></li>
+								{% endif %}
+							{% endfor %}
+							{% if paginator.has_next %}
+								<li><a href="?{% url_replace request 'page' paginator.next_page_number %}">&raquo;</a></li>
+							{% else %}
+								<li class="disabled"><span>&raquo;</span></li>
+							{% endif %}
+						</ul>
+					{% endif %}
+				</div>
+			{% else %}
+				<div class="alert alert-info" role="alert">
+					{% trans 'There are not categories available' %}
+				</div>
+				{% if not perms.matricula.add_category %}
+					</div>
+					</div>
 				{% endif %}
-			</div>
+			{% endif %}
 		{% if perms.matricula.add_category %}
 			</div>
 		{% endif %}

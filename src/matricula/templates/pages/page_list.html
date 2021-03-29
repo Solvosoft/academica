@@ -1,6 +1,6 @@
 {% extends 'gentelella/base.html'%}
-{% load static utils membership_code %}
-{%block content %}
+{% load static utils membership_code i18n %}
+{% block content %}
 	<h1 class="text-center">Páginas</h1>
 	<div class="row">
 		{% if perms.matricula.add_page %}
@@ -8,19 +8,25 @@
 		{% else %}
 			<div class="col-sm-12 col-xs-12 col-md-10 col-md-offset-1">
 		{% endif %}
-			<div class="x_panel">
-				<div class="x_content">
-					<form method="GET">
-						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-							{% include 'field.html' with field=form_search.slug %}
-						</div>
-						<div style="text-align:right">
-							<a href="{% url 'pages' %}" class="btn btn-dark">Limpiar</a>
-							<button class="btn btn-success" type="submit">Buscar</button>
-						</div>
-					</form>
+			{% if object_list %}
+				<div class="x_panel">
+					<div class="x_content">
+						<form method="GET">
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								{% include 'field.html' with field=form_search.slug %}
+							</div>
+							<div style="text-align:right">
+								<a href="{% url 'pages' %}" class="btn btn-dark">Limpiar</a>
+								<button class="btn btn-success" type="submit">Buscar</button>
+							</div>
+						</form>
+					</div>
 				</div>
-			</div>
+			{% else %}
+				<div class="alert alert-info" role="alert">
+					{% trans 'There are not pages available' %}
+				</div>
+			{% endif %}
 		</div>
 		<div class="col-sm-12 col-xs-12 col-lg-2 col-md-3 text-right">
 			{% if perms.matricula.add_page %}

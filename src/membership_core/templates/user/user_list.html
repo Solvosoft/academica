@@ -1,7 +1,6 @@
 {% extends 'gentelella/base.html' %}
-{% load membership_code static %}
+{% load membership_code static i18n %}
 {% block content %}
-    
     <h1 class="text-center">Usuarias</h1>
     <div class="search_options">
         <div class="row">
@@ -10,23 +9,29 @@
                 {% else %}
                     <div class="col-md-10">
                 {% endif %}
-                <div class="x_panel">
-                    <form method="GET">
-                    <div class="row">
-                        <div class="col-md-6">
-                            {% include 'field.html' with field=formsearch.user  %}
+                {% if object_list %}
+                    <div class="x_panel">
+                        <form method="GET">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'field.html' with field=formsearch.user  %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'field.html' with field=formsearch.fakegroup  %}
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            {% include 'field.html' with field=formsearch.fakegroup  %}
+                        <br/>
+                        <div style="text-align:right;">
+                            <a href="{% url 'user_list' %}" class="btn btn-dark">Limpiar filtros</a>
+                            <button class="btn btn-success" type="submit">Buscar</button>
                         </div>
+                        </form>
                     </div>
-                    <br/>
-                    <div style="text-align:right;">
-                        <a href="{% url 'user_list' %}" class="btn btn-dark">Limpiar filtros</a>
-                        <button class="btn btn-success" type="submit">Buscar</button>
-                    </div>
-                    </form>
-                </div>
+                {% else %}
+                    <div class="alert alert-info" role="alert">
+					{% trans 'There are not users available' %}
+				</div>
+                {% endif %}
             </div>
             {% if perms.auth.add_user %}
                 <div class="col-md-2">

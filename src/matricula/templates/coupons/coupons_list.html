@@ -1,6 +1,5 @@
 {% extends 'gentelella/base.html' %}
-{% load static %}
-{% load gtsettings %}
+{% load static i18n gtsettings %}
 {% block pre_head %}
     {% define_true "use_datatables" as use_datatables %}
 {% endblock %}
@@ -9,31 +8,38 @@
 
     <div class="row">
         <div class="{% if not perms.matricula.add_coupon %}col-md-10 col-md-offset-1 col-xs-12{% else %}col-md-10{% endif %}">
+            <h1 class="text-center"> Listado de cupones</h1>
+            {% if coupon_list %}
             <div class="x_panel">
-            <form method="GET">
-            <div class="row">
-                <div class="col-md-6">
-                    {% include 'field.html' with field=form.course  %}
-                </div>
-                <div class="col-md-6">
-                    {% include 'field.html' with field=form.student  %}
-                </div>
+                <form method="GET">
+                    <div class="row">
+                        <div class="col-md-6">
+                            {% include 'field.html' with field=form.course  %}
+                        </div>
+                        <div class="col-md-6">
+                            {% include 'field.html' with field=form.student  %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {% include 'field.html' with field=form.is_used  %}
+                        </div>
+                        <div class="col-md-6">
+                            {% include 'field.html' with field=form.discount_percentage  %}
+                        </div>
+                    </div>
+                    <br/>
+                    <div style="text-align:right;">
+                        <a href="{% url 'coupons_list' %}" class="btn btn-dark">Limpiar filtros</a>
+                        <button class="btn btn-success" type="submit">Buscar</button>
+                    </div>
+                </form>
             </div>
-                <div class="row">
-                <div class="col-md-6">
-                    {% include 'field.html' with field=form.is_used  %}
-                </div>
-                <div class="col-md-6">
-                    {% include 'field.html' with field=form.discount_percentage  %}
-                </div>
-            </div>
-            <br/>
-            <div style="text-align:right;">
-                <a href="{% url 'coupons_list' %}" class="btn btn-dark">Limpiar filtros</a>
-                <button class="btn btn-success" type="submit">Buscar</button>
-            </div>
-            </form>
-        </div>
+            {% else %}
+                <div class="alert alert-info" role="alert">
+					{% trans 'There are not coupons available' %}
+				</div>
+            {% endif %}
         </div>
         {% if perms.matricula.add_coupon %}
                 <div class="col-md-2">
@@ -46,7 +52,7 @@
 
     <div class="row">
         <div class='col-md-12 col-xs-12'>
-            <h1 class="text-center"> Listado de cupones</h1>
+            {% if coupon_list %}
             <div class="x_panel">
                 <div class="x_content" style="display: block;">
                     <div class="dashboard-widget-content">
@@ -89,7 +95,7 @@
                     </div>
                 </div>
             </div>
-
+            {% endif %}
         </div>
     </div>
 
