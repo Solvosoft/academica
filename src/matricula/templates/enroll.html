@@ -9,11 +9,19 @@
 					<!-- end of user messages -->
 					<ul class="messages">
 						<li>
-							<div class="message_date">
-								<a class="btn-sm btn-warning" disabled href="#">
-									{% trans 'Enroll not available' %}
-								</a>
-							</div>
+							{% if enroll.rejected %}
+								<div class="message_date">
+									<a class="btn btn-sm btn-danger disabled" role="button" aria-disabled="true" href="#">
+										{% trans 'Rejected' %}
+									</a>
+								</div>
+							{% else %}
+								<div class="message_date">
+									<a class="btn btn-sm btn-warning disabled" role="button" aria-disabled="true" href="#">
+										{% trans 'Enroll not available' %}
+									</a>
+								</div>
+							{% endif %}
 							<div style="margin-left:0" class="message_wrapper">
 								<h4 class="heading green"><a href="{% url 'course_detail' enroll.group.course.pk %}">{{enroll.group }}</a></h4>
 								<blockquote class="message">{{enroll.group.course.content|striptags|truncatechars:300|safe}}</blockquote>
@@ -30,7 +38,13 @@
 					<!-- end of user messages -->
 					<ul class="messages">
 						<li>
-							{% if enroll.group.in_enrollment %}
+							{% if enroll.rejected %}
+								<div class="message_date">
+									<a class="btn btn-sm btn-danger disabled" role="button" aria-disabled="true" href="#">
+										{% trans 'Rejected' %}
+									</a>
+								</div>
+							{% elif enroll.group.in_enrollment %}
 								<div class="message_date">
 									<a class="btn-sm btn-primary" href="{% url 'finish_enroll' enroll.pk %}">
 										{% trans 'Enrollme' %}
@@ -38,7 +52,7 @@
 								</div>
 							{% else %}
 								<div class="message_date">
-									<a class="btn-sm btn-warning" disabled href="#">
+									<a class="btn btn-sm btn-warning disabled" role="button" aria-disabled="true" href="#">
 										{% trans 'Enroll not available' %}
 									</a>
 								</div>
