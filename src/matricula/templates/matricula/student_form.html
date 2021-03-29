@@ -99,5 +99,10 @@
 				tagify.loading(false).dropdown.show.call(tagify, value); // render the suggestions dropdown
 			})
 		}
+		$(document).ready(function(){
+			$("#id_organization").next().remove();
+			$("#id_organization").next().append("<br/>");
+		});
+
 	</script>
 {% endblock %}

@@ -46,7 +46,7 @@ class StudentCreateForm(GTForm, forms.ModelForm):
         required=True, label=_("Password")+" * ", widget=djgentelella.PasswordInput,
         help_text='El password debe contener al menos 8 caracteres, mezclando mayúsculas, minúsculas, números y caracteres de puntuación')
     organization = forms.CharField(
-        label="Organización * ", required=True
+        label="Organización * ", required=True, help_text=_("It can be your company or organization where you work or the community that you represent.")
     )
 
     class Meta:
@@ -152,6 +152,7 @@ class StudentEditForm(GTForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(StudentEditForm, self).__init__(*args, **kwargs)
+        self.fields['organization'].help_text =_("It can be your company or organization where you work or the community that you represent.")
         if 'initial' in kwargs:
             if 'country_id' in kwargs['initial']:
                 self.fields['country'].initial = kwargs['initial']['country_id']
@@ -521,7 +522,7 @@ class StudentAdminCreateForm(GTForm, forms.ModelForm):
         label="País", queryset=Country.objects.all(), required=True, widget=djgentelella.Select)
     phone_number = forms.CharField(label="Teléfono", widget=djgentelella.TextInput)
     organization = forms.CharField(
-        label="Organización", required=True
+        label="Organización", required=True, help_text=_("It can be your company or organization where you work or the community that you represent.")
     )
 
     class Meta:
