@@ -98,10 +98,11 @@ class CreateProfessor(CreateView):
             self.send_email(instance.user)
             messages.success(self.request, "Profesora registrada exitosamente.")
             return redirect(reverse('professors_list'))
-        else: 
+        else:
+            self.object = None
             context['form'] = form
             messages.error(self.request, "Error al guardar los datos.")
-            return render(request, self.template_name, self.get_context_data(**context))
+            return render(request, self.template_name, self.get_context_data(**kwargs))
 
     def send_email(self,  user):
         schema = self.request.scheme+"://"
