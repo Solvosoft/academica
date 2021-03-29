@@ -99,7 +99,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for enroll in enroll_set.all %}
+                        {% for enroll in object %}
                             <tr class="{% cycle 'odd' 'even' %} pointer">
                                 <td class="">{{ enroll.student }}</td>
                                 <td class="">{{ enroll.enroll_date }}</td>
@@ -145,13 +145,21 @@
                     <a class="btn btn-dark" href="{% url 'groups_enroll' %}">Atras</a>
                     {% if perms.matricula.can_open_group %}
                         <a class="btn btn-primary" href="{% url 'open_group' group.pk %}">Abrir grupo</a>
-                        <a class="btn btn-primary" href="{% url 'open_group' group.pk %}?sendemail=1">Abrir grupo y
-                            notificar</a>
+                        {% if group.notified_open %}
+                            <a class="btn btn-primary disabled" href="#">Ya se notifico de apertura</a>
+                        {% else %}
+                            <a class="btn btn-primary" href="{% url 'open_group' group.pk %}?sendemail=1">Abrir grupo y
+                                notificar</a>
+                        {% endif %}
                     {% endif %}
                     {% if perms.matricula.can_close_group %}
                         <a class="btn btn-primary" href="{% url 'close_group' group.pk %}">Cerrar grupo</a>
-                        <a class="btn btn-primary" href="{% url 'close_group' group.pk %}?sendemail=1">Cerrar grupo y
-                            notificar</a>
+                        {% if group.notified_close %}
+                            <a class="btn btn-primary disabled" href="#">Ya se notifico de cierre</a>
+                        {% else %}
+                            <a class="btn btn-primary" href="{% url 'close_group' group.pk %}?sendemail=1">Cerrar grupo y
+                                notificar</a>
+                        {% endif %}
                     {% endif %}
                     {% if show_buttons_certificates %}
                         <a class="btn btn-primary" href="{% url 'build_pdf_certificate_list' pk=group.pk %}">Generar

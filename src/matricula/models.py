@@ -148,6 +148,8 @@ class Group(models.Model):
     enroll_start = models.DateTimeField(verbose_name=_("Enroll start hour")+" * ")
     enroll_finish = models.DateTimeField(verbose_name=_("Enroll finish hour")+" * ")
     is_paid = models.BooleanField(verbose_name="Es pagado * ", default=True)
+    notified_close = models.BooleanField(verbose_name=_("Was nofified as closed"), default=False)
+    notified_open = models.BooleanField(verbose_name=_("Was nofified as opened"), default=False)
     currency = models.ForeignKey(
         SystemCurrency, verbose_name=_("Currency")+" * ", on_delete=models.CASCADE,
         blank=True, null=True)

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-29 10:41-0600\n"
+"POT-Creation-Date: 2021-03-29 11:57-0600\n"
 "PO-Revision-Date: 2020-11-27 20:41-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -294,7 +294,15 @@ msgstr "Hora de inicio de matrícula"
 msgid "Enroll finish hour"
 msgstr "Hora de finalización de matrícula"
 
+#: src/matricula/models.py:151
+msgid "Was nofified as closed"
+msgstr "¿Se notifico como cerrado?"
+
 #: src/matricula/models.py:152
+msgid "Was nofified as opened"
+msgstr "¿Se notifico como abierto?"
+
+#: src/matricula/models.py:154
 msgid "Currency"
 msgstr "Moneda"
 
@@ -608,7 +616,9 @@ msgstr "Registrate"
 
 #: src/matricula/templates/menuitems/menuitem_create.html:8
 msgid "Work with caution in this view check the manual to see how it works."
-msgstr "Trabaje con mucho cuidado está vista, para más detalles ver el video asociado a esta funcionalidad."
+msgstr ""
+"Trabaje con mucho cuidado está vista, para más detalles ver el video "
+"asociado a esta funcionalidad."
 
 #: src/matricula/templates/menuitems/menuitem_list.html:30
 msgid "There are not menu items available"

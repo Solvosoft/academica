@@ -767,54 +767,39 @@ def list_students_group(request, pk=None):
     show_column_action = False
     if pk != None:
         context = {}
-        if request.method == "POST":
-            Group.objects.get(pk=pk)
-            form = PreEnrollAddGroupForm(request.POST)
-            if form.is_valid():
-                enroll = Enroll.objects.filter(pk__in=form.cleaned_data['students'])
-                for instance in enroll:
-                    instance.enroll_finished = True
-                    instance.save()
-                messages.success(request, "Estudiantes inscritos con éxito")
-                return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
-        else:
-            instance = Group.objects.get(pk=pk)
-            enroll_list = Enroll.objects.filter(group=instance, enroll_finished=True)
-            if instance.is_paid:
-                enroll_list = enroll_list.filter(bill__is_paid=True)
-            context['object'] = enroll_list
-            context['group'] = instance
-            approved_students = enroll_list.filter(course_status="approved")
-            enroll_finished = enroll_list.filter(enroll_finished=True)
-            enroll_list_with_certificates = enroll_list.filter(pdf_certificate__isnull=False).exclude(pdf_certificate="")
+        instance = Group.objects.get(pk=pk)
+        enroll_list = Enroll.objects.filter(group=instance, enroll_finished=True)
+        if instance.is_paid:
+            enroll_list = enroll_list.filter(bill__is_paid=True)
+        context['object'] = enroll_list
+        context['group'] = instance
+        approved_students = enroll_list.filter(course_status="approved")
+        enroll_finished = enroll_list.filter(enroll_finished=True)
+        enroll_list_with_certificates = enroll_list.filter(pdf_certificate__isnull=False).exclude(pdf_certificate="")
 
-            for enroll in enroll_list:
+        for enroll in enroll_list:
 
-                if enroll.pdf_certificate is None or enroll.pdf_certificate == "" and approved_students and enroll_finished and request.user.is_superuser:
-                    show_buttons_certificates = True
-                    break
+            if enroll.pdf_certificate is None or enroll.pdf_certificate == "" and approved_students and enroll_finished and request.user.is_superuser:
+                show_buttons_certificates = True
+                break
 
-            if enroll_list_with_certificates:
-                show_column_action = True
+        if enroll_list_with_certificates:
+            show_column_action = True
 
-            context['show_column_action'] = show_column_action
-            context['show_buttons_certificates'] = show_buttons_certificates
-            return render(
-                request, 'groups/group_students_list.html', context)
-        return HttpResponseRedirect(reverse('groups'))
+        context['show_column_action'] = show_column_action
+        context['show_buttons_certificates'] = show_buttons_certificates
+        return render(request, 'groups/group_students_list.html', context)
+    return HttpResponseRedirect(reverse('groups'))
 
 
 @permission_required('matricula.can_open_group')
 def open_group(request, pk):
-    try:
-        group = Group.objects.get(pk=pk)
-    except Exception:
-        messages.error(_("Group Not Found"))
+    group = Group.objects.get(pk=pk)
     enrolls = Enroll.objects.filter(group=group)
     enrolls.update(enroll_activate=True)
     group.is_open = True
-    group.save()
     if request.GET.get('sendemail', '0') == '1':
+        group.notified_open = True
         schema = request.scheme+"://"
         send_email_from_template(
             'email_open_group',
@@ -827,22 +812,20 @@ def open_group(request, pk):
             },
             enqueued=False,
             user=None)
+    group.save()
     messages.success(request, "Grupo aperturado con éxito")
     return HttpResponseRedirect(reverse('list_students_group', args=[pk, ]))
 
 
 @permission_required('matricula.can_close_group')
 def close_group(request, pk):
-    try:
-        group = Group.objects.get(pk=pk)
-    except Exception:
-        messages.error(_("Group Not Found"))
+    group = Group.objects.get(pk=pk)
     enrolls = Enroll.objects.filter(group=group)
     enrolls.update(enroll_activate=False)
     group.is_open = False
-    group.save()
     if request.GET.get('sendemail', '0') == '1':
         schema = request.scheme+"://"
+        group.notified_close = True
         send_email_from_template(
             'email_close_group',
             [enroll.student.user.email for enroll in enrolls],
@@ -854,6 +837,7 @@ def close_group(request, pk):
             },
             enqueued=False,
             user=None)
+    group.save()
     messages.success(request, "Grupo cerrado con éxito")
     return HttpResponseRedirect(reverse('list_students_group', args=[pk, ]))
 
