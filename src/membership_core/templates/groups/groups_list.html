@@ -1,5 +1,5 @@
 {% extends 'gentelella/base.html' %}
-{% load static gtsettings %}
+{% load static gtsettings i18n %}
 {% block pre_head %}
     {% define_true "use_datatables" as use_datatables %}
 {% endblock %}
@@ -38,50 +38,55 @@
     <div class="row">
         <div class='col-md-12 col-xs-12'>
             <h1 class="text-center"> Listado de grupos</h1>
-            <div class="x_panel">
-                <div class="x_content" style="display: block;">
-                    <div class="dashboard-widget-content">
-                        <table id="groupstable" class="table table-striped table-bordered" style="width:100%">
-                            <thead>
+            {% if groups_list %}
+                <div class="x_panel">
+                    <div class="x_content" style="display: block;">
+                        <div class="dashboard-widget-content">
+                            <table id="groupstable" class="table table-striped table-bordered" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for group in groups_list %}
                                 <tr>
-                                    <th>Nombre</th>
-                                    <th>Acción</th>
+                                    <td>{{ group.fakegroup.name }} </td>
+                                    <td>
+                                        <a title="Editar grupo" class="btn btn-sm" href="{% url 'edit_group' pk=group.pk %}"><i class="fa fa-edit fa-2x"></i> </a>
+                                        <a title="Eliminar grupo" class="btn btn-sm" data-url="{% url 'delete_group' pk=group.pk %}" onclick="delete_group(this)"><i class="fa fa-trash fa-2x"></i></a>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
+                                {% endfor %}
 
-                            {% for group in groups_list %}
-                            <tr>
-                                <td>{{ group.fakegroup.name }} </td>
-                                <td>
-                                    <a title="Editar grupo" class="btn btn-sm" href="{% url 'edit_group' pk=group.pk %}"><i class="fa fa-edit fa-2x"></i> </a>
-                                    <a title="Eliminar grupo" class="btn btn-sm" data-url="{% url 'delete_group' pk=group.pk %}" onclick="delete_group(this)"><i class="fa fa-trash fa-2x"></i></a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-
-                        </tbody>
-                        </table>
+                            </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
-
+            {% else %}
+                <div class="alert alert-info" role="alert">
+                    {% trans 'There are not groups available' %}
+                </div>
+            {% endif %}
         </div>
     </div>
 
     <div id="modaldeletegroup" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">¿Es posible que este grupo este asociado a las usuarias, esta segura que desea eliminar este grupo?</h4>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                <a class="btn btn-danger" id="deletegroup">Eliminar</a>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">¿Es posible que este grupo este asociado a las usuarias, esta segura que desea eliminar este grupo?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                    <a class="btn btn-danger" id="deletegroup">Eliminar</a>
+                </div>
             </div>
         </div>
-    </div>
     </div>
 
 </div>

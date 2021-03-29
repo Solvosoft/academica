@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-29 01:52-0600\n"
+"POT-Creation-Date: 2021-03-29 07:50-0600\n"
 "PO-Revision-Date: 2020-01-09 08:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -299,6 +299,10 @@ msgstr "Le enviaremos un correo para verificar que usted es quien dice ser"
 #: src/membership_core/templates/gentelella/registration/password_reset_form.html:28
 msgid "Send email"
 msgstr "Enviar correo"
+
+#: src/membership_core/templates/groups/groups_list.html:71
+msgid "There are not groups available"
+msgstr "No hay grupos registrados"
 
 #: src/membership_core/templates/user/user_list.html:32
 msgid "There are not users available"
