@@ -1,8 +1,8 @@
 {% extends 'gentelella/base.html'%}
 {% load i18n %}
 {% block content %}
+	<h1 class="text-center">{% trans 'Pre-enroll courses' %}</h1>
 	{% if student %}
-		<h1 class="text-center">{% trans 'Pre-enroll courses' %}</h1>
 		<div class="x_panel">
 			{% for enroll in list_pre %}
 				<div class="x_panel">
