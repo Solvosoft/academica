@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-29 01:52-0600\n"
+"POT-Creation-Date: 2021-03-29 10:41-0600\n"
 "PO-Revision-Date: 2020-11-27 20:41-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -110,7 +110,8 @@ msgstr "Apellidos"
 msgid "Password"
 msgstr "Contraseña"
 
-#: src/matricula/forms.py:49
+#: src/matricula/forms.py:49 src/matricula/forms.py:155
+#: src/matricula/forms.py:525
 msgid ""
 "It can be your company or organization where you work or the community that "
 "you represent."
@@ -497,7 +498,13 @@ msgstr "Bienvenido a Académica"
 msgid "Pre-enroll courses"
 msgstr "Cursos prematriculados"
 
-#: src/matricula/templates/enroll.html:14
+#: src/matricula/templates/enroll.html:15
+#: src/matricula/templates/enroll.html:44
+msgid "Rejected"
+msgstr "Rechazada"
+
+#: src/matricula/templates/enroll.html:21
+#: src/matricula/templates/enroll.html:56
 msgid "Enroll not available"
 msgstr "Matricula no disponible"
 
@@ -598,6 +605,10 @@ msgstr "Ingresar"
 #: src/matricula/templates/matricula_base.html:33
 msgid "Sing up"
 msgstr "Registrate"
+
+#: src/matricula/templates/menuitems/menuitem_create.html:8
+msgid "Work with caution in this view check the manual to see how it works."
+msgstr "Trabaje con mucho cuidado está vista, para más detalles ver el video asociado a esta funcionalidad."
 
 #: src/matricula/templates/menuitems/menuitem_list.html:30
 msgid "There are not menu items available"
