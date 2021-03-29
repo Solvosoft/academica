@@ -3,7 +3,7 @@
 {% block content %}
 	<h1 class="text-center">Elementos del menú</h1>
 	<div class="row">
-		{% if perms.djgentelella.add_course %}
+		{% if perms.djgentelella.add_menuitem %}
 			<div class="col-sm-12 col-xs-12 col-md-8 col-md-offset-2">
 		{% else %}
 			<div class="col-sm-12 col-xs-12 col-md-10 col-md-offset-1">
@@ -121,7 +121,7 @@
 			</ul>
 		{% endif %}
 	</div>
-{%endblock%}
+{% endblock %}
 {% if perms.matricula.delete_menuitem %}
 	{% block js %}
 		<script type="text/javascript">
