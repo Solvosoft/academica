@@ -109,9 +109,11 @@
 									{% endif %} 
 									de {{object.maximum}}
 								</li>
-								<li>
-									<strong>Moneda: </strong>{{object.currency}}
-								</li>
+								{% if group.is_paid %}
+									<li>
+										<strong>Moneda: </strong>{{object.currency}}
+									</li>
+								{% endif %}
 							</ul>
 						</div>
 						<div class="col-md-12">
