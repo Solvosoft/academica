@@ -4459,3 +4459,7 @@ html , body{
 .paid{
     border-top: 5px solid #009145;
 }
+
+div.form-group {
+    margin-bottom: 15px !important;
+}
