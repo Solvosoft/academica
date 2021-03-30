@@ -544,6 +544,26 @@ class StudentAdminCreateForm(GTForm, forms.ModelForm):
         return data
 
 
+class StudentAddForm(GTForm, forms.ModelForm):
+    country2 = forms.ModelChoiceField(
+        queryset=Country.objects.all(), label=_("Country"), widget=djgentelella.Select,
+        required=True)
+    organization2 = forms.CharField(label=_("Organization"), widget=djgentelella.TextInput)
+    class Meta:
+        model = Student
+        fields = [
+            'user', 'organization2', 'country2', 'phone_number']
+
+        widgets = {
+            'user': djgentelella.Select,
+            'phone_number': djgentelella.TextInput,
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(StudentAddForm, self).__init__(*args, **kwargs)
+        self.fields['user'].queryset = User.objects.filter(is_active=True, student__isnull=True)
+
+
 class StudentChangePasswordForm(GTForm, forms.ModelForm):
 
     MIN_LENGTH = 8

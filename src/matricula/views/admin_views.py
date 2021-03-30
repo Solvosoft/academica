@@ -35,7 +35,7 @@ from async_notifications.utils import send_email_from_template
 from matricula.forms import CategoryCreateForm, CategorySearchForm, \
     CourseSearchForm, CourseCreateForm, MenuItemSearchForm, \
     MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, \
-    GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentSearchForm, \
+    GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentAddForm, StudentSearchForm, \
     StudentAdminCreateForm, PageCreateForm, PageSearchForm, MenuItemAddForm, \
     PreEnrollAddGroupForm, GroupAddForm, GroupEditForm, PermissionForm,\
     StudentChangePasswordForm
@@ -1010,42 +1010,75 @@ class StudentList(ListView):
 
 @permission_required('matricula.add_student')
 def create_student(request):
-    context = {}
+    context = {'form_show':'first'}
     if request.method == 'POST':
-        form = StudentAdminCreateForm(request.POST)
-        context['form'] = form
-        if form.is_valid():
-            user = User(
-                username=form.cleaned_data['username'],
-                first_name=form.cleaned_data['first_name'],
-                last_name=form.cleaned_data['last_name'],
-                email=form.cleaned_data['email'],
-                is_active=True)
-            user.save()
-            student = Student(
-                user=user, organization=form.cleaned_data['organization'],
+        user_created = request.POST.get('user', None)
+        if(user_created is not None):
+            form_user = StudentAddForm(request.POST)
+            context['form_user'] = form_user
+            if form_user.is_valid():
+                student = Student(
+                user=form_user.cleaned_data['user'],
+                organization=form_user.cleaned_data['organization2'],
                 created_at=now(), confirmed_at=now(),
-                phone_number=form.cleaned_data['phone_number'],
-                country=form.cleaned_data['country'],
+                phone_number=form_user.cleaned_data['phone_number'],
+                country=form_user.cleaned_data['country2'],
                 expired_at=get_expire_date())
-            student.save()
-            schema = request.scheme+"://"
-            send_email_from_template(
-                'set_email_first_academy', user.email,
-                {
-                    'domain': schema+request.get_host(),
-                    "url": request.build_absolute_uri(
-                        reverse('recover_password')),
-                    'student': student,
-                },
-                enqueued=False,
-                user=None)
-            messages.success(request, "Estudiante guardada con éxito")
-            return HttpResponseRedirect(reverse('students'))
+                student.save()
+                schema = request.scheme+"://"
+                send_email_from_template(
+                    'set_email_first_academy', student.user.email,
+                    {
+                        'domain': schema+request.get_host(),
+                        "url": request.build_absolute_uri(
+                            reverse('recover_password')),
+                        'student': student,
+                    },
+                    enqueued=False,
+                    user=None)
+                messages.success(request, "Estudiante guardada con éxito")
+                return HttpResponseRedirect(reverse('students'))
+            else:
+                messages.error(request, "Error al guardar Estudiante")
+                context['form'] = StudentAdminCreateForm()
+            context['form_show'] = 'last'
         else:
-            messages.error(request, "Error al guardar Estudiante")
+            form = StudentAdminCreateForm(request.POST)
+            context['form'] = form
+            if form.is_valid():
+                user = User(
+                    username=form.cleaned_data['username'],
+                    first_name=form.cleaned_data['first_name'],
+                    last_name=form.cleaned_data['last_name'],
+                    email=form.cleaned_data['email'],
+                    is_active=True)
+                user.save()
+                student = Student(
+                    user=user, organization=form.cleaned_data['organization'],
+                    created_at=now(), confirmed_at=now(),
+                    phone_number=form.cleaned_data['phone_number'],
+                    country=form.cleaned_data['country'],
+                    expired_at=get_expire_date())
+                student.save()
+                schema = request.scheme+"://"
+                send_email_from_template(
+                    'set_email_first_academy', user.email,
+                    {
+                        'domain': schema+request.get_host(),
+                        "url": request.build_absolute_uri(
+                            reverse('recover_password')),
+                        'student': student,
+                    },
+                    enqueued=False,
+                    user=None)
+                messages.success(request, "Estudiante guardada con éxito")
+                return HttpResponseRedirect(reverse('students'))
+            else:
+                context['form_user'] = StudentAddForm()
+                messages.error(request, "Error al guardar Estudiante")
     else:
         context['form'] = StudentAdminCreateForm()
+        context['form_user'] = StudentAddForm()
     return render(request, 'students/student_create.html', context)
 
 
@@ -1120,11 +1153,17 @@ class StudentDelete(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         student = self.get_object()
-        user = User.objects.get(pk=student.user.pk)
-        user.is_active = False
-        user.save()
+        user = User.objects.filter(student=student)
+        professor = hasattr(user, 'professor')
+        admin = user.filter(groups__name=settings.ADMIN_GROUP_NAME)
+        if professor or admin.exists():
+            student.delete()
+            messages.success(self.request, _("Student role removed successfuly"))
+            return HttpResponseRedirect(self.success_url)
+        student.user.delete()
+        student.delete()
         messages.success(self.request, self.success_message)
-        return super(StudentDelete, self).delete(request, *args, **kwargs)
+        return HttpResponseRedirect(self.success_url)
 
 
 @permission_required('matricula.can_recovery_pass_student')
