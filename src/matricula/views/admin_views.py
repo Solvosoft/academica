@@ -606,16 +606,16 @@ def pre_enroll_group(request, pk=None):
                 form = PreEnrollAddGroupForm(request.POST)
                 if form.is_valid():
                     action = request.POST.get('action')
-                    if action == "Matricular":
+                    if action == "Aperturar matrícula":
                         enrolls = Enroll.objects.filter(pk__in=form.cleaned_data['students'], group=group)
                         emails = []
                         for instance in enrolls:
-                            instance.enroll_finished = True
+                            instance.enroll_activate = True
                             instance.save()
                             emails.append(instance.student.user.email)
                         schema = request.scheme+"://"
                         send_email_from_template(
-                            'email_enroll_success', [i for i in emails],
+                            'preenroll_success', [i for i in emails],
                             {
                                 "url": request.build_absolute_uri(reverse('enrollment')),
                                 "group": group,

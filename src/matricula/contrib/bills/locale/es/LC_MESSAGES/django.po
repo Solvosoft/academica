@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Matricula Bills\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-29 01:52-0600\n"
+"POT-Creation-Date: 2021-03-30 18:07-0600\n"
 "PO-Revision-Date: 2020-11-27 14:57-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: ES <es@solvosoft.com>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: src/matricula/contrib/bills/admin.py:10
-#: src/matricula/contrib/bills/models.py:29
+#: src/matricula/contrib/bills/models.py:31
 #: src/matricula/contrib/bills/templates/bills/bill_create.html:4
 #: src/matricula/contrib/bills/templates/bills/bill_list.html:4
 #: src/matricula/contrib/bills/templates/bills/bill_update.html:4
@@ -32,12 +32,12 @@ msgid "Short description"
 msgstr "Descripción Corta"
 
 #: src/matricula/contrib/bills/models.py:11
-#: src/matricula/contrib/bills/templates/bills/bill_list.html:85
+#: src/matricula/contrib/bills/templates/bills/bill_list.html:91
 msgid "Description"
 msgstr "Descripción"
 
 #: src/matricula/contrib/bills/models.py:13
-#: src/matricula/contrib/bills/templates/bills/bill_list.html:88
+#: src/matricula/contrib/bills/templates/bills/bill_list.html:94
 #: src/matricula/contrib/bills/templates/email_invoice_error.html:91
 #: src/matricula/contrib/bills/templates/invoice_enroll.html:17
 msgid "Amount"
@@ -50,16 +50,16 @@ msgid "Student"
 msgstr "Estudiante"
 
 #: src/matricula/contrib/bills/models.py:17
-#: src/matricula/contrib/bills/templates/bills/bill_list.html:98
+#: src/matricula/contrib/bills/templates/bills/bill_list.html:104
 #: src/matricula/contrib/bills/templates/email_invoice_error.html:95
 msgid "Currency"
 msgstr "Moneda"
 
-#: src/matricula/contrib/bills/models.py:28
+#: src/matricula/contrib/bills/models.py:30
 msgid "Bill"
 msgstr "Pago"
 
-#: src/matricula/contrib/bills/signals.py:42
+#: src/matricula/contrib/bills/signals.py:45
 #, python-format
 msgid "Enroll in %s"
 msgstr "Matriculado en %s"
@@ -89,12 +89,12 @@ msgid "You don't have paid bills"
 msgstr "No ha realizado ningún pago"
 
 #: src/matricula/contrib/bills/templates/bills/bill_create.html:10
-#: src/matricula/contrib/bills/templates/bills/bill_list.html:30
+#: src/matricula/contrib/bills/templates/bills/bill_list.html:36
 msgid "New bill"
 msgstr "Nuevo pago"
 
 #: src/matricula/contrib/bills/templates/bills/bill_create.html:18
-#: src/matricula/contrib/bills/templates/bills/bill_list.html:44
+#: src/matricula/contrib/bills/templates/bills/bill_list.html:50
 #: src/matricula/contrib/bills/templates/bills/bill_update.html:20
 msgid "Cancel"
 msgstr "Cancelar"
@@ -104,11 +104,11 @@ msgstr "Cancelar"
 msgid "Save"
 msgstr "Guardar"
 
-#: src/matricula/contrib/bills/templates/bills/bill_list.html:21
+#: src/matricula/contrib/bills/templates/bills/bill_list.html:22
 msgid "Clear"
 msgstr "Limpiar"
 
-#: src/matricula/contrib/bills/templates/bills/bill_list.html:22
+#: src/matricula/contrib/bills/templates/bills/bill_list.html:23
 msgid "Search"
 msgstr "Buscar"
 
@@ -124,32 +124,32 @@ msgstr ""
 "¿Está segura que desea eliminar este pago? Podrían habercupones relacionados "
 "al mismo que también serían eliminados."
 
-#: src/matricula/contrib/bills/templates/bills/bill_list.html:45
-#: src/matricula/contrib/bills/templates/bills/bill_list.html:75
+#: src/matricula/contrib/bills/templates/bills/bill_list.html:51
+#: src/matricula/contrib/bills/templates/bills/bill_list.html:81
 msgid "Delete"
 msgstr "Eliminar"
 
-#: src/matricula/contrib/bills/templates/bills/bill_list.html:71
+#: src/matricula/contrib/bills/templates/bills/bill_list.html:77
 msgid "Edit"
 msgstr "Modificar"
 
-#: src/matricula/contrib/bills/templates/bills/bill_list.html:91
+#: src/matricula/contrib/bills/templates/bills/bill_list.html:97
 msgid "Coupons"
 msgstr "Cupones"
 
-#: src/matricula/contrib/bills/templates/bills/bill_list.html:101
+#: src/matricula/contrib/bills/templates/bills/bill_list.html:107
 msgid "Transaction id"
 msgstr "ID único de transacción"
 
-#: src/matricula/contrib/bills/templates/bills/bill_list.html:101
+#: src/matricula/contrib/bills/templates/bills/bill_list.html:107
 msgid "Not available"
 msgstr "No disponible"
 
-#: src/matricula/contrib/bills/templates/bills/bill_list.html:104
+#: src/matricula/contrib/bills/templates/bills/bill_list.html:110
 msgid "Yes"
 msgstr "Sí"
 
-#: src/matricula/contrib/bills/templates/bills/bill_list.html:104
+#: src/matricula/contrib/bills/templates/bills/bill_list.html:110
 msgid "No"
 msgstr "No"
 
@@ -165,7 +165,7 @@ msgstr "No hay monedas registradas"
 msgid "Invoice paid"
 msgstr "Pagos completados"
 
-#: src/matricula/contrib/bills/templates/email_invoice.html:90
+#: src/matricula/contrib/bills/templates/email_invoice.html:79
 msgid "Invoice unpaid"
 msgstr "Pagos pendientes"
 
@@ -174,7 +174,7 @@ msgstr "Pagos pendientes"
 msgid "Unique Transaction ID"
 msgstr "ID único de transacción"
 
-#: src/matricula/contrib/bills/templates/email_invoice.html:97
+#: src/matricula/contrib/bills/templates/email_invoice.html:86
 msgid "Paid Date"
 msgstr "Fecha de pago"
 

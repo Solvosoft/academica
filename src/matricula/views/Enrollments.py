@@ -117,13 +117,15 @@ def list_enroll(request):
     }
     if is_student:
         student = request.user.student
-        list_enr = Enroll.objects.filter(
+        context['list_enroll'] = Enroll.objects.filter(
             student=student, enroll_activate=True, enroll_finished=False)
-        context['list_enroll'] = list_enr
-        list_pre = Enroll.objects.filter(
+        context['list_pre']  = Enroll.objects.filter(
             student=student, enroll_activate=False, enroll_finished=False)
-        context['list_pre'] = list_pre
-        context['finished_enroll'] = Enroll.objects.filter(student=student, enroll_finished=True).order_by("-enroll_date")
+        enroll_finished = Enroll.objects.filter(
+            student=student, enroll_finished=True)
+        context['finished_enroll'] = enroll_finished.filter(Q(bill__is_paid=True)| Q(group__is_paid=False))
+        context['pending_enroll'] = Enroll.objects.filter(
+            student=student, enroll_finished=True, group__is_paid=True, bill__is_paid=False)
     return render(request, 'enroll.html', context)
 
 

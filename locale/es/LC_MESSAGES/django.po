@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-29 07:50-0600\n"
+"POT-Creation-Date: 2021-03-30 18:07-0600\n"
 "PO-Revision-Date: 2020-01-09 08:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -114,75 +114,75 @@ msgstr "Categorías"
 msgid "All Rights Reserved."
 msgstr "Todos los derechos reservados"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:4
+#: src/membership_core/templates/gentelella/app/sidebar.html:5
 msgid "UPO"
 msgstr "UPO"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:15
+#: src/membership_core/templates/gentelella/app/sidebar.html:16
 msgid "Enrollment"
 msgstr "Matrícula"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:28
+#: src/membership_core/templates/gentelella/app/sidebar.html:31
 msgid "Academic"
 msgstr "Académica"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:39
+#: src/membership_core/templates/gentelella/app/sidebar.html:42
 msgid "Groups"
 msgstr "Grupos"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:42
+#: src/membership_core/templates/gentelella/app/sidebar.html:45
 msgid "Menu items"
 msgstr "Elementos del menú"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:48
+#: src/membership_core/templates/gentelella/app/sidebar.html:51
 msgid "Periods"
 msgstr "Periodos"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:51
+#: src/membership_core/templates/gentelella/app/sidebar.html:54
 msgid "Pages"
 msgstr "Páginas"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:54
+#: src/membership_core/templates/gentelella/app/sidebar.html:57
 msgid "Students"
 msgstr "Estudiantes"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:58
+#: src/membership_core/templates/gentelella/app/sidebar.html:61
 msgid "Professors"
 msgstr "Facilitadoras"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:61
+#: src/membership_core/templates/gentelella/app/sidebar.html:64
 msgid "Coupons"
 msgstr "Cupones"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:72
+#: src/membership_core/templates/gentelella/app/sidebar.html:76
 msgid "Bills"
 msgstr "Pagos"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:77
+#: src/membership_core/templates/gentelella/app/sidebar.html:81
 msgid "Currency Exchanges"
 msgstr "Monedas de intercambio"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:80
+#: src/membership_core/templates/gentelella/app/sidebar.html:84
 msgid "Bill list"
 msgstr "Lista de pagos"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:91
+#: src/membership_core/templates/gentelella/app/sidebar.html:95
 msgid "Administration"
 msgstr "Administración"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:97
+#: src/membership_core/templates/gentelella/app/sidebar.html:101
 msgid "User list"
 msgstr "Lista de usuarias"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:102
+#: src/membership_core/templates/gentelella/app/sidebar.html:106
 msgid "Group list"
 msgstr "Lista de grupos"
 
-#: src/membership_core/templates/gentelella/app/top_navigation.html:59
+#: src/membership_core/templates/gentelella/app/top_navigation.html:53
 msgid "Profile"
 msgstr "Perfil"
 
-#: src/membership_core/templates/gentelella/app/top_navigation.html:60
+#: src/membership_core/templates/gentelella/app/top_navigation.html:54
 msgid "Log out"
 msgstr "Cerrar sesión"
 
@@ -198,15 +198,15 @@ msgstr "Super administradora"
 msgid "Professor"
 msgstr "Facilitadora"
 
-#: src/membership_core/templates/gentelella/registration/login.html:21
+#: src/membership_core/templates/gentelella/registration/login.html:19
 msgid "Login"
 msgstr "Iniciar Sesión"
 
-#: src/membership_core/templates/gentelella/registration/login.html:24
+#: src/membership_core/templates/gentelella/registration/login.html:22
 msgid "Your username and password didn't match. Please try again."
 msgstr "Su usuaria y contraseña no son iguales. Intentelo nuevamente."
 
-#: src/membership_core/templates/gentelella/registration/login.html:29
+#: src/membership_core/templates/gentelella/registration/login.html:27
 msgid ""
 "Your account doesn't have access to this page. To proceed,\n"
 "                                please login with an account that has access."
@@ -214,28 +214,27 @@ msgstr ""
 "Su cuenta no tiene acceso a esta página. Para continuar,\n"
 "   inicie sesión con una cuenta que tenga acceso."
 
-#: src/membership_core/templates/gentelella/registration/login.html:32
+#: src/membership_core/templates/gentelella/registration/login.html:30
 msgid "Please login to see this page."
 msgstr "Por favor inicie sesión para ver esta página."
 
-#: src/membership_core/templates/gentelella/registration/login.html:37
+#: src/membership_core/templates/gentelella/registration/login.html:35
 msgid "Username"
 msgstr "Usuaria"
 
-#: src/membership_core/templates/gentelella/registration/login.html:40
+#: src/membership_core/templates/gentelella/registration/login.html:38
 msgid "Password"
 msgstr "Contraseña"
 
-#: src/membership_core/templates/gentelella/registration/login.html:43
+#: src/membership_core/templates/gentelella/registration/login.html:41
 msgid "Log in"
 msgstr "Iniciar sesión"
 
-#: src/membership_core/templates/gentelella/registration/login.html:44
+#: src/membership_core/templates/gentelella/registration/login.html:42
 msgid "Lost your password?"
 msgstr "¿Perdió su contraseña?"
 
 #: src/membership_core/templates/gentelella/registration/login.html:43
-#: src/membership_core/templates/gentelella/registration/password_reset_done.html:12
 msgid "Go to home"
 msgstr "Ir a inicio"
 
@@ -250,18 +249,6 @@ msgstr "Enviar"
 #: src/membership_core/templates/gentelella/registration/password_reset_confirm.html:28
 msgid "Password reset failed"
 msgstr "El cambio de contraseña fallo"
-
-#: src/membership_core/templates/gentelella/registration/password_reset_done.html:9
-msgid "Password reseted"
-msgstr "Contraseña restablecida"
-
-#: src/membership_core/templates/gentelella/registration/password_reset_done.html:10
-msgid "The password has been reset successfully."
-msgstr "La contraseña ha sido restablecida con éxito"
-
-#: src/membership_core/templates/gentelella/registration/password_reset_done.html:13
-msgid "Log In"
-msgstr "Iniciar sesión"
 
 #: src/membership_core/templates/gentelella/registration/password_reset_email.html:37
 msgid "Reseting password at UPo"

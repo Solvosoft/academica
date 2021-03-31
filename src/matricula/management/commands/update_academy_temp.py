@@ -24,6 +24,7 @@ class Command(BaseCommand):
             'reset_password_academy',
             'email_enroll_rejected',
             'invoice_not_found',
+            'preenroll_success',
         ]
         TemplateContext.objects.filter(code__in=templates).delete()
         EmailTemplate.objects.filter(code__in=templates).delete()

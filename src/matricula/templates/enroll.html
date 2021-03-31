@@ -109,4 +109,28 @@
 			{% endfor %}
 		</div>
 	{% endif %}
+	{% if student %}
+		<h1 class="text-center">{% trans "Pending paids"%}</h1>
+		<div class="x_panel">
+			{% for enroll in pending_enroll%}
+				<div class="x_panel">
+					<!-- end of user messages -->
+					<ul class="messages">
+						<li>
+							<div style="margin-left:0" class="message_wrapper">
+								<h4 class="heading green"><a href="{% url 'course_detail' enroll.group.course.pk %}">{{enroll.group }}</a></h4>
+								<blockquote class="message">{{enroll.group.course.content|striptags|truncatechars:300|safe}}</blockquote>
+								<br />
+							</div>
+						</li>
+					</ul>
+					<!-- end of user messages -->
+				</div>
+			{% empty %}
+			<div class="alert alert-info text-center" role="alert">
+				{% trans "You don't have any pending paid"%}
+			</div>
+			{% endfor %}
+		</div>
+	{% endif %}
 {% endblock %}

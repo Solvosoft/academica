@@ -76,3 +76,7 @@ def load_email_temp_academica():
         'invoice_not_found', 'Correo de notificación de error en pago paypal',
         [('student'), ('domain'), ('transaction_id'),("group"),('amount'), ('currency')],
         'email_invoice_error.html', as_template=True)
+
+    update_template_context(
+        'preenroll_success', 'Tu pre-matrícula en el curso ha sido aceptada - UPo',
+        [('group'), ('url'),("domain")], 'preenroll_success.html', as_template=True)
