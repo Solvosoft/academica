@@ -9,7 +9,7 @@
     <div class="row">
         <div class="{% if not perms.matricula.add_coupon %}col-md-10 col-md-offset-1 col-xs-12{% else %}col-md-10{% endif %}">
             <h1 class="text-center"> Listado de cupones</h1>
-            {% if coupon_list %}
+            {% if coupons_list %}
             <div class="x_panel">
                 <form method="GET">
                     <div class="row">
@@ -52,7 +52,7 @@
 
     <div class="row">
         <div class='col-md-12 col-xs-12'>
-            {% if coupon_list %}
+            {% if coupons_list %}
             <div class="x_panel">
                 <div class="x_content" style="display: block;">
                     <div class="dashboard-widget-content">
