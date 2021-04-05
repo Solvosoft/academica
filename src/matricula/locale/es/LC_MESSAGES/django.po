@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-30 18:07-0600\n"
+"POT-Creation-Date: 2021-04-05 12:01-0600\n"
 "PO-Revision-Date: 2020-11-27 20:41-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -834,13 +834,15 @@ msgstr "El formulario contiene errores"
 msgid "Profile updated successfully"
 msgstr "Perfil actualizado con éxito"
 
-#: src/matricula/views/Enrollments.py:52
+#: src/matricula/views/Enrollments.py:52 src/matricula/views/Enrollments.py:96
+#: src/matricula/views/Enrollments.py:159
 msgid "Enrollment success you have 20 minutes from now to complete the payment"
 msgstr ""
-"Matriculado satisfactoriamente. a partir de este momento tiene 20 minutos "
+"Matriculado satisfactoriamente. A partir de este momento tiene 20 minutos "
 "para realizar el pago."
 
-#: src/matricula/views/Enrollments.py:52
+#: src/matricula/views/Enrollments.py:52 src/matricula/views/Enrollments.py:96
+#: src/matricula/views/Enrollments.py:159
 msgid "Pay Now"
 msgstr "Pagar ahora"
 
@@ -848,25 +850,22 @@ msgstr "Pagar ahora"
 msgid "Pre-enrollment success"
 msgstr "Pre-matriciulado satisfactoriamente"
 
-#: src/matricula/views/Enrollments.py:77 src/matricula/views/Enrollments.py:153
+#: src/matricula/views/Enrollments.py:77 src/matricula/views/Enrollments.py:158
 msgid "We have some problems with your enroll, try again"
 msgstr "Tenemos problemas con la matrícula, trate de nuevo"
 
-#: src/matricula/views/Enrollments.py:94
-msgid "Enrollment success"
-msgstr "Matriculado satisfactoriamente"
-
-#: src/matricula/views/Enrollments.py:96
+#: src/matricula/views/Enrollments.py:98
 msgid "You are already enrolled"
 msgstr "Usted ya está matriculado"
 
-#: src/matricula/views/Enrollments.py:98 src/matricula/views/Enrollments.py:100
+#: src/matricula/views/Enrollments.py:100
+#: src/matricula/views/Enrollments.py:105
+msgid "Sorry your pre-enroll was rejected"
+msgstr "Lo sentimos pero su pre matrícula fue rechazada."
+
+#: src/matricula/views/Enrollments.py:103
 msgid "You are already pre-enrolled"
 msgstr "Usted ya está pre-matriculado"
-
-#: src/matricula/views/Enrollments.py:154
-msgid "Enrollment successfully"
-msgstr "Matriculado satisfactoriamente"
 
 #: src/matricula/views/admin_views.py:1161
 msgid "Student role removed successfuly"

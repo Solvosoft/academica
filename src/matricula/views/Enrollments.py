@@ -34,7 +34,7 @@ def enrollme(request, pk):
             template = 'email_enroll_success'
             with transaction.atomic():
                 enroll = Enroll.objects.create(group=group, student=student)
-                if group.in_enrollment and group.flow == group.AUTO_ENROLL or group.in_enrollment and group.flow == group.AUTO_PREENROLL:
+                if group.in_enrollment or group.in_preenrollment and group.flow == group.AUTO_ENROLL:
                     enroll.enroll_activate = True
                     enroll.enroll_finished = True
                     enroll.save()
@@ -80,24 +80,29 @@ def enrollme(request, pk):
     else:
         enroll = list_enroll.first()
         if enroll.group.in_enrollment:
-            if enroll.enroll_activate and not enroll.enroll_finished:
-                enroll.enroll_finished = True
-                enroll.save()
-                send_email_from_template(
-                    'email_enroll_success', [request.user.email],
-                    {
-                        "url": request.build_absolute_uri(reverse('enrollment')),
-                        "group": group,
-                        'domain': schema+request.get_host(),
-                    },
-                    enqueued=True, user=None)
-                message = _('Enrollment success')
-            elif enroll.enroll_activate and enroll.enroll_finished:
-                message = _('You are already enrolled')
+            if not enroll.rejected:
+                if not enroll.enroll_finished:
+                    enroll.enroll_finished = True
+                    enroll.enllod_activated = True
+                    enroll.save()
+                    send_email_from_template(
+                        'email_enroll_success', [request.user.email],
+                        {
+                            "url": request.build_absolute_uri(reverse('enrollment')),
+                            "group": group,
+                            'domain': schema+request.get_host(),
+                        },
+                        enqueued=True, user=None)
+                    message = _('Enrollment success you have 20 minutes from now to complete the payment') +' <a class="btn btn-success" href="'+ reverse('bills')+'">'+str(_('Pay Now')) +'</a>'
+                else:
+                    message = _('You are already enrolled')
             else:
+                message = _('Sorry your pre-enroll was rejected')
+        elif enroll.group.in_preenrollment:
+            if not enroll.rejected:
                 message = _('You are already pre-enrolled')
-        else:
-            message = _('You are already pre-enrolled')
+            else:
+                message = _('Sorry your pre-enroll was rejected')
         return { 
             "inner-fragments": {
                 "#count_" + str(group.pk): group.enroll_set.count(),
@@ -151,5 +156,6 @@ def finish_enroll(request, pk):
                 enqueued=True, user=None)
     except IntegrityError:
         messages.error(request, _('We have some problems with your enroll, try again'))
-    messages.success(request, _("Enrollment successfully"))
+    messages.success(request, _('Enrollment success you have 20 minutes from now to complete the payment') +' <a class="btn btn-primary" href="'+ reverse('bills')+'">'+str(_('Pay Now')) +'</a>', 
+                        extra_tags='safe')
     return redirect(reverse('enrollment'))
