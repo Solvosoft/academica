@@ -24,6 +24,10 @@
 		<h1 class="text-center"> {% trans 'Unpaid bills' %}</h1>
 		<div class="x_panel">
 			{% for bill in not_paid%}
+				<div class="alert alert-warning text-center" role="alert">
+					{% trans 'Paid bills using Paypal take between 2 or 3 minutes to be updated, refresh to see most recent changes' %} 
+					<a class="btn btn-primary" href="{% url 'bills' %}">{% trans 'Refresh' %}</a>
+				</div>
 				<div class="product_price">
 					<h1 class="price green">{{bill.obj.short_drescription}}</h1>
 					<div class="col-md-6 col-lg-6 col-sm-12">

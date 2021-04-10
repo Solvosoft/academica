@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Matricula Bills\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-30 18:07-0600\n"
+"POT-Creation-Date: 2021-04-10 08:49-0600\n"
 "PO-Revision-Date: 2020-11-27 14:57-0600\n"
 "Last-Translator: Luis Zárate <luis.zarate@solvosoft.com>\n"
 "Language-Team: ES <es@solvosoft.com>\n"
@@ -76,15 +76,26 @@ msgstr ""
 msgid "Unpaid bills"
 msgstr "Pagos pendientes"
 
-#: src/matricula/contrib/bills/templates/bills.html:43
+#: src/matricula/contrib/bills/templates/bills.html:28
+msgid ""
+"Paid bills using Paypal take between 2 or 3 minutes to be updated, refresh "
+"to see most recent changes"
+msgstr "Los pagos realizados en Paypal toman de 2 a 3 minutos en ser reflejados,"
+"actualiza la página para ver los cambios más recientes."
+
+#: src/matricula/contrib/bills/templates/bills.html:29
+msgid "Refresh"
+msgstr "Actualizar"
+
+#: src/matricula/contrib/bills/templates/bills.html:47
 msgid "You don't have Unpaid bills"
 msgstr "No tiene pagos pendientes"
 
-#: src/matricula/contrib/bills/templates/bills.html:49
+#: src/matricula/contrib/bills/templates/bills.html:53
 msgid "Paid bills"
 msgstr "Pagos realizados"
 
-#: src/matricula/contrib/bills/templates/bills.html:59
+#: src/matricula/contrib/bills/templates/bills.html:63
 msgid "You don't have paid bills"
 msgstr "No ha realizado ningún pago"
 
