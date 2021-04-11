@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-05 12:01-0600\n"
+"POT-Creation-Date: 2021-04-11 01:13-0600\n"
 "PO-Revision-Date: 2020-11-27 20:41-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -188,7 +188,12 @@ msgstr "Icono"
 msgid "Only icon?"
 msgstr "¿Solo ícono?"
 
-#: src/matricula/forms.py:549
+#: src/matricula/forms.py:525 src/matricula/forms.py:554
+#: src/matricula/models.py:22
+msgid "City"
+msgstr "Ciudad"
+
+#: src/matricula/forms.py:552
 msgid "Country"
 msgstr "País"
 

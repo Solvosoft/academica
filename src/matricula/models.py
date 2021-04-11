@@ -19,6 +19,7 @@ class Student(models.Model):
         User, on_delete=models.CASCADE, primary_key=True, verbose_name="Usuaria *")
     organization = models.CharField(verbose_name="Organización * ", max_length=150)
     country = models.ForeignKey(Country, on_delete=models.CASCADE, default=50)
+    city = models.CharField(_("City"), max_length=100, default="")
     phone_number = models.CharField("Número de teléfono * ", max_length=15, default="")
     key = models.UUIDField(default=uuid.uuid4)
     confirmed_at = models.DateTimeField(null=True, blank=True)

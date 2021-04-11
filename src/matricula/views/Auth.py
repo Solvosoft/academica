@@ -256,6 +256,7 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
                 student = request.user.student
                 student.phone_number = student_form.cleaned_data['phone_number']
                 student.country = student_form.cleaned_data['country']
+                student.city = student_form.cleaned_data['city']
                 student.organization = student_form.cleaned_data['organization']
                 student.save()
             else:

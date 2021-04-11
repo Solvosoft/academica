@@ -736,6 +736,7 @@ def export_group(request, pk=None):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="students_list.csv"'
     writer = csv.writer(response)
+    response.write(u'\ufeff'.encode('utf8'))
     if pk is not None:
         group = Group.objects.get(pk=pk)
         enrolls = Enroll.objects.filter(group=group, enroll_finished=True)
@@ -746,6 +747,9 @@ def export_group(request, pk=None):
             'firstname',
             'lastname',
             'email',
+            'institution',
+            'country',
+            'city'
             "course1"])
         for enroll in enrolls:
             first_name = enroll.student.user.first_name if enroll.student.user.first_name != "" else "default"
@@ -755,6 +759,9 @@ def export_group(request, pk=None):
                 first_name,
                 last_name,
                 enroll.student.user.email,
+                enroll.student.organizations[0]['value'],
+                enroll.student.country.name,
+                enroll.student.city,
                 group.name])
         return response
     return HttpResponseRedirect(reverse('groups_enroll'))
@@ -1023,6 +1030,7 @@ def create_student(request):
                 created_at=now(), confirmed_at=now(),
                 phone_number=form_user.cleaned_data['phone_number'],
                 country=form_user.cleaned_data['country2'],
+                city=form_user.cleaned_data['city2'],
                 expired_at=get_expire_date())
                 student.save()
                 schema = request.scheme+"://"
@@ -1058,6 +1066,7 @@ def create_student(request):
                     created_at=now(), confirmed_at=now(),
                     phone_number=form.cleaned_data['phone_number'],
                     country=form.cleaned_data['country'],
+                    city=form.cleaned_data['city'],
                     expired_at=get_expire_date())
                 student.save()
                 schema = request.scheme+"://"
@@ -1093,6 +1102,7 @@ def edit_student(request, pk=None):
                 form.save()
                 instance.student.organization = form.cleaned_data['organization']
                 instance.student.country = form.cleaned_data['country']
+                instance.student.city = form.cleaned_data['city']
                 instance.student.phone_number = form.cleaned_data['phone_number']
                 instance.student.save()
                 return HttpResponseRedirect(reverse('students'))
@@ -1105,6 +1115,7 @@ def edit_student(request, pk=None):
                 instance = User.objects.get(pk=pk)
                 inst = instance.__dict__
                 inst['country'] = instance.student.country
+                inst['city'] = instance.student.city
                 inst['phone_number'] = instance.student.phone_number
                 inst['organization'] = instance.student.organization
                 form = StudentAdminCreateForm(initial=inst)

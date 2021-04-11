@@ -143,11 +143,12 @@ class StudentEditForm(GTForm, forms.ModelForm):
 
     class Meta:
         model = Student
-        fields = ['phone_number', 'organization', 'country']
+        fields = ['phone_number', 'organization', 'country', 'city']
         widgets = {
             'phone_number': djgentelella.TextInput,
-            'organization': djgentelella.TextInput(),
+            'organization': djgentelella.TextInput,
             'country': djgentelella.Select,
+            'city': djgentelella.TextInput
         }
 
     def __init__(self, *args, **kwargs):
@@ -521,6 +522,7 @@ class StudentAdminCreateForm(GTForm, forms.ModelForm):
         label="Correo", widget=djgentelella.EmailMaskInput, required=True)
     country = forms.ModelChoiceField(
         label="País", queryset=Country.objects.all(), required=True, widget=djgentelella.Select)
+    city = forms.CharField(label=_("City"), widget=djgentelella.TextInput, required=True)
     phone_number = forms.CharField(label="Teléfono", widget=djgentelella.TextInput)
     organization = forms.CharField(
         label="Organización", required=False, help_text=_("It can be your company or organization where you work or the community that you represent.")
@@ -529,7 +531,7 @@ class StudentAdminCreateForm(GTForm, forms.ModelForm):
     class Meta:
         model = User
         fields = [
-            'username', 'first_name', 'last_name', 'email', 'organization']
+            'username', 'first_name', 'last_name', 'email', 'organization','country', 'city']
 
     def __init__(self, *args, **kwargs):
         super(StudentAdminCreateForm, self).__init__(*args, **kwargs)
@@ -549,11 +551,12 @@ class StudentAddForm(GTForm, forms.ModelForm):
     country2 = forms.ModelChoiceField(
         queryset=Country.objects.all(), label=_("Country"), widget=djgentelella.Select,
         required=True)
+    city2 = forms.CharField(label=_("City"), widget=djgentelella.TextInput,required=True)
     organization2 = forms.CharField(label=_("Organization"), required=False, widget=djgentelella.TextInput)
     class Meta:
         model = Student
         fields = [
-            'user', 'organization2', 'country2', 'phone_number']
+            'user', 'organization2', 'country2','city2', 'phone_number']
 
         widgets = {
             'user': djgentelella.Select,
