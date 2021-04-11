@@ -26,5 +26,4 @@ def remove_invoices():
                 'domain': settings.MY_PAYPAL_HOST,
             },
             enqueued=False, user=None)
-    Enroll.objects.filter(bill__in=bills).delete()
     bills.delete()
