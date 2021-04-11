@@ -512,7 +512,8 @@ class StudentSearchForm(GTForm, forms.Form):
 
 class StudentAdminCreateForm(GTForm, forms.ModelForm):
     username = forms.CharField(
-        label="Nombre de usuaria", widget=djgentelella.TextInput, required=True
+        label="Nombre de usuaria", widget=djgentelella.TextInput, required=True,
+        disabled=True
     )
     first_name = forms.CharField(
         label="Nombres", widget=djgentelella.TextInput, required=True)
