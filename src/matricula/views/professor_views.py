@@ -96,7 +96,7 @@ class CreateProfessor(CreateView):
             instance.user.user_permissions.add(*professor_group.permissions.all())
             instance.save()
             self.send_email(instance.user)
-            messages.success(self.request, "Profesora registrada exitosamente.")
+            messages.success(self.request, "Facilitadora registrada exitosamente.")
             return redirect(reverse('professors_list'))
         else:
             self.object = None
@@ -147,7 +147,7 @@ class EditProfessor(UpdateView):
             professor.save()
             if not checking_user(professor.user):
                 change_state_user(professor)
-            messages.success(self.request, "Profesora actualizada exitosamente.")
+            messages.success(self.request, "Facilitadora actualizada exitosamente.")
             return redirect(reverse('professors_list'))
         else: 
             context['form'] = form
@@ -171,7 +171,7 @@ def delete_professor(request, pk):
 
     if professor:
         professor.delete()
-        messages.success(request, "Profesora eliminada con éxito")
+        messages.success(request, "Facilitadora eliminada con éxito")
         return redirect('professors_list')
 
 
@@ -182,7 +182,7 @@ def deactivate_professor(request, pk):
     if professor:
         professor.active = False
         professor.save()
-        messages.success(request, "Profesora desactivada con éxito")
+        messages.success(request, "Facilitadora desactivada con éxito")
         return redirect('professors_list')
 
 

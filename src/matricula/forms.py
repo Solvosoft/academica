@@ -704,7 +704,7 @@ class ProfessorSearchForm(GTForm, forms.Form):
 
     professor = forms.ModelMultipleChoiceField(
         queryset=Professor.objects.all(), widget=djgentelella.SelectMultiple,
-        required=False, label="Profesora")
+        required=False, label="Facilitadora")
 
     status = forms.ChoiceField(
         choices=PROFESSOR_STATES, widget=djgentelella.Select, required=False, label="Estado")

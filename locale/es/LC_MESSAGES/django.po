@@ -148,7 +148,7 @@ msgstr "Estudiantes"
 
 #: src/membership_core/templates/gentelella/app/sidebar.html:61
 msgid "Professors"
-msgstr "Facilitadoras"
+msgstr "Facilitadores"
 
 #: src/membership_core/templates/gentelella/app/sidebar.html:64
 msgid "Coupons"
