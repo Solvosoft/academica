@@ -69,13 +69,7 @@
 		tagify = new Tagify(input, {whitelist:[]}),
 		controller; // for aborting the call
 		// listen to any keystrokes which modify tagify's input
-		tagify.settings.maxTags=1
 		tagify.on('input', onInput)
-		tagify.on('add', onAdd)
-		function onAdd(e){
-			input.value=e.detail.data.value
-		}
-		input.value = JSON.parse(input.value)[0].value
 		function onInput( e ){
 			var value = e.detail.value;
 			tagify.settings.whitelist.length = 0; // reset the whitelist
@@ -92,9 +86,13 @@
 				.then(function(whitelist){
 				// update inwhitelist Array in-place
 				var whitelst = []
-				for(var i=0; i<whitelist.total_count; i++){
-					whitelst.push(whitelist.results[i].text)
+				for(rows of whitelist.results){
+					tags = JSON.parse(rows.text)
+					for(tag of tags){
+						whitelst.push(tag.value)
+					}
 				}
+				whitelst = [...new Set(whitelst)];
 				tagify.settings.whitelist.splice(0, whitelist.total_count, ...whitelst)
 				tagify.loading(false).dropdown.show.call(tagify, value); // render the suggestions dropdown
 			})

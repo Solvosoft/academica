@@ -476,6 +476,11 @@ html , body{
        border: 1px solid #50C1CF !important;
        color: #fff
    }
+   .bg-secondary {
+    background: #777 !important;
+    border: 1px solid darkgrey !important;
+    color: #fff
+}
    .container {
        width: 100%;
        padding: 0
@@ -2407,6 +2412,7 @@ html , body{
    .badge{
        background-color: #009145;
    }
+
    .badge.bg-blue{
         background-color: #ffbb2c !important;
         border: #8f6a1b !important;

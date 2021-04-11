@@ -1,13 +1,16 @@
 # encoding: utf-8
+import json
+import uuid
 from decimal import Decimal
+
 from django.db import models
 from django.contrib.auth.models import User, Group as AuthGroup
 from django.utils.encoding import smart_text
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
-import uuid
 from django.utils.html import strip_tags
+
 from membership_core.models import Country, SystemCurrency
 
 
@@ -35,6 +38,13 @@ class Student(models.Model):
         dev = self.user.username
         if self.user.get_full_name():
             dev = self.user.get_full_name()
+        return dev
+
+    @property
+    def organizations(self):
+        dev = []
+        if self.organization != "":
+            dev = json.loads(self.organization)
         return dev
 
     class Meta:

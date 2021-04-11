@@ -46,7 +46,7 @@ class StudentCreateForm(GTForm, forms.ModelForm):
         required=True, label=_("Password")+" * ", widget=djgentelella.PasswordInput,
         help_text='El password debe contener al menos 8 caracteres, mezclando mayúsculas, minúsculas, números y caracteres de puntuación')
     organization = forms.CharField(
-        label="Organización * ", required=True, help_text=_("It can be your company or organization where you work or the community that you represent.")
+        label="Organización * ", required=False, help_text=_("It can be your company or organization where you work or the community that you represent.")
     )
 
     class Meta:
@@ -146,7 +146,7 @@ class StudentEditForm(GTForm, forms.ModelForm):
         fields = ['phone_number', 'organization', 'country']
         widgets = {
             'phone_number': djgentelella.TextInput,
-            'organization': djgentelella.TextInput,
+            'organization': djgentelella.TextInput(),
             'country': djgentelella.Select,
         }
 
@@ -156,6 +156,7 @@ class StudentEditForm(GTForm, forms.ModelForm):
         if 'initial' in kwargs:
             if 'country_id' in kwargs['initial']:
                 self.fields['country'].initial = kwargs['initial']['country_id']
+        self.fields['organization'].required = False
 
 
 class MenuItemFormPage(forms.ModelForm):
@@ -522,7 +523,7 @@ class StudentAdminCreateForm(GTForm, forms.ModelForm):
         label="País", queryset=Country.objects.all(), required=True, widget=djgentelella.Select)
     phone_number = forms.CharField(label="Teléfono", widget=djgentelella.TextInput)
     organization = forms.CharField(
-        label="Organización", required=True, help_text=_("It can be your company or organization where you work or the community that you represent.")
+        label="Organización", required=False, help_text=_("It can be your company or organization where you work or the community that you represent.")
     )
 
     class Meta:
@@ -548,7 +549,7 @@ class StudentAddForm(GTForm, forms.ModelForm):
     country2 = forms.ModelChoiceField(
         queryset=Country.objects.all(), label=_("Country"), widget=djgentelella.Select,
         required=True)
-    organization2 = forms.CharField(label=_("Organization"), widget=djgentelella.TextInput)
+    organization2 = forms.CharField(label=_("Organization"), required=False, widget=djgentelella.TextInput)
     class Meta:
         model = Student
         fields = [

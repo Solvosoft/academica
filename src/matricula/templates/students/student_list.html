@@ -98,10 +98,7 @@
 						<div class="col-md-6 col-sm-6 col-xs-6">
 							<ul class="list-unstyled user_data">
 								<li>
-									<strong> Organización: </strong>{{object.organization}}
-								</li>
-								<li>
-									<strong>Administrador: </strong>{% if object.user.is_superuser %}Sí{%else%}No</i>{%endif%}
+									<strong>Administrador: </strong>{% if object.user.is_superuser %}Sí{% else %}No</i>{% endif %}
 								</li>
 								<li>
 									<strong>Teléfono: </strong>{{object.phone_number}}
@@ -109,14 +106,18 @@
 								<li>
 									<strong>Cambiar contraseña: </strong><a href="{% url 'change_password_student' object.pk%}"><i class="fa fa-lock"></i></a>
 								</li>
-							</ul>
-						</div>
-						<div class="col-md-12">
-							<ul class="list-unstyled user_data">
 								<li>
 									<strong>Recuperar contraseña: </strong><a href="{% url 'recovery_pass_student' object.pk%}"><i class="fa fa-envelope"></i></a>
 								</li>
 							</ul>
+						</div>
+						<div class="col-md-12">
+							<strong> Organizaciones: </strong>
+							{% for org in object.organizations %}
+								<span class="badge bg-secondary">{{org.value}}</span>
+							{% empty %}
+								No registradas.
+							{% endfor%}
 						</div>
 					</div>
 				</div>
@@ -149,7 +150,7 @@
 		{% endif %}
 	</div>
 	<div class="clearfix"></div>
-{%endblock%}
+{% endblock %}
 {% if perms.matricula.delete_enroll %}
 	{% block js %}
 		<script type="text/javascript">

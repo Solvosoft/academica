@@ -1,5 +1,16 @@
 # Change log file
 
+11/04/2021
+
+### Fixed
+
+- Enable unaccent extension Pg in 
+    Run in psql as root:
+    `CREATE EXTENSION unaccent;` or 
+    
+    make the settings.py user as a root user:
+    `ALTER ROLE user SUPERUSER;`
+
 12/03/2021
 
 ### Fixed 
