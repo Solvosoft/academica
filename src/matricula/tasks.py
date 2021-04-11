@@ -15,7 +15,9 @@ def remove_invoices():
     Create a invoice, at 60 days left - renewal expiration.
     """
     now=timezone.localdate(timezone.now())
-    bills = Bill.objects.filter(is_paid=False, created_at__gt=now-timezone.timedelta(minutes=20))
+    bills = Bill.objects.filter(
+        is_paid=False, enrollment__paid_excluded=False,
+        created_at__gt=now-timezone.timedelta(minutes=20))
     for bill in bills:
         send_email_from_template(
             'email_enroll_removed', bill.enrollment.student.user.email,

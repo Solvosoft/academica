@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-11 01:13-0600\n"
+"POT-Creation-Date: 2021-04-11 02:39-0600\n"
 "PO-Revision-Date: 2020-11-27 20:41-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -354,7 +354,11 @@ msgstr "¿Está finalizada la matrícula?"
 msgid "Is active for enroll?"
 msgstr "¿Está activo para la matrícula?"
 
-#: src/matricula/models.py:205
+#: src/matricula/models.py:215
+msgid "Full scholaship"
+msgstr "Beca completa"
+
+#: src/matricula/models.py:217
 msgid "Enroll rejected?"
 msgstr "¿Matricula rechazada?"
 

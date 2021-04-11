@@ -5,13 +5,15 @@ Created on 17/5/2015
 @author: luisza
 '''
 
-from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
 from django.shortcuts import render
-from matricula.contrib.bills.models import Bill
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+
+from paypal.standard.forms import PayPalPaymentsForm
+
+from matricula.contrib.bills.models import Bill
 from membership_core.models import SystemCurrency
 
 
@@ -27,7 +29,7 @@ def get_my_bills(request):
         all_bills = Bill.objects.filter(
             student=request.user.student).order_by('paid_date')
         paid = all_bills.filter(is_paid=True)
-        not_paid = all_bills.filter(is_paid=False)
+        not_paid = all_bills.filter(is_paid=False, enrollment__paid_excluded=False)
 
         not_paid_forms = []
         for bill in not_paid:

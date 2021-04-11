@@ -473,12 +473,14 @@ class EnrollCreateForm(forms.ModelForm, GTForm):
         model = Enroll
         fields = [
             'student', 'group', 'enroll_finished', 'enroll_activate',
+            'paid_excluded',
         ]
         widgets = {
             'student': djgentelella.Select,
             'group': djgentelella.Select,
             'enroll_finished': djgentelella.YesNoInput,
             'enroll_activate': djgentelella.YesNoInput,
+            'paid_excluded': djgentelella.YesNoInput,
         }
 
     def __init__(self, *args, **kwargs):

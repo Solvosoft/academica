@@ -571,7 +571,7 @@ class GroupList(ListView):
                 queryset = queryset.filter(professors=professor)
         queryset = queryset.annotate(
             enrolled_students_paid=Count(
-                'pk', filter=Q(enroll__bill__is_paid=True)
+                'pk', filter=Q(enroll__bill__is_paid=True) | Q(enroll__paid_excluded=True)
             ),
             enrolled_students_free=Count(
                 'pk', filter=Q(enroll__enroll_finished=True)
@@ -622,7 +622,7 @@ def pre_enroll_group(request, pk=None):
                                 'domain': schema+request.get_host(), 
                             },
                             enqueued=False, user=None)
-                        messages.success(request, "Estudiantes inscritos con éxito")
+                        messages.success(request, "Estudiantes activados para matrícula.")
                     elif action == "Rechazar prematricula":
                         enrolls = Enroll.objects.filter(pk__in=form.cleaned_data['students'], group=group)
                         emails = []
@@ -777,7 +777,7 @@ def list_students_group(request, pk=None):
         instance = Group.objects.get(pk=pk)
         enroll_list = Enroll.objects.filter(group=instance, enroll_finished=True)
         if instance.is_paid:
-            enroll_list = enroll_list.filter(bill__is_paid=True)
+            enroll_list = enroll_list.filter(Q(bill__is_paid=True)|Q(paid_excluded=True))
         context['object'] = enroll_list
         context['group'] = instance
         approved_students = enroll_list.filter(course_status="approved")

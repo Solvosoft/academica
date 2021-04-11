@@ -212,6 +212,7 @@ class Enroll(models.Model):
         default=False, verbose_name=_("Is enroll finished?"))
     enroll_activate = models.BooleanField(
         default=False, verbose_name=_("Is active for enroll?"))
+    paid_excluded = models.BooleanField(_("Full scholaship"), default=False)
     rejected = models.BooleanField(
         default=False, verbose_name=_("Enroll rejected?"))
     group = models.ForeignKey(

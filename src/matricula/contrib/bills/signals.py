@@ -22,7 +22,7 @@ from .models import Bill
 def create_bill(sender, **kwargs):
     instance = kwargs['instance']
     if not instance.bill_created and instance.enroll_finished\
-            and instance.group.cost > 0:
+            and instance.group.cost > 0 and not instance.paid_excluded:
         instance.bill_created = True
         instance.save()
 
