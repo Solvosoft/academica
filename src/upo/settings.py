@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
     'membership_core',
     'ajax_select',
     'async_notifications',
@@ -224,3 +225,4 @@ ASYNC_NEWSLETTER_SEVER_CONFIGS={
 PAYPAL_ERROR_EMAIL_NOFIFY = ("secretaria@universidadpopular.red",)
 PROFESSOR_GROUP_NAME = "Profesores"
 ADMIN_GROUP_NAME = "Administradores Académica"
+HOURS_TO_PAY = 4

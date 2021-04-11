@@ -5,17 +5,16 @@ Created on 17/5/2015
 
 @author: luisza
 '''
-
-from django_ajax.decorators import ajax
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.db import IntegrityError, transaction
 from django.db.models import Q
 from django.contrib import messages
 from django.conf import settings
+
+from django_ajax.decorators import ajax
 
 from async_notifications.utils import send_email_from_template
 
@@ -44,12 +43,13 @@ def enrollme(request, pk):
                             "url": request.build_absolute_uri(reverse('enrollment')),
                             "group": group,
                             'domain': schema+request.get_host(),
+                            'hours_to_pay': settings.HOURS_TO_PAY,
                         },
                         enqueued=True, user=None)
                     return {
                         "inner-fragments": {
                             "#count_" + str(group.pk): group.enroll_set.count(),
-                            "#group_message": '<div class="alert alert-success" role="alert">' + str(_('Enrollment success you have 20 minutes from now to complete the payment')) +' <a class="btn btn-primary" href="'+ reverse('bills')+'">'+str(_('Pay Now')) +'</a>'+'</div>'
+                            "#group_message": '<div class="alert alert-success" role="alert">' + str(_('Enrollment success you have ')) + str(settings.HOURS_TO_PAY)+ str(_(' hours from now to complete the payment')) +' <a class="btn btn-primary" href="'+ reverse('bills')+'">'+str(_('Pay Now')) +'</a>'+'</div>'
                         },
                     }
                 elif group.in_preenrollment:
@@ -91,9 +91,10 @@ def enrollme(request, pk):
                             "url": request.build_absolute_uri(reverse('enrollment')),
                             "group": group,
                             'domain': schema+request.get_host(),
+                            'hours_to_pay': settings.HOURS_TO_PAY,
                         },
                         enqueued=True, user=None)
-                    message = _('Enrollment success you have 20 minutes from now to complete the payment') +' <a class="btn btn-success" href="'+ reverse('bills')+'">'+str(_('Pay Now')) +'</a>'
+                    message = _('Enrollment success you have ')+str(settings.HOURS_TO_PAY)+_(' hours from now to complete the payment') +' <a class="btn btn-success" href="'+ reverse('bills')+'">'+str(_('Pay Now')) +'</a>'
                 else:
                     message = _('You are already enrolled')
             else:
@@ -152,10 +153,11 @@ def finish_enroll(request, pk):
                     "url": request.build_absolute_uri(reverse('enrollment')),
                     "group": enroll.group,
                     'domain': schema+request.get_host(),
+                    'hours_to_pay': settings.HOURS_TO_PAY,
                 },
                 enqueued=True, user=None)
     except IntegrityError:
         messages.error(request, _('We have some problems with your enroll, try again'))
-    messages.success(request, _('Enrollment success you have 20 minutes from now to complete the payment') +' <a class="btn btn-primary" href="'+ reverse('bills')+'">'+str(_('Pay Now')) +'</a>', 
+    messages.success(request, _('Enrollment success you have ')+str(settings.HOURS_TO_PAY)+_(' hours from now to complete the payment') +' <a class="btn btn-primary" href="'+ reverse('bills')+'">'+str(_('Pay Now')) +'</a>', 
                         extra_tags='safe')
     return redirect(reverse('enrollment'))

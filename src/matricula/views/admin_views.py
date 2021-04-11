@@ -947,6 +947,7 @@ def edit_enroll(request, pk=None):
                             "url": request.build_absolute_uri(reverse('enrollment')),
                             "group": form.cleaned_data['group'],
                             'domain': schema+request.get_host(),
+                            'hours_to_pay': settings.HOURS_TO_PAY,
                         },
                         enqueued=True, user=None)
                 messages.success(request, "Matrícula guardada con éxito")
