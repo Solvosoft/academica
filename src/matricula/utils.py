@@ -21,7 +21,7 @@ def load_email_temp_academica():
     
     update_template_context(
         'email_enroll_success', 'Tu MATRÍCULA en el curso ha sido aceptada - UPo',
-        [('group'), ('url'),("domain")], 'email_enroll_success.html', as_template=True)
+        [('group'), ('url'),("domain"),('hours_to_pay')], 'email_enroll_success.html', as_template=True)
 
     update_template_context(
         'email_close_group', 'Correo de cierre de grupo',
@@ -70,7 +70,7 @@ def load_email_temp_academica():
                             as_template=True)
     update_template_context(
         'email_enroll_removed', 'Lo sentimos, Tu MATRÍCULA ha sido eliminada por no realizarse el pago',
-        [('group'),("domain")], 'email_enroll_removed.html', as_template=True)
+        [('group'),("domain"),("hours_to_pay")], 'email_enroll_removed.html', as_template=True)
     
     update_template_context(
         'invoice_not_found', 'Correo de notificación de error en pago paypal',
