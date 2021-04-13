@@ -2,9 +2,11 @@ import json
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
-from django_ajax.decorators import ajax
 from django.contrib import messages
 from django.utils.translation import gettext as _
+from django.db.models.expressions import Q
+
+from django_ajax.decorators import ajax
 
 from matricula.decorators import user_group_perms
 from matricula.forms import QualifyStudentForm
@@ -17,7 +19,7 @@ def qualify_students(request, pk):
         group = get_object_or_404(Group, pk=pk)
         enroll_list = Enroll.objects.filter(group=group)
         if group.is_paid:
-            enroll_list = enroll_list.filter(bill__is_paid=True)
+            enroll_list = enroll_list.filter(Q(bill__is_paid=True) | Q(paid_excluded=True))
         context = {'group': group,
                 'form': QualifyStudentForm(),
                 'enroll_list': enroll_list}
