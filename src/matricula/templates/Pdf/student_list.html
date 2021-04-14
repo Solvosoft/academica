@@ -217,16 +217,14 @@
                 Estudiantes inscritos.
             {% else %}
                 Estudiantes pre-inscritos.
-            {%endif%}
+            {% endif %}
         </div>
         <div id="logo">
-            <img src="http://www.universidadpopular.us/wp-content/uploads/2018/10/cropped-UP_logo_Square-e1539875905697-7.png" width="300" height="83" alt='Logo' data-default="placeholder" />
+            <img src="{% static 'logo-upo.png' %}" width="300" height="83" alt='Logo' data-default="placeholder" />
         </div>
         <div id="invoice_info">
-            Código Sur Sociedad Civil<br />
-            Cédula Juridica: 3-106-639831<br />
-            Telefono +506 8569 1676<br />
-            Correo: ayuda@codigosur.org
+            Universidad Popular (UPo)<br />
+            Teléfono: +52 1 9671718262
         </div>
         <div id="line_col">
             <!-- HTML Content -->
@@ -244,7 +242,7 @@
 	                    <td>{{enroll.student.user.email}}</td>
                         <td></td>
                     </tr>
-                {%endfor%}
+                {% endfor %}
 
                 <tr id="table_footer">
                     <td> </td>
@@ -255,8 +253,8 @@
         </div>
         <div id="footer">
             <br><br>
-            Código Sur, San José. Costa Rica. CP 11501. Teléfono +506 8569 1676.<br />
-            Email: ayuda@codigosur.org – Web: https://codigosur.org
+            Correo: secretaria@universidadpopular.red<br/>
+            Los cursos se comparten en: https://www.campus.universidadpopular.red
         </div>
     </body>
 </html>
