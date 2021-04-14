@@ -16,7 +16,7 @@ from matricula.views.Enrollments import list_enroll, enrollme, \
     finish_enroll
 from matricula.views.Pages import PageDetail
 from .admin import admin_site
-from .views.admin_views import CategoryList, create_category, \
+from .views.admin_views import CategoryList, CertificateEdit, create_category, \
     CategoryDelete, edit_category, CourseList, create_course, \
     CourseDelete, edit_course, MenuItemList, create_menuitem, MenuItemDelete, \
     edit_menuitem, PeriodList, create_period, edit_period, PeriodDelete, \
@@ -26,7 +26,8 @@ from .views.admin_views import CategoryList, create_category, \
     export_group, recovery_pass_student, MenuPageDelete, create_menupage, \
     pre_enroll_group, add_group_course, list_students_group, \
     export_enrolled_group, open_group, close_group, regenerate_certificate, \
-    build_pdf_certificate_list, edit_password_student
+    build_pdf_certificate_list, edit_password_student, \
+    CertificateList, CertificateDelete, CertificateCreate
 
 from .views.coupons_views import coupons_list, create_cupon, delete_coupon, edit_coupon, coupons_bill_list, \
     add_coupons_group
@@ -119,4 +120,8 @@ urlpatterns = [
     path('enrrolment/certificate/build/<int:pk>/', build_pdf_certificate_list, name="build_pdf_certificate_list"),
     path('enrrolment/certificate/enroll/<int:pk_group>/<int:pk>/', regenerate_certificate, name="build_pdf_certificate_view"),
     path('enrollment/users/create', AddUser.as_view(), name="create_simple_user"),
+    url('enrrolment/certificates', CertificateList.as_view(), name="certificate-list"),
+    url('enrrolment/certificate_create/', CertificateCreate.as_view(), name="certificate-create"),
+    path('enrrolment/delete_certificate/<int:pk>/', CertificateDelete.as_view(), name="certificate-delete"),
+    path('enrrolment_edit_certificate/<int:pk>/', CertificateEdit.as_view(), name="certificate-edit"),
 ] + billurls

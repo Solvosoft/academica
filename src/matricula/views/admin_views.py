@@ -9,8 +9,8 @@ import io
 import os
 
 from django.conf import settings
-from django.views.generic import ListView, DeleteView
-from django.utils.translation import ugettext_lazy as _
+from django.views.generic import ListView, DeleteView, CreateView, UpdateView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required
@@ -21,10 +21,12 @@ from django.core.paginator import Paginator
 from django.db.models import Q, Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
-from django.template.loader import get_template, render_to_string
+from django.template.loader import get_template
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
+from django.utils.translation import ugettext_lazy as _
+from django.template import Context, Template
 
 from djgentelella.models import MenuItem as DJMenuItem
 
@@ -32,14 +34,14 @@ from xhtml2pdf import pisa
 
 from async_notifications.utils import send_email_from_template
 
-from matricula.forms import CategoryCreateForm, CategorySearchForm, \
+from matricula.forms import CategoryCreateForm, CategorySearchForm, CertificateSearchForm, \
     CourseSearchForm, CourseCreateForm, MenuItemSearchForm, \
     MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, \
     GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentAddForm, StudentSearchForm, \
     StudentAdminCreateForm, PageCreateForm, PageSearchForm, MenuItemAddForm, \
     PreEnrollAddGroupForm, GroupAddForm, GroupEditForm, PermissionForm,\
-    StudentChangePasswordForm
-from matricula.models import Category, Course, Period, Group, \
+    StudentChangePasswordForm, CertificateFormCreate
+from matricula.models import Category, Certificate, Course, Period, Group, \
     Enroll, Student, Page, Professor
 from matricula.views.utils import get_expire_date
 
@@ -1368,11 +1370,10 @@ class MenuPageDelete(DeleteView):
 def build_pdf_certificate(enroll):
     html = 'certificate.html'
     month = MONTHS_DICT['{:%B}'.format(now())]
+    template = Template(enroll.group.certificate_template.template)
     date = str(now().day) + " de " + month + " del " + str(now().year)
-    sourceHtml = render_to_string('certificate.html', context={
-        'enroll': enroll,
-        'certificate_date': date
-    })
+    context = {"enrollment": enroll, 'certificate_date': date}
+    sourceHtml = template.render(Context(context))
     # FIXME the variable 'enqueued' == False, it must be false o we should change it to True?!
     resultFile = io.BytesIO()
 
@@ -1409,8 +1410,70 @@ def build_pdf_certificate_list(request, pk):
 
     enroll_list = Enroll.objects.filter(group__pk=pk, course_status="approved", enroll_finished=True)
     if enroll_list:
-        for enroll in enroll_list:
-            if enroll.pdf_certificate is None or enroll.pdf_certificate == "":
-                build_pdf_certificate_view(request, enroll.pk)
-        messages.success(request, "Certificados generados exitosamente.")
+        group = enroll_list.first().group
+        if group.certificate_template_id != None:
+            for enroll in enroll_list:
+                if enroll.pdf_certificate is None or enroll.pdf_certificate == "":
+                    build_pdf_certificate_view(request, enroll.pk)
+            messages.success(request, "Certificados generados exitosamente.")
+            return redirect("list_students_group", pk=pk)
+        messages.error(request, "El grupo no tiene una plantilla de certificados.")
         return redirect("list_students_group", pk=pk)
+
+
+@method_decorator(permission_required('matricula.view_certificate'), name='dispatch')
+class CertificateList(ListView):
+    template_name = "certificate/certificate_list.html"
+    model = Certificate
+    paginate_by = 30
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.form = CertificateSearchForm(self.request.GET)
+        self.form.is_valid()
+        if 'name' in self.form.cleaned_data and self.form.cleaned_data['name'] != "":
+            queryset = queryset.filter(name__icontains=self.form.cleaned_data['name'])
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_search'] = CertificateSearchForm(self.request.GET)
+        return context
+
+
+@method_decorator(permission_required('matricula.add_certificate'), name='dispatch')
+class CertificateCreate(SuccessMessageMixin, CreateView):
+    model = Certificate
+    form_class = CertificateFormCreate
+    template_name = 'certificate/certificate_form.html'
+    success_url = '/enrrolment/certificates/'
+    success_message = "Certificado creado con éxito"
+
+    def get_initial(self):
+        initial = super().get_initial()
+        template = open(settings.BASE_NOCODE_DIR / 'src/matricula/templates/matricula/certificaciones.html', 'r')
+        initial['template'] = template.read()
+        return initial
+
+
+@method_decorator(permission_required('matricula.delete_certificate'), name='dispatch')
+class CertificateDelete(DeleteView):
+    model = Certificate
+    success_url = "/enrrolment/certificates/"
+    success_message = "Certificado eliminada con éxito"
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(CertificateDelete, self).delete(request, *args, **kwargs)
+
+
+@method_decorator(permission_required('matricula.change_certificate'), name="dispatch")
+class CertificateEdit(SuccessMessageMixin, UpdateView):
+    model = Certificate
+    form_class = CertificateFormCreate
+    success_url = "/enrrolment/certificates/"
+    template_name = 'certificate/certificate_form.html'
+    success_message = "Certificado actualizado con éxito"

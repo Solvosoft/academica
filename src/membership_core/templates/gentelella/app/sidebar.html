@@ -63,6 +63,9 @@
                                 {% if perms.matricula.view_coupon %}
                                     <li><a href="{% url 'coupons_list' %}">{% trans 'Coupons' %}</a></li>
                                 {% endif %}
+                                {% if perms.matricula.view_certificate %}
+                                    <li><a href="{% url 'certificate-list' %}">{% trans 'Certificates' %}</a></li>
+                                {% endif %}
                             </ul>
                         </li>
                     </ul>
