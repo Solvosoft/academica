@@ -452,6 +452,8 @@ class GroupEditForm(forms.ModelForm, GTForm):
                 self.fields['course'].initial = kwargs['initial']['course_id']
             if 'currency_id' in kwargs['initial']:
                 self.fields['currency'].initial = kwargs['initial']['currency_id']
+            if 'certificate_template_id' in kwargs['initial']:
+                self.fields['certificate_template'].initial = kwargs['initial']['certificate_template_id']
 
 
 class EnrollSearchForm(GTForm, forms.Form):
