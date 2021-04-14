@@ -27,7 +27,9 @@ def enrollme(request, pk):
     group = get_object_or_404(Group, pk=pk)
     student = request.user.student
     all_enrolls = Enroll.objects.filter(group=group, enroll_finished=True)
-    if all_enrolls.exists() and all_enrolls.count() >= all_enrolls.first().group.maximum:
+    all_enrolls = all_enrolls.filter(Q(paid_excluded=True) | Q(bill__is_paid=True) | Q(bill_created=True))
+    if all_enrolls.exists() and all_enrolls.count() >= all_enrolls.first().group.maximum \
+        and not all_enrolls.filter(student=student).exists():
         return { 
                     "inner-fragments": {
                         "#count_" + str(group.pk): group.enroll_set.count(),
@@ -103,8 +105,10 @@ def enrollme(request, pk):
                         },
                         enqueued=True, user=None)
                     message = _('Enrollment success you have ')+str(settings.HOURS_TO_PAY)+_(' hours from now to complete the payment') +' <a class="btn btn-success" href="'+ reverse('bills')+'">'+str(_('Pay Now')) +'</a>'
-                else:
+                elif enroll.paid_excluded or enroll.bill_set.first().is_paid:
                     message = _('You are already enrolled')
+                else:
+                    message = _('You are enrolled but the paid is pending, if you don\'t paid your enroll will be removed')
             else:
                 message = _('Sorry your pre-enroll was rejected')
         elif enroll.group.in_preenrollment:
