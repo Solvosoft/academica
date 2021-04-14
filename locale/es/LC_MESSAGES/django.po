@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-30 18:07-0600\n"
+"POT-Creation-Date: 2021-04-14 16:31-0600\n"
 "PO-Revision-Date: 2020-01-09 08:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -154,7 +154,11 @@ msgstr "Facilitadores"
 msgid "Coupons"
 msgstr "Cupones"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:76
+#: src/membership_core/templates/gentelella/app/sidebar.html:67
+msgid "Certificates"
+msgstr "Certificados"
+
+#: src/membership_core/templates/gentelella/app/sidebar.html:79
 msgid "Bills"
 msgstr "Pagos"
 

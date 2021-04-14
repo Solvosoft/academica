@@ -26,6 +26,14 @@ from matricula.models import Group, Enroll
 def enrollme(request, pk):
     group = get_object_or_404(Group, pk=pk)
     student = request.user.student
+    all_enrolls = Enroll.objects.filter(group=group, enroll_finished=True)
+    if all_enrolls.exists() and all_enrolls.count() >= all_enrolls.first().group.maximum:
+        return { 
+                    "inner-fragments": {
+                        "#count_" + str(group.pk): group.enroll_set.count(),
+                        "#group_message": '<div class="alert alert-error" role="alert">' + str(_('The group is full and was not possible to enroll you.')) + '</div>'
+                    },
+                }
     list_enroll = Enroll.objects.filter(group=group, student=student)
     schema = request.scheme+"://"
     if not list_enroll.exists():
