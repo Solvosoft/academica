@@ -852,12 +852,6 @@ def export_enrolled_group(request, pk=None):
     attrs = {'group__pk': pk}
     if request.GET.get('finished', '0') == '1':
         attrs['enroll_finished'] = True
-    elif request.GET.get('finished', '0') == '2':
-        attrs['enroll_finished'] = False
-    if request.GET.get('activate', '0') == '1':
-        attrs['enroll_activate'] = True
-    elif request.GET.get('activate', '0') == '2':
-        attrs['enroll_activate'] = False
     student_list = Enroll.objects.filter(**attrs)
     template = get_template('Pdf/student_list.html')
     response = HttpResponse(content_type='application/pdf')
