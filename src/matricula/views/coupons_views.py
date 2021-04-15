@@ -143,33 +143,33 @@ def create_cupon(request):
 
         if form.is_valid():
 
-            course = form.cleaned_data['course']
+            group = form.cleaned_data['group']
             student_list = form.cleaned_data['student']
             discount_percentage = form.cleaned_data['discount_percentage']
 
             student_error = ''
 
-            if course and student_list and discount_percentage:
+            if group and student_list and discount_percentage:
                 try:
                     with transaction.atomic():
 
                         for student in student_list:
 
                             code = "UP" + str(year) + str(student)[0:2] + "P" + str(discount_percentage) + str(
-                                            course)[0:2]
+                                            group)[0:2]
 
-                            check_coupon = Coupon.objects.filter(student=student, course=course)
+                            check_coupon = Coupon.objects.filter(student=student, group=group)
 
                             if check_coupon:
 
                                 if check_coupon.count() == 1 and check_coupon.first().discount_percentage == 50 and discount_percentage == "50":
 
                                     if check_coupon.first().code[9] == "5":
-                                        code = "UP" + str(year) + str(student)[0:2] + "P2" + str(discount_percentage) + str(course)[0:2]
+                                        code = "UP" + str(year) + str(student)[0:2] + "P2" + str(discount_percentage) + str(group)[0:2]
 
                                     coupon = Coupon(
                                         student=student,
-                                        course=course,
+                                        group=group,
                                         code=code,
                                         discount_percentage=int(discount_percentage)
                                     )
@@ -182,7 +182,7 @@ def create_cupon(request):
                             else:
                                 coupon = Coupon(
                                         student=student,
-                                        course=course,
+                                        group=group,
                                         code=code,
                                         discount_percentage=int(discount_percentage)
                                     )
@@ -192,7 +192,40 @@ def create_cupon(request):
 
                             if len(coupons_list) > 0:
 
-                                Coupon.objects.bulk_create(coupons_list)
+                                coupons = Coupon.objects.bulk_create(coupons_list)
+                                for coupon in coupons:
+                                    bill = Bill.objects.filter(student=coupon.student,enrollment__group=coupon.group, is_paid=False).first()
+                                    if bill:
+                                        coupons_applied = Coupon.objects.filter(bill=bill)
+                                        percentage = 0
+                                        if coupons_applied:
+                                            percentage = sum(coupons_applied.values_list('discount_percentage', flat=True))
+                                        if percentage == 0:
+                                            coupon.bill = bill
+                                            if coupon.discount_percentage == 50:
+                                                discount = bill.amount / 2
+                                            else:
+                                                discount = bill.amount
+                                        elif percentage == 50 and coupon.discount_percentage==50:
+                                            discount = bill.amount
+                                            coupon.bill = bill
+                                        else:
+                                            discount = bill.amount
+                                        bill.save()
+                                        bill.description = render_to_string(
+                                            'invoice_enroll.html',
+                                            {
+                                                'student': bill.student,
+                                                'enroll': smart_text(bill.enrollment.group),
+                                                'discount': discount,
+                                                'total': bill.amount - discount,
+                                                'date': bill.enrollment.enroll_date.strftime("%Y-%m-%d %H:%M"),
+                                                'group': bill.enrollment.group,
+                                            }
+                                        )
+                                        coupon.is_used = True
+                                        coupon.save()
+                                        bill.save()
                                 send_code_notification(coupons_list, request.user, request)
                                 messages.success(request, "El cupón ha sido registrado y se notificó al estudiante éxitosamente.")
                                 return redirect('coupons_list')
@@ -352,11 +385,11 @@ def add_coupons_group(request, pk, percentage):
            discount = enrollment.group.cost
            total = 0.0
 
-           if Coupon.objects.filter(student=student, course=group.course):
+           if Coupon.objects.filter(student=student, group=group):
 
-               if Coupon.objects.filter(student=student, course=group.course).count() == 1:
+               if Coupon.objects.filter(student=student, group=group).count() == 1:
 
-                   if Coupon.objects.filter(student=student, course=group.course).first().code[9] == "5" and percentage == 50:
+                   if Coupon.objects.filter(student=student, group=group).first().code[9] == "5" and percentage == 50:
                        code = "UP" + str(year) + str(student)[0:2] + "P2" + str(percentage) + str(group.course)[0:2]
                        update_bill(bill, discount, total, percentage, code, enrollment, request.user, request)
            else:

@@ -310,7 +310,7 @@ class Coupon(models.Model):
     )
 
     student = models.ForeignKey(Student, verbose_name=_("Student"), on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, verbose_name=_("Course"), on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, verbose_name=_("Group"), on_delete=models.CASCADE, default=16)
     discount_percentage = models.IntegerField(null=True, blank=True, choices=DISCOUNT_CHOICES,
                                               default=DISCOUNT_CHOICES[1])
     is_used = models.BooleanField(default=False, verbose_name=_("Is used?"))
@@ -318,12 +318,12 @@ class Coupon(models.Model):
     bill = models.ForeignKey("bills.Bill", verbose_name=("Bill"), null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.student} - {self.course.name} - {self.code[2:6]}"
+        return f"{self.student} - {self.group.name} - {self.code[2:6]}"
 
     class Meta:
         verbose_name = _("Coupon")
         verbose_name_plural = _("Coupons")
-        ordering = ['course', 'student__user__last_name']
+        ordering = ['group', 'student__user__last_name']
 
     @classmethod
     def from_db(cls, db, field_names, values):

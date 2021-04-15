@@ -26,7 +26,7 @@ def create_bill(sender, **kwargs):
         instance.bill_created = True
         instance.save()
 
-        coupons = Coupon.objects.filter(course=instance.group.course, student=instance.student, is_used=False)
+        coupons = Coupon.objects.filter(group=instance.group, student=instance.student, is_used=False)
         discount = 0.0
         total = instance.group.cost
 
