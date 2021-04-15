@@ -1,0 +1,45 @@
+{% extends 'gentelella/base.html'%}
+{% load static %}
+{% block content %}
+	<h1 class="text-center">Historial del Estudiante</h1>
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+			<div class="x_panel">
+				<div class="x_title">
+					<h2 class="green">{{object}}</h2>
+					<ul class="nav navbar-right panel_toolbox">
+					</ul>
+					<div class="clearfix"></div>
+				</div>
+				<div class="x_content">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Curso</th>
+								<th>Beca completa</th>
+								<th>Pre-matrícula rechazada</th>
+								<th>Factura pagada</th>
+								<th>Nota</th>
+								<th>Aprobado</th>
+								<th>Última conexión</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for enroll in object.enroll_set.all %}
+								<tr>
+									<td>{{enroll.group}}</td>
+									<td>{{enroll.get_paid_excluded}}</td>
+									<td>{{enroll.get_rejected}}</td>
+									<td>{{enroll.get_paid}}</td>
+									<td>{{enroll.course_score}}</td>
+									<td>{{enroll.get_status}}</td>
+									<td>{{enroll.student.user.last_login}}</td>
+								</tr>		
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

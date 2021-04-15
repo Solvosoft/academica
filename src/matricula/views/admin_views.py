@@ -28,6 +28,7 @@ from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from django.template import Context, Template
+from django.views.generic.detail import DetailView
 
 from djgentelella.models import MenuItem as DJMenuItem
 
@@ -1167,6 +1168,12 @@ class StudentDelete(DeleteView):
         student.delete()
         messages.success(self.request, self.success_message)
         return HttpResponseRedirect(self.success_url)
+
+
+@method_decorator(permission_required('matricula.view_student'), name='dispatch')
+class StudentDetailView(DetailView):
+    model = Student
+    template_name = 'students/student_detail.html'
 
 
 @permission_required('matricula.can_recovery_pass_student')

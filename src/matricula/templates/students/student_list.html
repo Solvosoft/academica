@@ -66,6 +66,9 @@
 				<div class="x_title">
 					<h2 class="green">{{object}}</h2>
 					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
+						<li>
+							<a href="{% url 'student-detail' object.pk %}" class="detail-link" title="Historial estudiante"><i class="fa fa-history"></i></a>
+						</li>
 						{% if perms.matricula.change_student %}
 							<li>
 								<a href="{% url 'edit_student' object.pk %}" class="edit-link" title="Editar estudiante"><i class="fa fa-edit"></i></a>

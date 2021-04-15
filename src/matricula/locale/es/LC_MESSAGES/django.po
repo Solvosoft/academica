@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-14 17:27-0600\n"
+"POT-Creation-Date: 2021-04-15 11:55-0600\n"
 "PO-Revision-Date: 2020-11-27 20:41-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -136,7 +136,7 @@ msgid "username"
 msgstr "Nombre de usuaria"
 
 #: src/matricula/forms.py:164 src/matricula/forms.py:185
-#: src/matricula/models.py:262 src/matricula/models.py:301
+#: src/matricula/models.py:289 src/matricula/models.py:328
 msgid "Page"
 msgstr "Página"
 
@@ -210,7 +210,7 @@ msgid "Enrolment"
 msgstr "Matrícula"
 
 #: src/matricula/models.py:52 src/matricula/models.py:235
-#: src/matricula/models.py:312
+#: src/matricula/models.py:339
 msgid "Student"
 msgstr "Estudiante"
 
@@ -223,7 +223,7 @@ msgid "Email for students"
 msgstr "Correo electrónico para estudiantes"
 
 #: src/matricula/models.py:63 src/matricula/models.py:97
-#: src/matricula/models.py:268
+#: src/matricula/models.py:295
 msgid "Description"
 msgstr "Descripción"
 
@@ -238,7 +238,7 @@ msgstr "Facilitadores"
 
 #: src/matricula/models.py:82 src/matricula/models.py:96
 #: src/matricula/models.py:112 src/matricula/models.py:166
-#: src/matricula/models.py:359
+#: src/matricula/models.py:386
 #: src/matricula/templates/Pdf/student_list.html:235
 #: src/matricula/templates/enrolls/enroll_list.html:80
 msgid "Name"
@@ -268,12 +268,11 @@ msgstr "Imagen"
 msgid "Categories"
 msgstr "Categorías"
 
-#: src/matricula/models.py:113 src/matricula/models.py:295
+#: src/matricula/models.py:113 src/matricula/models.py:322
 msgid "Content"
 msgstr "Contenido"
 
 #: src/matricula/models.py:119 src/matricula/models.py:165
-#: src/matricula/models.py:313
 msgid "Course"
 msgstr "Curso"
 
@@ -338,6 +337,7 @@ msgid "Enrollment behavior"
 msgstr "Comportamiento de matrícula"
 
 #: src/matricula/models.py:202 src/matricula/models.py:233
+#: src/matricula/models.py:340
 #: src/matricula/templates/enrolls/enroll_list.html:89
 msgid "Group"
 msgstr "Grupo"
@@ -395,67 +395,81 @@ msgstr "Matrícula"
 msgid "Enrollments"
 msgstr "Matrículas"
 
-#: src/matricula/models.py:261
+#: src/matricula/models.py:260
+msgid "Not qualified"
+msgstr "Sin Calificar"
+
+#: src/matricula/models.py:267 src/matricula/models.py:274
+#: src/matricula/models.py:281
+msgid "No"
+msgstr "No"
+
+#: src/matricula/models.py:269 src/matricula/models.py:276
+#: src/matricula/models.py:283
+msgid "Yes"
+msgstr "Sí"
+
+#: src/matricula/models.py:288
 msgid "Internal"
 msgstr "Interno"
 
-#: src/matricula/models.py:266
+#: src/matricula/models.py:293
 msgid "Type"
 msgstr "Tipo"
 
-#: src/matricula/models.py:270
+#: src/matricula/models.py:297
 msgid "Authentication is required"
 msgstr "Se requiere autenticación"
 
-#: src/matricula/models.py:271
+#: src/matricula/models.py:298
 msgid "Menu order"
 msgstr "Orden en el menú"
 
-#: src/matricula/models.py:273
+#: src/matricula/models.py:300
 msgid "Page parent"
 msgstr "Página padre"
 
-#: src/matricula/models.py:276
+#: src/matricula/models.py:303
 msgid "Publicated"
 msgstr "Publicado"
 
-#: src/matricula/models.py:277
+#: src/matricula/models.py:304
 msgid "Index page"
 msgstr "Página de inicio"
 
-#: src/matricula/models.py:286
+#: src/matricula/models.py:313
 msgid "Menu Item"
 msgstr "Elemento del menú"
 
-#: src/matricula/models.py:287
+#: src/matricula/models.py:314
 msgid "Menu Items"
 msgstr "Elementos del menú"
 
-#: src/matricula/models.py:302
+#: src/matricula/models.py:329
 msgid "Pages"
 msgstr "Páginas"
 
-#: src/matricula/models.py:316
+#: src/matricula/models.py:343
 msgid "Is used?"
 msgstr "¿Utilizado?"
 
-#: src/matricula/models.py:317
+#: src/matricula/models.py:344
 msgid "Discount code"
 msgstr "Código de descuento"
 
-#: src/matricula/models.py:324
+#: src/matricula/models.py:351
 msgid "Coupon"
 msgstr "Cupón"
 
-#: src/matricula/models.py:325
+#: src/matricula/models.py:352
 msgid "Coupons"
 msgstr "Cupones"
 
-#: src/matricula/models.py:366
+#: src/matricula/models.py:393
 msgid "Fake Group"
 msgstr "Grupo"
 
-#: src/matricula/models.py:367
+#: src/matricula/models.py:394
 msgid "Fake Groups"
 msgstr "Grupos"
 
@@ -881,8 +895,9 @@ msgstr "Usted ya está matriculado"
 msgid ""
 "You are enrolled but the paid is pending, if you don't paid your enroll will "
 "be removed"
-msgstr "Tu estas inscrito en el curso pero tu pago está pendiente, si no "
-"realizas el pago en el periodo definido tu matrícula será eliminada."
+msgstr ""
+"Tu estas inscrito en el curso pero tu pago está pendiente, si no realizas el "
+"pago en el periodo definido tu matrícula será eliminada."
 
 #: src/matricula/views/Enrollments.py:113
 #: src/matricula/views/Enrollments.py:118
@@ -893,7 +908,7 @@ msgstr "Lo sentimos pero su pre matrícula fue rechazada."
 msgid "You are already pre-enrolled"
 msgstr "Usted ya está pre-matriculado"
 
-#: src/matricula/views/admin_views.py:1164
+#: src/matricula/views/admin_views.py:1165
 msgid "Student role removed successfuly"
 msgstr "Rol de estudiante eliminado con éxito"
 

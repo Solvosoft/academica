@@ -255,6 +255,33 @@ class Enroll(models.Model):
         ]
         ordering = ['group']
 
+    @property
+    def get_status(self):
+        dev = _("Not qualified")
+        if self.course_status != None:
+            dev = self.course_status
+        return dev
+
+    @property
+    def get_paid_excluded(self):
+        dev = _("No")
+        if self.paid_excluded:
+            dev = _("Yes")
+        return dev
+    
+    @property
+    def get_rejected(self):
+        dev = _("No")
+        if self.rejected:
+            dev = _("Yes")
+        return dev
+    
+    @property
+    def get_paid(self):
+        dev = _("No")
+        if self.bill_set.first().is_paid:
+            dev = _("Yes")
+        return dev
 
 class MenuItem(models.Model):
     TYPES = (

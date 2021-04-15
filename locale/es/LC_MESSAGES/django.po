@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-14 16:31-0600\n"
+"POT-Creation-Date: 2021-04-15 11:55-0600\n"
 "PO-Revision-Date: 2020-01-09 08:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -162,23 +162,23 @@ msgstr "Certificados"
 msgid "Bills"
 msgstr "Pagos"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:81
+#: src/membership_core/templates/gentelella/app/sidebar.html:84
 msgid "Currency Exchanges"
 msgstr "Monedas de intercambio"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:84
+#: src/membership_core/templates/gentelella/app/sidebar.html:87
 msgid "Bill list"
 msgstr "Lista de pagos"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:95
+#: src/membership_core/templates/gentelella/app/sidebar.html:98
 msgid "Administration"
 msgstr "Administración"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:101
+#: src/membership_core/templates/gentelella/app/sidebar.html:104
 msgid "User list"
 msgstr "Lista de usuarias"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:106
+#: src/membership_core/templates/gentelella/app/sidebar.html:109
 msgid "Group list"
 msgstr "Lista de grupos"
 
@@ -299,10 +299,10 @@ msgstr "No hay grupos registrados"
 msgid "There are not users available"
 msgstr "No hay usuarios registrados"
 
-#: src/upo/settings.py:130
+#: src/upo/settings.py:131
 msgid "Spanish"
 msgstr "Español"
 
-#: src/upo/settings.py:131
+#: src/upo/settings.py:132
 msgid "English"
 msgstr "Ingles"
