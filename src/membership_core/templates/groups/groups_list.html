@@ -53,8 +53,9 @@
 
                                 {% for group in groups_list %}
                                 <tr>
-                                    <td>{{ group.fakegroup.name }} </td>
+                                    <td>{{ group.fakegroup.name }}</td>
                                     <td>
+                                        <a title="Matriculas" class="btn btn-sm" href="{% url 'enrolls' %}?group={{group.pk}}"><i class="fa fa-user fa-2x"></i> </a>
                                         <a title="Editar grupo" class="btn btn-sm" href="{% url 'edit_group' pk=group.pk %}"><i class="fa fa-edit fa-2x"></i> </a>
                                         <a title="Eliminar grupo" class="btn btn-sm" data-url="{% url 'delete_group' pk=group.pk %}" onclick="delete_group(this)"><i class="fa fa-trash fa-2x"></i></a>
                                     </td>

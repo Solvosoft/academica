@@ -825,9 +825,9 @@ class CouponEditForm(GTForm, forms.Form):
         queryset=Student.objects.all(), widget=djgentelella.Select,
         required=False, label="Estudiante * ")
 
-    course = forms.ModelChoiceField(
-        queryset=Course.objects.all(), widget=djgentelella.Select,
-        required=False, label="Curso * ")
+    group = forms.ModelChoiceField(
+        queryset=Group.objects.all(), widget=djgentelella.Select,
+        required=False, label="Grupo * ")
 
     discount_percentage = forms.ChoiceField(
         choices=DISCOUNT_CHOICES, widget=djgentelella.Select,

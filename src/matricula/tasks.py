@@ -5,6 +5,7 @@ from django.conf import settings
 
 from async_notifications.utils import send_email_from_template
 
+from matricula.certificate_utils import build_pdf_certificate
 from upo.celery import app
 from matricula.contrib.bills.models import Bill
 from matricula.models import Enroll
@@ -30,3 +31,13 @@ def remove_invoices():
             enqueued=False, user=None)
     Enroll.objects.filter(bill__in=bills).delete()
     bills.delete()
+
+
+@app.task
+def task_generate_group_certificate(group):
+    for enroll in Enroll.objects.filter(group__pk=group, course_status="approved", enroll_finished=True):
+        try:
+            build_pdf_certificate(enroll)
+        except Exception as e:
+            print("Error generando certificado: ",enroll.pk, e)
+            pass

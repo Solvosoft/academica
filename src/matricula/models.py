@@ -283,7 +283,8 @@ class Enroll(models.Model):
     @property
     def get_paid(self):
         dev = _("No")
-        if self.bill_set.first().is_paid:
+        bill = self.bill_set.first()
+        if bill and bill.is_paid:
             dev = _("Yes")
         return dev
 
