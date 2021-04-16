@@ -5,9 +5,6 @@ Created on 18/10/2020
 @author: allexiusw
 '''
 import csv
-import io
-import os
-import re
 
 from django.conf import settings
 from django.views.generic import ListView, DeleteView, CreateView, UpdateView
@@ -16,8 +13,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
-from django.contrib.staticfiles import finders
-from django.core.files.base import File
+
 from django.core.paginator import Paginator
 from django.db.models import Q, Count
 from django.http import HttpResponse, HttpResponseRedirect
@@ -27,68 +23,27 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
-from django.template import Context, Template
+
 from django.views.generic.detail import DetailView
 
 from djgentelella.models import MenuItem as DJMenuItem
 
-from xhtml2pdf import pisa
-
 from async_notifications.utils import send_email_from_template
 
+from matricula.certificate_utils import build_pdf_certificate
 from matricula.forms import CategoryCreateForm, CategorySearchForm, CertificateSearchForm, \
     CourseSearchForm, CourseCreateForm, MenuItemSearchForm, \
     MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, \
     GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentAddForm, StudentSearchForm, \
     StudentAdminCreateForm, PageCreateForm, PageSearchForm, MenuItemAddForm, \
-    PreEnrollAddGroupForm, GroupAddForm, GroupEditForm, PermissionForm,\
+    PreEnrollAddGroupForm, GroupAddForm, GroupEditForm, PermissionForm, \
     StudentChangePasswordForm, CertificateFormCreate
 from matricula.models import Category, Certificate, Course, Period, Group, \
     Enroll, Student, Page, Professor
+from matricula.tasks import task_generate_group_certificate
 from matricula.views.utils import get_expire_date
 
 from chunked_upload.models import ChunkedUpload
-
-MONTHS_DICT = {
-    'January': 'enero',
-    'February': 'febrero',
-    'March': 'marzo',
-    'April': 'abril',
-    'May': 'mayo',
-    'June': 'junio',
-    'July': 'julio',
-    'August': 'agosto',
-    'September': 'setiembre',
-    'October': 'octubre',
-    'November': 'noviembre',
-    'December': 'diciembre'
-}
-
-
-def link_callback(uri, rel):
-    """
-    Convert HTML URIs to absolute system paths so xhtml2pdf can access those
-    resources
-    """
-    uri = re.sub('../../../', "/", uri)
-    sUrl = settings.STATIC_URL  # Typically /static/
-    sRoot = settings.STATIC_ROOT  # Typically /home/userX/project_static/
-    mUrl = settings.MEDIA_URL  # Typically /media/
-    mRoot = settings.MEDIA_ROOT  # Typically /home/userX/project_static/media/
-
-    if uri.startswith(mUrl):
-        path = os.path.join(mRoot, uri.replace(mUrl, ""))
-    elif uri.startswith(sUrl):
-        path = os.path.join(sRoot, uri.replace(sUrl, ""))
-    else:
-        return uri
-
-    # make sure that file exists
-    if not os.path.isfile(path):
-        raise Exception(
-            'media URI must start with %s or %s' % (sUrl, mUrl)
-        )
-    return path
 
 
 @method_decorator(permission_required('matricula.view_category'), name='dispatch')
@@ -137,9 +92,9 @@ def create_category(request):
             file = None
             if tmpupload: file = tmpupload.get_uploaded_file()
             category = Category.objects.create(
-                name = form.cleaned_data['name'],
-                description = form.cleaned_data['description'],
-                image = file
+                name=form.cleaned_data['name'],
+                description=form.cleaned_data['description'],
+                image=file
             )
             category.save()
             if tmpupload: tmpupload.delete()
@@ -186,7 +141,7 @@ def edit_category(request, pk=None):
             if form.is_valid():
                 tmpupload = ChunkedUpload.objects.filter(upload_id=request.POST.get("image")).first()
                 file = None
-                if tmpupload: 
+                if tmpupload:
                     file = tmpupload.get_uploaded_file()
                     category.image = file
                 category.name = form.cleaned_data['name']
@@ -330,7 +285,7 @@ def add_group_course(request, pk=None):
                 return HttpResponseRedirect(reverse('enrrolment_courses'))
             else:
                 messages.error(request, "Error al crear grupo")
-                return render(request, 'courses/course_group_create.html', {'form': form, 'course':course})
+                return render(request, 'courses/course_group_create.html', {'form': form, 'course': course})
         form = GroupAddForm()
         return render(request, 'courses/course_group_create.html', {'form': form, 'course': course})
     return HttpResponseRedirect(reverse('enrrolment_courses'))
@@ -529,7 +484,8 @@ class GroupList(ListView):
     paginate_by = 30
 
     def get(self, *args, **kwargs):
-        if hasattr(self.request.user, 'professor') and self.request.user.professor.active or self.request.user.is_active:
+        if hasattr(self.request.user,
+                   'professor') and self.request.user.professor.active or self.request.user.is_active:
             return super(GroupList, self).get(self.request, *args, **kwargs)
         return redirect(reverse('courses'))
 
@@ -546,8 +502,8 @@ class GroupList(ListView):
         self.form.is_valid()
         if self.form.cleaned_data['name']:
             queryset = queryset.filter(
-                Q(name__icontains=self.form.cleaned_data['name'])|
-                Q(course__name__icontains=self.form.cleaned_data['name'])|
+                Q(name__icontains=self.form.cleaned_data['name']) |
+                Q(course__name__icontains=self.form.cleaned_data['name']) |
                 Q(course__category__name__icontains=self.form.cleaned_data['name']))
         if self.form.cleaned_data['course']:
             queryset = queryset.filter(
@@ -611,13 +567,13 @@ def pre_enroll_group(request, pk=None):
                             instance.enroll_activate = True
                             instance.save()
                             emails.append(instance.student.user.email)
-                        schema = request.scheme+"://"
+                        schema = request.scheme + "://"
                         send_email_from_template(
                             'preenroll_success', [i for i in emails],
                             {
                                 "url": request.build_absolute_uri(reverse('enrollment')),
                                 "group": group,
-                                'domain': schema+request.get_host(), 
+                                'domain': schema + request.get_host(),
                             },
                             enqueued=False, user=None)
                         messages.success(request, "Estudiantes activados para matrícula.")
@@ -628,13 +584,13 @@ def pre_enroll_group(request, pk=None):
                             instance.rejected = True
                             instance.save()
                             emails.append(instance.student.user.email)
-                        schema = request.scheme+"://"
+                        schema = request.scheme + "://"
                         send_email_from_template(
                             'email_enroll_rejected', [i for i in emails],
                             {
                                 "url": request.build_absolute_uri(reverse('enrollment')),
                                 "group": group,
-                                'domain': schema+request.get_host(), 
+                                'domain': schema + request.get_host(),
                             },
                             enqueued=False, user=None)
                         messages.success(request, "Estudiantes notificados con éxito")
@@ -780,7 +736,7 @@ def list_students_group(request, pk=None):
         instance = Group.objects.get(pk=pk)
         enroll_list = Enroll.objects.filter(group=instance, enroll_finished=True)
         if instance.is_paid:
-            enroll_list = enroll_list.filter(Q(bill__is_paid=True)|Q(paid_excluded=True))
+            enroll_list = enroll_list.filter(Q(bill__is_paid=True) | Q(paid_excluded=True))
         context['object'] = enroll_list
         context['group'] = instance
         approved_students = enroll_list.filter(course_status="approved")
@@ -810,7 +766,7 @@ def open_group(request, pk):
     group.is_open = True
     if request.GET.get('sendemail', '0') == '1':
         group.notified_open = True
-        schema = request.scheme+"://"
+        schema = request.scheme + "://"
         send_email_from_template(
             'email_open_group',
             [enroll.student.user.email for enroll in enrolls],
@@ -818,7 +774,7 @@ def open_group(request, pk):
                 "url": request.build_absolute_uri(
                     reverse('course', args=[group.course.pk])),
                 "group": group,
-                'domain': schema+request.get_host(),
+                'domain': schema + request.get_host(),
             },
             enqueued=False,
             user=None)
@@ -834,7 +790,7 @@ def close_group(request, pk):
     enrolls.update(enroll_activate=False)
     group.is_open = False
     if request.GET.get('sendemail', '0') == '1':
-        schema = request.scheme+"://"
+        schema = request.scheme + "://"
         group.notified_close = True
         send_email_from_template(
             'email_close_group',
@@ -843,7 +799,7 @@ def close_group(request, pk):
                 "url": request.build_absolute_uri(
                     reverse('courses')),
                 "group": group,
-                'domain': schema+request.get_host(),
+                'domain': schema + request.get_host(),
             },
             enqueued=False,
             user=None)
@@ -906,7 +862,7 @@ def create_enroll(request):
         form = EnrollCreateForm(request.POST)
         context['form'] = form
         if form.is_valid():
-            schema = request.scheme+"://"
+            schema = request.scheme + "://"
             template = 'email_preenroll_success'
             if form.cleaned_data['enroll_finished']:
                 template = 'email_enroll_success'
@@ -915,7 +871,7 @@ def create_enroll(request):
                 {
                     "url": request.build_absolute_uri(reverse('enrollment')),
                     "group": form.cleaned_data['group'],
-                    'domain': schema+request.get_host(),
+                    'domain': schema + request.get_host(),
                 },
                 enqueued=True, user=None)
             form.save()
@@ -937,13 +893,13 @@ def edit_enroll(request, pk=None):
             form = EnrollCreateForm(request.POST, instance=instance)
             if form.is_valid():
                 if not enroll_finished and form.cleaned_data['enroll_finished']:
-                    schema = request.scheme+"://"
+                    schema = request.scheme + "://"
                     send_email_from_template(
                         'email_enroll_success', [request.user.email],
                         {
                             "url": request.build_absolute_uri(reverse('enrollment')),
                             "group": form.cleaned_data['group'],
-                            'domain': schema+request.get_host(),
+                            'domain': schema + request.get_host(),
                             'hours_to_pay': settings.HOURS_TO_PAY,
                         },
                         enqueued=True, user=None)
@@ -1015,27 +971,27 @@ class StudentList(ListView):
 
 @permission_required('matricula.add_student')
 def create_student(request):
-    context = {'form_show':'first'}
+    context = {'form_show': 'first'}
     if request.method == 'POST':
         user_created = request.POST.get('user', None)
-        if(user_created is not None):
+        if (user_created is not None):
             form_user = StudentAddForm(request.POST)
             context['form_user'] = form_user
             if form_user.is_valid():
                 student = Student(
-                user=form_user.cleaned_data['user'],
-                organization=form_user.cleaned_data['organization2'],
-                created_at=now(), confirmed_at=now(),
-                phone_number=form_user.cleaned_data['phone_number'],
-                country=form_user.cleaned_data['country2'],
-                city=form_user.cleaned_data['city2'],
-                expired_at=get_expire_date())
+                    user=form_user.cleaned_data['user'],
+                    organization=form_user.cleaned_data['organization2'],
+                    created_at=now(), confirmed_at=now(),
+                    phone_number=form_user.cleaned_data['phone_number'],
+                    country=form_user.cleaned_data['country2'],
+                    city=form_user.cleaned_data['city2'],
+                    expired_at=get_expire_date())
                 student.save()
-                schema = request.scheme+"://"
+                schema = request.scheme + "://"
                 send_email_from_template(
                     'set_email_first_academy', student.user.email,
                     {
-                        'domain': schema+request.get_host(),
+                        'domain': schema + request.get_host(),
                         "url": request.build_absolute_uri(
                             reverse('recover_password')),
                         'student': student,
@@ -1067,11 +1023,11 @@ def create_student(request):
                     city=form.cleaned_data['city'],
                     expired_at=get_expire_date())
                 student.save()
-                schema = request.scheme+"://"
+                schema = request.scheme + "://"
                 send_email_from_template(
                     'set_email_first_academy', user.email,
                     {
-                        'domain': schema+request.get_host(),
+                        'domain': schema + request.get_host(),
                         "url": request.build_absolute_uri(
                             reverse('recover_password')),
                         'student': student,
@@ -1186,12 +1142,12 @@ def recovery_pass_student(request, pk=None):
     if (pk is not None):
         student = Student.objects.get(pk=pk)
         if student:
-            schema = request.scheme+"://"
+            schema = request.scheme + "://"
             send_email_from_template(
                 'email_recovery_academy', student.user.email, {
                     'url': request.build_absolute_uri(
                         reverse('recover_password')),
-                    'domain': schema+request.get_host(),
+                    'domain': schema + request.get_host(),
                     'user': student.user,
                     'student': student,
                 },
@@ -1220,7 +1176,7 @@ class PageList(ListView):
         self.form.is_valid()
         if self.form.cleaned_data['slug']:
             queryset = queryset.filter(
-                Q(slug__icontains=self.form.cleaned_data['slug'])| 
+                Q(slug__icontains=self.form.cleaned_data['slug']) |
                 Q(title__icontains=self.form.cleaned_data['slug']))
         return queryset
 
@@ -1345,7 +1301,7 @@ class PageDelete(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         page = self.get_object()
-        DJMenuItem.objects.filter(url_name="/enrrolment_pages/"+page.slug).delete()
+        DJMenuItem.objects.filter(url_name="/enrrolment_pages/" + page.slug).delete()
         messages.success(self.request, self.success_message)
         return super(PageDelete, self).delete(request, *args, **kwargs)
 
@@ -1368,41 +1324,15 @@ class MenuPageDelete(DeleteView):
         return super(MenuPageDelete, self).delete(request, *args, **kwargs)
 
 
-def build_pdf_certificate(enroll):
-    html = 'certificate.html'
-    month = MONTHS_DICT['{:%B}'.format(now())]
-    template = Template(enroll.group.certificate_template.template)
-    date = str(now().day) + " de " + month + " del " + str(now().year)
-    context = {"enrollment": enroll, 'certificate_date': date}
-    sourceHtml = template.render(Context(context))
-    # FIXME the variable 'enqueued' == False, it must be false o we should change it to True?!
-    resultFile = io.BytesIO()
-    ''' 
-        Be carefull to change it, it change the relative path of the images 
-        saved using Tinymce editor to absolute path. Future updates in djgentelella
-        Can make it crash, and it has to be changed to fit requirements.
-    '''
-    # sourceHtml = re.sub('../../../', settings.MY_PAYPAL_HOST+"/", sourceHtml)
-    pisaStatus = pisa.CreatePDF(
-        sourceHtml,  # the HTML to convert
-        dest=resultFile,  # file handle to recieve result
-        link_callback=link_callback)
-    if pisaStatus.err:
-        return HttpResponse('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err,
-                                                                               html))
-    resultFile.seek(0)
-    file_name = f'certificado_{str(enroll.group)}_{str(enroll.student)}.pdf'
-    enroll.pdf_certificate = File(resultFile, name=file_name)
-    enroll.save()
-
 @staff_member_required
 def build_pdf_certificate_view(request, pk):
     enroll = get_object_or_404(Enroll, pk=pk)
     build_pdf_certificate(enroll)
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="'+str(enroll.group)+"-"+str(enroll.student)+'.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="' + str(enroll.group) + "-" + str(enroll.student) + '.pdf"'
     response.write(enroll.pdf_certificate.read())
     return response
+
 
 @staff_member_required
 def regenerate_certificate(request, pk_group, pk):
@@ -1412,19 +1342,16 @@ def regenerate_certificate(request, pk_group, pk):
     return redirect('list_students_group', pk=pk_group)
 
 
+@staff_member_required
 def build_pdf_certificate_list(request, pk):
-
-    enroll_list = Enroll.objects.filter(group__pk=pk, course_status="approved", enroll_finished=True)
-    if enroll_list:
-        group = enroll_list.first().group
-        if group.certificate_template_id != None:
-            for enroll in enroll_list:
-                if enroll.pdf_certificate is None or enroll.pdf_certificate == "":
-                    build_pdf_certificate_view(request, enroll.pk)
-            messages.success(request, "Certificados generados exitosamente.")
-            return redirect("list_students_group", pk=pk)
+    group = get_object_or_404(Group, pk=pk)
+    if group.certificate_template_id is None:
         messages.error(request, "El grupo no tiene una plantilla de certificados.")
         return redirect("list_students_group", pk=pk)
+
+    task_generate_group_certificate.delay(pk)
+    messages.success(request, "Certificados se han iniciado a procesar, regrese en unos minutos y refresque la página.")
+    return redirect("list_students_group", pk=pk)
 
 
 @method_decorator(permission_required('matricula.view_certificate'), name='dispatch')
@@ -1457,20 +1384,22 @@ class CertificateCreate(SuccessMessageMixin, CreateView):
 
     def get_initial(self):
         initial = super().get_initial()
-        template = open(settings.BASE_NOCODE_DIR / 'src/matricula/templates/matricula/certificaciones.html', 'r')
-        initial['template'] = template.read()
         group = self.request.GET.get('group', None)
         if group:
             initial['group'] = get_object_or_404(Group, pk=group)
+            initial['name'] = 'Plantilla para grupo %s %s' % (initial['group'].course, initial['group'])
+        template = open(settings.BASE_NOCODE_DIR / 'src/matricula/templates/matricula/certificaciones.html', 'r')
+        initial['template'] = template.read()
         return initial
 
     def form_valid(self, form):
-        response = super().form_valid()
+        response = super().form_valid(form)
         if form.cleaned_data['group']:
             group = form.cleaned_data['group']
             group.certificate_template = self.object
             group.save()
         return response
+
 
 @method_decorator(permission_required('matricula.delete_certificate'), name='dispatch')
 class CertificateDelete(DeleteView):
@@ -1480,7 +1409,7 @@ class CertificateDelete(DeleteView):
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
-    
+
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super(CertificateDelete, self).delete(request, *args, **kwargs)

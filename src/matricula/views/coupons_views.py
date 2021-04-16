@@ -33,8 +33,7 @@ def send_code_notification(coupons_list, user, request):
 
 
 def get_error_message(request, student):
-    global redirect_coupons
-    redirect_coupons = False
+    request.session['redirect_coupons'] = False
     return messages.error(request, "Error, al estudiante " + str(student) + " no es posible asignarle"
             " este cupón, por favor verifique la cantidad de cupones asignados a este estudiante con el"
             " curso indicado, además verifique que los porcentajes de descuento asignados en un curso"
@@ -42,12 +41,12 @@ def get_error_message(request, student):
 
 
 def save_coupon(request, course, student, discount_percentage, coupon):
-    global redirect_coupons
-    coupon.course = course
+
+    coupon.group = course
     coupon.student = student
     coupon.discount_percentage = int(discount_percentage)
     coupon.save()
-    if coupon.data_changed(['student_id', 'course_id', 'discount_percentage', 'is_used', 'code', 'bill_id']):
+    if coupon.data_changed(['student_id', 'group_id', 'discount_percentage', 'is_used', 'code', 'bill_id']):
         schema = request.scheme+"://"
         send_email_from_template(
             "coupon_code_notification_updated",
@@ -57,7 +56,8 @@ def save_coupon(request, course, student, discount_percentage, coupon):
             context={'coupon': coupon, 'domain': schema+request.get_host(),}
         )
     messages.success(request, "El cupón ha sido actualizado éxitosamente.")
-    redirect_coupons = True
+    request.session['redirect_coupons'] = True
+
 
 def update_coupon(request, check_coupon, student, course, discount_percentage, coupon):
     year = datetime.datetime.now().year
@@ -69,7 +69,7 @@ def update_coupon(request, check_coupon, student, course, discount_percentage, c
 
     if check_coupon.count() <= 1:
         if student == coupon.student:
-            if not course == coupon.course:
+            if not course == coupon.group:
                 coupon.code = code
             save_coupon(request, course, student, discount_percentage, coupon)
         else:
@@ -97,7 +97,7 @@ def coupons_list(request):
 
     filters = {}
     coupons_list = Coupon.objects.all()
-
+    request.session['redirect_coupons'] = False
     if request.method == "GET":
 
         form = CouponsSearchForm(request.GET)
@@ -256,33 +256,33 @@ def delete_coupon(request, pk):
 def edit_coupon(request, pk):
     coupon = Coupon.objects.filter(pk=pk).first()
     year = datetime.datetime.now().year
-    global redirect_coupons
+    redirect_coupons = request.session['redirect_coupons'] if 'redirect_coupons' in request.session else False
 
     if request.method == "POST":
         form = CouponEditForm(request.POST)
         if form.is_valid():
-            course = form.cleaned_data['course']
+            group = form.cleaned_data['group']
             student = form.cleaned_data['student']
             discount_percentage = form.cleaned_data['discount_percentage']
 
-            if course and student and discount_percentage:
+            if group and student and discount_percentage:
 
-                check_coupon = Coupon.objects.filter(student=student, course=course)
+                check_coupon = Coupon.objects.filter(student=student, group=group)
 
                 if check_coupon:
-                    update_coupon(request, check_coupon, student, course, discount_percentage, coupon)
+                    update_coupon(request, check_coupon, student, group, discount_percentage, coupon)
                     if redirect_coupons:
                         return redirect('coupons_list')
 
                 else:
-                    coupon.code = "UP" + str(year) + str(student)[0:2] + "P" + str(discount_percentage) + str(course)[0:2]
-                    save_coupon(request, course, student, discount_percentage, coupon)
+                    coupon.code = "UP" + str(year) + str(student)[0:2] + "P" + str(discount_percentage) + str(group)[0:2]
+                    save_coupon(request, group, student, discount_percentage, coupon)
                     return redirect('coupons_list')
 
     else:
        form = CouponEditForm(initial={
             'student': coupon.student,
-            'course': coupon.course,
+            'group': coupon.group,
             'discount_percentage': coupon.discount_percentage
         })
 

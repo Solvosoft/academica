@@ -1,75 +1,47 @@
-{% load static %}
-{% load i18n %}
 
-<html>
-	<style type="text/css">
-		@page {
-			size: letter portrait;
-			@frame header_frame {           /* Static frame */
-				-pdf-frame-content: header_content;
-				width: 21.5cm;  height: 2cm;
+<center>
+	<div id="header_content" >
+		<img src="https://www.universidadpopular.us/wp-content/uploads/2018/10/cropped-UP_logo_Square-e1539875905697-7.png" alt="logo"/>
+	</div>
+</center>
 
-			}
-			@frame content_frame {          /* Content Frame */
-				left: 1cm; width: 19cm; top: 3cm; height: 22.2cm;
-				
-			}
-			@frame footer_frame {           /* Static frame */
-				-pdf-frame-content: footer_content;
-				width: 21.5cm; top: 26cm; height: 2cm;
-			}
-		}
-
-		body{
-			font-size: 2em;
-		}
-	</style>
-	<body>
+<div id="content" >
+	<br>
+	<div >
 		<center>
-			<div id="header_content" >
-				<img src="https://www.universidadpopular.us/wp-content/uploads/2018/10/cropped-UP_logo_Square-e1539875905697-7.png" alt="logo"/>
-			</div>
-		</center>
+			<p>
+				La Universidad Popular de Costa Rica {{ enrollment.group.enroll_finish.year }}
+				otorga el presente <strong>certificado de aprobación</strong> a:
+			</p>
+			<h1 style="color:#709f2c; font-size: 3em">{{ enrollment.student.user.get_full_name }}</h1>
 
-		<div id="content" >
+			<p>
+				Por su destacada participación en el curso {{ enrollment.group }}, habiendo obtenido una nota de {{ enrollment.course_score}}.
+			</p>
 			<br>
-			<div >
-				<center>
-					<p>
-						La Universidad Popular de Costa Rica {{ enrollment.group.enroll_finish.year }}
-						otorga el presente <strong>certificado de aprobación</strong> a:
-					</p>
-					<h1 style="color:#709f2c; font-size: 3em">{{ enrollment.student.user.get_full_name }}</h1>
+			<p>
+				Dado en la ciudad de San José, Costa Rica, el dia 13/05/2021
+			</p>
 
-					<p>
-						Por su destacada participación en el curso {{ enrollment.group }}, habiendo obtenido una nota de {{ enrollment.course_score}}.
-					</p>
-					<br>
-					<p>
-						Dado en la ciudad de San José, Costa Rica, el dia 13/05/2021
-					</p>
-
-				</center>
-			</div>
-			<div style="font-size: 1em;">
-				<br><br>
-				<center>
-					<table>
-						<tr>
-							<td>_______________________</td>
-							<td>_______________________</td>
-						</tr>
-						<tr>
-							<td>Nikole</td>
-							<td>{{ enrollment.group.professors.first}}</td>
-						</tr>
-						<tr>
-							<td>Directora del programa de Cursos</td>
-							<td>Facilitadora</td>
-						</tr>
-					</table>
-				</center>
-			</div>
-		</div>
-	</body>
-</html>
+		</center>
+	</div>
+	<div style="font-size: 1em;">
+		<br><br>
+		<center>
+			<table>
+				<tr>
+					<td>_______________________</td>
+					<td>_______________________</td>
+				</tr>
+				<tr>
+					<td>Nombre </td>
+					<td>{{ enrollment.group.professors.first}}</td>
+				</tr>
+				<tr>
+					<td>Directora del programa de Cursos</td>
+					<td>Facilitadora</td>
+				</tr>
+			</table>
+		</center>
+	</div>
+</div>
