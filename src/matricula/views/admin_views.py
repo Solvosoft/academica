@@ -1407,8 +1407,12 @@ def build_pdf_certificate_view(request, pk):
 @staff_member_required
 def regenerate_certificate(request, pk_group, pk):
     enroll = get_object_or_404(Enroll, pk=pk)
-    build_pdf_certificate(enroll)
-    messages.success(request, "Certificado regenerado con éxito.")
+    group = enroll.group
+    if group.certificate_template_id == None:
+        messages.error(request, "El grupo no tiene una plantilla de certificados.")
+    else:
+        build_pdf_certificate(enroll)
+        messages.success(request, "Certificado regenerado con éxito.")
     return redirect('list_students_group', pk=pk_group)
 
 
@@ -1465,12 +1469,19 @@ class CertificateCreate(SuccessMessageMixin, CreateView):
         return initial
 
     def form_valid(self, form):
-        response = super().form_valid()
+        response = super().form_valid(form)
         if form.cleaned_data['group']:
             group = form.cleaned_data['group']
             group.certificate_template = self.object
             group.save()
         return response
+
+    def get_success_url(self):
+        success_url = super().get_success_url()
+        initial = self.get_initial()
+        if 'group' in initial:
+            success_url = reverse("list_students_group", kwargs={'pk': initial['group'].pk})
+        return success_url
 
 @method_decorator(permission_required('matricula.delete_certificate'), name='dispatch')
 class CertificateDelete(DeleteView):
