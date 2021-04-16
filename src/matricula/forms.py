@@ -855,7 +855,8 @@ class CourseMainSearchForm(GTForm, forms.Form):
 
 
 class CertificateFormCreate(GTForm, forms.ModelForm):
-    
+    group = forms.ModelChoiceField(queryset=Group.objects.all(),  widget=forms.HiddenInput, required=False)
+
     class Meta:
         model = Certificate
         fields = ('name', "template")

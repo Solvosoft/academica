@@ -733,7 +733,7 @@ def edit_group(request, pk=None):
 def export_group(request, pk=None):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="students_list.csv"'
-    writer = csv.writer(response)
+    writer = csv.writer(response, delimiter=';', quotechar='|')
     response.write(u'\ufeff'.encode('utf8'))
     if pk is not None:
         group = Group.objects.get(pk=pk)
@@ -747,17 +747,22 @@ def export_group(request, pk=None):
             'email',
             'institution',
             'country',
-            'city'
+            'city',
             "course1"])
         for enroll in enrolls:
             first_name = enroll.student.user.first_name if enroll.student.user.first_name != "" else "default"
             last_name = enroll.student.user.last_name if enroll.student.user.last_name != "" else "default"
+            organizations = enroll.student.organizations
+            if organizations:
+                organizations = ", ".join([x['value'] for x in enroll.student.organizations if 'value' in x])
+            else:
+                organizations = ""
             writer.writerow([
                 enroll.student.user.username,
                 first_name,
                 last_name,
                 enroll.student.user.email,
-                enroll.student.organizations[0]['value'],
+                organizations,
                 enroll.student.country.name,
                 enroll.student.city,
                 group.name])
@@ -1454,8 +1459,18 @@ class CertificateCreate(SuccessMessageMixin, CreateView):
         initial = super().get_initial()
         template = open(settings.BASE_NOCODE_DIR / 'src/matricula/templates/matricula/certificaciones.html', 'r')
         initial['template'] = template.read()
+        group = self.request.GET.get('group', None)
+        if group:
+            initial['group'] = get_object_or_404(Group, pk=group)
         return initial
 
+    def form_valid(self, form):
+        response = super().form_valid()
+        if form.cleaned_data['group']:
+            group = form.cleaned_data['group']
+            group.certificate_template = self.object
+            group.save()
+        return response
 
 @method_decorator(permission_required('matricula.delete_certificate'), name='dispatch')
 class CertificateDelete(DeleteView):

@@ -2,6 +2,7 @@
 import json
 import uuid
 from decimal import Decimal
+from json import JSONDecodeError
 
 from django.db import models
 from django.contrib.auth.models import User, Group as AuthGroup
@@ -44,8 +45,11 @@ class Student(models.Model):
     @property
     def organizations(self):
         dev = []
-        if self.organization != "":
-            dev = json.loads(self.organization)
+        try:
+            if self.organization != "":
+                dev = json.loads(self.organization)
+        except JSONDecodeError as e:
+            pass
         return dev
 
     class Meta:
@@ -337,7 +341,7 @@ class Coupon(models.Model):
     )
 
     student = models.ForeignKey(Student, verbose_name=_("Student"), on_delete=models.CASCADE)
-    group = models.ForeignKey(Group, verbose_name=_("Group"), on_delete=models.CASCADE, default=16)
+    group = models.ForeignKey(Group, verbose_name=_("Group"), on_delete=models.CASCADE, null=True, blank=False)
     discount_percentage = models.IntegerField(null=True, blank=True, choices=DISCOUNT_CHOICES,
                                               default=DISCOUNT_CHOICES[1])
     is_used = models.BooleanField(default=False, verbose_name=_("Is used?"))
