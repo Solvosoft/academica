@@ -60,7 +60,7 @@
                             <thead>
                                 <tr>
                                     <th style="text-align: center;">Estudiante</th>
-                                    <th style="text-align: center;">Curso</th>
+                                    <th style="text-align: center;">Grupo</th>
                                     <th style="text-align: center;">¿Utilizado?</th>
                                     <th style="text-align: center;">Descuento</th>
                                     <th style="text-align: center;">Código</th>
@@ -72,7 +72,7 @@
                             {% for coupon in coupons_list %}
                             <tr>
                                 <td>{{ coupon.student }}</td>
-                                <td>{{ coupon.course }}</td>
+                                <td>{% if coupon.group %}{{coupon.group}}{% else %}Sin asignar{% endif %}</td>
                                 <td>
                                     <input type="checkbox" class="flat" data-widget="CheckboxInput" data-key="{{ coupon.is_used }}" disabled="disabled">
                                 </td>
