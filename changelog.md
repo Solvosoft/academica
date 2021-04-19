@@ -1,5 +1,12 @@
 # Change log file
 
+19/04/2021
+
+### Template update
+
+ - Update templates
+    `python manage.py update_academy_temp`
+
 11/04/2021
 
 ### Fixed
