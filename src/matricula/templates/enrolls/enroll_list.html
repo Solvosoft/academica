@@ -57,7 +57,7 @@
 		<div class="row">
 	{% for object in object_list %}
 		<div class="col-md-6 col-lg-4 col-sm-6 col-xs-12">
-			<div class="x_panel {% if object.bill_set.first.is_paid or not object.group.is_paid or object.paid_excluded %} paid {% elif object.enroll_finished %} enrolled {% else %} pre_enroll {% endif %}" style="height:225px;">
+			<div class="x_panel {% if  object.bill_set.first.is_paid or not object.group.is_paid or object.paid_excluded %}{% if object.enroll_finished %} paid {% else %} enrolled {% endif %} {% elif object.enroll_finished %} enrolled {% else %} pre_enroll {% endif %}" style="height:225px;">
 				<div class="x_title">
 					<h2 class="green">{{object.student|wordwrap:100}}</h2>
 					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">

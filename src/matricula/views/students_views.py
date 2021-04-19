@@ -17,7 +17,7 @@ from matricula.models import Enroll, Group
 def qualify_students(request, pk):
     if hasattr(request.user, 'professor') and request.user.professor.active:
         group = get_object_or_404(Group, pk=pk)
-        enroll_list = Enroll.objects.filter(group=group)
+        enroll_list = Enroll.objects.filter(group=group, enroll_finished=True)
         if group.is_paid:
             enroll_list = enroll_list.filter(Q(bill__is_paid=True) | Q(paid_excluded=True))
         context = {'group': group,
