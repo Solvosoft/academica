@@ -239,6 +239,8 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
         return reverse_lazy('myprofile', kwargs={'pk': pk})
 
     def post(self, request, *args, **kwargs):
+        professor_form = None
+        student_form = None
         errors = False
         self.object = self.get_object()
         if hasattr(request.user, 'professor'):

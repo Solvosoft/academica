@@ -118,7 +118,7 @@ class UserEditForm(GTForm, forms.ModelForm):
     def clean_email(self):
         data = self.cleaned_data['email']
         username = self.username
-        if User.objects.filter(email=data).exclude(username=username).exists() and self.username:
+        if self.username and User.objects.filter(email=self.username).exclude(username=username).exists():
             raise forms.ValidationError(_("This email already used"))
         return data
 
