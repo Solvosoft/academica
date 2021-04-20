@@ -42,7 +42,7 @@ msgstr "Países"
 
 #: src/membership_core/forms.py:50 src/membership_core/forms.py:82
 msgid "This email already used"
-msgstr "Este correo ya esta registrado"
+msgstr "Este correo ya está registrado"
 
 #: src/membership_core/gtcharts.py:56
 #: src/membership_core/templates/dashboard.html:56

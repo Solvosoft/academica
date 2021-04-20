@@ -129,7 +129,7 @@ msgstr "La contraseña debe contener al menos un simbolo: "
 #: src/matricula/forms.py:95 src/matricula/forms.py:122
 #: src/matricula/forms.py:553
 msgid "This email already used"
-msgstr "Este correo ya esta registrado"
+msgstr "Este correo ya está registrado"
 
 #: src/matricula/forms.py:138
 msgid "username"
