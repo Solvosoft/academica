@@ -34,7 +34,7 @@ from matricula.certificate_utils import build_pdf_certificate
 from matricula.forms import CategoryCreateForm, CategorySearchForm, CertificateSearchForm, \
     CourseSearchForm, CourseCreateForm, MenuItemSearchForm, \
     MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, \
-    GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentAddForm, StudentSearchForm, \
+    GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentAddForm, StudentAdminEditForm, StudentSearchForm, \
     StudentAdminCreateForm, PageCreateForm, PageSearchForm, MenuItemAddForm, \
     PreEnrollAddGroupForm, GroupAddForm, GroupEditForm, PermissionForm, \
     StudentChangePasswordForm, CertificateFormCreate
@@ -1050,7 +1050,7 @@ def edit_student(request, pk=None):
     if pk is not None:
         if request.method == "POST":
             instance = User.objects.get(pk=pk)
-            form = StudentAdminCreateForm(request.POST, instance=instance)
+            form = StudentAdminEditForm(request.POST, instance=instance)
             if form.is_valid():
                 messages.success(request, "Estudiante guardada con éxito")
                 form.save()
@@ -1072,7 +1072,8 @@ def edit_student(request, pk=None):
                 inst['city'] = instance.student.city
                 inst['phone_number'] = instance.student.phone_number
                 inst['organization'] = instance.student.organization
-                form = StudentAdminCreateForm(initial=inst)
+                inst['edit'] = True
+                form = StudentAdminEditForm(initial=inst)
                 return render(
                     request, 'students/student_update.html', {'form': form})
     return HttpResponseRedirect(reverse('students'))

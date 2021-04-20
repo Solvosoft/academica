@@ -516,7 +516,7 @@ class StudentSearchForm(GTForm, forms.Form):
         required=False, label="Activo")
 
 
-class StudentAdminCreateForm(GTForm, forms.ModelForm):
+class StudentAdminEditForm(GTForm, forms.ModelForm):
     username = forms.CharField(
         label="Nombre de usuaria", widget=djgentelella.TextInput, required=True,
         disabled=True
@@ -529,8 +529,43 @@ class StudentAdminCreateForm(GTForm, forms.ModelForm):
         label="Correo", widget=djgentelella.EmailMaskInput, required=True)
     country = forms.ModelChoiceField(
         label="País", queryset=Country.objects.all(), required=True, widget=djgentelella.Select)
-    city = forms.CharField(label=_("City"), widget=djgentelella.TextInput, required=True)
-    phone_number = forms.CharField(label="Teléfono", widget=djgentelella.TextInput)
+    city = forms.CharField(label=_("City"), widget=djgentelella.TextInput, required=True, max_length=100)
+    phone_number = forms.CharField(label="Teléfono", widget=djgentelella.TextInput, max_length=15)
+    organization = forms.CharField(
+        label="Organización", required=False, help_text=_("It can be your company or organization where you work or the community that you represent.")
+    )
+
+    class Meta:
+        model = User
+        fields = [
+            'username', 'first_name', 'last_name', 'email', 'organization','country', 'city']
+
+    def __init__(self, *args, **kwargs):
+        super(StudentAdminEditForm, self).__init__(*args, **kwargs)
+        if 'initial' in kwargs:
+            if 'country_id' in kwargs['initial']:
+                self.fields['country'].initial = kwargs['initial']['country_id']
+
+    def clean_email(self):
+        data = self.cleaned_data['email']
+        username = self.cleaned_data['username']
+        if User.objects.filter(email=data).exclude(username=username).exists():
+            raise forms.ValidationError(_("This email already used"))
+        return data
+
+class StudentAdminCreateForm(GTForm, forms.ModelForm):
+    username = forms.CharField(
+        label="Nombre de usuaria", widget=djgentelella.TextInput, required=True)
+    first_name = forms.CharField(
+        label="Nombres", widget=djgentelella.TextInput, required=True)
+    last_name = forms.CharField(
+        label="Apellidos", widget=djgentelella.TextInput, required=True)
+    email = forms.CharField(
+        label="Correo", widget=djgentelella.EmailMaskInput, required=True)
+    country = forms.ModelChoiceField(
+        label="País", queryset=Country.objects.all(), required=True, widget=djgentelella.Select)
+    city = forms.CharField(label=_("City"), widget=djgentelella.TextInput, required=True, max_length=100)
+    phone_number = forms.CharField(label="Teléfono", widget=djgentelella.TextInput, max_length=15)
     organization = forms.CharField(
         label="Organización", required=False, help_text=_("It can be your company or organization where you work or the community that you represent.")
     )
