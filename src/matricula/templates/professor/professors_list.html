@@ -78,11 +78,12 @@
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
-                         <h4><b>Nombre: {% if professor.user.get_full_name %} {{professor.user.get_full_name|title}} {% else %} Sin especificar {% endif %}</b></h4>
+                        <h4><b>Nombre: {% if professor.user.get_full_name %} {{professor.user.get_full_name|title}} {% else %} Sin especificar {% endif %}</b></h4>
                         <div style="text-align: left; margin-bottom: 15px;">
                             <h4>Información:</h4>
                         </div>
-                        <div><strong>Correo de usuario: </strong> {% if professor.user.email %} {{professor.user.email}} {% else %} Sin especificar {% endif %}</div>
+                        <div><strong>Usuaria: </strong>{{professor.user.username}}</div>
+                        <div><strong>Correo de usuaria: </strong> {% if professor.user.email %} {{professor.user.email}} {% else %} Sin especificar {% endif %}</div>
                         <div><strong>Correo para estudiantes: </strong> {% if professor.email %} {{professor.email}} {% else %} Sin especificar {% endif %}</div>
                         <div><strong>Estado: </strong> {% if professor.active%} Activa {% else %} Inactiva {% endif %}</div>
                         <div><strong>Descripción: </strong><p style="text-align: justify; text-justify: inter-word;">{% if professor.description %} {{professor.description|truncatechars:165}} {% else %} Sin especificar {% endif %} </p></div>
