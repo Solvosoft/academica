@@ -170,6 +170,10 @@ def delete_professor(request, pk):
     professor = Professor.objects.filter(pk=pk).first()
 
     if professor:
+        is_admin = professor.user.groups.filter(name=settings.ADMIN_GROUP_NAME)
+        is_student = hasattr(professor.user, 'student')
+        if not is_admin.exists() and not is_student:
+            professor.user.delete()
         professor.delete()
         messages.success(request, "Facilitadora eliminada con éxito")
         return redirect('professors_list')
