@@ -1119,9 +1119,8 @@ class StudentDelete(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         student = self.get_object()
-        user = User.objects.filter(student=student)
-        professor = hasattr(user, 'professor')
-        admin = user.filter(groups__name=settings.ADMIN_GROUP_NAME)
+        professor = hasattr(student.user, 'professor')
+        admin = student.user.groups.filter(name=settings.ADMIN_GROUP_NAME)
         if professor or admin.exists():
             student.delete()
             messages.success(self.request, _("Student role removed successfuly"))
