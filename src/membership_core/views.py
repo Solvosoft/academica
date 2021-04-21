@@ -7,6 +7,7 @@ from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, UpdateView, CreateView
 from django.http.response import HttpResponseRedirect
+from django.conf import settings
 
 from .forms import UserEditForm, UserSearchForm, UserAddForm, GroupAddForm
 from .dashboard import TopStats
@@ -14,7 +15,7 @@ from .models import Country
 
 from async_notifications.utils import send_email_from_template
 
-from matricula.models import Category, FakeGroup
+from matricula.models import Category, FakeGroup, Professor
 
 
 
@@ -86,6 +87,9 @@ class AddUser(CreateView):
     def form_valid(self, form):
         user = form.save()
         groups = Group.objects.filter(fakegroup__in=form.cleaned_data['fakegroups'])
+        flat_groups = groups.values_list('name', flat=True)
+        if settings.PROFESSOR_GROUP_NAME in flat_groups:
+            Professor.objects.create(user=user, email=form.cleaned_data['email'])
         user.groups.add(*groups)
         user.save()
         self.send_email(user)
