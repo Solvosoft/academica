@@ -1,6 +1,6 @@
 django>=3.1
-async_notifications==0.1.25
-django-ajax-selects==1.9.1
+async_notifications==0.1.26
+django-ajax-selects==2.1.0
 celery==4.4.7
 django-celery-beat==2.0.0
 django-celery-results==1.2.1
