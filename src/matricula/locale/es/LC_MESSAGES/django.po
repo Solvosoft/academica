@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-15 11:55-0600\n"
+"POT-Creation-Date: 2021-04-21 12:18-0600\n"
 "PO-Revision-Date: 2020-11-27 20:41-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -864,8 +864,12 @@ msgstr "Perfil actualizado con éxito"
 msgid "The group is full and was not possible to enroll you."
 msgstr "El cupo esta completo, no fue posible inscribirte."
 
-#: src/matricula/views/Enrollments.py:62 src/matricula/views/Enrollments.py:107
-#: src/matricula/views/Enrollments.py:173
+#: src/matricula/views/Enrollments.py:60 src/matricula/views/Enrollments.py:114
+msgid "Enrollment success."
+msgstr "Matriciulado satisfactoriamente"
+
+#: src/matricula/views/Enrollments.py:62 src/matricula/views/Enrollments.py:112
+#: src/matricula/views/Enrollments.py:180
 msgid "Enrollment success you have "
 msgstr "Matriculado satisfactoriamente. A partir de este momento tiene "
 

@@ -56,10 +56,14 @@ def enrollme(request, pk):
                             'hours_to_pay': settings.HOURS_TO_PAY,
                         },
                         enqueued=True, user=None)
-                    return {
+                    if not group.is_paid:
+                        message = _("Enrollment success.")
+                    else:
+                        message = str(_('Enrollment success you have '))+str(settings.HOURS_TO_PAY)+str(_(' hours from now to complete the payment')) +' <a class="btn btn-success" href="'+ reverse('bills')+'">'+str(_('Pay Now')) +'</a>'
+                    return { 
                         "inner-fragments": {
                             "#count_" + str(group.pk): group.enroll_set.count(),
-                            "#group_message": '<div class="alert alert-success" role="alert">' + str(_('Enrollment success you have ')) + str(settings.HOURS_TO_PAY)+ str(_(' hours from now to complete the payment')) +' <a class="btn btn-primary" href="'+ reverse('bills')+'">'+str(_('Pay Now')) +'</a>'+'</div>'
+                            "#group_message": '<div class="alert alert-info" role="alert">' + str(message) + '</div>'
                         },
                     }
                 elif group.in_preenrollment:
@@ -104,8 +108,11 @@ def enrollme(request, pk):
                             'hours_to_pay': settings.HOURS_TO_PAY,
                         },
                         enqueued=True, user=None)
-                    message = _('Enrollment success you have ')+str(settings.HOURS_TO_PAY)+_(' hours from now to complete the payment') +' <a class="btn btn-success" href="'+ reverse('bills')+'">'+str(_('Pay Now')) +'</a>'
-                elif enroll.paid_excluded or enroll.bill_set.first().is_paid:
+                    if enroll.group.is_paid:
+                        message = _('Enrollment success you have ')+str(settings.HOURS_TO_PAY)+_(' hours from now to complete the payment') +' <a class="btn btn-success" href="'+ reverse('bills')+'">'+str(_('Pay Now')) +'</a>'
+                    else:
+                        message = _("Enrollment success.")
+                elif enroll.paid_excluded or enroll.bill_set.first() and enroll.bill_set.first().is_paid or not group.is_paid:
                     message = _('You are already enrolled')
                 else:
                     message = _('You are enrolled but the paid is pending, if you don\'t paid your enroll will be removed')
