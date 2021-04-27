@@ -51,10 +51,6 @@ class CategoryList(ListView):
     template_name = "categories/category_list.html"
     paginate_by = 30
 
-    def dispatch(self, *args, **kwargs):
-        """ Permission check for this class """
-        return super(CategoryList, self).dispatch(*args, **kwargs)
-
     def get_queryset(self):
         queryset = Category.objects.all()
         name = self.request.GET.get('name', None)
@@ -65,11 +61,8 @@ class CategoryList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["form"] = CategoryCreateForm()
-        name = self.request.GET.get('name', None)
-        if name is not None:
-            context["form_search"] = CategorySearchForm(self.request.GET)
-        else:
-            context['form_search'] = CategorySearchForm()
+        context["form_search"] = CategorySearchForm(self.request.GET)
+        context['has_data'] = Category.objects.exists()
         return context
 
 
@@ -113,10 +106,6 @@ class CategoryDelete(DeleteView):
     model = Category
     success_url = "/enrrolment/categories/"
     success_message = "Categoría eliminada con éxito"
-
-    def dispatch(self, *args, **kwargs):
-        """ Permission check for this class """
-        return super(CategoryDelete, self).dispatch(*args, **kwargs)
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
@@ -173,10 +162,6 @@ class CourseList(ListView):
     model = Course
     paginate_by = 30
 
-    def dispatch(self, *args, **kwargs):
-        """ Permission check for this class """
-        return super(CourseList, self).dispatch(*args, **kwargs)
-
     def get_queryset(self):
         queryset = super().get_queryset()
         self.form = CourseSearchForm(self.request.GET)
@@ -191,11 +176,8 @@ class CourseList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        name = self.request.GET.get('name', None)
-        if name is not None:
-            context["form_search"] = CourseSearchForm(self.request.GET)
-        else:
-            context['form_search'] = CourseSearchForm()
+        context["form_search"] = CourseSearchForm(self.request.GET)
+        context['has_data'] = Course.objects.exists()
         return context
 
 
@@ -221,10 +203,6 @@ class CourseDelete(DeleteView):
     model = Course
     success_url = "/enrrolment/courses/"
     success_message = "Curso eliminada con éxito"
-
-    def dispatch(self, *args, **kwargs):
-        """ Permission check for this class """
-        return super(CourseDelete, self).dispatch(*args, **kwargs)
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
@@ -297,10 +275,6 @@ class MenuItemList(ListView):
     model = DJMenuItem
     paginate_by = 30
 
-    def dispatch(self, *args, **kwargs):
-        """ Permission check for this class """
-        return super(MenuItemList, self).dispatch(*args, **kwargs)
-
     def get_queryset(self):
         queryset = super().get_queryset()
         self.form = MenuItemSearchForm(self.request.GET)
@@ -316,6 +290,7 @@ class MenuItemList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form_search'] = MenuItemSearchForm(self.request.GET)
+        context['has_data'] = DJMenuItem.objects.exists()
         return context
 
 
@@ -489,10 +464,6 @@ class GroupList(ListView):
             return super(GroupList, self).get(self.request, *args, **kwargs)
         return redirect(reverse('courses'))
 
-    def dispatch(self, *args, **kwargs):
-        """ Permission check for this class """
-        return super(GroupList, self).dispatch(*args, **kwargs)
-
     def get_queryset(self):
         queryset = super().get_queryset()
         user = self.request.user
@@ -546,6 +517,7 @@ class GroupList(ListView):
         context['show_qualify_students_button'] = show_qualify_students_button
 
         context['form_search'] = GroupSearchForm(self.request.GET)
+        context['has_data'] = Group.objects.exists()
         return context
 
 
@@ -648,10 +620,6 @@ class GroupDelete(DeleteView):
     model = Group
     success_url = "/enrrolment/groups"
     success_message = "Grupo eliminado con éxito"
-
-    def dispatch(self, *args, **kwargs):
-        """ Permission check for this class """
-        return super(GroupDelete, self).dispatch(*args, **kwargs)
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)

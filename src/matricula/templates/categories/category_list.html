@@ -4,7 +4,7 @@
 	<div class="row">
 		<h1 class="text-center">Categorías</h1>
 		<div class="{% if perms.matricula.add_category %}col-md-6 col-sm-12 col-lg-8{% else %}col-md-8 col-md-offset-2 col-xs-12{% endif %}">
-			{% if object_list %}
+			{% if has_data %}
 				<div class="x_panel">
 					<div class="x_content">
 						<form method="GET" action="{% url 'categories'%}">
@@ -18,13 +18,13 @@
 						</form>
 					</div>
 				</div>
+			{% endif %}
+			{% if not perms.matricula.add_category %}
+				</div>
+				</div>
+			{% endif %}
 
-				{% if not perms.matricula.add_category %}
-						</div>
-						</div>
-					{% endif %}
-
-					<div class="row">
+			<div class="row">
 				{% for category in object_list %}
 					<div class="{% if perms.matricula.add_category %}col-md-6 col-lg-6 col-sm-12{% else %}col-md-6 col-lg-4 col-sm-12{% endif %}">
 
@@ -48,9 +48,13 @@
 							</div>
 						</div>
 					</div>
+				{% empty %}
+					<div class="alert alert-info" role="alert">
+					{% trans 'There are not categories available' %}
+					</div>
 				{% endfor %}
-						</div>
-				<div class="clearfix"></div>
+			</div>
+			<div class="clearfix"></div>
 				<div class="paginator_container text-center">
 					{% if is_paginated %}
 						<ul class="pagination">
@@ -74,15 +78,10 @@
 						</ul>
 					{% endif %}
 				</div>
-			{% else %}
-				<div class="alert alert-info" role="alert">
-					{% trans 'There are not categories available' %}
-				</div>
 				{% if not perms.matricula.add_category %}
 					</div>
 					</div>
 				{% endif %}
-			{% endif %}
 		{% if perms.matricula.add_category %}
 			</div>
 		{% endif %}

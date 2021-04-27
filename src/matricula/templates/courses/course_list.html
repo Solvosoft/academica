@@ -11,7 +11,7 @@
 		{% else %}
 			<div class="col-sm-12 col-xs-12 col-md-8 col-md-offset-2">
 		{% endif %}
-			{% if object_list %}
+			{% if has_data %}
 				<div class="x_panel">
 					<div class="x_content">
 						<form method="GET" action="{% url 'enrrolment_courses'%}">
@@ -27,10 +27,6 @@
 							</div>
 						</form>
 					</div>
-				</div>
-			{% else %}
-				<div class="alert alert-info" role="alert">
-					{% trans 'There are not courses available' %}
 				</div>
 			{% endif %}
 		</div>
@@ -94,6 +90,10 @@
 						</ul>
 					</div>
 				</div>
+			</div>
+		{% empty %}
+			<div class="alert alert-info" role="alert">
+				{% trans 'There are not courses available' %}
 			</div>
 		{% endfor %}
 		</div>
