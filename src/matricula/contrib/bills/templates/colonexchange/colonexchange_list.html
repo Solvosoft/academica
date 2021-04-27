@@ -4,7 +4,7 @@
 	<h1 class="text-center">Moneda de intercambio</h1>
 	<div class="row">
 		<div class="col-md-8 col-md-offset-1">
-			{% if object_list %}
+			{% if has_data %}
 				<div class="x_panel">
 					<div class="x_content">
 						<form method="GET">
@@ -22,10 +22,6 @@
 							</div>
 						</form>
 					</div>
-				</div>
-			{% else %}
-				<div class="alert alert-info" role="alert">
-					{% trans 'There are not currencies available' %}
 				</div>
 			{% endif %}
 		</div>
@@ -74,6 +70,10 @@
 					{{object.rates}}
 				</div>
 			</div>
+		</div>
+	{% empty %}
+		<div class="alert alert-info" role="alert">
+			{% trans 'There are not currencies available' %}
 		</div>
 	{% endfor %}
 	<div class="clearfix"></div>

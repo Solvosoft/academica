@@ -8,7 +8,7 @@
 		{% else %}
 			<div class="col-sm-12 col-xs-12 col-lg-12 col-md-12">
 		{% endif %}
-			{% if object_list %}
+			{% if has_data %}
 				<div class="x_panel">
 					<div class="x_content">
 						<form method="GET">
@@ -24,10 +24,6 @@
 							</div>
 						</form>
 					</div>
-				</div>
-			{% else %}
-				<div class="alert alert-info" role="alert">
-					{% trans 'There are not bills available' %}
 				</div>
 			{% endif %}
 		</div>
@@ -121,6 +117,10 @@
 					</div>
 				</div>
 			</div>
+		</div>
+	{% empty %}
+		<div class="alert alert-info" role="alert">
+			{% trans 'There are not bills available' %}
 		</div>
 	{% endfor %}
 	<div class="clearfix"></div>

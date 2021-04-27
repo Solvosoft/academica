@@ -23,10 +23,6 @@ class ColonExchangeList(ListView):
     model = SystemCurrency
     paginate_by = 30
 
-    def dispatch(self, *args, **kwargs):
-        """ Permission check for this class """
-        return super(ColonExchangeList, self).dispatch(*args, **kwargs)
-
     def get_queryset(self):
         queryset = super().get_queryset()
         self.form = ColonExchangeSearchForm(self.request.GET)
@@ -40,6 +36,7 @@ class ColonExchangeList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form_search'] = ColonExchangeSearchForm(self.request.GET)
+        context['has_data'] = SystemCurrency.objects.exists()
         return context
 
 
@@ -105,10 +102,6 @@ class BillList(ListView):
     model = Bill
     paginate_by = 30
 
-    def dispatch(self, *args, **kwargs):
-        """ Permission check for this class """
-        return super(BillList, self).dispatch(*args, **kwargs)
-
     def get_queryset(self):
         queryset = super().get_queryset()
         self.form = BillSearchForm(self.request.GET)
@@ -124,6 +117,7 @@ class BillList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form_search'] = BillSearchForm(self.request.GET)
+        context['has_data'] = Bill.objects.exists()
         return context
 
 @permission_required('bills.add_bill')
