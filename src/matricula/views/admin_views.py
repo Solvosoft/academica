@@ -320,10 +320,6 @@ class MenuItemDelete(DeleteView):
     success_url = "/enrrolment/menuitems"
     success_message = "Menú eliminado con éxito"
 
-    def dispatch(self, *args, **kwargs):
-        """ Permission check for this class """
-        return super(MenuItemDelete, self).dispatch(*args, **kwargs)
-
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
 
@@ -367,10 +363,6 @@ class PeriodList(ListView):
     model = Period
     paginate_by = 30
 
-    def dispatch(self, *args, **kwargs):
-        """ Permission check for this class """
-        return super(PeriodList, self).dispatch(*args, **kwargs)
-
     def get_queryset(self):
         queryset = super().get_queryset()
         self.form = PeriodSearchForm(self.request.GET)
@@ -384,6 +376,7 @@ class PeriodList(ListView):
         context = super().get_context_data(**kwargs)
         context['form'] = PeriodCreateForm()
         context['form_search'] = PeriodSearchForm(self.request.GET)
+        context['has_data'] = Period.objects.exists()
         return context
 
 
@@ -409,10 +402,6 @@ class PeriodDelete(DeleteView):
     model = Period
     success_url = "/enrrolment/periods"
     success_message = "Periodo eliminado con éxito"
-
-    def dispatch(self, *args, **kwargs):
-        """ Permission check for this class """
-        return super(PeriodDelete, self).dispatch(*args, **kwargs)
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
@@ -801,10 +790,6 @@ class EnrollList(ListView):
     model = Enroll
     paginate_by = 30
 
-    def dispatch(self, *args, **kwargs):
-        """ Permission check for this class """
-        return super(EnrollList, self).dispatch(*args, **kwargs)
-
     def get_queryset(self):
         queryset = super().get_queryset()
         self.form = EnrollSearchForm(self.request.GET)
@@ -820,6 +805,7 @@ class EnrollList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form_search'] = EnrollSearchForm(self.request.GET)
+        context['has_data'] = Enroll.objects.exists()
         return context
 
 
@@ -891,10 +877,6 @@ class EnrollDelete(DeleteView):
     success_url = "/enrrolment/enrolls"
     success_message = "Matrícula eliminada con éxito"
 
-    def dispatch(self, *args, **kwargs):
-        """ Permission check for this class """
-        return super(EnrollDelete, self).dispatch(*args, **kwargs)
-
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
 
@@ -908,10 +890,6 @@ class StudentList(ListView):
     template_name = "students/student_list.html"
     model = Student
     paginate_by = 30
-
-    def dispatch(self, *args, **kwargs):
-        """ Permission check for this class """
-        return super(StudentList, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -934,6 +912,7 @@ class StudentList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form_search'] = StudentSearchForm(self.request.GET)
+        context['has_data'] = Student.objects.exists()
         return context
 
 
@@ -1077,10 +1056,6 @@ class StudentDelete(DeleteView):
     model = Student
     success_url = "/enrrolment/students"
     success_message = "Estudiante eliminada con éxito"
-
-    def dispatch(self, *args, **kwargs):
-        """ Permission check for this class """
-        return super(StudentDelete, self).dispatch(*args, **kwargs)
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
