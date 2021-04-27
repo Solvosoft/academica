@@ -808,9 +808,9 @@ class CouponsSearchForm(GTForm, forms.Form):
         queryset=Student.objects.all(), widget=djgentelella.SelectMultiple,
         required=False, label="Estudiante")
 
-    course = forms.ModelMultipleChoiceField(
-        queryset=Course.objects.all(), widget=djgentelella.SelectMultiple,
-        required=False, label="Curso")
+    group = forms.ModelMultipleChoiceField(
+        queryset=Group.objects.all(), widget=djgentelella.SelectMultiple,
+        required=False, label="Grupo")
 
     is_used = forms.ChoiceField(
         choices=IS_USED_CHOICES, widget=djgentelella.Select,

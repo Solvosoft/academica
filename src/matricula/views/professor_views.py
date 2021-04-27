@@ -65,6 +65,7 @@ class ProfessorsList(ListView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['formsearch'] = ProfessorSearchForm(self.request.GET)
+        context['has_data'] = Professor.objects.exists()
         return context
 
     def get_queryset(self):

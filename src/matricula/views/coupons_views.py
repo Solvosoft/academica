@@ -97,19 +97,20 @@ def coupons_list(request):
 
     filters = {}
     coupons_list = Coupon.objects.all()
+    has_data = coupons_list.exists()
     request.session['redirect_coupons'] = False
     if request.method == "GET":
 
         form = CouponsSearchForm(request.GET)
         if form.is_valid():
 
-            course = form.cleaned_data['course']
+            group = form.cleaned_data['group']
             student = form.cleaned_data['student']
             is_used = form.cleaned_data['is_used']
             discount_percentage = form.cleaned_data['discount_percentage']
 
-            if course:
-                filters['course__in'] = course
+            if group:
+                filters['group__in'] = group
 
             if student:
                 filters['student__in'] = student
@@ -125,7 +126,8 @@ def coupons_list(request):
     else:
         form = CouponsSearchForm()
 
-    return render(request, "coupons/coupons_list.html", context={'form': form, 'coupons_list': coupons_list})
+    return render(request, "coupons/coupons_list.html", 
+            context={'form': form, 'coupons_list': coupons_list, 'has_data':has_data})
 
 
 @permission_required('matricula.add_coupon')

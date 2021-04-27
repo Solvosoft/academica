@@ -9,12 +9,12 @@
     <div class="row">
         <div class="{% if not perms.matricula.add_coupon %}col-md-10 col-md-offset-1 col-xs-12{% else %}col-md-10{% endif %}">
             <h1 class="text-center"> Listado de cupones</h1>
-            {% if coupons_list %}
+            {% if has_data %}
             <div class="x_panel">
                 <form method="GET">
                     <div class="row">
                         <div class="col-md-6">
-                            {% include 'field.html' with field=form.course  %}
+                            {% include 'field.html' with field=form.group  %}
                         </div>
                         <div class="col-md-6">
                             {% include 'field.html' with field=form.student  %}
@@ -35,10 +35,6 @@
                     </div>
                 </form>
             </div>
-            {% else %}
-                <div class="alert alert-info" role="alert">
-					{% trans 'There are not coupons available' %}
-				</div>
             {% endif %}
         </div>
         {% if perms.matricula.add_coupon %}
@@ -89,12 +85,15 @@
                                 </td>
                             </tr>
                             {% endfor %}
-
                         </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+            {% else %}
+                <div class="alert alert-info" role="alert">
+                    {% trans 'There are not coupons available' %}
+                </div>
             {% endif %}
         </div>
     </div>
