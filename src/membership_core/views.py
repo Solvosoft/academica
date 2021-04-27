@@ -61,9 +61,9 @@ class UserListView(ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
-
         context = super().get_context_data(**kwargs)
         context['formsearch'] = UserSearchForm(self.request.GET)
+        context['has_data'] = User.objects.exists()
         return context
 
 
