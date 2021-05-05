@@ -866,7 +866,7 @@ msgstr "El cupo esta completo, no fue posible inscribirte."
 
 #: src/matricula/views/Enrollments.py:60 src/matricula/views/Enrollments.py:114
 msgid "Enrollment success."
-msgstr "Matriciulado satisfactoriamente"
+msgstr "Matriculado satisfactoriamente"
 
 #: src/matricula/views/Enrollments.py:62 src/matricula/views/Enrollments.py:112
 #: src/matricula/views/Enrollments.py:180
@@ -885,7 +885,7 @@ msgstr "Pagar ahora"
 
 #: src/matricula/views/Enrollments.py:81
 msgid "Pre-enrollment success"
-msgstr "Pre-matriciulado satisfactoriamente"
+msgstr "Pre-matriculado satisfactoriamente"
 
 #: src/matricula/views/Enrollments.py:87 src/matricula/views/Enrollments.py:172
 msgid "We have some problems with your enroll, try again"
