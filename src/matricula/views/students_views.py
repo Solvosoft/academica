@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.contrib import messages
@@ -46,3 +47,7 @@ def update_enroll_status(request, pk, status):
 
        for enroll in enroll_list:
            Enroll.objects.filter(pk=int(enroll['pk']), group__pk=pk).update(course_status=status)
+
+@login_required
+def show_student_history(request):
+    return render(request, 'students/grates_history.html')
