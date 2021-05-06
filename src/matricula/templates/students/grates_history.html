@@ -36,7 +36,11 @@
 
                       </div>
                              <div class="w_right w_25">
-                              <span class="text-purple">{{obj.get_status}} </span>
+                              <span class="text-purple">{{obj.get_status}}
+                                {% if obj.pdf_certificate %}
+                                  <a href="{{obj.pdf_certificate.url}}" target="_blank"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
+                                  {%endif%}
+                              </span>
                              </div>
                       <div class="clearfix"></div>
 </div>
