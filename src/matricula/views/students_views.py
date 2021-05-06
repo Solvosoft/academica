@@ -1,11 +1,13 @@
 import json
 
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
-from django.contrib import messages
 from django.utils.translation import gettext as _
+from django.utils.decorators import method_decorator
 from django.db.models.expressions import Q
+from django.views.generic import ListView
 
 from django_ajax.decorators import ajax
 
@@ -48,6 +50,14 @@ def update_enroll_status(request, pk, status):
        for enroll in enroll_list:
            Enroll.objects.filter(pk=int(enroll['pk']), group__pk=pk).update(course_status=status)
 
-@login_required
-def show_student_history(request):
-    return render(request, 'students/grates_history.html')
+
+@method_decorator(login_required, name='dispatch')
+class GradeList(ListView):
+    template_name = "students/grates_history.html"
+    model = Enroll
+    paginate_by = 30
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(student=self.request.user.student, enroll_finished=True)
+        return queryset
