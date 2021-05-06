@@ -816,18 +816,19 @@ def create_enroll(request):
         form = EnrollCreateForm(request.POST)
         context['form'] = form
         if form.is_valid():
+            student = form.cleaned_data['student']
             schema = request.scheme + "://"
             template = 'email_preenroll_success'
             if form.cleaned_data['enroll_finished']:
                 template = 'email_enroll_success'
             send_email_from_template(
-                template, [request.user.email],
+                template, [student.user.email],
                 {
                     "url": request.build_absolute_uri(reverse('enrollment')),
                     "group": form.cleaned_data['group'],
                     'domain': schema + request.get_host(),
                 },
-                enqueued=True, user=None)
+                enqueued=False, user=None)
             form.save()
             messages.success(request, "Matrícula guardada con éxito")
             return HttpResponseRedirect(reverse('enrolls'))
@@ -846,17 +847,18 @@ def edit_enroll(request, pk=None):
             enroll_finished = instance.enroll_finished
             form = EnrollCreateForm(request.POST, instance=instance)
             if form.is_valid():
+                student = form.cleaned_data['student']
                 if not enroll_finished and form.cleaned_data['enroll_finished']:
                     schema = request.scheme + "://"
                     send_email_from_template(
-                        'email_enroll_success', [request.user.email],
+                        'email_enroll_success', [student.user.email],
                         {
                             "url": request.build_absolute_uri(reverse('enrollment')),
                             "group": form.cleaned_data['group'],
                             'domain': schema + request.get_host(),
                             'hours_to_pay': settings.HOURS_TO_PAY,
                         },
-                        enqueued=True, user=None)
+                        enqueued=False, user=None)
                 messages.success(request, "Matrícula guardada con éxito")
                 form.save()
                 return HttpResponseRedirect(reverse('enrolls'))
