@@ -6,29 +6,30 @@ Created on 18/10/2020
 '''
 import csv
 
-from django.conf import settings
-from django.views.generic import ListView, DeleteView, CreateView, UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
 
+from django.conf import settings
 from django.core.paginator import Paginator
 from django.db.models import Q, Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import get_template
 from django.urls import reverse
+from django.views.generic import ListView, DeleteView, CreateView, UpdateView,\
+    DetailView
+
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
-from django.views.generic.detail import DetailView
-
 from djgentelella.models import MenuItem as DJMenuItem
-
 from async_notifications.utils import send_email_from_template
+from chunked_upload.models import ChunkedUpload
+from xhtml2pdf import pisa
 
 from matricula.certificate_utils import build_pdf_certificate
 from matricula.forms import CategoryCreateForm, CategorySearchForm, CertificateSearchForm, \
@@ -42,8 +43,7 @@ from matricula.models import Category, Certificate, Course, Period, Group, \
     Enroll, Student, Page, Professor
 from matricula.tasks import task_generate_group_certificate
 from matricula.views.utils import get_expire_date
-
-from chunked_upload.models import ChunkedUpload
+from matricula.certificate_utils import link_callback
 
 
 @method_decorator(permission_required('matricula.view_category'), name='dispatch')
