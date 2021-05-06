@@ -161,22 +161,29 @@ def finish_enroll(request, pk):
         enroll_activate=True,
         enroll_finished=False)
     enroll.enroll_finished = True
-
-    try:
-        with transaction.atomic():
-            enroll.save()
-            schema = request.scheme+"://"
-            send_email_from_template(
-                'email_enroll_success', [request.user.email],
-                {
-                    "url": request.build_absolute_uri(reverse('enrollment')),
-                    "group": enroll.group,
-                    'domain': schema+request.get_host(),
-                    'hours_to_pay': settings.HOURS_TO_PAY,
-                },
-                enqueued=True, user=None)
-    except IntegrityError:
-        messages.error(request, _('We have some problems with your enroll, try again'))
-    messages.success(request, _('Enrollment success you have ')+str(settings.HOURS_TO_PAY)+_(' hours from now to complete the payment') +' <a class="btn btn-primary" href="'+ reverse('bills')+'">'+str(_('Pay Now')) +'</a>', 
-                        extra_tags='safe')
+    group = enroll.group
+    all_enrolls = Enroll.objects.filter(group=group, enroll_finished=True)
+    if all_enrolls.count() < group.maximum:
+        try:
+            with transaction.atomic():
+                enroll.save()
+                schema = request.scheme+"://"
+                send_email_from_template(
+                    'email_enroll_success', [request.user.email],
+                    {
+                        "url": request.build_absolute_uri(reverse('enrollment')),
+                        "group": enroll.group,
+                        'domain': schema+request.get_host(),
+                        'hours_to_pay': settings.HOURS_TO_PAY,
+                    },
+                    enqueued=True, user=None)
+        except IntegrityError:
+            messages.error(request, _('We have some problems with your enroll, try again'))
+        if enroll.group.is_paid or enroll.paid_excluded:
+            messages.success(request, str(_('Enrollment success you have '))+str(settings.HOURS_TO_PAY)+str(_(' hours from now to complete the payment')) +' <a class="btn btn-primary" href="'+ str(reverse('bills'))+'">'+str(_('Pay Now')) +'</a>', 
+                            extra_tags='safe')
+        else:
+            messages.success(request, str(_('Enrollment success.')))
+    else:
+        messages.error(request, str(_('The group is full and was not possible to enroll you.')))
     return redirect(reverse('enrollment'))
