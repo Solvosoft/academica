@@ -32,3 +32,17 @@ def group_state(state):
     if not state:
         result = 'Cerrado'
     return result
+
+@register.filter
+def as_number_percent(studentscore):
+    score = 0
+    try:
+        score = int(studentscore)
+    except ValueError as e:
+        score = 0
+    if score < 0:
+        score = 0
+    if score > 100:
+        score= 100
+
+    return score

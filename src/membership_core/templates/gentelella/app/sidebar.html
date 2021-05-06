@@ -18,9 +18,6 @@
                     </a>
                     <ul class="nav child_menu">
                         {% show_menu request.user.is_authenticated%}
-                        {% if request.user.student %}
-                            <li><a href="{% url 'student_history' %}">Notas</a></li>
-                        {% endif %}
                     </ul>
                 </li>
             </ul>

@@ -55,9 +55,12 @@ def update_enroll_status(request, pk, status):
 class GradeList(ListView):
     template_name = "students/grates_history.html"
     model = Enroll
-    paginate_by = 30
+    paginate_by = 300
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.filter(student=self.request.user.student, enroll_finished=True)
+        if hasattr(self.request.user, 'student'):
+            queryset = queryset.filter(student=self.request.user.student, enroll_finished=True)
+        else:
+            queryset = queryset.none()
         return queryset
