@@ -179,7 +179,7 @@ def finish_enroll(request, pk):
                     enqueued=True, user=None)
         except IntegrityError:
             messages.error(request, _('We have some problems with your enroll, try again'))
-        if enroll.group.is_paid or enroll.paid_excluded:
+        if enroll.group.is_paid:
             messages.success(request, str(_('Enrollment success you have '))+str(settings.HOURS_TO_PAY)+str(_(' hours from now to complete the payment')) +' <a class="btn btn-primary" href="'+ str(reverse('bills'))+'">'+str(_('Pay Now')) +'</a>', 
                             extra_tags='safe')
         else:
