@@ -36,10 +36,11 @@ from matricula.views.Auth import get_profile
 
 from .views.professor_views import AddUser, ProfessorsList, CreateProfessor, EditProfessor, edit_profile, delete_professor, \
     deactivate_professor
-from .views.students_views import qualify_students, update_enroll, update_enroll_status
+from .views.students_views import qualify_students, update_enroll, update_enroll_status, GradeList
 
 urlpatterns = [
     url('enrrolment/accounts/profile/?$', get_profile, name='profile'),
+    url('^student/history/$', GradeList.as_view(), name='student_history'),
     url('enrrolment/create_user$', create_user, name="create_user_academy"),
     url('enrrolment/add_student$', add_student, name="add_student"),
     url('enrrolment/login_user$', login_user, name="login_user"),

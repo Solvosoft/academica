@@ -1,0 +1,43 @@
+{% extends 'gentelella/base.html'%}
+{% load static %}
+{% block content %}
+    <h1 class="text-center">Histórico de cursos</h1>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="x_panel">
+                <div class="dashboard-widget-content">
+                    <ul class="list-unstyled timeline widget">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Curso</th>
+                                    <th>Beca completa</th>
+                                    <th>Pre-matrícula rechazada</th>
+                                    <th>Factura pagada</th>
+                                    <th>Nota</th>
+                                    <th>Aprobado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for obj in object_list %}
+                                    <tr>
+                                        <td>{{obj.group}}</td>
+                                        <td>{{obj.get_paid_excluded}}</td>
+                                        <td>{{obj.get_rejected}}</td>
+                                        <td>{{obj.get_paid}}</td>
+                                        <td>{{obj.course_score}}</td>
+                                        <td>{{obj.get_status}}</td>
+                                    </tr>		
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="6">No posee cursos matriculados</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
