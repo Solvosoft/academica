@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-15 11:55-0600\n"
+"POT-Creation-Date: 2021-05-06 11:11-0600\n"
 "PO-Revision-Date: 2020-01-09 08:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -266,7 +266,11 @@ msgstr "Use el siguiente enlace para reiniciar la contraseña en la plataforma"
 msgid "Here"
 msgstr "Aquí"
 
-#: src/membership_core/templates/gentelella/registration/password_reset_email.html:45
+#: src/membership_core/templates/gentelella/registration/password_reset_email.html:43
+msgid "Your username is:"
+msgstr "Tu nombre de usuarie es:"
+
+#: src/membership_core/templates/gentelella/registration/password_reset_email.html:46
 msgid ""
 "This email was send because someone try to reset your password, if you "
 "didn't request a reset, please delete this email and do not more actions."
@@ -291,11 +295,11 @@ msgstr "Le enviaremos un correo para verificar que usted es quien dice ser"
 msgid "Send email"
 msgstr "Enviar correo"
 
-#: src/membership_core/templates/groups/groups_list.html:71
+#: src/membership_core/templates/groups/groups_list.html:72
 msgid "There are not groups available"
 msgstr "No hay grupos registrados"
 
-#: src/membership_core/templates/user/user_list.html:32
+#: src/membership_core/templates/user/user_list.html:109
 msgid "There are not users available"
 msgstr "No hay usuarios registrados"
 
