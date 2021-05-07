@@ -190,7 +190,8 @@
 
 <p style="text-align: justify;text-justify: inter-word;">
 {% trans 'Please use' %}<a href="{{url}}?id={{student.pk}}&key={{student.key}}" > 
-	{% trans 'this link' %}</a> {% trans 'to recovery the password.' %}
+	{% trans 'this link' %}</a> {% trans 'to recovery the password.' %}<br/>
+    {% trans 'Your username is:' %} <b>{{user}}</b>
 </p><br/>
 <p style="text-align: justify;text-justify: inter-word;">
 {% blocktrans %}if your email service block links  then copy and paste this url in a new tab{% endblocktrans %}
