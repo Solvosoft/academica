@@ -1,16 +1,18 @@
 from django.core.management import BaseCommand
 from async_notifications.register import update_template_context
+from async_notifications.models import EmailTemplate, TemplateContext
 
 
 class Command(BaseCommand):
     help = "Update email templates in académica"
 
     def handle(self, *args, **options):
+        templates = [
+            'set_email_first_academy',
+        ]
+        EmailTemplate.objects.filter(code__in=templates).delete()
+        TemplateContext.objects.filter(code__in=templates).delete()
         update_template_context(
-        'email_enroll_removed', 'Lo sentimos, Tu MATRÍCULA ha sido eliminada por no realizarse el pago',
-        [('group'),("domain"),("hours_to_pay")], 'email_enroll_removed.html', as_template=True)
-
-        update_template_context(
-        'invoice_not_found', 'Correo de notificación de error en pago paypal',
-        [('student'), ('domain'), ('transaction_id'),("group"),('amount'), ('currency')],
-        'email_invoice_error.html', as_template=True)
+            'set_email_first_academy', 'Sólo un paso más para registrarte - UPo.',
+            [('url'), ('student'),("domain")], 'set_email_first.html',
+            as_template=True)

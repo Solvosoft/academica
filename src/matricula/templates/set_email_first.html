@@ -195,7 +195,8 @@
 <p>
   <span style="text-align: justify;text-justify: inter-word;">
     Para finalizar el proceso de registro es necesario <b>configurar su contraseña</b>, por eso por favor usa <a href="{{url}}?id={{student.pk}}&key={{student.key}}" > 
-	  {% trans 'this link' %}</a> para confirmar, o si tu servicio de correo electrónico bloquea los enlaces, entonces copia y pega esta url en una nueva pestaña.
+	  {% trans 'this link' %}</a> para confirmar, o si tu servicio de correo electrónico bloquea los enlaces, entonces copia y pega esta url en una nueva pestaña. <br/>
+    {% trans 'Your username is:' %} <b>{{student.user}}</b> 
     <br>
   </span>
   <br> {{url}}?id={{student.pk}}&key={{student.key}}</p> 
