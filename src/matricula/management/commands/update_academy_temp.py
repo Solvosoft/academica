@@ -10,6 +10,7 @@ class Command(BaseCommand):
         templates = [
             'set_email_first_academy',
             'email_recovery_academy',
+            'new_professor_created_academy',
         ]
 
         EmailTemplate.objects.filter(code__in=templates).delete()
@@ -24,3 +25,8 @@ class Command(BaseCommand):
         'email_recovery_academy', 'Correo de recuperación de contraseña',
         [('user'), ('student'), ('url'), ("domain")], 'email_recovery.html',
         as_template=True)
+
+        update_template_context(
+            'new_professor_created_academy', 'Correo de bienvenida',
+            [('user'), ('professor'), ('url'),("domain")],
+            'welcome_professor.html', as_template=True)
