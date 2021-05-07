@@ -264,7 +264,7 @@ class Enroll(models.Model):
         dev = _("Not qualified")
         if self.course_status != None:
             dev = "Aprobado"
-            if self.course_score == 'reproved':
+            if self.course_status == 'reproved':
                 dev = "Reprobado"
         return dev
 
