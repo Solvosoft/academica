@@ -11,6 +11,8 @@ class Command(BaseCommand):
             'set_email_first_academy',
             'email_recovery_academy',
             'new_professor_created_academy',
+            'coupon_code_notification',
+            'coupon_code_notification_updated',
         ]
 
         EmailTemplate.objects.filter(code__in=templates).delete()
@@ -30,3 +32,11 @@ class Command(BaseCommand):
             'new_professor_created_academy', 'Correo de bienvenida',
             [('user'), ('professor'), ('url'),("domain")],
             'welcome_professor.html', as_template=True)
+
+        update_template_context("coupon_code_notification",  "¡Felicidades! Has recibido un cupón de descuento para tu curso - UPO",
+                            [('coupon'),  ("domain")], 'coupons/coupon_code_notification.html',
+                            as_template=True)
+
+        update_template_context("coupon_code_notification_updated",  "¡Felicidades de nuevo! Tu cupón de descuento ha sido actualizado - UPO",
+                            [('coupon'),  ("domain")], 'coupons/coupon_code_notification_update.html',
+                            as_template=True)
