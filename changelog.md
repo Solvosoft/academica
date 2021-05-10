@@ -1,5 +1,9 @@
 # Change log file
 
+10/05/2021
+ - Update migrations
+    `python manage.py migrate`
+
 19/04/2021
 
 ### Template update
