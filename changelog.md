@@ -2,6 +2,7 @@
 
 10/05/2021
  - Update migrations
+    `python manange update_prod_temp`
     `python manage.py migrate`
 
 19/04/2021
