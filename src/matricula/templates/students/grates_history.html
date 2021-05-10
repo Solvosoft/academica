@@ -7,58 +7,25 @@
             <div class="x_panel">
                 <div class="dashboard-widget-content">
                     <ul class="list-unstyled timeline widget">
-
-                                {% for obj in object_list %}
-                                    <li> <span></span></li>
-
-                        <div class="block">
-                          <div class="block_content">
-                            <h2 class="title">
-                                              {{obj.group.course}} Grupo: {{obj.group}}  {{obj.group.schedule}}
-                            </h2>
-                            <div class="byline">
-                              <span>Facitadores: {% for fac in obj.group.professors.all %} {{ fac }} {% if not forloop.last %} / {% endif %} {%endfor%}</span>
+                        {% for obj in object_list %}
+                          <li> <span></span></li>
+                          <div class="block">
+                            <div class="block_content">
+                              <h2 class="title">
+                                {{obj.group.course}} Grupo: {{obj.group}}  {{obj.group.schedule}}
+                              </h2>
+                              <p class="excerpt">
+                                <span class="text-purple">{{obj.get_status}}
+                                  {% if obj.pdf_certificate %}
+                                    <a href="{{obj.pdf_certificate.url}}" target="_blank"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
+                                    {% endif %}
+                                </span>
+                              </p>
                             </div>
-                            <p class="excerpt">
-<div class="widget_summary">
-                      <div class="w_left" style="margin-right: 1em;">
-                        <span>0</span>
-                      </div>
-                      <div class="w_center w_55">
-                        <div class="progress">
-                          <div class="progress-bar bg-green" role="progressbar" aria-valuenow="{{obj.course_score|as_number_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{obj.course_score|as_number_percent }}%;">
-                            <span class="sr-only">{{obj.course_score|as_number_percent}}</span>
                           </div>
-                        </div>
-                      </div>
-                      <div class="w_right w_25">
-                        <span>{{obj.course_score|floatformat}} de 100</span>
-
-                      </div>
-                             <div class="w_right w_25">
-                              <span class="text-purple">{{obj.get_status}}
-                                {% if obj.pdf_certificate %}
-                                  <a href="{{obj.pdf_certificate.url}}" target="_blank"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
-                                  {%endif%}
-                              </span>
-                             </div>
-                      <div class="clearfix"></div>
-</div>
-
-                            </p>
-                          </div>
-                        </div>
-
-
-
-
-
-
-                                {% empty %}
-                                    <li>No posee cursos matriculados</li>
-
-                                {% endfor %}
-
+                        {% empty %}
+                          <li>No posee cursos matriculades</li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>

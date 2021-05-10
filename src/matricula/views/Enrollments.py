@@ -55,7 +55,7 @@ def enrollme(request, pk):
                             'domain': schema+request.get_host(),
                             'hours_to_pay': settings.HOURS_TO_PAY,
                         },
-                        enqueued=True, user=None)
+                        enqueued=False, user=None)
                     if not group.is_paid:
                         message = _("Enrollment success.")
                     else:
@@ -78,7 +78,7 @@ def enrollme(request, pk):
                             "group": group,
                             'domain': schema+request.get_host(),
                         },
-                        enqueued=True, user=None)
+                        enqueued=False, user=None)
                     return { 
                         "inner-fragments": {
                             "#count_" + str(group.pk): group.enroll_set.count(),
@@ -107,7 +107,7 @@ def enrollme(request, pk):
                             'domain': schema+request.get_host(),
                             'hours_to_pay': settings.HOURS_TO_PAY,
                         },
-                        enqueued=True, user=None)
+                        enqueued=False, user=None)
                     if enroll.group.is_paid:
                         message = _('Enrollment success you have ')+str(settings.HOURS_TO_PAY)+_(' hours from now to complete the payment') +' <a class="btn btn-success" href="'+ reverse('bills')+'">'+str(_('Pay Now')) +'</a>'
                     else:
@@ -176,7 +176,7 @@ def finish_enroll(request, pk):
                         'domain': schema+request.get_host(),
                         'hours_to_pay': settings.HOURS_TO_PAY,
                     },
-                    enqueued=True, user=None)
+                    enqueued=False, user=None)
         except IntegrityError:
             messages.error(request, _('We have some problems with your enroll, try again'))
         if enroll.group.is_paid:
