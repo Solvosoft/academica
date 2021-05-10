@@ -20,11 +20,11 @@ msgstr ""
 
 #: src/matricula/admin.py:40
 msgid "Active user for enrollment"
-msgstr "Activar usuaria para matricular"
+msgstr "Activar usuarie para inscribir"
 
 #: src/matricula/admin.py:44
 msgid "Active user for pre-enrollment"
-msgstr "Activar usuaria para prematricula"
+msgstr "Activar usuarie para inscripción"
 
 #: src/matricula/admin.py:70
 msgid "Student list don't exist yet"
@@ -36,11 +36,11 @@ msgstr "Lista de estudiantes"
 
 #: src/matricula/admin.py:84
 msgid "# student pre-enroll"
-msgstr "# estudiante prematriculados"
+msgstr "# estudiantes prematriculades"
 
 #: src/matricula/admin.py:93
 msgid "# student enroll"
-msgstr "# estudiantes matriculados"
+msgstr "# estudiantes matriculades"
 
 #: src/matricula/admin.py:97
 msgid "Total cash"
@@ -81,7 +81,7 @@ msgstr "Este grupo fue cerrado"
 
 #: src/matricula/forms.py:29
 msgid "Your username"
-msgstr "Su nombre de usuaria"
+msgstr "Su nombre de usuarie"
 
 #: src/matricula/forms.py:30
 msgid "Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only."
@@ -92,7 +92,7 @@ msgid ""
 "Enter a valid username. This value may contain only letters, numbers and @/./"
 "+/-/_ characters."
 msgstr ""
-"Ingrese un nombre de usuaria válido. Este valor debe contener solo letras, "
+"Ingrese un nombre de usuarie válide. Este valor debe contener solo letras, "
 "números y @/./+/-/_ ."
 
 #: src/matricula/forms.py:39
@@ -119,7 +119,7 @@ msgstr ""
 
 #: src/matricula/forms.py:68
 msgid "User name exist "
-msgstr "El nombre de usuaria existe "
+msgstr "El nombre de usuarie existe "
 
 #: src/matricula/forms.py:87 src/matricula/forms.py:640
 #: src/matricula/forms.py:672
@@ -133,7 +133,7 @@ msgstr "Este correo ya está registrado"
 
 #: src/matricula/forms.py:138
 msgid "username"
-msgstr "Nombre de usuaria"
+msgstr "Nombre de usuarie"
 
 #: src/matricula/forms.py:164 src/matricula/forms.py:185
 #: src/matricula/models.py:296 src/matricula/models.py:335
@@ -229,7 +229,7 @@ msgstr "Descripción"
 
 #: src/matricula/models.py:77
 msgid "Professor"
-msgstr "Facilitadora"
+msgstr "Facilitadore"
 
 #: src/matricula/models.py:78 src/matricula/models.py:191
 #: src/matricula/templates/professor/professors_list.html:4
@@ -348,11 +348,11 @@ msgstr "Grupos"
 
 #: src/matricula/models.py:225
 msgid "Approved"
-msgstr "Aprobado"
+msgstr "Aprobade"
 
 #: src/matricula/models.py:226
 msgid "Reproved"
-msgstr "Reprobado"
+msgstr "Reprobade"
 
 #: src/matricula/models.py:230
 msgid "Is enroll finished?"
@@ -427,7 +427,7 @@ msgstr "Orden en el menú"
 
 #: src/matricula/models.py:307
 msgid "Page parent"
-msgstr "Página padre"
+msgstr "Página base"
 
 #: src/matricula/models.py:310
 msgid "Publicated"
@@ -532,7 +532,7 @@ msgstr "para recuperar contraseña."
 
 #: src/matricula/templates/email_welcome.html:6
 msgid "Welcome to Academica"
-msgstr "Bienvenido a Académica"
+msgstr "Bienvenide a Académica"
 
 #: src/matricula/templates/enroll.html:4
 msgid "Pre-enroll courses"
@@ -599,7 +599,7 @@ msgstr "Eliminar matrícula"
 #: src/matricula/templates/enrolls/enroll_list.html:79
 #: src/matricula/templates/recover_password.html:12
 msgid "User"
-msgstr "Usuaria"
+msgstr "Usuarie"
 
 #: src/matricula/templates/enrolls/enroll_list.html:111
 msgid "There are not enrollments available"
@@ -620,7 +620,7 @@ msgstr "Ingresar"
 
 #: src/matricula/templates/matricula/student_form.html:14
 msgid "User profile"
-msgstr "Perfil de usuaria"
+msgstr "Perfil de usuarie"
 
 #: src/matricula/templates/matricula/student_form.html:28
 msgid "Inicio"
@@ -675,15 +675,15 @@ msgstr "No hay periodos registrados"
 #: src/matricula/templates/professor/create.html:9
 #: src/matricula/templates/professor/professors_list.html:35
 msgid "New Professor"
-msgstr "Nueva facilitadora"
+msgstr "Nueva facilitadore"
 
 #: src/matricula/templates/professor/professors_list.html:48
 msgid ""
 "Are you sure you want to delete this professor? It is recommended that it be "
 "deactivated instead."
 msgstr ""
-"¿Esta segura que desea eliminar este facilitadora? Es recomendable que en "
-"lugar de eliminar esta facilitadora, la desactive."
+"¿Realmente quiere eliminar este facilitadore? Es recomendable que en "
+"lugar de eliminar este facilitadore, le desactive."
 
 #: src/matricula/templates/professor/professors_list.html:51
 #: src/matricula/templates/student_add.html:23
@@ -743,12 +743,12 @@ msgid ""
 "You are about to create a student to you validated user, you wil be able to "
 "access to the courses platform with it."
 msgstr ""
-"Estas a punto de crear un estudiante para tu usuario ya validado, con él "
-"podrás acceder a la plataforma de cursos"
+"Estas a punto de crear un estudiante para tu usuarie ya validade, con él "
+"puedes acceder a la plataforma de cursos"
 
 #: src/matricula/templates/student_create.html:4
 msgid "New user"
-msgstr "Nueva usuaria"
+msgstr "Nueva usuarie"
 
 #: src/matricula/templates/student_create.html:8
 msgid "Your data"
@@ -793,8 +793,8 @@ msgstr "Prematriculado pero no matriculado"
 #: src/matricula/templates/student_login.html:15
 msgid "Your username and password didn't match. Please try again."
 msgstr ""
-"Su nombre de usuaria y contraseña no coinciden. Por favor vuelva a "
-"intentarlo."
+"Su nombre de usuarie y contraseña no coinciden. Por favor vuelva a "
+"intentarle."
 
 #: src/matricula/templates/student_login.html:20
 msgid ""
@@ -810,7 +810,7 @@ msgstr "Por favor Inicie sesión para ver esta página."
 
 #: src/matricula/templates/student_login.html:29
 msgid "Username"
-msgstr "Nombre de usuaria"
+msgstr "Nombre de usuarie"
 
 #: src/matricula/templates/student_login.html:35
 msgid "Log in"
@@ -822,11 +822,11 @@ msgstr "¿Olvidó su contraseña?"
 
 #: src/matricula/templates/students/student_list.html:127
 msgid "There are not students available"
-msgstr "No hay estudiantes registrados"
+msgstr "No hay estudiantes registrades"
 
 #: src/matricula/templatetags/utils.py:18
 msgid "Administrator"
-msgstr "Administradora"
+msgstr "Administradore"
 
 #: src/matricula/views/Auth.py:61 src/matricula/views/Auth.py:90
 msgid "Thank you, We will send you an email soon"
@@ -834,7 +834,7 @@ msgstr "Gracias, pronto le enviaremos un correo de confirmación"
 
 #: src/matricula/views/Auth.py:67 src/matricula/views/Auth.py:289
 msgid "Your user have not permission for see this page"
-msgstr "Su usuaria no tiene permiso para ver esta página"
+msgstr "Su usuarie no tiene permiso para ver esta página"
 
 #: src/matricula/views/Auth.py:106 src/matricula/views/Auth.py:120
 msgid "Key not found"
@@ -850,7 +850,7 @@ msgstr "Usted recibirá pronto un correo, revise su bandeja de entrada"
 
 #: src/matricula/views/Auth.py:205
 msgid "User not found"
-msgstr "No existe usuaria"
+msgstr "No existe usuarie"
 
 #: src/matricula/views/Auth.py:276
 msgid "We have some validations errors"
@@ -867,12 +867,12 @@ msgstr "El cupo esta completo, no fue posible inscribirte."
 #: src/matricula/views/Enrollments.py:60 src/matricula/views/Enrollments.py:114
 #: src/matricula/views/Enrollments.py:186
 msgid "Enrollment success."
-msgstr "Matriculado satisfactoriamente"
+msgstr "Matriculade satisfactoriamente"
 
 #: src/matricula/views/Enrollments.py:62 src/matricula/views/Enrollments.py:112
 #: src/matricula/views/Enrollments.py:183
 msgid "Enrollment success you have "
-msgstr "Matriculado satisfactoriamente. A partir de este momento tiene "
+msgstr "Matriculade satisfactoriamente. A partir de este momento tiene "
 
 #: src/matricula/views/Enrollments.py:62 src/matricula/views/Enrollments.py:112
 #: src/matricula/views/Enrollments.py:183
@@ -886,7 +886,7 @@ msgstr "Pagar ahora"
 
 #: src/matricula/views/Enrollments.py:85
 msgid "Pre-enrollment success"
-msgstr "Pre-matriculado satisfactoriamente"
+msgstr "Pre-matriculade satisfactoriamente"
 
 #: src/matricula/views/Enrollments.py:91 src/matricula/views/Enrollments.py:181
 msgid "We have some problems with your enroll, try again"
@@ -894,7 +894,7 @@ msgstr "Tenemos problemas con la matrícula, trate de nuevo"
 
 #: src/matricula/views/Enrollments.py:116
 msgid "You are already enrolled"
-msgstr "Usted ya está matriculado"
+msgstr "Usted ya está matriculade"
 
 #: src/matricula/views/Enrollments.py:118
 msgid ""
@@ -907,11 +907,11 @@ msgstr ""
 #: src/matricula/views/Enrollments.py:120
 #: src/matricula/views/Enrollments.py:125
 msgid "Sorry your pre-enroll was rejected"
-msgstr "Lo sentimos pero su pre matrícula fue rechazada."
+msgstr "Lo sentimos pero su pre matrícula fue rechazade."
 
 #: src/matricula/views/Enrollments.py:123
 msgid "You are already pre-enrolled"
-msgstr "Usted ya está pre-matriculado"
+msgstr "Usted ya está pre-matriculade"
 
 #: src/matricula/views/admin_views.py:1069
 msgid "Student role removed successfuly"
@@ -919,4 +919,4 @@ msgstr "Rol de estudiante eliminado con éxito"
 
 #: src/matricula/views/students_views.py:27
 msgid "The professor associated with this user is not active"
-msgstr "La facilitadora asociada con esta usuaria no esta activa"
+msgstr "La facilitadore asociade con esta usuarie no esta active"

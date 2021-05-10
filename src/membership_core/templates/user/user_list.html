@@ -1,7 +1,7 @@
 {% extends 'gentelella/base.html' %}
 {% load membership_code static i18n %}
 {% block content %}
-    <h1 class="text-center">Usuarias</h1>
+    <h1 class="text-center">Usuaries</h1>
     <div class="search_options">
         <div class="row">
             {% if not perms.auth.add_user %}
@@ -32,7 +32,7 @@
             {% if perms.auth.add_user %}
                 <div class="col-md-2">
                     <div class="buttons">
-                        <a href="{% url 'create_user' %}" class="btn btn-primary">Nueva usuaria</a>
+                        <a href="{% url 'create_user' %}" class="btn btn-primary">Crear usuarie</a>
                     </div>
                 </div>
             {% endif %}
@@ -45,7 +45,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Al eliminar esta usuaria todos sus elementos relacionados serán eliminados también. Es recomendable que en lugar de eliminar esta usuaria, la desactive.</h4>
+                        <h4 class="modal-title">Al eliminar este usuarie todes sus elementos relacionados serán eliminades también. Es recomendable que en lugar de eliminar este usuarie, le desactive.</h4>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
@@ -65,10 +65,10 @@
                     <div class="x_title">
                         <ul class="nav navbar-right panel_toolbox">
                             {% if perms.auth.change_user %}
-                                <li><a title="Editar usuaria" href="{% url 'edit_user' pk=user.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
+                                <li><a title="Editar usuarie" href="{% url 'edit_user' pk=user.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
                             {% endif %}
                             {% if perms.auth.delete_user %}
-                                <li><a title="Eliminar usuaria" data-url="{% url 'delete_user' pk=user.pk %}" data-href="{% url 'deactivate_user' pk=user.pk %}" onclick="deleteuser(this)"><i class="fa fa-close"></i></a></li>
+                                <li><a title="Eliminar usuarie" data-url="{% url 'delete_user' pk=user.pk %}" data-href="{% url 'deactivate_user' pk=user.pk %}" onclick="deleteuser(this)"><i class="fa fa-close"></i></a></li>
                             {% endif %}
                         </ul>
                         <div class="clearfix"></div>
@@ -78,7 +78,7 @@
                         <div style="text-align: left; margin-bottom: 15px;">
                             <h4>Información:</h4>
                         </div>
-                        <div>Nombre de usuaria: {% if user.username %} {{user.username}} {% else %} Sin especificar {% endif %}</div>
+                        <div>Nombre de usuarie: {% if user.username %} {{user.username}} {% else %} Sin especificar {% endif %}</div>
                         <div>Correo: {% if user.email %} {{user.email}} {% else %} Sin especificar {% endif %}</div>
                         <div>Estado: {% if user.is_active%} Activo {% else %} Inactivo {% endif %}</div>
                         {% if user.groups.all.count == 0 %}

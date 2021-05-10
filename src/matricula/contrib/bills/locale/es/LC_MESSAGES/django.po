@@ -62,7 +62,7 @@ msgstr "Pago"
 #: src/matricula/contrib/bills/signals.py:45
 #, python-format
 msgid "Enroll in %s"
-msgstr "Matriculado en %s"
+msgstr "Matriculade en %s"
 
 #: src/matricula/contrib/bills/templates/bills.html:22
 msgid ""
@@ -82,7 +82,7 @@ msgid ""
 "to see most recent changes"
 msgstr ""
 "Los pagos realizados en Paypal toman de 2 a 3 minutos en ser reflejados, "
-"actualiza la página para ver los cambios más recientes."
+"actualice la página para ver los cambios más recientes."
 
 #: src/matricula/contrib/bills/templates/bills.html:29
 msgid "Refresh"
@@ -129,7 +129,7 @@ msgid ""
 "Are you sure you want to delete this bill? It is possible that there are "
 "coupons related to it and they will be removed as well."
 msgstr ""
-"¿Está segura que desea eliminar este pago? Podrían habercupones relacionados "
+"¿Realmente desea eliminar este pago? Podrían haber cupones relacionados "
 "al mismo que también serían eliminados."
 
 #: src/matricula/contrib/bills/templates/bills/bill_list.html:47

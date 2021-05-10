@@ -101,7 +101,7 @@
                             <th class="column-title">Nombre Completo</th>
                             <th class="column-title">Fecha de inscripción</th>
                             <th class="column-title">Para matricular</th>
-                            <th class="column-title">Matriculado</th>
+                            <th class="column-title">Matriculade</th>
                             <th class="column-title">Factura Generada</th>
                             <th class="column-title">Pagado</th>
                             <th class="column-title">Certificado</th>
@@ -127,11 +127,11 @@
                                     {% else %}
                                         {% if enroll.enroll_finished %}
                                             {% if enroll.course_status == "reproved" %}
-                                                Estudiante reprobado.
+                                                Estudiante reprobade.
                                             {% elif enroll.course_status == "approved" %}
-                                                Estudiante aprobado, debe generar el certificado.
+                                                Estudiante aprobade, debe generar el certificado.
                                             {% else %}
-                                                Estudiante no calificado.
+                                                Estudiante no calificade.
                                             {% endif %}
                                         {% else %}
                                             Matrícula no finalizada.
@@ -183,8 +183,8 @@
                                     aria-haspopup="true" aria-expanded="false">PDF
                             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{% url 'export_enrolled_group' group.pk %}?finished=1">Inscritos</a>
-                                <a class="dropdown-item" href="{% url 'export_enrolled_group' group.pk %}">Pre-inscritos</a>
+                                <a class="dropdown-item" href="{% url 'export_enrolled_group' group.pk %}?finished=1">Matriculades</a>
+                                <a class="dropdown-item" href="{% url 'export_enrolled_group' group.pk %}">Pre-matriculades</a>
                             </div>
                             <div class="clearfix"></div>
                         </div>

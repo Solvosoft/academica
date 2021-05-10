@@ -65,10 +65,10 @@
                     <div class="x_title">
                         <ul class="nav navbar-right panel_toolbox">
                             {% if perms.matricula.change_professor %}
-                                <li><a title="Editar facilitadora" href="{% url 'edit_professor' pk=professor.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
+                                <li><a title="Editar facilitadore" href="{% url 'edit_professor' pk=professor.pk %}" class="edit-link"><i class="fa fa-edit"></i></a></li>
                             {% endif %}
                             {% if perms.matricula.delete_professor %}
-                                <li><a title="Eliminar facilitadora" data-url="{% url 'delete_professor' pk=professor.pk %}" data-href="{% url 'deactivate_professor' pk=professor.pk %}" onclick="deleteprofessor(this)"><i class="fa fa-close"></i></a></li>
+                                <li><a title="Eliminar facilitadore" data-url="{% url 'delete_professor' pk=professor.pk %}" data-href="{% url 'deactivate_professor' pk=professor.pk %}" onclick="deleteprofessor(this)"><i class="fa fa-close"></i></a></li>
                             {% endif %}
                         </ul>
                         <div class="clearfix"></div>
@@ -78,10 +78,10 @@
                         <div style="text-align: left; margin-bottom: 15px;">
                             <h4>Información:</h4>
                         </div>
-                        <div><strong>Usuaria: </strong>{{professor.user.username}}</div>
-                        <div><strong>Correo de usuaria: </strong> {% if professor.user.email %} {{professor.user.email}} {% else %} Sin especificar {% endif %}</div>
+                        <div><strong>Usuarie: </strong>{{professor.user.username}}</div>
+                        <div><strong>Correo de usuarie: </strong> {% if professor.user.email %} {{professor.user.email}} {% else %} Sin especificar {% endif %}</div>
                         <div><strong>Correo para estudiantes: </strong> {% if professor.email %} {{professor.email}} {% else %} Sin especificar {% endif %}</div>
-                        <div><strong>Estado: </strong> {% if professor.active%} Activa {% else %} Inactiva {% endif %}</div>
+                        <div><strong>Estado: </strong> {% if professor.active%} Active {% else %} Inactive {% endif %}</div>
                         <div><strong>Descripción: </strong><p style="text-align: justify; text-justify: inter-word;">{% if professor.description %} {{professor.description|truncatechars:165}} {% else %} Sin especificar {% endif %} </p></div>
                        <div class="clearfix"></div>
                     </div>

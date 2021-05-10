@@ -202,7 +202,7 @@ def create_course(request):
 class CourseDelete(DeleteView):
     model = Course
     success_url = "/enrrolment/courses/"
-    success_message = "Curso eliminada con éxito"
+    success_message = "Curso eliminado con éxito"
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
@@ -537,7 +537,7 @@ def pre_enroll_group(request, pk=None):
                                 'domain': schema + request.get_host(),
                             },
                             enqueued=False, user=None)
-                        messages.success(request, "Estudiantes activados para matrícula.")
+                        messages.success(request, "Estudiantes activades para matrícule.")
                     elif action == "Rechazar prematricula":
                         enrolls = Enroll.objects.filter(pk__in=form.cleaned_data['students'], group=group)
                         emails = []
@@ -554,7 +554,7 @@ def pre_enroll_group(request, pk=None):
                                 'domain': schema + request.get_host(),
                             },
                             enqueued=False, user=None)
-                        messages.success(request, "Estudiantes notificados con éxito")
+                        messages.success(request, "Estudiantes notificades con éxito")
                     return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
             messages.error(request, "Error al realizar la acción")
             return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
@@ -947,7 +947,7 @@ def create_student(request):
                     },
                     enqueued=False,
                     user=None)
-                messages.success(request, "Estudiante guardada con éxito")
+                messages.success(request, "Estudiante guardade con éxito")
                 return HttpResponseRedirect(reverse('students'))
             else:
                 messages.error(request, "Error al guardar Estudiante")
@@ -983,7 +983,7 @@ def create_student(request):
                     },
                     enqueued=False,
                     user=None)
-                messages.success(request, "Estudiante guardada con éxito")
+                messages.success(request, "Estudiante guardade con éxito")
                 return HttpResponseRedirect(reverse('students'))
             else:
                 context['form_user'] = StudentAddForm()
@@ -1001,7 +1001,7 @@ def edit_student(request, pk=None):
             instance = User.objects.get(pk=pk)
             form = StudentAdminEditForm(request.POST, instance=instance)
             if form.is_valid():
-                messages.success(request, "Estudiante guardada con éxito")
+                messages.success(request, "Estudiante guardade con éxito")
                 form.save()
                 instance.student.organization = form.cleaned_data['organization']
                 instance.student.country = form.cleaned_data['country']
@@ -1101,7 +1101,7 @@ def recovery_pass_student(request, pk=None):
             messages.success(
                 request, "Se ha enviado correo de recuperación de contraseña.")
         else:
-            messages.error(request, "El usuario no fue encontrado")
+            messages.error(request, "El usuarie no fue encontrade")
     return HttpResponseRedirect(reverse('students'))
 
 
@@ -1362,7 +1362,7 @@ class CertificateCreate(SuccessMessageMixin, CreateView):
 class CertificateDelete(DeleteView):
     model = Certificate
     success_url = "/enrrolment/certificates/"
-    success_message = "Certificado eliminada con éxito"
+    success_message = "Certificado eliminado con éxito"
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)

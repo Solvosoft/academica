@@ -48,7 +48,7 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title">¿Está segura que desea eliminar este grupo?</h4>
+						<h4 class="modal-title">¿Realmente desea eliminar este grupo?</h4>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
@@ -100,7 +100,7 @@
 						<div class="col-md-6 col-sm-6 col-xs-6">
 							<ul class="list-unstyled user_data">
 								<li>
-									<strong>Inscritos: </strong>
+									<strong>Matriculades: </strong>
 									{% if object.is_paid %}
 										{{object.enrolled_students_paid}}
 									{% else %}
@@ -137,7 +137,7 @@
 										{% endif %}  <a title="Exportar estudiantes a moodle" href="{% url 'export_group' object.pk%}"><i class="fa fa-file-text-o"></i></a></li>
 								{% endif %}
 								{% if perms.matricula.can_view_pre_enroll_group %}
-									<li><strong>Estudiantes pre-matriculados: </strong><a title="Lista de estudiantes pre-matriculados" href="{% url 'pre_enroll_group' object.pk%}"><i class="fa fa-filter"></i></a></li>
+									<li><strong>Estudiantes pre-matriculades: </strong><a title="Lista de estudiantes pre-matriculados" href="{% url 'pre_enroll_group' object.pk%}"><i class="fa fa-filter"></i></a></li>
 								{% endif %}
 							</ul>
 						</div>

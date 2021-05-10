@@ -498,7 +498,7 @@ class EnrollCreateForm(forms.ModelForm, GTForm):
 
 class StudentSearchForm(GTForm, forms.Form):
     IS_ACTIVE = (
-        (None, "Todos"),
+        (None, "Todes"),
         (True, "Sí"),
         (False, "No")
     )
@@ -518,7 +518,7 @@ class StudentSearchForm(GTForm, forms.Form):
 
 class StudentAdminEditForm(GTForm, forms.ModelForm):
     username = forms.CharField(
-        label="Nombre de usuaria", widget=djgentelella.TextInput, required=True,
+        label="Nombre de usuarie", widget=djgentelella.TextInput, required=True,
         disabled=True
     )
     first_name = forms.CharField(
@@ -555,7 +555,7 @@ class StudentAdminEditForm(GTForm, forms.ModelForm):
 
 class StudentAdminCreateForm(GTForm, forms.ModelForm):
     username = forms.CharField(
-        label="Nombre de usuaria", widget=djgentelella.TextInput, required=True)
+        label="Nombre de usuarie", widget=djgentelella.TextInput, required=True)
     first_name = forms.CharField(
         label="Nombres", widget=djgentelella.TextInput, required=True)
     last_name = forms.CharField(
@@ -735,14 +735,14 @@ class QualifyStudentForm(GTForm, forms.ModelForm):
 
 class ProfessorSearchForm(GTForm, forms.Form):
     PROFESSOR_STATES = (
-        (None, "Todas"),
-        (True, "Activas"),
-        (False, "Inactivas"),
+        (None, "Todes"),
+        (True, "Actives"),
+        (False, "Inactives"),
     )
 
     professor = forms.ModelMultipleChoiceField(
         queryset=Professor.objects.all(), widget=djgentelella.SelectMultiple,
-        required=False, label="Facilitadora")
+        required=False, label="Facilitadore")
 
     status = forms.ChoiceField(
         choices=PROFESSOR_STATES, widget=djgentelella.Select, required=False, label="Estado")

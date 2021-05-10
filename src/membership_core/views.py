@@ -93,7 +93,7 @@ class AddUser(CreateView):
         user.groups.add(*groups)
         user.save()
         self.send_email(user)
-        messages.success(self.request, "Usuaria registrada con éxito")
+        messages.success(self.request, "Usuarie registrade exitosamente")
         return HttpResponseRedirect(self.success_url)
 
 
@@ -118,7 +118,7 @@ class EditUser(UpdateView):
         groups = Group.objects.filter(fakegroup__in=fakegroups)
         user.groups.clear()
         user.groups.add(*groups)
-        messages.success(self.request, "Usuaria actualizada con éxito")
+        messages.success(self.request, "Usuarie actualizade exitosamente")
         return super().form_valid(form)
 
 
@@ -128,7 +128,7 @@ def delete_user(request, pk):
 
     if user:
         user.delete()
-        messages.success(request, "Usuaria eliminada con éxito")
+        messages.success(request, "Usuarie eliminade exitosamente")
         return redirect('user_list')
 
 
@@ -138,7 +138,7 @@ def deactivate_user(request, pk):
     if user:
         user.is_active = False
         user.save()
-        messages.success(request, "Usuaria desactivada con éxito")
+        messages.success(request, "Usuarie desactivade exitosamente")
         return redirect('user_list')
 
 

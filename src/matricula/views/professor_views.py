@@ -97,7 +97,7 @@ class CreateProfessor(CreateView):
             instance.user.user_permissions.add(*professor_group.permissions.all())
             instance.save()
             self.send_email(instance.user)
-            messages.success(self.request, "Facilitadora registrada exitosamente.")
+            messages.success(self.request, "Facilitadore registrade exitosamente.")
             return redirect(reverse('professors_list'))
         else:
             self.object = None
@@ -148,7 +148,7 @@ class EditProfessor(UpdateView):
             professor.save()
             if not checking_user(professor.user):
                 change_state_user(professor)
-            messages.success(self.request, "Facilitadora actualizada exitosamente.")
+            messages.success(self.request, "Facilitadore actualizade exitosamente.")
             return redirect(reverse('professors_list'))
         else: 
             context['form'] = form
@@ -176,7 +176,7 @@ def delete_professor(request, pk):
         if not is_admin.exists() and not is_student:
             professor.user.delete()
         professor.delete()
-        messages.success(request, "Facilitadora eliminada con éxito")
+        messages.success(request, "Facilitadore eliminade con exitosamente.")
         return redirect('professors_list')
 
 
@@ -187,7 +187,7 @@ def deactivate_professor(request, pk):
     if professor:
         professor.active = False
         professor.save()
-        messages.success(request, "Facilitadora desactivada con éxito")
+        messages.success(request, "Facilitadore desactivade con exitosamente.")
         return redirect('professors_list')
 
 
@@ -212,5 +212,5 @@ class AddUser(CreateView):
         response = super().form_valid(form)
         form.save()
         self.send_email(self.object)
-        messages.success(self.request, "Usuaria registrada con éxito")
+        messages.success(self.request, "Usuarie registrade con exitosamente.")
         return response

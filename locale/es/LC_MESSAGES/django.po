@@ -20,19 +20,19 @@ msgstr ""
 
 #: src/membership_core/dashboard.py:12
 msgid "Active students"
-msgstr "Estudiantes activos"
+msgstr "Estudiantes actives"
 
 #: src/membership_core/dashboard.py:24
 msgid "Inactive"
-msgstr "Inactivo"
+msgstr "Inactive"
 
 #: src/membership_core/dashboard.py:38
 msgid "Enroll approved"
-msgstr "Inscritos aprobados"
+msgstr "matriculades aprobades"
 
 #: src/membership_core/dashboard.py:50
 msgid "Fail"
-msgstr "Reprobados"
+msgstr "Reprobades"
 
 #: src/membership_core/dashboard.py:64 src/membership_core/dashboard.py:76
 #: src/membership_core/models.py:38
@@ -176,7 +176,7 @@ msgstr "Administración"
 
 #: src/membership_core/templates/gentelella/app/sidebar.html:104
 msgid "User list"
-msgstr "Lista de usuarias"
+msgstr "Lista de usuaries"
 
 #: src/membership_core/templates/gentelella/app/sidebar.html:109
 msgid "Group list"
@@ -196,11 +196,11 @@ msgstr "Estudiante"
 
 #: src/membership_core/templates/gentelella/base.html:111
 msgid "Superadmin"
-msgstr "Super administradora"
+msgstr "Superusuarie"
 
 #: src/membership_core/templates/gentelella/base.html:117
 msgid "Professor"
-msgstr "Facilitadora"
+msgstr "Facilitadore"
 
 #: src/membership_core/templates/gentelella/registration/login.html:19
 msgid "Login"
@@ -208,7 +208,7 @@ msgstr "Iniciar Sesión"
 
 #: src/membership_core/templates/gentelella/registration/login.html:22
 msgid "Your username and password didn't match. Please try again."
-msgstr "Su usuaria y contraseña no son iguales. Intentelo nuevamente."
+msgstr "Su usuarie y clave no son iguales. Intentele nuevamente."
 
 #: src/membership_core/templates/gentelella/registration/login.html:27
 msgid ""
@@ -224,7 +224,7 @@ msgstr "Por favor inicie sesión para ver esta página."
 
 #: src/membership_core/templates/gentelella/registration/login.html:35
 msgid "Username"
-msgstr "Usuaria"
+msgstr "Usuarie"
 
 #: src/membership_core/templates/gentelella/registration/login.html:38
 msgid "Password"
@@ -285,7 +285,7 @@ msgstr "Restablecer contraseña"
 
 #: src/membership_core/templates/gentelella/registration/password_reset_form.html:19
 msgid "Please insert the user email registered in platform"
-msgstr "Por favor ingrese el correo de usuario registrado en la plataforma"
+msgstr "Por favor ingrese el correo de usuarie registrade en la plataforma"
 
 #: src/membership_core/templates/gentelella/registration/password_reset_form.html:24
 msgid "We will send you a email to verify you are were you say you are"
@@ -301,7 +301,7 @@ msgstr "No hay grupos registrados"
 
 #: src/membership_core/templates/user/user_list.html:109
 msgid "There are not users available"
-msgstr "No hay usuarios registrados"
+msgstr "No hay usuaries registrades"
 
 #: src/upo/settings.py:131
 msgid "Spanish"

@@ -235,7 +235,7 @@ def create_cupon(request):
                             else:
                                 get_error_message(request, student)
                 except ValidationError:
-                    messages.error(request, f"Error el usuario {student_error} ya tiene el 100% de cupones en este curso")
+                    messages.error(request, f"Error el usuarie {student_error} ya tiene el 100% de cupones en este curso")
                     return render(request, "coupons/create.html", context={'form': form})
 
     else:

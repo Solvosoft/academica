@@ -21,7 +21,7 @@ msgstr ""
 
 #: admin.py:16 models.py:18
 msgid "User"
-msgstr "Usuaria"
+msgstr "Usuarie"
 
 #: admin.py:21
 msgid "All mails"
@@ -61,7 +61,7 @@ msgstr "Agregar correo externo"
 
 #: lookups.py:124
 msgid "External user"
-msgstr "Usuaria externo"
+msgstr "Usuarie externe"
 
 #: models.py:11 models.py:38
 msgid "Subject"
@@ -126,4 +126,3 @@ msgstr "Diccionario de contexto"
 #: models.py:55 models.py:56
 msgid "Context of template"
 msgstr "Contexto de la plantilla"
-

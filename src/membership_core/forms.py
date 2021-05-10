@@ -14,7 +14,7 @@ from matricula.models import FakeGroup
 class UserSearchForm(GTForm, forms.Form):
     user = forms.ModelMultipleChoiceField(
         queryset=User.objects.all(), widget=widget.SelectMultiple,
-        required=False, label="Buscar por nombre de usuario")
+        required=False, label="Buscar por nombre de usuarie")
     fakegroup = forms.ModelMultipleChoiceField(
         queryset=FakeGroup.objects.all(), widget=AutocompleteSelectMultiple('fakegroupsbase'),
         required=False, label="Grupo")

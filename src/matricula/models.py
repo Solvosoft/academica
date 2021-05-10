@@ -17,7 +17,7 @@ from membership_core.models import Country, SystemCurrency
 
 class Student(models.Model):
     user = models.OneToOneField(
-        User, on_delete=models.CASCADE, primary_key=True, verbose_name="Usuaria *")
+        User, on_delete=models.CASCADE, primary_key=True, verbose_name="Usuarie *")
     organization = models.CharField(verbose_name="Organización * ", max_length=150)
     country = models.ForeignKey(Country, on_delete=models.CASCADE, default=50)
     city = models.CharField(_("City"), max_length=100, default="")
@@ -263,9 +263,9 @@ class Enroll(models.Model):
     def get_status(self):
         dev = _("Not qualified")
         if self.course_status != None:
-            dev = "Aprobado"
+            dev = "Aprobada"
             if self.course_status == 'reproved':
-                dev = "Reprobado"
+                dev = "Reprobada"
         return dev
 
     @property

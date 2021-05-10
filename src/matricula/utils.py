@@ -43,7 +43,7 @@ def load_email_temp_academica():
         as_template=True)
 
     update_template_context(
-        'new_user_created_membership', 'Nueva usuaria creada en la plataforma',
+        'new_user_created_membership', 'Nuevo usuarie registrade en la plataforma',
         [('user'), ('domain')], 'gentelella/registration/new_user.html',
         as_template=True)
     
