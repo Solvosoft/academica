@@ -9,7 +9,8 @@ from django.contrib.staticfiles import finders
 from django.core.files.base import File
 import io
 import logging
-
+import re
+from shutil import copyfile
 logger = logging.getLogger(__name__)
 
 
@@ -68,28 +69,22 @@ def get_context_certificate(enroll):
     }
 
 def build_pdf_certificate(enroll):
-    html = 'certificate.html'
-    month = MONTHS_DICT['{:%B}'.format(now())]
-    template = Template(get_template_certificate_header(enroll.group.certificate_template.template))
-    date = str(now().day) + " de " + month + " del " + str(now().year)
-    context = {"enrollment": enroll, 'certificate_date': date, }
-    sourceHtml = template.render(Context(context))
-    # FIXME the variable 'enqueued' == False, it must be false o we should change it to True?!
-    resultFile = io.BytesIO()
-    ''' 
-        Be carefull to change it, it change the relative path of the images 
-        saved using Tinymce editor to absolute path. Future updates in djgentelella
-        Can make it crash, and it has to be changed to fit requirements.
-    '''
-    # sourceHtml = re.sub('../../../', settings.MY_PAYPAL_HOST+"/", sourceHtml)
-    pisaStatus = pisa.CreatePDF(
-        sourceHtml,  # the HTML to convert
-        dest=resultFile,  # file handle to recieve result
-        link_callback=link_callback)
-    if pisaStatus.err:
-        logger.error('We had some errors with code %s <pre>%s</pre>' % (pisaStatus.err, html))
-        return
-    resultFile.seek(0)
-    file_name = f'certificado_{str(enroll.group)}_{str(enroll.student)}.pdf'
-    enroll.pdf_certificate = File(resultFile, name=file_name)
-    enroll.save()
+    template_file = settings.BASE_NOCODE_DIR / 'src/matricula/static/certificado_base.svg'
+    file_name = f'certificado_{str(enroll.group)}_{str(enroll.student)}.svg'
+    copyfile(template_file, file_name)
+
+    with open (file_name, 'r+' ) as f:
+        student_name = enroll.student.user.get_full_name()
+        upo_hours = enroll.group.duration_hours
+        upo_date = enroll.group.expedition_date
+        upo_course = enroll.group.course.name
+        content = f.read()
+        content = re.sub('{{Nombre}}', student_name, content, flags = re.M)
+        content = re.sub('{{Curso}}', str(upo_hours), content, flags = re.M)
+        content = re.sub('{{Cargahoraria}}', "12/05/2020", content, flags = re.M)
+        content = re.sub('{{Fecha}}', str(upo_course), content, flags = re.M)
+        f.seek(0)
+        f.write(content)
+        enroll.pdf_certificate = File(f, name=file_name)
+        enroll.save()
+        f.close()

@@ -190,6 +190,8 @@ class Group(models.Model):
     flow = models.SmallIntegerField(choices=FLOWS, default=NORMAL, verbose_name=_("Enrollment behavior")+" * ")
     professors = models.ManyToManyField(Professor, blank=True, verbose_name=_("Professors"))
     certificate_template = models.ForeignKey(Certificate, blank=True, null=True, on_delete=models.CASCADE)
+    duration_hours = models.IntegerField(_("Duración en horas"), default=4)
+    expedition_date = models.DateField(_("Certificate expedition date"), blank=True, null=True)
 
     @property
     def in_preenrollment(self):
