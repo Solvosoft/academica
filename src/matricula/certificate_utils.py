@@ -1,3 +1,4 @@
+import shutil
 import subprocess
 import tempfile
 import uuid
@@ -101,3 +102,4 @@ def build_pdf_certificate(enroll):
         enroll.pdf_certificate = File(f, name=file_name_pdf)
         enroll.save()
         f.close()
+    shutil.rmtree(tmpdir)
