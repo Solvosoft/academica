@@ -1,3 +1,7 @@
+import subprocess
+import tempfile
+import uuid
+
 from django.http import Http404
 from django.template import Context, Template
 from django.conf import settings
@@ -70,21 +74,30 @@ def get_context_certificate(enroll):
 
 def build_pdf_certificate(enroll):
     template_file = settings.BASE_NOCODE_DIR / 'src/matricula/static/certificado_base.svg'
-    file_name = f'certificado_{str(enroll.group)}_{str(enroll.student)}.svg'
-    copyfile(template_file, file_name)
+    uu = str(uuid.uuid4())
+    file_name = 'certificado_'+uu+'.svg'
+    file_name_pdf = f'certificado_'+uu+'.pdf'
+    #copyfile(template_file, file_name)
 
-    with open (file_name, 'r+' ) as f:
+    with open (template_file, 'r' ) as f:
         student_name = enroll.student.user.get_full_name()
         upo_hours = enroll.group.duration_hours
         upo_date = enroll.group.expedition_date
         upo_course = enroll.group.course.name
         content = f.read()
-        content = re.sub('{{Nombre}}', student_name, content, flags = re.M)
-        content = re.sub('{{Curso}}', str(upo_hours), content, flags = re.M)
-        content = re.sub('{{Cargahoraria}}', "12/05/2020", content, flags = re.M)
-        content = re.sub('{{Fecha}}', str(upo_course), content, flags = re.M)
-        f.seek(0)
-        f.write(content)
-        enroll.pdf_certificate = File(f, name=file_name)
+        content = content.replace('{{Nombre}}', student_name).replace(
+            '{{Curso}}', str(upo_course)
+        ).replace('{{Cargahoraria}}', str(upo_hours)).replace(
+            '{{Fecha}}', "12/05/2020"
+        )
+    tmpdir = tempfile.mkdtemp()
+    with open(tmpdir+'/'+file_name, 'w') as tmfile:
+        tmfile.write(content)
+    subprocess.run("rsvg-convert -f pdf -o %s %s"%(
+            tmpdir + '/' + file_name_pdf,
+            tmpdir + '/' + file_name
+    ), shell=True)
+    with open(tmpdir + '/' + file_name_pdf, 'rb') as f:
+        enroll.pdf_certificate = File(f, name=file_name_pdf)
         enroll.save()
         f.close()
