@@ -46,7 +46,8 @@
 					</div>
 					<div class="x_content">
 						<div class="col-md-6">
-							<strong>Curso: </strong>{{group.course}}
+							<strong>Curso: </strong>
+							<a href="#" data-toggle="tooltip" title="{{group.course}}">{{group.course|truncatechars:100}}</a>
 						</div>
 						<div class="col-md-6">
 							<strong>Categoría: </strong>{{group.course.category}}
