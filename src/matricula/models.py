@@ -176,7 +176,7 @@ class Group(models.Model):
         default=True, verbose_name="¿Está abierto? * ")
     flow = models.SmallIntegerField(choices=FLOWS, default=NORMAL, verbose_name=_("Enrollment behavior")+" * ")
     professors = models.ManyToManyField(Professor, blank=True, verbose_name=_("Professors"))
-    duration_hours = models.IntegerField(_("Duración en horas"), default=4)
+    duration_hours = models.IntegerField(_("Duración en horas"), default=20)
     expedition_date = models.DateField(_("Certificate expedition date"), blank=True, null=True)
 
     @property
