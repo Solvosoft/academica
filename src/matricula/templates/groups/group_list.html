@@ -90,7 +90,8 @@
 						<div class="col-md-6 col-sm-6 col-xs-6">
 							<ul class="list-unstyled user_data">
 								<li>
-									<strong>Curso: </strong>{{object.course}}
+									<strong>Curso: </strong>
+									<a href="#" data-toggle="tooltip" title="{{object.course}}">{{object.course|truncatechars:50}}</a>
 								</li>
 								<li>
 									<strong>Inversión: </strong>{{object.cost}}
