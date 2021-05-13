@@ -423,6 +423,7 @@ class GroupEditForm(forms.ModelForm, GTForm):
             'name', 'course', 'period', 'schedule', 'pre_enroll_start',
             'pre_enroll_finish', 'enroll_start', 'enroll_finish', 'is_paid',
             'currency', 'cost', 'maximum', 'flow', 'professors', 'certificate_template',
+            'duration_hours', 'expedition_date',
         ]
         widgets = {
             'name': djgentelella.TextInput,
@@ -440,11 +441,14 @@ class GroupEditForm(forms.ModelForm, GTForm):
             'flow': djgentelella.Select,
             'professors': djgentelella.SelectMultiple,
             'certificate_template': djgentelella.Select,
+            'duration_hours': djgentelella.TextInput(attrs={"type":"number"}),
+            'expedition_date': djgentelella.DateInput,
         }
 
     def __init__(self, *args, **kwargs):
         super(GroupEditForm, self).__init__(*args, **kwargs)
         self.fields['period'].disabled = True
+        self.fields['expedition_date'].required = True
         if 'initial' in kwargs:
             if 'period_id' in kwargs['initial']:
                 self.fields['period'].initial = kwargs['initial']['period_id']
