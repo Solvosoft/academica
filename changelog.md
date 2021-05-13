@@ -1,5 +1,9 @@
 # Change log file
 
+12/05/2021
+- Update migrations
+    `python manage.py migrate`
+
 10/05/2021
  - Update migrations
     `python manange update_prod_temp`
