@@ -255,7 +255,9 @@ def add_group_course(request, pk=None):
                     cost=form.cleaned_data['cost'],
                     maximum=form.cleaned_data['maximum'],
                     is_open=form.cleaned_data['is_open'],
-                    flow=form.cleaned_data['flow']
+                    flow=form.cleaned_data['flow'],
+                    duration_hours=form.cleaned_data['duration_hours'],
+                    expedition_date=form.cleaned_data['expedition_date'],
                 )
                 group.save()
                 group.professors.set(form.cleaned_data['professors'])

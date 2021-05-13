@@ -239,7 +239,8 @@ class GroupAddForm(forms.ModelForm, GTForm):
         fields = [
             'name', 'period', 'schedule', 'pre_enroll_start', 'pre_enroll_finish',
             'enroll_start', 'enroll_finish', 'is_paid', 'currency', 'cost',
-            'maximum', 'is_open', 'flow', 'professors'
+            'maximum', 'is_open', 'flow', 'professors', 'duration_hours',
+            'expedition_date',
         ]
         widgets = {
             "name": djgentelella.TextInput,
@@ -256,7 +257,9 @@ class GroupAddForm(forms.ModelForm, GTForm):
             "maximum": djgentelella.NumberInput,
             "is_open": djgentelella.YesNoInput,
             "flow": djgentelella.Select,
-            'professors': djgentelella.SelectMultiple
+            'professors': djgentelella.SelectMultiple,
+            'duration_hours': djgentelella.TextInput(attrs={"type":"number"}),
+            'expedition_date': djgentelella.DateInput,
         }
 
     def __init__(self, *args, **kwargs):
