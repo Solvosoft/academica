@@ -128,19 +128,6 @@ class Course(models.Model):
         ordering = ['name']
 
 
-class Certificate(models.Model):
-    name = models.CharField("Nombre", max_length=100)
-    template = models.TextField("Plantilla")
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = _("Certificate")
-        verbose_name_plural = _("Certificates")
-        ordering = ['name']
-
-
 class Group(models.Model):
     NORMAL = 0
     AUTO_PREENROLL = 1
@@ -189,7 +176,6 @@ class Group(models.Model):
         default=True, verbose_name="¿Está abierto? * ")
     flow = models.SmallIntegerField(choices=FLOWS, default=NORMAL, verbose_name=_("Enrollment behavior")+" * ")
     professors = models.ManyToManyField(Professor, blank=True, verbose_name=_("Professors"))
-    certificate_template = models.ForeignKey(Certificate, blank=True, null=True, on_delete=models.CASCADE)
     duration_hours = models.IntegerField(_("Duración en horas"), default=4)
     expedition_date = models.DateField(_("Certificate expedition date"), blank=True, null=True)
 

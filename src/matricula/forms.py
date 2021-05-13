@@ -18,7 +18,7 @@ from djgentelella.forms.forms import GTForm
 from djgentelella.models import MenuItem as DJMenuItem
 
 from membership_core.models import Country, SystemCurrency
-from matricula.models import Certificate, Student, Page, MenuItem, Category, Course,\
+from matricula.models import Student, Page, MenuItem, Category, Course,\
     Period, Group, Enroll, Professor
 
 
@@ -382,7 +382,7 @@ class GroupCreateForm(forms.ModelForm, GTForm):
         fields = [
             'name', 'course', 'period', 'schedule', 'pre_enroll_start',
             'pre_enroll_finish', 'enroll_start', 'enroll_finish', 'is_paid', 'currency',
-            'cost', 'maximum', 'flow', 'professors', 'certificate_template'
+            'cost', 'maximum', 'flow', 'professors'
         ]
         widgets = {
             'name': djgentelella.TextInput,
@@ -399,7 +399,6 @@ class GroupCreateForm(forms.ModelForm, GTForm):
             'maximum': djgentelella.NumberInput,
             'flow': djgentelella.Select,
             'professors': djgentelella.SelectMultiple,
-            'certificate_template': djgentelella.Select,
         }
 
     def __init__(self, *args, **kwargs):
@@ -422,7 +421,7 @@ class GroupEditForm(forms.ModelForm, GTForm):
         fields = [
             'name', 'course', 'period', 'schedule', 'pre_enroll_start',
             'pre_enroll_finish', 'enroll_start', 'enroll_finish', 'is_paid',
-            'currency', 'cost', 'maximum', 'flow', 'professors', 'certificate_template',
+            'currency', 'cost', 'maximum', 'flow', 'professors',
             'duration_hours', 'expedition_date',
         ]
         widgets = {
@@ -440,7 +439,6 @@ class GroupEditForm(forms.ModelForm, GTForm):
             'maximum': djgentelella.NumberInput,
             'flow': djgentelella.Select,
             'professors': djgentelella.SelectMultiple,
-            'certificate_template': djgentelella.Select,
             'duration_hours': djgentelella.TextInput(attrs={"type":"number"}),
             'expedition_date': djgentelella.DateInput,
         }
@@ -456,8 +454,6 @@ class GroupEditForm(forms.ModelForm, GTForm):
                 self.fields['course'].initial = kwargs['initial']['course_id']
             if 'currency_id' in kwargs['initial']:
                 self.fields['currency'].initial = kwargs['initial']['currency_id']
-            if 'certificate_template_id' in kwargs['initial']:
-                self.fields['certificate_template'].initial = kwargs['initial']['certificate_template_id']
 
 
 class EnrollSearchForm(GTForm, forms.Form):
@@ -890,20 +886,3 @@ class CourseMainSearchForm(GTForm, forms.Form):
     is_paid = forms.ChoiceField(
         choices=IS_PAID, widget=djgentelella.Select,
         required=False, label="Pagado")
-
-
-class CertificateFormCreate(GTForm, forms.ModelForm):
-    group = forms.ModelChoiceField(queryset=Group.objects.all(),  widget=forms.HiddenInput, required=False)
-
-    class Meta:
-        model = Certificate
-        fields = ('name', "template")
-        widgets = {
-            'name': djgentelella.TextInput,
-            'template': tinymce.EditorTinymce,
-        }
-
-
-class CertificateSearchForm(GTForm, forms.Form):
-    name = forms.CharField(
-        label='Término', required=False, widget=djgentelella.TextInput)

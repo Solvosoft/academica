@@ -32,14 +32,14 @@ from chunked_upload.models import ChunkedUpload
 from xhtml2pdf import pisa
 
 from matricula.certificate_utils import build_pdf_certificate
-from matricula.forms import CategoryCreateForm, CategorySearchForm, CertificateSearchForm, \
+from matricula.forms import CategoryCreateForm, CategorySearchForm, \
     CourseSearchForm, CourseCreateForm, MenuItemSearchForm, \
     MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, \
     GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentAddForm, StudentAdminEditForm, StudentSearchForm, \
     StudentAdminCreateForm, PageCreateForm, PageSearchForm, MenuItemAddForm, \
     PreEnrollAddGroupForm, GroupAddForm, GroupEditForm, PermissionForm, \
-    StudentChangePasswordForm, CertificateFormCreate
-from matricula.models import Category, Certificate, Course, Period, Group, \
+    StudentChangePasswordForm
+from matricula.models import Category, Course, Period, Group, \
     Enroll, Student, Page, Professor
 from matricula.tasks import task_generate_group_certificate
 from matricula.views.utils import get_expire_date
@@ -1283,99 +1283,14 @@ def build_pdf_certificate_view(request, pk):
 def regenerate_certificate(request, pk_group, pk):
     enroll = get_object_or_404(Enroll, pk=pk)
     group = enroll.group
-    if group.certificate_template_id == None:
-        messages.error(request, "El grupo no tiene una plantilla de certificados.")
-    else:
-        build_pdf_certificate(enroll)
-        messages.success(request, "Certificado regenerado con éxito.")
+    build_pdf_certificate(enroll)
+    messages.success(request, "Certificado regenerado con éxito.")
     return redirect('list_students_group', pk=pk_group)
 
 
 @staff_member_required
 def build_pdf_certificate_list(request, pk):
     group = get_object_or_404(Group, pk=pk)
-    if group.certificate_template_id is None:
-        messages.error(request, "El grupo no tiene una plantilla de certificados.")
-        return redirect("list_students_group", pk=pk)
-
     task_generate_group_certificate.delay(pk)
     messages.success(request, "Certificados se han iniciado a procesar, regrese en unos minutos y refresque la página.")
     return redirect("list_students_group", pk=pk)
-
-
-@method_decorator(permission_required('matricula.view_certificate'), name='dispatch')
-class CertificateList(ListView):
-    template_name = "certificate/certificate_list.html"
-    model = Certificate
-    paginate_by = 30
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        self.form = CertificateSearchForm(self.request.GET)
-        self.form.is_valid()
-        if 'name' in self.form.cleaned_data and self.form.cleaned_data['name'] != "":
-            queryset = queryset.filter(name__icontains=self.form.cleaned_data['name'])
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form_search'] = CertificateSearchForm(self.request.GET)
-        context['has_data'] = Certificate.objects.exists()
-        return context
-
-
-@method_decorator(permission_required('matricula.add_certificate'), name='dispatch')
-class CertificateCreate(SuccessMessageMixin, CreateView):
-    model = Certificate
-    form_class = CertificateFormCreate
-    template_name = 'certificate/certificate_form.html'
-    success_url = '/enrrolment/certificates/'
-    success_message = "Certificado creado con éxito"
-
-    def get_initial(self):
-        initial = super().get_initial()
-        group = self.request.GET.get('group', None)
-        if group:
-            initial['group'] = get_object_or_404(Group, pk=group)
-            initial['name'] = 'Plantilla para grupo %s %s' % (initial['group'].course, initial['group'])
-        template = open(settings.BASE_NOCODE_DIR / 'src/matricula/templates/matricula/certificaciones.html', 'r')
-        initial['template'] = template.read()
-        return initial
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        if form.cleaned_data['group']:
-            group = form.cleaned_data['group']
-            group.certificate_template = self.object
-            group.save()
-        return response
-
-    def get_success_url(self):
-        success_url = super().get_success_url()
-        initial = self.get_initial()
-        if 'group' in initial:
-            success_url = reverse("list_students_group", kwargs={'pk': initial['group'].pk})
-        return success_url
-
-
-@method_decorator(permission_required('matricula.delete_certificate'), name='dispatch')
-class CertificateDelete(DeleteView):
-    model = Certificate
-    success_url = "/enrrolment/certificates/"
-    success_message = "Certificado eliminado con éxito"
-
-    def get(self, *args, **kwargs):
-        return self.post(*args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, self.success_message)
-        return super(CertificateDelete, self).delete(request, *args, **kwargs)
-
-
-@method_decorator(permission_required('matricula.change_certificate'), name="dispatch")
-class CertificateEdit(SuccessMessageMixin, UpdateView):
-    model = Certificate
-    form_class = CertificateFormCreate
-    success_url = "/enrrolment/certificates/"
-    template_name = 'certificate/certificate_form.html'
-    success_message = "Certificado actualizado con éxito"
