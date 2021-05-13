@@ -382,7 +382,7 @@ class GroupCreateForm(forms.ModelForm, GTForm):
         fields = [
             'name', 'course', 'period', 'schedule', 'pre_enroll_start',
             'pre_enroll_finish', 'enroll_start', 'enroll_finish', 'is_paid', 'currency',
-            'cost', 'maximum', 'flow', 'professors'
+            'cost', 'maximum', 'flow', 'professors', 'expedition_date', 'duration_hours'
         ]
         widgets = {
             'name': djgentelella.TextInput,
@@ -399,6 +399,8 @@ class GroupCreateForm(forms.ModelForm, GTForm):
             'maximum': djgentelella.NumberInput,
             'flow': djgentelella.Select,
             'professors': djgentelella.SelectMultiple,
+            'duration_hours': djgentelella.TextInput(attrs={"type":"number"}),
+            'expedition_date': djgentelella.DateInput,
         }
 
     def __init__(self, *args, **kwargs):

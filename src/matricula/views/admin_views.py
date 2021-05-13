@@ -591,7 +591,9 @@ def create_group(request):
                 currency=form.cleaned_data['currency'],
                 cost=form.cleaned_data['cost'],
                 maximum=form.cleaned_data['maximum'],
-                flow=form.cleaned_data['flow']
+                flow=form.cleaned_data['flow'],
+                expedition_date=form.cleaned_data['expedition_date'],
+                duration_hours=form.cleaned_data['duration_hours'],
             )
             group.save()
             group.professors.set(form.cleaned_data['professors'])
@@ -609,9 +611,6 @@ class GroupDelete(DeleteView):
     model = Group
     success_url = "/enrrolment/groups"
     success_message = "Grupo eliminado con éxito"
-
-    def get(self, *args, **kwargs):
-        return self.post(*args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
