@@ -2,20 +2,15 @@ import shutil
 import subprocess
 import tempfile
 import uuid
+import os
+import re
+import logging
 
-from django.http import Http404
-from django.template import Context, Template
 from django.conf import settings
 from django.utils.timezone import now
-import re
-import os
-from xhtml2pdf import pisa
-from django.contrib.staticfiles import finders
 from django.core.files.base import File
-import io
-import logging
-import re
-from shutil import copyfile
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -82,54 +77,60 @@ def build_pdf_certificate(enroll):
 
     with open (template_file, 'r' ) as f:
         student_name = enroll.student.user.get_full_name()
-        len_name = 393.49072 - len(student_name)*6
         upo_hours = str(enroll.group.duration_hours) + " horas"
-        len_hours = 394.11533 - len(upo_hours)*6
         upo_date = enroll.group.expedition_date
         if upo_date is None:
             upo_date = now().strftime("%Y-%m-%d")
         else:
             upo_date = str(upo_date)
-        len_date = 393.81189 - len(upo_date)*6
         upo_course = str(enroll.group.course.name)
-        extra_course_name = ""
-        course_name = upo_course
-        if len(upo_course) > 50:
-            for i in range(50, 0, -1):
-                if upo_course[i] == " ":
-                    course_name = upo_course[:i+1]
-                    len_course = 393.46133 - len(course_name)*6
-                    extra_course_name = upo_course[i+1:]
-                    if len(extra_course_name) > 50:
-                        extra_course_name = extra_course_name[:50]
-                    break;
-        else:
-            len_course = 393.46133 - len(upo_course)*6
         content = f.read()
+        small_course = ""
+        medium_course = ""
+        big_course = ""
+        small_course2 = ""
+        medium_course2 = ""
+        big_course2 = ""
+        if len(upo_course)<50:
+            big_course = upo_course
+        elif len(upo_course) <= 100:
+            for i in range(50,0,-1):
+                if upo_course[i] == " ":
+                    big_course = upo_course[:i+1]
+                    big_course2 = upo_course[i+1:]
+                    break;
+        elif len(upo_course)<=200:
+            for i in range(100, 0, -1):
+                if upo_course[i] == " ":
+                    medium_course = upo_course[:i+1] 
+                    medium_course2 = upo_course[i+1:]
+                    break
+        else:
+            for i in range(150,0, -1):
+                if upo_course[i] == " ":
+                    small_course = upo_course[:i+1]
+                    small_course2 = upo_course[i+1:]
+                    break
+                
         content = content.replace(
             '{{Nombre}}', student_name
         ).replace(
-            '{{Curso}}', course_name
+            '{{CursoGrande}}', big_course
+        ).replace(
+            '{{CursoMediano}}', medium_course
+        ).replace(
+            '{{CursoPequeno}}', small_course
+        ).replace(
+            '{{CursoGrande2}}', big_course2
+        ).replace(
+            '{{CursoMediano2}}', medium_course2
+        ).replace(
+            '{{CursoPequeno2}}', small_course2
         ).replace(
             '{{Cargahoraria}}', upo_hours
         ).replace(
-            "{{ExtraCurso}}", extra_course_name
-        ).replace(
             '{{Fecha}}', upo_date
-        ).replace(
-            "id=\"tspan4680-5\" x=\"394.11533\"", f"id=\"tspan4680-5\" x=\"{len_hours}\""
-        ).replace(
-            "id=\"tspan4680\" x=\"393.49072\"", f"id=\"tspan4680\" x=\"{len_name}\""
-        ).replace(
-            "id=\"tspan4680-1\" x=\"393.46133\"", f"id=\"tspan4680-1\" x=\"{len_course}\""
-        ).replace(
-            "id=\"tspan4680-9\" x=\"393.81189\"", f"id=\"tspan4680-9\" x=\"{len_date}\""
         )
-        if len(extra_course_name)>0:
-            len_extra_course = 394.10159 - len(extra_course_name)*6
-            content = content.replace(
-                "id=\"tspan4680-1-8\" x=\"394.10159\"", f"id=\"tspan4680-1-8\" x=\"{len_extra_course}\""
-            )
     tmpdir = tempfile.mkdtemp()
     with open(tmpdir+'/'+file_name, 'w') as tmfile:
         tmfile.write(content)

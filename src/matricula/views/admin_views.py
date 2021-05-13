@@ -1283,7 +1283,6 @@ def build_pdf_certificate_view(request, pk):
 @staff_member_required
 def regenerate_certificate(request, pk_group, pk):
     enroll = get_object_or_404(Enroll, pk=pk)
-    group = enroll.group
     build_pdf_certificate(enroll)
     messages.success(request, "Certificado regenerado con éxito.")
     return redirect('list_students_group', pk=pk_group)
@@ -1291,7 +1290,7 @@ def regenerate_certificate(request, pk_group, pk):
 
 @staff_member_required
 def build_pdf_certificate_list(request, pk):
-    group = get_object_or_404(Group, pk=pk)
+    get_object_or_404(Group, pk=pk)
     task_generate_group_certificate.delay(pk)
     messages.success(request, "Certificados se han iniciado a procesar, regrese en unos minutos y refresque la página.")
     return redirect("list_students_group", pk=pk)
