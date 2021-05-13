@@ -122,7 +122,7 @@
 									<strong>Rango matrícula: </strong>{{object.enroll_start}} - {{object.enroll_finish}}
 								</li>
 								<li>
-									<strong>Rango pre-matrícula: </strong>{{object.pre_enroll_start}} - {{object.pre_enroll_finish}}
+									<strong>Rango pre-inscripción: </strong>{{object.pre_enroll_start}} - {{object.pre_enroll_finish}}
 								</li>
 								<li><strong>Flujo del curso: </strong>{{object.FLOWS|index:object.flow|index:1}}</li>
 								{% if show_qualify_students_button and request.user.professor in object.professors.all %}
@@ -137,7 +137,7 @@
 										{% endif %}  <a title="Exportar estudiantes a moodle" href="{% url 'export_group' object.pk%}"><i class="fa fa-file-text-o"></i></a></li>
 								{% endif %}
 								{% if perms.matricula.can_view_pre_enroll_group %}
-									<li><strong>Estudiantes pre-matriculades: </strong><a title="Lista de estudiantes pre-matriculados" href="{% url 'pre_enroll_group' object.pk%}"><i class="fa fa-filter"></i></a></li>
+									<li><strong>Estudiantes pre-inscrites: </strong><a title="Lista de estudiantes pre-inscrites" href="{% url 'pre_enroll_group' object.pk%}"><i class="fa fa-filter"></i></a></li>
 								{% endif %}
 							</ul>
 						</div>

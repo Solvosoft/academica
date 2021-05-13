@@ -1,7 +1,7 @@
 {% load static i18n %}
 <html>
     <head>
-        <title>Listado de inscripción</title>
+        <title>Listado de matriculación</title>
         <style>
             @page {
                 @frame header_frame {
@@ -212,11 +212,11 @@
         </div>
         <div id="header_content2">
             {% if not enroll_finished and enroll_activate%}
-                Pre-matriculades sin matricular.
+                Pre-inscrites sin matricular.
             {% elif enroll_finished %}
                 Estudiantes matriculades.
             {% else %}
-                Estudiantes pre-matriculades.
+                Estudiantes pre-inscrites.
             {% endif %}
         </div>
         <div id="logo">

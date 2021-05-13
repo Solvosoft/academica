@@ -16,7 +16,7 @@ def load_email_temp_academica():
         [('group'), ('url'), ('domain')], 'email_open_group.html', as_template=True)
 
     update_template_context(
-        'email_preenroll_success', 'Tu PRE-MATRÍCULA ha sido aceptada - UPo',
+        'email_preenroll_success', 'Tu PRE-INSCRIPCIÓN ha sido aceptada - UPo',
         [('group'), ('url'), ('domain')], 'email_preenroll_success.html', as_template=True)
     
     update_template_context(
@@ -78,5 +78,5 @@ def load_email_temp_academica():
         'email_invoice_error.html', as_template=True)
 
     update_template_context(
-        'preenroll_success', 'Tu pre-matrícula en el curso ha sido aceptada - UPo',
+        'preenroll_success', 'Tu pre-inscripción en el curso ha sido aceptada - UPo',
         [('group'), ('url'),("domain")], 'preenroll_success.html', as_template=True)

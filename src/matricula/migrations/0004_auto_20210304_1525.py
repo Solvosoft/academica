@@ -242,12 +242,12 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='group',
             name='pre_enroll_finish',
-            field=models.DateTimeField(verbose_name='Hora de finalización de Pre-matrícula * '),
+            field=models.DateTimeField(verbose_name='Hora de finalización de Pre-inscripción * '),
         ),
         migrations.AlterField(
             model_name='group',
             name='pre_enroll_start',
-            field=models.DateTimeField(verbose_name='Hora de inicio de Pre-matrícula * '),
+            field=models.DateTimeField(verbose_name='Hora de inicio de Pre-inscripción * '),
         ),
         migrations.AlterField(
             model_name='menuitem',

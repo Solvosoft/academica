@@ -24,7 +24,7 @@ msgstr "Activar usuarie para inscribir"
 
 #: src/matricula/admin.py:44
 msgid "Active user for pre-enrollment"
-msgstr "Activar usuarie para inscripción"
+msgstr "Activar usuarie para matriculación"
 
 #: src/matricula/admin.py:70
 msgid "Student list don't exist yet"
@@ -290,11 +290,11 @@ msgstr "Matrícula automática (pone matrícula finalizada al prematricular)"
 
 #: src/matricula/models.py:160
 msgid "Pre enroll start hour"
-msgstr "Hora de inicio de Pre-matrícula"
+msgstr "Hora de inicio de Pre-inscripción"
 
 #: src/matricula/models.py:162
 msgid "Pre enroll finish hour"
-msgstr "Hora de finalización de Pre-matrícula"
+msgstr "Hora de finalización de Pre-inscripción"
 
 #: src/matricula/models.py:163
 msgid "Enroll start hour"
@@ -505,7 +505,7 @@ msgstr "Matricularme"
 #: src/matricula/templates/course_detail.html:82
 #: src/matricula/templates/groups.html:28
 msgid "Pre-enroll me"
-msgstr "Pre-matricularme"
+msgstr "Pre-inscribirme"
 
 #: src/matricula/templates/email_close_group.html:200
 #: src/matricula/templates/email_open_group.html:202
@@ -792,7 +792,7 @@ msgstr "Todas las matrículas"
 
 #: src/matricula/templates/student_list.html:67
 msgid "All Pre-enrollments"
-msgstr "Todas las pre-matrículas"
+msgstr "Todas las pre-inscripciones"
 
 #: src/matricula/templates/student_list.html:68
 msgid "Pre-enroll but not enroll"
@@ -894,7 +894,7 @@ msgstr "Pagar ahora"
 
 #: src/matricula/views/Enrollments.py:85
 msgid "Pre-enrollment success"
-msgstr "Pre-matriculade satisfactoriamente"
+msgstr "Pre-inscripción satisfactoria"
 
 #: src/matricula/views/Enrollments.py:91 src/matricula/views/Enrollments.py:181
 msgid "We have some problems with your enroll, try again"
@@ -919,7 +919,7 @@ msgstr "Lo sentimos pero su pre matrícula fue rechazade."
 
 #: src/matricula/views/Enrollments.py:123
 msgid "You are already pre-enrolled"
-msgstr "Usted ya está pre-matriculade"
+msgstr "Usted ya está pre-inscrite"
 
 #: src/matricula/views/admin_views.py:1071
 msgid "Student role removed successfuly"
