@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-06 11:11-0600\n"
+"POT-Creation-Date: 2021-05-12 18:27-0600\n"
 "PO-Revision-Date: 2020-01-09 08:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -154,31 +154,27 @@ msgstr "Facilitadores"
 msgid "Coupons"
 msgstr "Cupones"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:67
-msgid "Certificates"
-msgstr "Certificados"
-
-#: src/membership_core/templates/gentelella/app/sidebar.html:79
+#: src/membership_core/templates/gentelella/app/sidebar.html:76
 msgid "Bills"
 msgstr "Pagos"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:84
+#: src/membership_core/templates/gentelella/app/sidebar.html:81
 msgid "Currency Exchanges"
 msgstr "Monedas de intercambio"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:87
+#: src/membership_core/templates/gentelella/app/sidebar.html:84
 msgid "Bill list"
 msgstr "Lista de pagos"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:98
+#: src/membership_core/templates/gentelella/app/sidebar.html:95
 msgid "Administration"
 msgstr "Administración"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:104
+#: src/membership_core/templates/gentelella/app/sidebar.html:101
 msgid "User list"
 msgstr "Lista de usuaries"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:109
+#: src/membership_core/templates/gentelella/app/sidebar.html:106
 msgid "Group list"
 msgstr "Lista de grupos"
 
