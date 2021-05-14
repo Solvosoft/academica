@@ -6,7 +6,6 @@ Created on 18/10/2020
 '''
 import csv
 
-from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required
@@ -19,8 +18,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import get_template
 from django.urls import reverse
-from django.views.generic import ListView, DeleteView, CreateView, UpdateView,\
-    DetailView
+from django.views.generic import ListView, DeleteView, DetailView
 
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
@@ -35,7 +33,8 @@ from matricula.certificate_utils import build_pdf_certificate
 from matricula.forms import CategoryCreateForm, CategorySearchForm, \
     CourseSearchForm, CourseCreateForm, MenuItemSearchForm, \
     MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, \
-    GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentAddForm, StudentAdminEditForm, StudentSearchForm, \
+    GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentAddForm, \
+        StudentAdminEditForm, StudentSearchForm, \
     StudentAdminCreateForm, PageCreateForm, PageSearchForm, MenuItemAddForm, \
     PreEnrollAddGroupForm, GroupAddForm, GroupEditForm, PermissionForm, \
     StudentChangePasswordForm
@@ -44,6 +43,7 @@ from matricula.models import Category, Course, Period, Group, \
 from matricula.tasks import task_generate_group_certificate
 from matricula.views.utils import get_expire_date
 from matricula.certificate_utils import link_callback
+from matricula.contrib.bills.models import Bill
 
 
 @method_decorator(permission_required('matricula.view_category'), name='dispatch')
@@ -846,6 +846,7 @@ def edit_enroll(request, pk=None):
         if request.method == "POST":
             instance = Enroll.objects.get(pk=pk)
             enroll_finished = instance.enroll_finished
+            paid_excluded = instance.paid_excluded
             form = EnrollCreateForm(request.POST, instance=instance)
             if form.is_valid():
                 student = form.cleaned_data['student']
@@ -860,6 +861,8 @@ def edit_enroll(request, pk=None):
                             'hours_to_pay': settings.HOURS_TO_PAY,
                         },
                         enqueued=False, user=None)
+                if not paid_excluded and form.cleaned_data['paid_excluded']:
+                    Bill.objects.filter(enrollment=instance).delete()
                 messages.success(request, "Matrícula guardada con éxito")
                 form.save()
                 return HttpResponseRedirect(reverse('enrolls'))
