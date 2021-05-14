@@ -55,7 +55,7 @@ def enrollme(request, pk):
                             'domain': schema+request.get_host(),
                             'hours_to_pay': settings.HOURS_TO_PAY,
                         },
-                        enqueued=False, user=None)
+                        enqueued=True, user=None)
                     if not group.is_paid:
                         message = _("Enrollment success.")
                     else:
@@ -78,7 +78,7 @@ def enrollme(request, pk):
                             "group": group,
                             'domain': schema+request.get_host(),
                         },
-                        enqueued=False, user=None)
+                        enqueued=True, user=None)
                     return { 
                         "inner-fragments": {
                             "#count_" + str(group.pk): group.enroll_set.count(),
@@ -109,7 +109,7 @@ def enrollme(request, pk):
                         },
                         enqueued=False, user=None)
                     if enroll.group.is_paid:
-                        message = _('Enrollment success you have ')+str(settings.HOURS_TO_PAY)+_(' hours from now to complete the payment') +' <a class="btn btn-success" href="'+ reverse('bills')+'">'+str(_('Pay Now')) +'</a>'
+                        message = str(_('Enrollment success you have '))+str(settings.HOURS_TO_PAY)+str(_(' hours from now to complete the payment')) +' <a class="btn btn-success" href="'+ reverse('bills')+'">'+str(_('Pay Now')) +'</a>'
                     else:
                         message = _("Enrollment success.")
                 elif enroll.paid_excluded or enroll.bill_set.first() and enroll.bill_set.first().is_paid or not group.is_paid:
