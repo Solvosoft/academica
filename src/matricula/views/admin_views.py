@@ -830,7 +830,19 @@ def create_enroll(request):
                     'domain': schema + request.get_host(),
                 },
                 enqueued=False, user=None)
-            form.save()
+            enroll = form.save()
+            if enroll.paid_excluded:
+                schema = request.scheme+"://"
+                send_email_from_template(
+                    'enroll_paid_excluded', student.user.email,
+                    {
+                        "url": request.build_absolute_uri(reverse('login')),
+                        'domain': schema+request.get_host(),
+                        "user": student.user,
+                        'group': enroll.group
+                    },
+                    enqueued=False,
+                    user=None)
             messages.success(request, "Matrícula guardada con éxito")
             return HttpResponseRedirect(reverse('enrolls'))
         else:
