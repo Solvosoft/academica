@@ -832,7 +832,6 @@ def create_enroll(request):
                 enqueued=False, user=None)
             enroll = form.save()
             if enroll.paid_excluded:
-                schema = request.scheme+"://"
                 send_email_from_template(
                     'enroll_paid_excluded', student.user.email,
                     {
