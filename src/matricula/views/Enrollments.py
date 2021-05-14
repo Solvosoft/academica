@@ -148,9 +148,12 @@ def list_enroll(request):
             student=student, enroll_activate=False, enroll_finished=False)
         enroll_finished = Enroll.objects.filter(
             student=student, enroll_finished=True)
-        context['finished_enroll'] = enroll_finished.filter(Q(bill__is_paid=True)| Q(group__is_paid=False) | Q(paid_excluded=True))
+        context['finished_enroll'] = enroll_finished.filter(
+            Q(bill__is_paid=True)| Q(group__is_paid=False) | Q(paid_excluded=True))
         context['pending_enroll'] = Enroll.objects.filter(
-            student=student, enroll_finished=True, group__is_paid=True, bill__is_paid=False)
+            student=student, enroll_finished=True, group__is_paid=True, 
+            bill__is_paid=False, paid_excluded=False,
+        )
     return render(request, 'enroll.html', context)
 
 
