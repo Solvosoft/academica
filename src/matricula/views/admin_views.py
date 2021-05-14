@@ -860,9 +860,9 @@ def edit_enroll(request, pk=None):
             paid_excluded = instance.paid_excluded
             form = EnrollCreateForm(request.POST, instance=instance)
             if form.is_valid():
+                schema = request.scheme + "://"
                 student = form.cleaned_data['student']
                 if not enroll_finished and form.cleaned_data['enroll_finished']:
-                    schema = request.scheme + "://"
                     send_email_from_template(
                         'email_enroll_success', [student.user.email],
                         {
@@ -874,6 +874,16 @@ def edit_enroll(request, pk=None):
                         enqueued=False, user=None)
                 if not paid_excluded and form.cleaned_data['paid_excluded']:
                     Bill.objects.filter(enrollment=instance).delete()
+                    send_email_from_template(
+                        'enroll_paid_excluded', student.user.email,
+                        {
+                            "url": request.build_absolute_uri(reverse('login')),
+                            'domain': schema+request.get_host(),
+                            "user": student.user,
+                            'group': instance.group
+                        },
+                        enqueued=False,
+                        user=None)
                 messages.success(request, "Matrícula guardada con éxito")
                 form.save()
                 return HttpResponseRedirect(reverse('enrolls'))
