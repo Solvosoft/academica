@@ -176,7 +176,7 @@ def finish_enroll(request, pk):
                         'domain': schema+request.get_host(),
                         'hours_to_pay': settings.HOURS_TO_PAY,
                     },
-                    enqueued=False, user=None)
+                    enqueued=True, user=None)
         except IntegrityError:
             messages.error(request, _('We have some problems with your enroll, try again'))
         if enroll.group.is_paid:
