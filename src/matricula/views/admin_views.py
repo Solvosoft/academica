@@ -614,6 +614,9 @@ class GroupDelete(DeleteView):
     success_url = "/enrrolment/groups"
     success_message = "Grupo eliminado con éxito"
 
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
+
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super(GroupDelete, self).delete(request, *args, **kwargs)
