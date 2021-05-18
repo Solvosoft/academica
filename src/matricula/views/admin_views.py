@@ -540,7 +540,7 @@ def pre_enroll_group(request, pk=None):
                             },
                             enqueued=False, user=None)
                         messages.success(request, "Estudiantes activades para matrícule.")
-                    elif action == "Rechazar prematricula":
+                    elif action == "Rechazar pre-inscripción":
                         enrolls = Enroll.objects.filter(pk__in=form.cleaned_data['students'], group=group)
                         emails = []
                         for instance in enrolls:

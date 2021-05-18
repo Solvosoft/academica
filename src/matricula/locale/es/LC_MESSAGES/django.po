@@ -36,7 +36,7 @@ msgstr "Lista de estudiantes"
 
 #: src/matricula/admin.py:84
 msgid "# student pre-enroll"
-msgstr "# estudiantes prematriculades"
+msgstr "# estudiantes pre-inscritos"
 
 #: src/matricula/admin.py:93
 msgid "# student enroll"
@@ -282,11 +282,11 @@ msgstr "Flujo normal (activación manual para matrícula)"
 
 #: src/matricula/models.py:146
 msgid "Auto pre-enroll (automatic enroll activate)"
-msgstr "Auto prematrícula (Activa para matrícula automáticamente)"
+msgstr "Auto pre-inscripción (Activa para matrícula automáticamente)"
 
 #: src/matricula/models.py:149
 msgid "Auto enroll (automatic enroll finished)"
-msgstr "Matrícula automática (pone matrícula finalizada al prematricular)"
+msgstr "Matrícula automática (pone matrícula finalizada al pre-inscribir)"
 
 #: src/matricula/models.py:160
 msgid "Pre enroll start hour"
@@ -544,7 +544,7 @@ msgstr "Bienvenide a Académica"
 
 #: src/matricula/templates/enroll.html:4
 msgid "Pre-enroll courses"
-msgstr "Cursos prematriculados"
+msgstr "Cursos pre-inscritos"
 
 #: src/matricula/templates/enroll.html:15
 #: src/matricula/templates/enroll.html:44
@@ -563,7 +563,7 @@ msgstr "Matricularme"
 #: src/matricula/templates/enroll.html:73
 #: src/matricula/templates/matricula/student_form.html:44
 msgid "You don't have courses pre-enrolled"
-msgstr "No tiene cursos prematriculados"
+msgstr "No tiene cursos pre-inscritos"
 
 #: src/matricula/templates/enroll.html:89
 #: src/matricula/templates/matricula/student_form.html:49
@@ -644,7 +644,7 @@ msgstr "Guardar"
 
 #: src/matricula/templates/matricula/student_form.html:35
 msgid "Pre-enrolled courses"
-msgstr "Cursos prematriculados"
+msgstr "Cursos pre-inscritos"
 
 #: src/matricula/templates/matricula/student_form.html:58
 msgid "You don't have enrolled courses"
@@ -796,7 +796,7 @@ msgstr "Todas las pre-inscripciones"
 
 #: src/matricula/templates/student_list.html:68
 msgid "Pre-enroll but not enroll"
-msgstr "Prematriculado pero no matriculado"
+msgstr "Pre-inscrito pero no matriculado"
 
 #: src/matricula/templates/student_login.html:15
 msgid "Your username and password didn't match. Please try again."
