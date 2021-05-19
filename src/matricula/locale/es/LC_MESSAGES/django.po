@@ -870,7 +870,7 @@ msgstr "Perfil actualizado con éxito"
 
 #: src/matricula/views/Enrollments.py:36 src/matricula/views/Enrollments.py:188
 msgid "The group is full and was not possible to enroll you."
-msgstr "El cupo esta completo, no fue posible inscribirte."
+msgstr "El cupo está completo, no fue posible inscribirte."
 
 #: src/matricula/views/Enrollments.py:60 src/matricula/views/Enrollments.py:114
 #: src/matricula/views/Enrollments.py:186
@@ -927,4 +927,4 @@ msgstr "Rol de estudiante eliminado con éxito"
 
 #: src/matricula/views/students_views.py:30
 msgid "The professor associated with this user is not active"
-msgstr "La facilitadore asociade con esta usuarie no esta active"
+msgstr "La facilitadore asociade con esta usuarie no está active"
