@@ -11,7 +11,7 @@ from django.contrib.auth.admin import GroupAdmin
 from django.contrib.auth.models import Group
 
 from matricula.models import Student, Course, Group as GroupUPO, Enroll, Period, Category, \
-    MenuItem, Page, Professor, Coupon, FakeGroup
+    MenuItem, Page, Professor, Coupon, FakeGroup, WaitingList
 from matricula.admins import BaseGroup
 from matricula.forms import MenuItemFormPage
 
@@ -139,7 +139,7 @@ admin.site.register(Page)
 admin.site.register(Professor)
 admin.site.register(FakeGroup)
 admin.site.unregister(Group)
-#admin.site.register(Group, GroupsAdmin)
+admin.site.register(WaitingList)
 admin.site.site_header = _("Academica administrator site")
 
 

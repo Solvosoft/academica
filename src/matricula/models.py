@@ -277,6 +277,22 @@ class Enroll(models.Model):
             dev = _("Yes")
         return dev
 
+
+class WaitingList(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.group) + " " + str(self.student)
+
+    class Meta:
+        verbose_name = _("Waiting list")
+        verbose_name_plural = _("Waiting lists")
+        ordering = ['group', 'created_at']
+
+
 class MenuItem(models.Model):
     TYPES = (
         (0, _("Internal")),
