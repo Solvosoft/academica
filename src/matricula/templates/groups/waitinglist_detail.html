@@ -1,0 +1,39 @@
+{% extends 'gentelella/base.html'%}
+{% load static %}
+{% block content %}
+	<h1 class="text-center">Lista de espera por grupo.</h1>
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+			<div class="x_panel">
+				<div class="x_title">
+					<h2 class="green">{{object}}</h2>
+					<ul class="nav navbar-right panel_toolbox">
+					</ul>
+					<div class="clearfix"></div>
+				</div>
+				<div class="x_content">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Estudiante</th>
+								<th>Fecha</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for enroll in object.waitinglist_set.all %}
+								<tr>
+									<td>{{enroll.student}}</td>
+									<td>{{enroll.created_at}}</td>
+								</tr>
+							{% empty %}
+								<tr>
+									<td colspan="2">No hay estudiantes registrados en este grupo.</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

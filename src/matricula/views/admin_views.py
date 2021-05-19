@@ -1110,6 +1110,12 @@ class StudentDetailView(DetailView):
     template_name = 'students/student_detail.html'
 
 
+@method_decorator(permission_required('matricula.view_student'), name='dispatch')
+class GroupDetailView(DetailView):
+    model = Group
+    template_name = 'groups/waitinglist_detail.html'
+
+
 @permission_required('matricula.can_recovery_pass_student')
 def recovery_pass_student(request, pk=None):
     if (pk is not None):

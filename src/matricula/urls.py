@@ -7,6 +7,7 @@ Created on 7/4/2015
 
 from django.conf.urls import url
 from django.urls import path
+from matricula.models import WaitingList
 
 from matricula.views.Auth import recover_password, \
     mail_recover_pass, authenticate, create_user, login_user, \
@@ -16,7 +17,7 @@ from matricula.views.Enrollments import list_enroll, enrollme, \
     finish_enroll
 from matricula.views.Pages import PageDetail
 from .admin import admin_site
-from .views.admin_views import CategoryList, create_category, \
+from .views.admin_views import CategoryList, GroupDetailView, create_category, \
     CategoryDelete, edit_category, CourseList, create_course, \
     CourseDelete, edit_course, MenuItemList, create_menuitem, MenuItemDelete, \
     edit_menuitem, PeriodList, create_period, edit_period, PeriodDelete, \
@@ -78,6 +79,7 @@ urlpatterns = [
     path('enrrolment/delete_period/<int:pk>/', PeriodDelete.as_view() , name="delete_period"),
     path('enrrolment/edit_period/<int:pk>/', edit_period, name="edit_period"),
     url('enrrolment/groups', GroupList.as_view(), name="groups_enroll"),
+    path('enrrolment/<int:pk>/waitinglist', GroupDetailView.as_view(), name="waitinglist_group"),
     path('enrrolment/pre_enroll_group/<int:pk>/', pre_enroll_group, name="pre_enroll_group"),
     url('enrrolment/create_group', create_group, name="create_group_enroll"),
     path('enrrolment/delete_group/<int:pk>/', GroupDelete.as_view(), name="delete_group_enroll"),

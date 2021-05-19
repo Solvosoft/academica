@@ -18,7 +18,7 @@ from django_ajax.decorators import ajax
 
 from async_notifications.utils import send_email_from_template
 
-from matricula.models import Group, Enroll
+from matricula.models import Group, Enroll, WaitingList
 
 
 @ajax
@@ -30,10 +30,13 @@ def enrollme(request, pk):
     all_enrolls = all_enrolls.filter(Q(paid_excluded=True) | Q(bill__is_paid=True) | Q(bill_created=True))
     if all_enrolls.exists() and all_enrolls.count() >= all_enrolls.first().group.maximum \
         and not all_enrolls.filter(student=student).exists():
+        in_waitinglist = WaitingList.objects.filter(group=group, student=student).exists()
+        if(not in_waitinglist):
+            WaitingList.objects.create(group=group, student=student)
         return { 
                     "inner-fragments": {
                         "#count_" + str(group.pk): group.enroll_set.count(),
-                        "#group_message": '<div class="alert alert-error" role="alert">' + str(_('The group is full and was not possible to enroll you.')) + '</div>'
+                        "#group_message": '<div class="alert alert-error" role="alert">' + str(_('The group is full and was not possible to enroll you.')) + ' Pero ya formas parte de la lista de espera.</div>'
                     },
                 }
     list_enroll = Enroll.objects.filter(group=group, student=student)
