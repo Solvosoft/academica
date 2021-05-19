@@ -348,11 +348,11 @@ msgstr "Grupos"
 
 #: src/matricula/models.py:213
 msgid "Approved"
-msgstr "Aprobade"
+msgstr "Curso Aprobado"
 
 #: src/matricula/models.py:214
 msgid "Reproved"
-msgstr "Reprobade"
+msgstr "Curso Reprobado"
 
 #: src/matricula/models.py:218
 msgid "Is enroll finished?"

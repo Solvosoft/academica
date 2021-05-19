@@ -230,7 +230,6 @@ class Enroll(models.Model):
     # bill field is needed to bill system
     bill_created = models.BooleanField(
         default=False, verbose_name=_("Bill created"))
-    course_score = models.DecimalField(max_digits=6, decimal_places=4, default=Decimal(0.00), verbose_name=_("Note"))
     course_status = models.CharField(max_length=20, choices=COURSE_STATUS, blank=True, null=True,
                                      verbose_name=_("Status"))
     pdf_certificate = models.FileField(upload_to="certificates/", null=True, blank=True, verbose_name=_("Certificate"))

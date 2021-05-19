@@ -26,7 +26,7 @@ class GroupsAdmin(GroupAdmin):
 class EnrollAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
-            'fields': (('enroll_finished', 'enroll_activate'), 'group', 'student', 'bill_created', 'course_score', 'course_status', 'pdf_certificate')
+            'fields': (('enroll_finished', 'enroll_activate'), 'group', 'student', 'bill_created', 'course_status', 'pdf_certificate')
         }),)
 
     list_display = ('student', 'group', 'enroll_finished', 'enroll_activate')

@@ -39,7 +39,7 @@ def update_enroll(request):
        enroll_list = json.loads(request.body)
 
        for enroll in enroll_list:
-           Enroll.objects.filter(pk=int(enroll['pk'])).update(course_score=float(enroll['Nota']), course_status=enroll['Estado'])
+           Enroll.objects.filter(pk=int(enroll['pk'])).update(course_status=enroll['Estado'])
 
 
 @ajax
