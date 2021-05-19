@@ -16,7 +16,7 @@
                               </h2>
                               <p class="excerpt">
                                 <span class="text-purple">{{obj.get_status}}
-                                  {% if obj.pdf_certificate %}
+                                  {% if obj.course_status == "approved" and obj.pdf_certificate %}
                                     <a href="{{obj.pdf_certificate.url}}" target="_blank"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
                                     {% endif %}
                                 </span>
