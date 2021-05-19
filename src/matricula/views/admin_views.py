@@ -39,7 +39,7 @@ from matricula.forms import CategoryCreateForm, CategorySearchForm, \
     PreEnrollAddGroupForm, GroupAddForm, GroupEditForm, PermissionForm, \
     StudentChangePasswordForm
 from matricula.models import Category, Course, Period, Group, \
-    Enroll, Student, Page, Professor
+    Enroll, Student, Page, Professor, WaitingList
 from matricula.tasks import task_generate_group_certificate
 from matricula.views.utils import get_expire_date
 from matricula.certificate_utils import link_callback
@@ -543,10 +543,13 @@ def pre_enroll_group(request, pk=None):
                     elif action == "Rechazar pre-inscripción":
                         enrolls = Enroll.objects.filter(pk__in=form.cleaned_data['students'], group=group)
                         emails = []
+                        waiting_list = []
                         for instance in enrolls:
                             instance.rejected = True
                             instance.save()
+                            waiting_list.append(WaitingList(student=instance.student, group=instance.group))
                             emails.append(instance.student.user.email)
+                        WaitingList.objects.bulk_create(waiting_list)
                         schema = request.scheme + "://"
                         send_email_from_template(
                             'email_enroll_rejected', [i for i in emails],
