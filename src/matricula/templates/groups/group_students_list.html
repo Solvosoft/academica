@@ -122,11 +122,11 @@
                                     {% else %}
                                         {% if enroll.enroll_finished %}
                                             {% if enroll.course_status == "reproved" %}
-                                                Estudiante reprobade.
+                                                Curso reprobado.
                                             {% elif enroll.course_status == "approved" %}
-                                                Estudiante aprobade, debe generar el certificado.
+                                                Curso aprobado, debe generar el certificado.
                                             {% else %}
-                                                Estudiante no calificade.
+                                                Curso no calificado.
                                             {% endif %}
                                         {% else %}
                                             Matrícula no finalizada.
