@@ -81,6 +81,12 @@ class Professor(models.Model):
             ("change_profile", "Can change_profile"),
         ]
         ordering = ['user__last_name', 'active']
+    
+    @property
+    def get_description(self):
+        dev = self.description
+        dev = dev if dev is not None else "No ha sido actualizada"
+        return dev
 
 
 class Period(models.Model):
