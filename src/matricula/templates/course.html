@@ -66,7 +66,7 @@
 								{% for i in group.professors.all %}
 									<li><a title="Perfil del facilitador"  href="{% url 'professor_profile' i.pk %}" target="_blank">{{i}}</a></li>
 								{% empty %}
-									<li>No hay facilitadores registrados</li>
+									<li>No hay facilitadores asignados</li>
 								{% endfor%}
 							</ul>
 						</div>
