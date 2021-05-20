@@ -40,7 +40,7 @@
 	<div class="row">
 		{% for group in course.groups%}
 			<div class="col-md-6">
-				<div class="x_panel" style="height:250px;">
+				<div class="x_panel" style="height:320px;">
 					<div class="x_title">
 						<h3 class="green">{{group.name}}</h3>
 					</div>
@@ -60,6 +60,16 @@
 								<strong>Inversión: </strong>{{group.cost}} {{group.currency}}
 							</div>
 						{% endif %}
+						<div class='col-md-12'>
+							<strong>Facilitadores: </strong>
+							<ul style="list-style:none;">
+								{% for i in group.professors.all %}
+									<li><a title="Perfil del facilitador"  href="{% url 'professor_profile' i.pk %}" target="_blank">{{i}}</a></li>
+								{% empty %}
+									<li>No hay facilitadores registrados</li>
+								{% endfor%}
+							</ul>
+						</div>
 						<div class="col-md-12">
 							<strong>Horario: </strong>{{group.schedule}}
 						</div>

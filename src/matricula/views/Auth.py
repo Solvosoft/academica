@@ -7,22 +7,26 @@ Created on 17/5/2015
 import uuid
 
 from django.utils.translation import ugettext_lazy as _
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse, reverse_lazy
-from django.contrib import messages, auth
-from django.http.response import HttpResponse
-from django.contrib.auth.decorators import login_required
+from django.utils.timezone import now
 from django.utils.decorators import method_decorator
-from django.template.loader import render_to_string
-from django.views.generic.edit import UpdateView
 from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
-from django.utils.timezone import now
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages, auth
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse, reverse_lazy
+from django.http.response import HttpResponse
+from django.template.loader import render_to_string
+from django.views.generic.edit import UpdateView
+from django.views.generic import DetailView
+from django.db.models import Count
 
-from async_notifications.utils import send_email_from_template
+
 from django_ajax.decorators import ajax
 
-from matricula.models import Student, Enroll
+from async_notifications.utils import send_email_from_template
+
+from matricula.models import Group, Professor, Student, Enroll
 from matricula.views.utils import get_expire_date
 from matricula.forms import ProfessorEditProfileForm, StudentCreateForm, StudentEditForm, UserEditForm, \
     StudentResetPasswordForm
@@ -214,6 +218,13 @@ def mail_recover_pass(request):
 @login_required
 def get_profile(request):
     return redirect(reverse('myprofile', kwargs={'pk': request.user.pk}))
+
+
+
+@method_decorator(login_required, name='dispatch')
+class ProfessorProfileView(DetailView):
+    model = Professor
+    template_name = "professor/professor_profile.html"
 
 
 @method_decorator(login_required, name='dispatch')

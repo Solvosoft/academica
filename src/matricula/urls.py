@@ -9,7 +9,7 @@ from django.conf.urls import url
 from django.urls import path
 from matricula.models import WaitingList
 
-from matricula.views.Auth import recover_password, \
+from matricula.views.Auth import ProfessorProfileView, recover_password, \
     mail_recover_pass, authenticate, create_user, login_user, \
     confirm_email, logout, StudentEdit, add_student
 from matricula.views.Courses import list_courses, view_course, course_detail
@@ -41,6 +41,8 @@ from .views.students_views import qualify_students, update_enroll, update_enroll
 
 urlpatterns = [
     url('enrrolment/accounts/profile/?$', get_profile, name='profile'),
+    path('enrrolment/professor/<int:pk>/profile/', 
+        ProfessorProfileView.as_view(), name='professor_profile'),
     url('^student/history/$', GradeList.as_view(), name='student_history'),
     url('enrrolment/create_user$', create_user, name="create_user_academy"),
     url('enrrolment/add_student$', add_student, name="add_student"),

@@ -1,0 +1,43 @@
+{% extends 'gentelella/base.html'%}
+{% load i18n %}
+{% block extra_css %}
+	<style>
+		.profile_title{
+			margin: 5px;
+			padding: 5px;
+		}
+	</style>
+{% endblock %}
+{% block content %}
+	<br/>
+	<h3 class="green">Perfil del facilitador</h3>
+	<div class="row">
+		<div class="col-md-8">
+			<div class="x_panel" style="font-size:1.5em">
+				<div class="row">
+					<div class="col-md-3"><strong>Nombre:</strong></div>
+					<div class="col-md-9">{{object}}</div>
+				</div>
+				<div class="row">
+					<div class="col-md-3"><strong>Correo electrónico:</strong></div>
+					<div class="col-md-9">{{object.email}}</div>
+				</div>
+				<div class="row">
+					<div class="col-md-3"><strong>Descripción:</strong></div>
+					<div class="col-md-9">{{object.description}}</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="animated flipInY" style="max-width:200px;">
+				<div class="tile-stats">
+					<div class="icon"><i class="fa fa-sort"></i>
+					</div>
+					<div class="count">{{object.group_set.count}}</div>
+					<h3>Cursos asignados</h3>
+				</div>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+{% endblock%}
