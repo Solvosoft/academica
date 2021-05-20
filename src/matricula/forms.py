@@ -787,9 +787,10 @@ class ProfessorEditProfileForm(GTForm, forms.ModelForm):
     
     class Meta:
         model = Professor
-        fields = ("description", 'email_professor', )
+        fields = ("description", 'email_professor', "photo")
         widgets = {
-            'description': djgentelella.Textarea,
+            'description': tinymce.EditorTinymce,
+            'photo': djgentelella.FileInput,
         }
 
     def __init__(self, *args, **kwargs):
