@@ -65,6 +65,7 @@ class Professor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     email = models.EmailField(blank=True, verbose_name=_("Email for students"))
     description = models.TextField(max_length=2000, null=True, blank=True, verbose_name=_("Description"))
+    photo = models.FileField(upload_to="photo_profile/", null=True, blank=True, verbose_name="Foto de perfil")
     active = models.BooleanField(default=True, verbose_name="Activa")
 
     def __str__(self):

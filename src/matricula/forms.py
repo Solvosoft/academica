@@ -757,12 +757,13 @@ class ProfessorAddForm(GTForm, forms.ModelForm):
 
     class Meta:
         model = Professor
-        fields = ('user', "email", "description", "active")
+        fields = ('user', "email", "description", "active",'photo')
         widgets = {
             'email': djgentelella.EmailMaskInput,
             'description': djgentelella.Textarea,
             'active': djgentelella.YesNoInput,
             'user': AutocompleteSelect('studentuser'),
+            'photo': djgentelella.FileInput(attrs={'accept':'image/*'}),
         }
 
 
@@ -770,11 +771,12 @@ class ProfessorEditForm(GTForm, forms.ModelForm):
     
     class Meta:
         model = Professor
-        fields = ("email", "description", "active")
+        fields = ("email", "description", "photo", "active",)
         widgets = {
             'email': djgentelella.EmailMaskInput,
             'description': djgentelella.Textarea,
             'active': djgentelella.YesNoInput,
+            'photo': djgentelella.FileInput(attrs={'accept':'image/*'}),
         }
 
 
