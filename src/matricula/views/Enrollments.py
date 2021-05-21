@@ -24,6 +24,7 @@ from matricula.models import Group, Enroll, WaitingList
 @ajax
 @login_required
 def enrollme(request, pk):
+    message = ''
     group = get_object_or_404(Group, pk=pk)
     student = request.user.student
     all_enrolls = Enroll.objects.filter(group=group, enroll_finished=True)
