@@ -28,6 +28,7 @@ from djgentelella.models import MenuItem as DJMenuItem
 from async_notifications.utils import send_email_from_template
 from chunked_upload.models import ChunkedUpload
 from xhtml2pdf import pisa
+import django_excel as excel
 
 from matricula.certificate_utils import build_pdf_certificate
 from matricula.forms import CategoryCreateForm, CategorySearchForm, \
@@ -1117,6 +1118,19 @@ class StudentDetailView(DetailView):
 class GroupDetailView(DetailView):
     model = Group
     template_name = 'groups/waitinglist_detail.html'
+
+
+@permission_required('matricula.view_student')
+def export_waitinglist_csv(request, pk=None):
+    waitinglist = WaitingList.objects.none()
+    group_name = 'waitinglist'
+    if pk is not None:
+        item = Group.objects.get(pk=pk)
+        group_name += "-" + item.name
+        waitinglist = WaitingList.objects.filter(group=pk)
+    column_names = ['group__name', 'student__user__username', 'student__user__email', 'student__user__first_name', 'student__user__last_name','created_at']
+    return excel.make_response_from_query_sets(
+        waitinglist, column_names, 'xlsx', file_name=group_name)
 
 
 @permission_required('matricula.can_recovery_pass_student')

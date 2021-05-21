@@ -3,6 +3,11 @@
 {% block content %}
 	<h1 class="text-center">Lista de espera por grupo.</h1>
 	<div class="row">
+		<div class="col-md-10 col-md-offset-1" style="text-align:right">
+			<a href="{% url 'export_users_csv' object.pk %}" class="btn btn-info">Exportar Excel</a>
+		</div>
+	</div>
+	<div class="row">
 		<div class="col-md-10 col-md-offset-1">
 			<div class="x_panel">
 				<div class="x_title">

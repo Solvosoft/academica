@@ -24,8 +24,8 @@ from .views.admin_views import CategoryList, GroupDetailView, create_category, \
     GroupList, create_group, edit_group, GroupDelete, EnrollList, \
     create_enroll, edit_enroll, EnrollDelete, StudentList, create_student, \
     edit_student, StudentDelete, PageList, create_page, edit_page, PageDelete, \
-    export_group, recovery_pass_student, MenuPageDelete, create_menupage, \
-    pre_enroll_group, add_group_course, list_students_group, \
+    export_group, export_waitinglist_csv, recovery_pass_student, MenuPageDelete, \
+    create_menupage, pre_enroll_group, add_group_course, list_students_group, \
     export_enrolled_group, open_group, close_group, regenerate_certificate, \
     build_pdf_certificate_list, edit_password_student, \
     StudentDetailView
@@ -82,6 +82,7 @@ urlpatterns = [
     path('enrrolment/edit_period/<int:pk>/', edit_period, name="edit_period"),
     url('enrrolment/groups', GroupList.as_view(), name="groups_enroll"),
     path('enrrolment/<int:pk>/waitinglist', GroupDetailView.as_view(), name="waitinglist_group"),
+    path('export/<int:pk>/csv/', export_waitinglist_csv, name='export_users_csv'),
     path('enrrolment/pre_enroll_group/<int:pk>/', pre_enroll_group, name="pre_enroll_group"),
     url('enrrolment/create_group', create_group, name="create_group_enroll"),
     path('enrrolment/delete_group/<int:pk>/', GroupDelete.as_view(), name="delete_group_enroll"),
