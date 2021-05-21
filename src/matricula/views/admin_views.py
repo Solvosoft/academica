@@ -1121,16 +1121,22 @@ class GroupDetailView(DetailView):
 
 
 @permission_required('matricula.view_student')
-def export_waitinglist_csv(request, pk=None):
-    waitinglist = WaitingList.objects.none()
+def export_waitinglist_xls(request, pk=None):
     group_name = 'waitinglist'
+    waitinglist = None
     if pk is not None:
         item = Group.objects.get(pk=pk)
         group_name += "-" + item.name
         waitinglist = WaitingList.objects.filter(group=pk)
-    column_names = ['group__name', 'student__user__username', 'student__user__email', 'student__user__first_name', 'student__user__last_name','created_at']
-    return excel.make_response_from_query_sets(
-        waitinglist, column_names, 'xlsx', file_name=group_name)
+    column_names = [
+        'group__name', 'student__user__username','student__user__email',
+        'student__user__first_name', 'student__user__last_name','created_at']
+    if not waitinglist.count()>0:
+        messages.error(request, "No hay registros para exportar")
+        return redirect(reverse('waitinglist_group', kwargs={"pk": pk}))
+    else:
+        return excel.make_response_from_query_sets(
+            waitinglist, column_names, 'xlsx', file_name=group_name)
 
 
 @permission_required('matricula.can_recovery_pass_student')
