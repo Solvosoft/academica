@@ -82,7 +82,7 @@
                         <div><strong>Correo de usuarie: </strong> {% if professor.user.email %} {{professor.user.email}} {% else %} Sin especificar {% endif %}</div>
                         <div><strong>Correo para estudiantes: </strong> {% if professor.email %} {{professor.email}} {% else %} Sin especificar {% endif %}</div>
                         <div><strong>Estado: </strong> {% if professor.active%} Active {% else %} Inactive {% endif %}</div>
-                        <div><strong>Descripción: </strong><p style="text-align: justify; text-justify: inter-word;">{% if professor.description %} {{professor.description|truncatechars:165}} {% else %} Sin especificar {% endif %} </p></div>
+                        <div><strong>Descripción: </strong><p style="text-align: justify; text-justify: inter-word;">{% if professor.description %} {{professor.description|striptags|truncatechars:165}} {% else %} Sin especificar {% endif %} </p></div>
                        <div class="clearfix"></div>
                     </div>
                     <div class="x_footer">

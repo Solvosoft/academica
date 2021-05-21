@@ -9,10 +9,12 @@ from django.views.generic import ListView, CreateView, UpdateView
 from django.conf import settings
 
 from matricula.decorators import user_group_perms
-from matricula.forms import ProfessorEditForm, ProfessorSearchForm, ProfessorAddForm, UserCreateForm, UserEditForm
+from matricula.forms import ProfessorEditForm, ProfessorSearchForm, \
+    ProfessorAddForm, UserCreateForm, UserEditForm
 from matricula.models import Professor
 
 from async_notifications.utils import send_email_from_template
+from chunked_upload.models import ChunkedUpload
 from matricula.views.utils import checking_user
 
 
@@ -95,6 +97,10 @@ class CreateProfessor(CreateView):
             professor_group = Group.objects.filter(name=settings.PROFESSOR_GROUP_NAME).first()
             instance.user.groups.add(professor_group)
             instance.user.user_permissions.add(*professor_group.permissions.all())
+            tmpupload = ChunkedUpload.objects.filter(upload_id=request.POST.get("photo")).first()
+            if tmpupload:
+                instance.photo = tmpupload.get_uploaded_file()
+                tmpupload.delete()
             instance.save()
             self.send_email(instance.user)
             messages.success(self.request, "Facilitadore registrade exitosamente.")
@@ -145,6 +151,10 @@ class EditProfessor(UpdateView):
             professor.email = form.cleaned_data['email']
             professor.description = form.cleaned_data['description']
             professor.active = form.cleaned_data['active']
+            tmpupload = ChunkedUpload.objects.filter(upload_id=request.POST.get("photo")).first()
+            if tmpupload:
+                professor.photo = tmpupload.get_uploaded_file()
+                tmpupload.delete()
             professor.save()
             if not checking_user(professor.user):
                 change_state_user(professor)

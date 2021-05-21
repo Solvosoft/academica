@@ -9,27 +9,27 @@ import uuid
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 from django.utils.decorators import method_decorator
+
 from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages, auth
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.http.response import HttpResponse
 from django.template.loader import render_to_string
 from django.views.generic.edit import UpdateView
 from django.views.generic import DetailView
-from django.db.models import Count
-
 
 from django_ajax.decorators import ajax
-
+from chunked_upload.models import ChunkedUpload
 from async_notifications.utils import send_email_from_template
 
-from matricula.models import Group, Professor, Student, Enroll
+from matricula.models import Professor, Student, Enroll
 from matricula.views.utils import get_expire_date
-from matricula.forms import ProfessorEditProfileForm, StudentCreateForm, StudentEditForm, UserEditForm, \
-    StudentResetPasswordForm
+from matricula.forms import ProfessorEditProfileForm, StudentCreateForm,\
+    StudentEditForm, UserEditForm, StudentResetPasswordForm
 
 
 def create_user(request):
@@ -256,10 +256,14 @@ class StudentEdit(SuccessMessageMixin, UpdateView):
         self.object = self.get_object()
         if hasattr(request.user, 'professor'):
             professor_form = ProfessorEditProfileForm(request.POST)
+            tmpupload = ChunkedUpload.objects.filter(upload_id=request.POST.get("photo")).first()
             if professor_form.is_valid():
                 professor = request.user.professor
                 professor.email = professor_form.cleaned_data['email_professor']
                 professor.description = professor_form.cleaned_data['description']
+                if tmpupload: 
+                    professor.photo = tmpupload.get_uploaded_file()
+                    tmpupload.delete()
                 professor.save()
             else:
                 errors = True

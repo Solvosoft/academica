@@ -760,7 +760,7 @@ class ProfessorAddForm(GTForm, forms.ModelForm):
         fields = ('user', "email", "description", "active",'photo')
         widgets = {
             'email': djgentelella.EmailMaskInput,
-            'description': djgentelella.Textarea,
+            'description': tinymce.EditorTinymce,
             'active': djgentelella.YesNoInput,
             'user': AutocompleteSelect('studentuser'),
             'photo': djgentelella.FileInput(attrs={'accept':'image/*'}),
@@ -776,6 +776,7 @@ class ProfessorEditForm(GTForm, forms.ModelForm):
             'email': djgentelella.EmailMaskInput,
             'description': djgentelella.Textarea,
             'active': djgentelella.YesNoInput,
+            'description': tinymce.EditorTinymce,
             'photo': djgentelella.FileInput(attrs={'accept':'image/*'}),
         }
 
