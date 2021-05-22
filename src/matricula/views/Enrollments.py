@@ -124,11 +124,11 @@ def enrollme(request, pk):
                     message = _('You are enrolled but the paid is pending, if you don\'t paid your enroll will be removed')
             else:
                 message = _('Sorry your pre-enroll was rejected')
-        elif enroll.group.in_preenrollment:
-            if not enroll.rejected:
-                message = _('You are already pre-enrolled')
-            else:
+        else:
+            message = _('You are already pre-enrolled')
+            if enroll.rejected:
                 message = _('Sorry your pre-enroll was rejected')
+
         return { 
             "inner-fragments": {
                 "#count_" + str(group.pk): group.enroll_set.count(),
