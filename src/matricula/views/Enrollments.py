@@ -26,9 +26,11 @@ from matricula.models import Group, Enroll, WaitingList
 def enrollme(request, pk):
     group = get_object_or_404(Group, pk=pk)
     student = request.user.student
-    all_enrolls = Enroll.objects.filter(group=group, enroll_finished=True)
-    all_enrolls = all_enrolls.filter(Q(paid_excluded=True) | Q(bill__is_paid=True) | Q(bill_created=True))
-    if all_enrolls.exists() and all_enrolls.count() >= all_enrolls.first().group.maximum \
+    all_enrolls = Enroll.objects.filter(group=group)
+    all_enrolls = all_enrolls.filter(
+        Q(paid_excluded=True) | Q(bill__is_paid=True) | \
+        Q(bill_created=True) | Q(enroll_finished=True))
+    if all_enrolls.exists() and all_enrolls.count() >= group.maximum \
         and not all_enrolls.filter(student=student).exists():
         in_waitinglist = WaitingList.objects.filter(group=group, student=student).exists()
         if(not in_waitinglist):
