@@ -194,6 +194,10 @@ class Group(models.Model):
     def in_enrollment(self):
         return timezone.localtime(self.enroll_start) <= timezone.localtime() <= timezone.localtime(self.enroll_finish)
 
+    @property
+    def get_enrolls_completed(self):
+        return self.enroll_set.filter(enroll_finished=True).count()
+
     def __str__(self):
         return self.name
 
