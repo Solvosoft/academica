@@ -90,11 +90,11 @@
 							<a class="btn btn-link" href="{% url 'course_detail' group.course.pk %}">Ver temario</a>
 							{% if request.user.is_authenticated and request.user.student %}
 								{% if group.in_enrollment and group.flow == group.AUTO_ENROLL or group.in_enrollment and group.flow == group.AUTO_PREENROLL %}
-									<a style="margin-botton:10px;" class="btn btn-primary btn-sm" data-href="{% url 'enrollme' group.pk%}"  data-ajax="true">
+									<a style="margin-botton:10px;" class="btn btn-primary btn-sm enrollme" data-href="{% url 'enrollme' group.pk%}"  data-ajax="true">
 										{% trans 'Enroll me' %}
 									</a>
 								{% elif group.in_preenrollment %}
-									<a style="margin-botton:10px;" class="btn btn-primary btn-sm" data-href="{% url 'enrollme' group.pk%}"  data-ajax="true">
+									<a style="margin-botton:10px;" class="btn btn-primary btn-sm enrollme" data-href="{% url 'enrollme' group.pk%}"  data-ajax="true">
 										{% trans 'Pre-enroll me' %}
 									</a>
 								{% endif %}
@@ -109,4 +109,11 @@
 {% block js %}
 	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
+	<script>
+		$(document).ready(function(){
+			$('.enrollme').click(function(){
+				$('html, body').animate({ scrollTop: 0 }, 'low');
+			});
+		});
+	</script>
 {% endblock %}
