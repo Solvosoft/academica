@@ -23,6 +23,31 @@ from matricula.models import Group, Enroll, WaitingList
 
 @ajax
 @login_required
+def addmetoquee(request, pk):
+    message = 'El registro en la lista de espera fue realizado exitosamente'
+    group = get_object_or_404(Group, pk=pk)
+    student = request.user.student
+    all_enrolls = Enroll.objects.filter(group=group)
+    all_enrolls = all_enrolls.filter(
+        Q(paid_excluded=True) | Q(bill__is_paid=True) | \
+        Q(bill_created=True) | Q(enroll_finished=True))
+    if all_enrolls.exists() and all_enrolls.count() >= group.maximum \
+        and not all_enrolls.filter(student=student).exists():
+        in_waitinglist = WaitingList.objects.filter(group=group, student=student).exists()
+        if(not in_waitinglist):
+            WaitingList.objects.create(group=group, student=student)
+        else:
+            message = '<div class="alert alert-success" role="alert">Ya formas parte de la lista de espera.</div>'
+        return { 
+                    "inner-fragments": {
+                        "#count_" + str(group.pk): group.enroll_set.count(),
+                        "#group_message": message
+                    },
+        }
+
+
+@ajax
+@login_required
 def enrollme(request, pk):
     message = ''
     group = get_object_or_404(Group, pk=pk)
@@ -36,10 +61,17 @@ def enrollme(request, pk):
         in_waitinglist = WaitingList.objects.filter(group=group, student=student).exists()
         if(not in_waitinglist):
             WaitingList.objects.create(group=group, student=student)
+        else:
+            return { 
+                    "inner-fragments": {
+                        "#count_" + str(group.pk): group.enroll_set.count(),
+                        "#group_message": '<div class="alert alert-success" role="alert">' + str(_('The group is full and was not possible to enroll you.')) + ' Pero ya formas parte de la lista de espera.</div>'
+                    },
+                }
         return { 
                     "inner-fragments": {
                         "#count_" + str(group.pk): group.enroll_set.count(),
-                        "#group_message": '<div class="alert alert-error" role="alert">' + str(_('The group is full and was not possible to enroll you.')) + ' Pero ya formas parte de la lista de espera.</div>'
+                        "#group_message": '<div class="alert alert-error" role="alert">' + str(_('The group is full and was not possible to enroll you.')) + ' Pero puede agregarte a la lista de espera.'+' <a class="btn btn-success" data-href="'+ reverse('addmetoquee', kwargs={'pk':pk})+'" data-ajax="true">Agregarme</a></div>'
                     },
                 }
     list_enroll = Enroll.objects.filter(group=group, student=student)

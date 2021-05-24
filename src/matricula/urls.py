@@ -12,7 +12,7 @@ from matricula.views.Auth import ProfessorProfileView, recover_password, \
     mail_recover_pass, authenticate, create_user, login_user, \
     confirm_email, logout, StudentEdit, add_student
 from matricula.views.Courses import list_courses, view_course, course_detail
-from matricula.views.Enrollments import list_enroll, enrollme, \
+from matricula.views.Enrollments import addmetoquee, list_enroll, enrollme, \
     finish_enroll
 from matricula.views.Pages import PageDetail
 from .admin import admin_site
@@ -57,6 +57,7 @@ urlpatterns = [
     url('enrrolment/course/(?P<pk>\\d+)$', view_course, name='course'),
     url('enrrolment/course$', view_course, name='course_list'),
     url('enrrolment/enrollme/(?P<pk>\\d+)$', enrollme, name="enrollme"),
+    path('enrrolment/<int:pk>/addmetoquee/', addmetoquee, name="addmetoquee"),
     url('enrrolment/enrollment$', list_enroll, name="enrollment"),
     url('enrrolment/finish_enroll/(?P<pk>\\d+)$', finish_enroll, name="finish_enroll"),
     url(r'enrrolment_pages/(?P<pk>\d+)$', PageDetail.as_view(), name="academica_pages"),
