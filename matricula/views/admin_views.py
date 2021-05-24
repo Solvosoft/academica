@@ -1,0 +1,803 @@
+# encoding: utf-8
+'''
+Created on 18/10/2020
+
+@author: allexiusw
+'''
+from django.views.generic import ListView, DeleteView
+from django.shortcuts import render, get_object_or_404
+from matricula.models import Category, Course, MenuItem, Period, Group, Enroll, Student, Page,\
+    MultilingualContent, MenuTranslations
+from matricula.forms import CategoryCreateForm, CategorySearchForm,\
+    CourseSearchForm, CourseCreateForm, MenuItemSearchForm,\
+    MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, GroupSearchForm,\
+    EnrollSearchForm, EnrollCreateForm, StudentSearchForm, StudentAdminCreateForm, PageCreateForm,\
+    PageSearchForm, MultilingualContentAddForm, MenuTranslationAddForm
+from django.contrib import messages
+from django.urls import reverse
+from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import permission_required, login_required
+from django.utils.decorators import method_decorator
+from django.db.models import Q
+from django.contrib.auth.models import User
+from django.forms import modelformset_factory
+from djgentelella.forms.forms import GTForm, GTBaseModelFormSet
+
+
+@method_decorator(permission_required('matricula.view_category'), name='dispatch')
+class CategoryList(ListView):
+    template_name = "categories/category_list.html"
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(CategoryList, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        queryset = Category.objects.all()
+        name = self.request.GET.get('name', None)
+        if name is not None:
+            queryset = queryset.filter(name__icontains=name)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = CategoryCreateForm()
+        name = self.request.GET.get('name', None)
+        if name is not None:
+            context["form_search"] = CategorySearchForm(self.request.GET)
+        else:
+            context['form_search'] = CategorySearchForm()
+        return context
+
+
+@permission_required('matricula.add_category')
+def create_category(request):
+    context = {}
+    if request.method == 'POST':
+        name = request.GET.get('name', None)
+        if name is not None:
+            context['form_search'] = CategorySearchForm(request.GET)
+            context['object_list'] = Category.objects.filter(name__icontains=name)
+        else: 
+            context['form_search'] = CategorySearchForm()
+            context['object_list'] = Category.objects.all()
+
+        form = CategoryCreateForm(request.POST)
+        context['form'] = form
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Registro creado con éxito!")
+            context['form'] = CategoryCreateForm()
+            return HttpResponseRedirect(reverse('categories'))
+        else:
+            messages.error(request, "No se ha podido guardar la categoría")
+        return render(request, 'categories/category_list.html', context)
+    else:
+        return HttpResponseRedirect(reverse('categories'))
+
+
+@permission_required('matricula.view_category')
+def show_category(request, pk=None):
+    context = {}
+    if pk is not None:
+        category = Category.objects.get(pk=pk)
+        return render(request, 'categories/category_show.html', {
+                                'object': category,})
+    return HttpResponseRedirect(reverse(request, 'categories'))
+
+
+@method_decorator(permission_required('matricula.delete_category'), name='dispatch')
+class CategoryDelete(DeleteView):
+    model = Category
+    success_url = "/matricula/enrrolment/categories/"
+    success_message = "Categoría eliminada con éxito"
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(CategoryDelete, self).dispatch(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(CategoryDelete, self).delete(request, *args, **kwargs)
+
+
+@permission_required('matricula.change_category')
+def edit_category(request, pk=None):
+    context = {}
+    categories = Category.objects.all()
+    search_form = CategorySearchForm()
+    if pk is not None:
+        if request.method == "POST":
+            category = Category.objects.get(pk=pk)
+            form = CategoryCreateForm(request.POST, instance=category)
+            if form.is_valid():
+                messages.success(request, "Categoría guardada con éxito")
+                form.save()
+                return HttpResponseRedirect(reverse('categories'))
+            else:
+                messages.error(request, "Error al actualizar")
+        else:
+            if request.method == "GET":
+                category = Category.objects.get(pk=pk)
+                form = CategoryCreateForm(category.__dict__)
+            else:
+                form = CategoryCreateForm()
+        return render(request, 'categories/category_update.html', {
+                                    'form': form,
+                                    'object_list': categories,
+                                    'form_search': search_form
+                                    })
+    return HttpResponseRedirect(reverse(request, 'categories'))
+
+
+@method_decorator(permission_required('matricula.view_course'), name='dispatch')
+class CourseList(ListView):
+    template_name = "courses/course_list.html"
+    model = Course
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(CourseList, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.form = CourseSearchForm(self.request.GET)
+        self.form.is_valid()
+        if self.form.cleaned_data['name']:
+            queryset = queryset.filter(Q(name__icontains=self.form.cleaned_data['name']) | 
+            Q(content__icontains=self.form.cleaned_data['name']))
+        if self.form.cleaned_data['category']:
+             queryset = queryset.filter(Q(category__in=self.form.cleaned_data['category']))
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        name = self.request.GET.get('name', None)
+        if name is not None:
+            context["form_search"] = CourseSearchForm(self.request.GET)
+        else:
+            context['form_search'] = CourseSearchForm()
+        return context
+
+
+@permission_required('matricula.add_course')
+def create_course(request):
+    context = {}
+    if request.method == 'POST':
+        form = CourseCreateForm(request.POST)
+        context['form'] = form
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Curso guardado con éxito")
+            return HttpResponseRedirect(reverse('enrrolment_courses'))
+        else:
+            messages.error(request, "Error al guardar curso")
+    else:
+        context['form'] = CourseCreateForm()
+    return render(request, 'courses/course_create.html', context)
+
+
+@permission_required('matricula.view_course')
+def show_course(request, pk=None):
+    context = {}
+    if pk is not None:
+        course = Course.objects.get(pk=pk)
+        return render(request, 'courses/course_show.html', {
+                                'object': course,})
+    return HttpResponseRedirect(reverse(request, 'enrrolment_courses'))
+
+
+@method_decorator(permission_required('matricula.delete_course'), name='dispatch')
+class CourseDelete(DeleteView):
+    model = Course
+    success_url = "/matricula/enrrolment/courses/"
+    success_message = "Curso eliminada con éxito"
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(CourseDelete, self).dispatch(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(CourseDelete, self).delete(request, *args, **kwargs)
+
+
+@permission_required('matricula.change_course')
+def edit_course(request, pk=None):
+    context = {}
+    if pk is not None:
+        if request.method == "POST":
+            course = Course.objects.get(pk=pk)
+            form = CourseCreateForm(request.POST, instance=course)
+            if form.is_valid():
+                messages.success(request, "Curso guardado con éxito")
+                form.save()
+                return HttpResponseRedirect(reverse('enrrolment_courses'))
+            else:
+                messages.error(request, "Error al actualizar")
+        else:
+            if request.method == "GET":
+                course = Course.objects.get(pk=pk)
+                form = CourseCreateForm(initial=course.__dict__)
+            else:
+                form = CourseCreateForm()
+        return render(request, 'courses/course_update.html', {'form': form})
+    return HttpResponseRedirect(reverse(request, 'enrrolment_courses'))
+
+
+@method_decorator(permission_required('matricula.view_menuitem'), name='dispatch')
+class MenuItemList(ListView):
+    template_name = "menuitems/menuitem_list.html"
+    model = MenuItem
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(MenuItemList, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.form = MenuItemSearchForm(self.request.GET)
+        self.form.is_valid()
+        if self.form.cleaned_data['name']:
+           queryset = queryset.filter(
+                Q(name__icontains=self.form.cleaned_data['name']) | 
+                Q(description__icontains=self.form.cleaned_data['name']))
+        if self.form.cleaned_data['parent']:
+            queryset = queryset.filter(parent__in=self.form.cleaned_data['parent'])
+        if self.form.cleaned_data['type']:
+            queryset = queryset.filter(type__in=self.form.cleaned_data['type'])
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_search'] = MenuItemSearchForm(self.request.GET)
+        return context
+
+
+@permission_required('matricula.add_menuitem')
+def create_menuitem(request):
+    context = {}
+    formset = modelformset_factory(
+        MenuTranslations, form=MenuTranslationAddForm, formset=GTBaseModelFormSet,
+        can_delete=True, extra=1, can_order=True)
+    if request.method == 'POST':
+        fset = formset(request.POST, queryset=MultilingualContent.objects.none(), prefix="mns")
+        form = MenuItemCreateForm(request.POST)
+        context['form'] = form
+        context['formset'] = fset
+        if form.is_valid() and fset.is_valid():
+            menu = form.save()
+            instances = fset.save(commit=False)
+            for instance in instances:
+                instance.menu = menu
+                instance.save()
+            form.save()
+            messages.success(request, "Elemento del menú guardado con éxito")
+            return HttpResponseRedirect(reverse('menuitems'))
+        else:
+            messages.error(request, "Error al guardar elemento del menú")
+    else:
+        context['formset'] = formset(queryset=MenuTranslations.objects.none(), prefix='mns')
+        context['form'] = MenuItemCreateForm()
+    return render(request, 'menuitems/menuitem_create.html', context)
+
+
+@method_decorator(permission_required('matricula.delete_menuitem'), name='dispatch')
+class MenuItemDelete(DeleteView):
+    model = MenuItem
+    success_url = "/matricula/enrrolment/menuitems"
+    success_message = "Menú eliminado con éxito"
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(MenuItemDelete, self).dispatch(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(MenuItemDelete, self).delete(request, *args, **kwargs)
+
+
+@permission_required('matricula.change_menuitem')
+def edit_menuitem(request, pk=None):
+    context = {}
+    if pk is not None:
+        menu = MenuItem.objects.get(pk=pk)
+        extra = menu.menutranslations_set.all().count()
+        if extra == 0:
+            extra = 1
+        else:
+            extra = 0
+        formset = modelformset_factory(
+            MenuTranslations, form=MenuTranslationAddForm, formset=GTBaseModelFormSet,
+            can_delete=True, extra=extra, can_order=True)
+        if request.method == "POST":
+            fset = formset(
+                request.POST, queryset=MenuTranslations.objects.filter(
+                    menu=menu), prefix='men')
+            form = MenuItemCreateForm(request.POST, instance=menu)
+            context['formset'] = fset
+            context['form'] = form
+            if form.is_valid() and fset.is_valid():
+                menu = form.save()
+                instances = fset.save(commit=False)
+                for delinst in fset.deleted_objects:
+                    delinst.delete()
+                for instance in instances:
+                    instance.menu = menu
+                    instance.save()
+                messages.success(request, "Elemento del menú guardado con éxito")
+                return HttpResponseRedirect(reverse('menuitems'))
+            else:
+                messages.error(request, "Error al actualizar")
+                return render(request, 'menuitems/menuitem_update.html', context)
+        else:
+            if request.method == "GET":
+                context['form'] = MenuItemCreateForm(initial=menu.__dict__)
+                context['formset'] = formset(queryset=MenuTranslations.objects.filter(
+                    menu=menu), prefix='men')
+                return render(request, 'menuitems/menuitem_update.html', context)
+    return HttpResponseRedirect(reverse('menuitems'))
+
+
+@method_decorator(permission_required('matricula.view_period'), name='dispatch')
+class PeriodList(ListView):
+    template_name = "periods/period_list.html"
+    model = Period
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(PeriodList, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.form = PeriodSearchForm(self.request.GET)
+        self.form.is_valid()
+        queryset = Period.objects.all()
+        if self.form.cleaned_data['name']:
+           queryset = queryset.filter(name__icontains=self.form.cleaned_data['name'])
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = PeriodCreateForm()
+        context['form_search'] = PeriodSearchForm(self.request.GET)
+        return context
+
+
+@permission_required('matricula.add_period')
+def create_period(request):
+    context = {}
+    if request.method == 'POST':
+        form = PeriodCreateForm(request.POST)
+        context['form'] = form
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Período guardado con éxito")
+            return HttpResponseRedirect(reverse('periods'))
+        else:
+            messages.error(request, "Error al guardar el período")
+            context['object_list'] = Period.objects.all()
+            return render(request, 'periods/period_list.html', context)
+    return HttpResponseRedirect(reverse('periods'))
+
+
+@method_decorator(permission_required('matricula.delete_period'), name='dispatch')
+class PeriodDelete(DeleteView):
+    model = Period
+    success_url = "/matricula/enrrolment/periods"
+    success_message = "Período eliminado con éxito"
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(PeriodDelete, self).dispatch(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(PeriodDelete, self).delete(request, *args, **kwargs)
+
+
+@permission_required('matricula.change_period')
+def edit_period(request, pk=None):
+    context = {}
+    if pk is not None:
+        context = {}
+        if request.method == "POST":
+            instance = Period.objects.get(pk=pk)
+            form = PeriodCreateForm(request.POST, instance=instance)
+            context['form'] = form
+            if form.is_valid():
+                messages.success(request, "Período guardado con éxito")
+                form.save()
+                return HttpResponseRedirect(reverse('periods'))
+            else:
+                messages.error(request, "Error al actualizar")
+                return render(request, 'periods/period_update.html', context)
+        else:
+            if request.method == "GET":
+                instance = Period.objects.get(pk=pk)
+                context['object_list'] = Period.objects.all()
+                context['form'] = PeriodCreateForm(initial=instance.__dict__)
+                context['form_search'] = PeriodSearchForm()
+                return render(request, 'periods/period_update.html', context)
+    return HttpResponseRedirect(reverse('periods'))
+
+
+@method_decorator(permission_required('matricula.view_group'), name='dispatch')
+class GroupList(ListView):
+    template_name = "groups/group_list.html"
+    model = Group
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(GroupList, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.form = GroupSearchForm(self.request.GET)
+        self.form.is_valid()
+        if self.form.cleaned_data['period']:
+            queryset = queryset.filter(period__in=self.form.cleaned_data['period'])
+        if self.form.cleaned_data['currency']:
+            queryset = queryset.filter(currency__in=self.form.cleaned_data['currency'])
+        if self.form.cleaned_data['category']:
+            queryset = queryset.filter(course__category__in=self.form.cleaned_data['category'])
+        if self.form.cleaned_data['open'] and int(self.form.cleaned_data['open']) != GroupSearchForm.DO_NOT_APPLY:
+            if int(self.form.cleaned_data['open']) == GroupSearchForm.OPEN:
+                queryset = queryset.filter(is_open=True)
+            else:
+                queryset = queryset.filter(is_open=False)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_search'] = GroupSearchForm(self.request.GET)
+        return context
+
+
+@permission_required('matricula.add_group')
+def create_group(request):
+    context = {}
+    if request.method == 'POST':
+        form = GroupCreateForm(request.POST)
+        context['form'] = form
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Grupo guardado con éxito")
+            return HttpResponseRedirect(reverse('groups_enroll'))
+        else:
+            messages.error(request, "Error al guardar grupo")
+    else:
+        context['form'] = GroupCreateForm()
+    return render(request, 'groups/group_create.html', context)
+
+
+@method_decorator(permission_required('matricula.delete_group'), name='dispatch')
+class GroupDelete(DeleteView):
+    model = Group
+    success_url = "/matricula/enrrolment/groups"
+    success_message = "Grupo eliminado con éxito"
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(GroupDelete, self).dispatch(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(GroupDelete, self).delete(request, *args, **kwargs)
+
+
+@permission_required('matricula.change_group')
+def edit_group(request, pk=None):
+    context = {}
+    if pk is not None:
+        if request.method == "POST":
+            instance = Group.objects.get(pk=pk)
+            form = GroupCreateForm(request.POST, instance=instance)
+            if form.is_valid():
+                messages.success(request, "Grupo guardado con éxito")
+                form.save()
+                return HttpResponseRedirect(reverse('groups_enroll'))
+            else:
+                messages.error(request, "Error al actualizar")
+                return render(request, 'groups/group_update.html', {'form': form})
+        else:
+            if request.method == "GET":
+                instance = Group.objects.get(pk=pk)
+                form = GroupCreateForm(initial=instance.__dict__)
+                return render(request, 'groups/group_update.html', {'form': form})
+    return HttpResponseRedirect(reverse('groups_enroll'))
+
+
+@method_decorator(permission_required('matricula.view_enroll'), name='dispatch')
+class EnrollList(ListView):
+    template_name = "enrolls/enroll_list.html"
+    model = Enroll
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(EnrollList, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.form = EnrollSearchForm(self.request.GET)
+        self.form.is_valid()
+        if self.form.cleaned_data['student']:
+            queryset = queryset.filter(student__in=self.form.cleaned_data['student'])
+        if self.form.cleaned_data['group']:
+            queryset = queryset.filter(group__in=self.form.cleaned_data['group'])
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_search'] = EnrollSearchForm(self.request.GET)
+        return context
+
+
+@permission_required('matricula.add_enroll')
+def create_enroll(request):
+    context = {}
+    if request.method == 'POST':
+        form = EnrollCreateForm(request.POST)
+        context['form'] = form
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Matrícula guardada con éxito")
+            return HttpResponseRedirect(reverse('enrolls'))
+        else:
+            messages.error(request, "Error al guardar matrícula")
+    else:
+        context['form'] = EnrollCreateForm()
+    return render(request, 'enrolls/enroll_create.html', context)
+
+
+@permission_required('matricula.change_enroll')
+def edit_enroll(request, pk=None):
+    context = {}
+    if pk is not None:
+        if request.method == "POST":
+            instance = Enroll.objects.get(pk=pk)
+            form = EnrollCreateForm(request.POST, instance=instance)
+            if form.is_valid():
+                messages.success(request, "Matrícula guardada con éxito")
+                form.save()
+                return HttpResponseRedirect(reverse('enrolls'))
+            else:
+                messages.error(request, "Error al actualizar")
+                return render(request, 'enrolls/enroll_update.html', {'form': form})
+        else:
+            if request.method == "GET":
+                instance = Enroll.objects.get(pk=pk)
+                form = EnrollCreateForm(initial=instance.__dict__)
+                return render(request, 'enrolls/enroll_update.html', {'form': form})
+    return HttpResponseRedirect(reverse('enrolls'))
+
+
+@method_decorator(permission_required('matricula.delete_enroll'), name='dispatch')
+class EnrollDelete(DeleteView):
+    model = Enroll
+    success_url = "/matricula/enrrolment/enrolls"
+    success_message = "Matrícula eliminada con éxito"
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(EnrollDelete, self).dispatch(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(EnrollDelete, self).delete(request, *args, **kwargs)
+
+
+@method_decorator(permission_required('matricula.view_student'), name='dispatch')
+class StudentList(ListView):
+    template_name = "students/student_list.html"
+    model = Student
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(StudentList, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.form = StudentSearchForm(self.request.GET)
+        self.form.is_valid()
+        if self.form.cleaned_data['student']:
+            queryset = queryset.filter(pk__in=self.form.cleaned_data['student'])
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_search'] = StudentSearchForm(self.request.GET)
+        return context
+
+
+@permission_required('matricula.add_student')
+def create_student(request):
+    context = {}
+    if request.method == 'POST':
+        form = StudentAdminCreateForm(request.POST)
+        context['form'] = form
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Estudiante guardada con éxito")
+            return HttpResponseRedirect(reverse('students'))
+        else:
+            messages.error(request, "Error al guardar Estudiante")
+    else:
+        context['form'] = StudentAdminCreateForm()
+    return render(request, 'students/student_create.html', context)
+
+
+@permission_required('matricula.change_student')
+def edit_student(request, pk=None):
+    context = {}
+    if pk is not None:
+        if request.method == "POST":
+            instance = Student.objects.get(pk=pk)
+            form = StudentAdminCreateForm(request.POST, instance=instance)
+            if form.is_valid():
+                messages.success(request, "Estudiante guardada con éxito")
+                form.save()
+                return HttpResponseRedirect(reverse('students'))
+            else:
+                messages.error(request, "Error al actualizar")
+                return render(request, 'students/student_update.html', {'form': form})
+        else:
+            if request.method == "GET":
+                instance = Student.objects.get(pk=pk)
+                form = StudentAdminCreateForm(initial=instance.__dict__)
+                return render(request, 'students/student_update.html', {'form': form})
+    return HttpResponseRedirect(reverse('students'))
+
+
+@method_decorator(permission_required('matricula.delete_student'), name='dispatch')
+class StudentDelete(DeleteView):
+    model = Student
+    success_url = "/matricula/enrrolment/students"
+    success_message = "Estudiante eliminada con éxito"
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(StudentDelete, self).dispatch(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        student = self.get_object()
+        user = User.objects.get(pk=student.user.pk)
+        user.is_active=False
+        user.save()
+        messages.success(self.request, self.success_message)
+        return super(StudentDelete, self).delete(request, *args, **kwargs)
+
+
+@method_decorator(permission_required('matricula.view_page'), name='dispatch')
+class PageList(ListView):
+    template_name = "pages/page_list.html"
+    model = Page
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(PageList, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.form = PageSearchForm(self.request.GET)
+        self.form.is_valid()
+        if self.form.cleaned_data['slug']:
+            queryset = queryset.filter(slug=self.form.cleaned_data['slug'])
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_search'] = PageSearchForm(self.request.GET)
+        return context
+
+
+@permission_required('matricula.add_page')
+def create_page(request):
+    context = {}
+    formset = modelformset_factory(
+        MultilingualContent, form=MultilingualContentAddForm, formset=GTBaseModelFormSet,
+        can_delete=True, extra=1, can_order=True)
+    if request.method == 'POST':
+        form = PageCreateForm(request.POST)
+        fset = formset(request.POST, queryset=MultilingualContent.objects.none(), prefix="pags")
+        context['form'] = form
+        context['formset'] = fset
+        if form.is_valid() and fset.is_valid():
+            page = form.save()
+            instances = fset.save(commit=False)
+            for instance in instances:
+                instance.page = page
+                instance.save()
+            messages.success(request, "Página guardada con éxito")
+            return HttpResponseRedirect(reverse('pages'))
+        else:
+            messages.error(request, "Error al guardar la página")
+    else:
+        context['formset'] = formset(queryset=MultilingualContent.objects.none(), prefix='pags')
+        context['form'] = PageCreateForm()
+    return render(request, 'pages/page_create.html', context)
+
+
+@permission_required('matricula.change_page')
+def edit_page(request, pk=None):
+    context = {}
+    if pk is not None:
+        page = Page.objects.get(pk=pk)
+        extra = page.multilingualcontent_set.all().count()
+        if extra == 0:
+            extra = 1
+        else:
+            extra = 0
+        formset = modelformset_factory(
+            MultilingualContent, form=MultilingualContentAddForm, formset=GTBaseModelFormSet,
+            can_delete=True, extra=extra, can_order=True)
+        if request.method == "POST":
+            fset = formset(
+                request.POST, queryset=MultilingualContent.objects.filter(
+                    page=page), prefix='pags')
+            instance = Page.objects.get(pk=pk)
+            form = PageCreateForm(request.POST, instance=instance)
+            if form.is_valid():
+                messages.success(request, "Página guardada con éxito")
+                page = form.save()
+                if fset.is_valid():
+                    instances = fset.save(commit=False)
+                    for delinst in fset.deleted_objects:
+                        delinst.delete()
+                    for instance in instances:
+                        instance.page = page
+                        instance.save()
+                else:
+                    messages.error(self.request, "Error al guardar la página")
+                    return reverse('edit_page', args=(template.pk,))
+                return HttpResponseRedirect(reverse('pages'))
+            else:
+                messages.error(request, "Error al actualizar")
+                return render(request, 'pages/page_update.html', {'form': form})
+        else:
+            if request.method == "GET":
+                instance = Page.objects.get(pk=pk)
+                context['form'] = PageCreateForm(initial=instance.__dict__)
+                context['formset'] = formset(queryset=MultilingualContent.objects.filter(
+                page=instance), prefix='pags')
+                return render(request, 'pages/page_update.html', context)
+    return HttpResponseRedirect(reverse('pages'))
+
+
+@method_decorator(permission_required('matricula.delete_page'), name='dispatch')
+class PageDelete(DeleteView):
+    model = Page
+    success_url = "/matricula/enrrolment/pages"
+    success_message = "Página eliminada con éxito"
+
+    def dispatch(self, *args, **kwargs):
+        """ Permission check for this class """
+        return super(PageDelete, self).dispatch(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(PageDelete, self).delete(request, *args, **kwargs)

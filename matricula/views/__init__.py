@@ -1,5 +1,5 @@
 from django.shortcuts import redirect
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from matricula.models import MenuItem
 
 

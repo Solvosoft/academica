@@ -11,12 +11,8 @@ from django.template.response import TemplateResponse
 from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.conf import settings
-
-
 from django.template.loader import get_template
 from django.template.context import Context
-
-
 from xhtml2pdf import pisa
 import io
 
@@ -87,7 +83,7 @@ class ViewsGroup:
     def open_group(self, request, pk):
         try:
             group = Group.objects.get(pk=pk)
-        except:
+        except Exception:
             return self.get_message(_("Group Not Found"), 'warning')
         enrolls = Enroll.objects.filter(group=group)
         enrolls.update(enroll_activate=True)
@@ -106,7 +102,7 @@ class ViewsGroup:
     def close_group(self, request, pk):
         try:
             group = Group.objects.get(pk=pk)
-        except:
+        except Exception:
             return self.get_message(_("Group Not Found"), 'warning')
         enrolls = Enroll.objects.filter(group=group)
         enrolls.update(enroll_activate=False)
@@ -146,9 +142,10 @@ class ViewsGroup:
         result = io.StringIO()
         pdf = pisa.pisaDocument(io.StringIO(html), result)
         if not pdf.err:
-            response = HttpResponse(result.getvalue(), content_type='application/pdf')
-            response['Content-Disposition'] = 'attachment; filename="student_list_%s.pdf"' % (group.name)
+            response = HttpResponse(
+                result.getvalue(), content_type='application/pdf')
+            response['Content-Disposition'] = \
+                'attachment; filename="student_list_%s.pdf"' % (group.name)
             return response
 
         return HttpResponse("Error " + str(pdf.err) + "  " + html)
-

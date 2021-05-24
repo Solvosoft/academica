@@ -1,0 +1,37 @@
+{% extends 'gentelella/base.html'%}
+{% load socialaccount static i18n %}
+{% block extra_css%}
+	<link rel="stylesheet" href="{% static 'css/auth-buttons.css'%}">
+{%endblock%}
+{%block content%}
+	<h1>Crear estudiante</h1>
+	<div class="col-md-6 col-md-offset-3">
+		<div class="x_panel">
+			<div class="x_title">
+				<h2 class="green">Confirmación de creación</h2>
+				<ul></ul>
+				<div class="clearfix"></div>
+			</div>
+			<div class="x_content">
+				<div class="row">
+					<div>
+						<form method="post" id="{% url 'create_user' %}">
+							{% csrf_token %}
+							Estas a punto de crear un estudiante para tu usuario ya validado, con él podrás acceder a la plataforma de cursos
+							<div class="text-right" style="margin-top:10px;">
+								<a class="btn btn-dark" href="{% url 'courses' %}">Cancelar</a>
+								<button type="submit" class="btn btn-success" value="Save" >
+									<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Crear
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{%endblock%}
+{% block js %}
+	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
+{% endblock %}

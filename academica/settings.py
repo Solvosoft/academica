@@ -51,16 +51,37 @@ INSTALLED_APPS = (
     'matricula.contrib.bills',
     'ckeditor',
     'paypal.standard.ipn',
-
     'django_ajax',
+    'djgentelella',
+    'mptt',
+    'rest_framework',
+    'chunked_upload',
+    'markitup',
 )
 
-MIDDLEWARE_CLASSES = (
+USE_L10N = False
+
+MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
+MARKITUP_SET = 'markitup/sets/markdown/'
+JQUERY_URL = None
+
+DATE_INPUT_FORMATS=[
+    '%Y-%m-%d', '%d/%m/%Y', '%d/%m/%y'
+]
+
+DATETIME_INPUT_FORMATS = [
+    '%m/%d/%Y %H:%M %p',
+    '%Y-%m-%d %H:%M %p',
+    '%d/%m/%y %H:%M %p'
+]
+MEDIA_ROOT = "uploads/"
+FROALA_UPLOAD_PATH = os.path.join(MEDIA_ROOT, 'froala_editor/')
+
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -93,11 +114,17 @@ WSGI_APPLICATION = 'academica.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'academica',
+        'USER': 'academica',
+        'PASSWORD': 'academica',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
+# Set in weeks
+TOKEN_CONFIRMATION_EXPIRE_DAYS = 15
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -122,7 +149,6 @@ LANGUAGES = (
 
 STATIC_URL = '/static/'
 
-AUTH_USER_MODEL = 'matricula.Student'
 
 EMAIL_HOST = "localhost"
 EMAIL_PORT = 1025
@@ -155,7 +181,7 @@ PAYPAL_RECEIVER_EMAIL = "luisza14-buyer@gmail.com"
 MY_PAYPAL_HOST = "http://academica.ngrok.io"
 
 
-LOGIN_URL = "/matricula/accounts/login/"
+LOGIN_URL = "/accounts/login/"
 
 SOCIALACCOUNT_PROVIDERS = \
     { 'google':

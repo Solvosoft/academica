@@ -1,12 +1,12 @@
 {%load i18n %}
-<h1 > {% trans 'Academica Invoice' %} </h1>
+<h3 class="green"> {% trans 'Academica Invoice' %} </h3>
 <table>
 	<tr>
-		<td><strong>{% trans 'Student' %}: </strong></td><td>{{student.get_full_name}}</td>
+		<td><strong>{% trans 'Student' %}: </strong></td><td>{{student.user.get_full_name}}</td>
 	</tr>
 	
 	<tr>
-		<td><strong>{% trans 'Enrollment description' %}: </strong></td><td>{{enroll}}</td>
+		<td><strong>Descripción de matrícula: </strong></td><td>{{enroll}}</td>
 	</tr>
 
 	<tr>

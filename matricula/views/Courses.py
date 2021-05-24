@@ -4,7 +4,6 @@ Created on 16/5/2015
 
 @author: luisza
 '''
-from django.contrib.auth.decorators import login_required
 from .utils import get_active_period
 from django.shortcuts import render, get_object_or_404
 from matricula.models import Course, Category, Group
@@ -21,8 +20,10 @@ def list_courses(request):
     if len(category) > 1:
         return render(request, 'categories.html', {'categories': category})
 
-    # courses = Course.objects.filter(category=category, group__period=period).distinct()
-    groups = Group.objects.filter(period=period, course__category=category).order_by('course')
+    # courses = Course.objects.filter(
+    #   category=category, group__period=period).distinct()
+    groups = Group.objects.filter(
+        period=period, course__category__in=category.all()).order_by('course')
     courses = {}
     for group in groups:
         course = group.course
@@ -39,6 +40,8 @@ def view_course(request, pk):
     period = get_active_period()
     groups = Group.objects.filter(period=period, course=course)
 
-    return render(request, 'course.html',
-                        {'course': {'course':course, 'groups': groups},
-                        'add_schedule':True})
+    return render(request, 'course.html', {
+            'course': {'course': course, 'groups': groups},
+            'add_schedule': True
+        }
+    )

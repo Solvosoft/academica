@@ -1,0 +1,90 @@
+{% extends 'gentelella/base.html'%}
+{% load static %}
+{%block content%}
+	<h1>Cursos</h1>
+	<div class="row">
+		{% if perms.matricula.add_course %}
+			<div class="col-sm-12 col-lg-10 col-md-9">
+		{% else %}
+			<div class="col-sm-12 col-lg-12 col-md-12">
+		{% endif %}
+			<div class="x_panel">
+				<div class="x_content">
+					<form method="GET" action="{% url 'enrrolment_courses'%}">
+						<div class="col-lg-6 col-md-6 col-sm-12">
+							<label>Nombre:</label> {{form_search.name}}
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-12">
+							<label>Categoría</label>
+							{{form_search.category}}
+						</div>
+						<div class="text-right">
+							<a style="margin-top:10px;" href="{% url 'enrrolment_courses' %}" class="btn btn-dark">Limpiar</a>
+							<button style="margin-top:10px;" class="btn btn-success" type="submit">Buscar</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-12 col-lg-2 col-md-3">
+			{% if perms.matricula.add_course %}
+				<a class="btn btn-primary" href="{% url 'create_course' %}">Crear curso</a>
+			{% endif %}
+		</div>
+	</div>
+		{% if perms.matricula.delete_course %}
+			<!-- modal delete category -->
+			<div id="modaldeleteitem" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">¿Está segura que desea eliminar este curso?</h4>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+							<a class="btn btn-danger" id="deleteitem">Eliminar</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- end delete modal-->
+		{% endif %}
+		{% for course in object_list %}
+			<div class="col-md-6 col-lg-4 col-sm-12">
+				<div class="x_panel">
+					<div class="x_title">
+						<h2>{{course.name}}</h2>
+						<ul class="nav navbar-right panel_toolbox">
+							<li>
+								<a href="{% url 'show_course' course.pk %}" class="none-link"><i class="fa fa-eye"></i></a>
+							</li>
+							{% if perms.matricula.change_course %}
+								<li>
+									<a href="{% url 'edit_course' course.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
+								</li>
+							{% endif %}
+							{% if perms.matricula.delete_course %}
+								<li><a data-url="{% url 'delete_course' pk=course.pk %}" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
+							{% endif %}
+						</ul>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+{%endblock%}
+{% if perms.matricula.delete_course %}
+	{% block js %}
+		<script type="text/javascript">
+			function deleteitem(element){
+				$(function(){
+					$("#deleteitem").attr("href", $(element).data('url'));
+					$("#modaldeleteitem").modal();
+				});
+				return false
+			}
+		</script>
+	{% endblock js%}
+{% endif %}

@@ -1,52 +1,50 @@
-{% extends 'matricula_base.html'%}
-
+{% extends 'gentelella/base.html'%}
+{% block extra_css %}
+	<style>
+		td{
+			padding-right:20px;
+		}
+	</style>
+{% endblock %}
 {%block content%}
-{%load i18n %}
-<style>
-	td{
-		padding-right: 20px;
-	}
-	
-</style>
-
-<h1> {% trans 'Unpaid bills' %}</h1>
-<ul class="list-group">
-	{% for bill in not_paid%}
-	<li class="list-group-item">
-
-		<div class="row">
-			<div class="col-md-8">
-				
-				{{bill.obj.description|safe}}
-
+	{% load i18n %}
+	<h1> {% trans 'Unpaid bills' %}</h1>
+	<div class="x_panel">
+		{% for bill in not_paid%}
+			<div class="product_price">
+				<h1 class="price green">{{bill.obj.short_drescription}}</h1>
+				<div class="col-md-6 col-lg-6 col-sm-12">
+					<div class="price-tax">
+						{{bill.obj.description|safe}}
+					</div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12">
+					<div style="margin-top:50px;" class="price-tax text-center">
+						{{bill.form.render}}
+					</div>
+				</div>
+				<div class="clearfix"></div>
 			</div>
-			<div class="col-md-4">
-				{{bill.form.render}}
+		{%empty%}
+			<div class="alert alert-info" role="alert">
+				{% trans "You don't have Unpaid bills" %}
 			</div>
-		</div>
-
-	</li>
-
-	{%empty%}
-	<div class="alert alert-info" role="alert">
-		
-		{% trans "You don't have Unpaid bills" %}
+		{%endfor%}
+		<div class="clearfix"></div>
 	</div>
-	{%endfor%}
-</ul>
 
-<h1> {% trans "Paid bills" %} </h1>
-<ul class="list-group">
-	{% for bill in paid%}
-	<li class="list-group-item">
-		{{bill.description|safe}}
-	</li>
-
-	{%empty%}
-	<div class="alert alert-info" role="alert">
-		{% trans "You don't have paid bills" %}
+	<h1> Facturas pagadas </h1>
+	<div class="x_panel">
+		{% for bill in paid %}
+			<div class="product_price">
+				<div class="price-tax">
+					{{bill.description|safe}}
+				</div>
+			</div>
+		{%empty%}
+			<div class="alert alert-info" role="alert">
+				No tiene facturas pagadas
+			</div>
+		{%endfor%}
 	</div>
-	{%endfor%}
-</ul>
-
 {%endblock%}

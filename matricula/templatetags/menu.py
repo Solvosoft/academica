@@ -7,9 +7,9 @@ Created on 18/5/2015
 from collections import OrderedDict
 from django.utils.safestring import mark_safe
 from django import template
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-
+from django.utils.html import strip_tags
 from matricula.models import MenuItem
 
 register = template.Library()
@@ -94,9 +94,11 @@ def print_menu_item(request, menues, is_list=False):
 
     for key, menu in items_menu:
         ref, ref_display = get_ref_and_ref_display(request, menu['obj'])
-        dev += '<li role="presentation" ><a class="btn btn-success" href="%s"> %s</a>' % (ref, ref_display)
+        if not menu['children']:
+            dev += '<li><a href="%s"> %s</a>' % (ref, strip_tags(ref_display))
         if menu['children']:
-            dev += '<ul class="nav nav-pills" >' + print_menu_item(request, menu['children'], True) + "</ul>"
+            dev += '<li><a>'+ ref_display +'<span class="fa fa-chevron-down"></span></a>'+\
+            '<ul class="nav child_menu">' + print_menu_item(request, menu['children'], True) + "</ul>"
         dev += '</li>'
 
     return dev
@@ -105,14 +107,6 @@ def print_menu_item(request, menues, is_list=False):
 @register.simple_tag(takes_context=True)
 def show_menu(context, user_auth):
     menues = get_menu_items(user_auth)
-    css = """
-<style>
-    #menu ul {padding: 0; margin: 0; padding-top: 5px;}
-    #menu li { display: inline; position: relative;}
-    #menu ul ul {position: absolute; display: none;margin: 0;}
-    #menu ul ul ul { left: 100%; top: 0; width: 300px;}
-    #menu li:hover > ul { display: block;}
-</style>
-    """
-    dev = '<div id="menu"><ul class="nav nav-pills" >' + print_menu_item(context['request'], menues) + "</ul></div>"
-    return mark_safe(css + dev)
+    dev = '<ul><li class="nav child_menu">' + print_menu_item(context['request'], menues) + "</li></ul>"
+    dev = print_menu_item(context['request'], menues)
+    return mark_safe(dev)
