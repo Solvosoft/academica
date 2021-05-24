@@ -111,7 +111,7 @@
 	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
 	<script>
 		$(document).ready(function(){
-			$('.enrollme').click(function(){
+			$('.enrollme').on('click', function(){
 				$('html, body').animate({ scrollTop: 0 }, 'low');
 			});
 		});
