@@ -881,6 +881,8 @@ def edit_enroll(request, pk=None):
                         enqueued=False, user=None)
                 if not paid_excluded and form.cleaned_data['paid_excluded']:
                     Bill.objects.filter(enrollment=instance).delete()
+                    instance.bill_created = False
+                    instance.save()
                     send_email_from_template(
                         'enroll_paid_excluded', student.user.email,
                         {
