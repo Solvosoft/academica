@@ -24,7 +24,7 @@ msgstr "Activar usuarie para inscribir"
 
 #: src/matricula/admin.py:44
 msgid "Active user for pre-enrollment"
-msgstr "Activar usuarie para matriculación"
+msgstr "Activar usuarie para pre-inscripción"
 
 #: src/matricula/admin.py:70
 msgid "Student list don't exist yet"
