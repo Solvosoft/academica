@@ -722,6 +722,13 @@ class EnrollCreateForm(GTForm, forms.ModelForm):
             'rejected': djgentelella.YesNoInput,
         }
 
+    def clean(self):
+        if self.fields['rejected']:
+            self.cleaned_data['enroll_finished'] = False
+            self.cleaned_data['paid_excluded'] = False
+            self.cleaned_data['enroll_activate'] = False
+        return self.cleaned_data
+
 
 
 class MenuItemAddForm(forms.ModelForm, GTForm):

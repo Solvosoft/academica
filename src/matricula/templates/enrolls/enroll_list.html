@@ -100,6 +100,12 @@
 								<li>
 									<strong>Pagado: </strong>{% if object.bill_set.first.is_paid%}Sí{% else %}No{% endif %}
 								</li>
+								<li>
+									{% if not object.enroll_finished and object.rejected %}
+									<strong>Notificar de rechazado: </strong>
+										<a href="{% url 'notify_rejected' object.pk%}"><i class="fa fa-envelope"></i></a>
+									{% endif %}
+								</li>
 							</ul>
 						</div>
 					</div>
