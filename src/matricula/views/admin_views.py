@@ -536,13 +536,10 @@ def pre_enroll_group(request, pk=None):
                     elif action == "Rechazar pre-inscripción":
                         enrolls = Enroll.objects.filter(pk__in=form.cleaned_data['students'], group=group)
                         emails = []
-                        waiting_list = []
                         for instance in enrolls:
                             instance.rejected = True
                             instance.save()
-                            waiting_list.append(WaitingList(student=instance.student, group=instance.group))
                             emails.append(instance.student.user.email)
-                        WaitingList.objects.bulk_create(waiting_list)
                         schema = request.scheme + "://"
                         send_email_from_template(
                             'email_enroll_rejected', [i for i in emails],
@@ -553,6 +550,22 @@ def pre_enroll_group(request, pk=None):
                             },
                             enqueued=False, user=None)
                         messages.success(request, "Estudiantes notificades con éxito")
+                    elif action == "Agregar a lista de espera":
+                        students = form.cleaned_data['students']
+                        students_pk = list(students.values_list('student', flat=True))
+                        enrolls = set(WaitingList.objects.filter(
+                            student__pk__in=students_pk, group=group).values_list("student__pk",flat=True))
+                        for i in enrolls:
+                            try:
+                                students_pk.remove(i)
+                            except IndexError:
+                                pass
+                        waiting_list = []
+                        list_students = Student.objects.filter(pk__in=students_pk)
+                        for i in list_students:
+                            waiting_list.append(WaitingList(student=i, group=group))
+                        WaitingList.objects.bulk_create(waiting_list)
+                        messages.success(request, "Estudiantes agregados a la lista de espera.")
                     return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
             messages.error(request, "Error al realizar la acción")
             return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
