@@ -198,6 +198,14 @@ class Group(models.Model):
     def get_enrolls_completed(self):
         return self.enroll_set.filter(enroll_finished=True).count()
 
+    @property
+    def get_label_enrolls(self):
+        enrolls = self.get_enrolls_completed
+        dev = f'{enrolls} de {self.maximum}'
+        if enrolls > self.maximum:
+            dev = f'{enrolls} de {enrolls}'
+        return dev
+
     def __str__(self):
         return self.name
 

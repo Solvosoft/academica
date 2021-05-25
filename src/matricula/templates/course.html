@@ -53,7 +53,7 @@
 							<strong>Categoría: </strong>{{group.course.category}}
 						</div>
 						<div class="col-md-6">
-							<strong>Matriculades: </strong>{{group.get_enrolls_completed}} de {{ group.maximum }}
+							<strong>Matriculades: </strong>{{group.get_label_enrolls}}
 						</div>
 						{% if group.is_paid %}
 							<div class="col-md-6">

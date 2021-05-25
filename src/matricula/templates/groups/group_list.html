@@ -105,12 +105,7 @@
 							<ul class="list-unstyled user_data">
 								<li>
 									<strong>Matriculades: </strong>
-									{% if object.is_paid %}
-										{{object.enrolled_students_paid}}
-									{% else %}
-										{{ object.enrolled_students_free }}
-									{% endif %} 
-									de {{object.maximum}}
+									{{object.get_label_enrolls}}
 								</li>
 								{% if group.is_paid %}
 									<li>

@@ -486,14 +486,6 @@ class GroupList(ListView):
         if not user.is_superuser and not user.groups.filter(name=settings.ADMIN_GROUP_NAME).exists():
             if professor:
                 queryset = queryset.filter(professors=professor)
-        queryset = queryset.annotate(
-            enrolled_students_paid=Count(
-                'pk', filter=Q(enroll__bill__is_paid=True) | Q(enroll__paid_excluded=True)
-            ),
-            enrolled_students_free=Count(
-                'pk', filter=Q(enroll__enroll_finished=True)
-            )
-        )
         return queryset
 
     def get_context_data(self, **kwargs):
