@@ -1154,10 +1154,17 @@ class GroupDetailView(DetailView):
             group = form.cleaned_data['group']
             enroll = Enroll.objects.filter(group=group, student=student)
             if enroll.exists():
+                waitinglist = WaitingList.objects.filter(group=group, student=student)
                 if enroll.first().enroll_finished:
                     messages.success(request, 'El estudiante ya está matriculado')
+                    waitinglist.delete()
                 else:
-                    messages.success(request, "El estudiante ya está inscrito")
+                    update = EnrollCreateForm(request.POST, instance=enroll.first())
+                    if update.is_valid():
+                        instance = update.save()
+                        if instance.enroll_finished:
+                            waitinglist.delete()
+                    messages.success(request, "La matrícula fue actualizada correctamente")
             else:
                 schema = request.scheme + "://"
                 template = 'email_preenroll_success'
@@ -1186,6 +1193,7 @@ class GroupDetailView(DetailView):
                     },
                     enqueued=False,
                     user=None)
+                WaitingList.objects.filter(group=group, student=student).delete()
                 messages.success(request, f"El estudiante fue {msg} correctamente")
         else:
             messages.error(request, "Error al guardar los datos")
