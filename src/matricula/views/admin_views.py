@@ -825,7 +825,12 @@ def create_enroll(request):
         form = EnrollCreateForm(request.POST)
         context['form'] = form
         if form.is_valid():
+            group = form.cleaned_data['group']
             student = form.cleaned_data['student']
+            enroll_exists = Enroll.objects.filter(student=student, group=group).exists()
+            if enroll_exists:
+                messages.error(request, "Error al guardar la matrícula ya existe")
+                return render(request, 'enrolls/enroll_create.html', context)
             schema = request.scheme + "://"
             template = 'email_preenroll_success'
             if form.cleaned_data['enroll_finished']:
@@ -834,7 +839,7 @@ def create_enroll(request):
                 template, [student.user.email],
                 {
                     "url": request.build_absolute_uri(reverse('enrollment')),
-                    "group": form.cleaned_data['group'],
+                    "group": group,
                     'domain': schema + request.get_host(),
                 },
                 enqueued=False, user=None)
@@ -870,12 +875,18 @@ def edit_enroll(request, pk=None):
             if form.is_valid():
                 schema = request.scheme + "://"
                 student = form.cleaned_data['student']
+                group = form.cleaned_data['group']
+                enroll_exists = Enroll.objects.filter(
+                    student=student, group=group).exclude(pk=instance.pk).exists()
+                if enroll_exists:
+                    messages.error(request, "Error al actualizar matrícula duplicada")
+                    return render(request, 'enrolls/enroll_update.html', {'form': form})
                 if not enroll_finished and form.cleaned_data['enroll_finished']:
                     send_email_from_template(
                         'email_enroll_success', [student.user.email],
                         {
                             "url": request.build_absolute_uri(reverse('enrollment')),
-                            "group": form.cleaned_data['group'],
+                            "group": group,
                             'domain': schema + request.get_host(),
                             'hours_to_pay': settings.HOURS_TO_PAY,
                         },
