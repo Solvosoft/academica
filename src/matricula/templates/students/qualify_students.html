@@ -59,6 +59,9 @@
 
                         <div class="form-group" style="text-align:center">
                             <a class="btn btn-primary" type="button" href="{% url 'groups_enroll' %}">Atrás</a>
+                             {% if perms.matricula.can_export_enrolled_group %}
+                                <a class="btn btn-success" href="{% url 'list_students_group' enroll_list.first.group.pk %}">Ir a generar certificados</a>
+                            {% endif %}
                             <button class="btn btn-success" type="button" onclick="json_table()">Guardar</button>
                         </div>
                     </div>

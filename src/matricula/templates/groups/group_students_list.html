@@ -148,6 +148,7 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="clearfix"></div>
                 <div class="text-center">
                     <a class="btn btn-dark" href="{% url 'groups_enroll' %}">Atras</a>
                     {% if perms.matricula.can_open_group %}
@@ -171,6 +172,9 @@
                     {% if show_buttons_certificates %}
                         <a class="btn btn-primary" href="{% url 'build_pdf_certificate_list' pk=group.pk %}">Generar
                             certificados</a>
+                    {% endif %}
+                    {% if perms.matricula.can_qualify_students and request.user.professor in group.professors.all %}
+					    <a class="btn btn-success" href="{% url 'qualify_students' pk=group.pk %}">Ir a calificar</a></li>
                     {% endif %}
                     {% if perms.matricula.can_view_pdf_enrolled_group %}
                         <div class="btn-group">
