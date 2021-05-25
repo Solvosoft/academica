@@ -1140,7 +1140,8 @@ class GroupDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = EnrollCreateForm(initial={'group': self.get_object()})
+        context['form'] = EnrollCreateForm(
+            initial={'group': self.get_object(), 'enroll_finished':True})
         return context
     
     def post(self, request, *args, **kwargs):
