@@ -777,6 +777,7 @@ def close_group(request, pk):
 def export_enrolled_group(request, pk=None):
     group = get_object_or_404(Group, pk=pk)
     attrs = {'group__pk': pk}
+    attrs['enroll_finished'] = False
     if request.GET.get('finished', '0') == '1':
         attrs['enroll_finished'] = True
     student_list = Enroll.objects.filter(**attrs)
