@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils.translation import gettext as _
 from django.utils.safestring import mark_safe
 
+from matricula.models import Enroll
 
 register = template.Library()
 @register.filter(name='index')
@@ -25,6 +26,16 @@ def is_open(course):
     if groups.exists():
         result = groups
     return result
+
+@register.simple_tag
+def can_enroll(group, user):
+    try:
+        student = user.student
+    except:
+        return False
+
+    return Enroll.objects.filter(group=group, student=student, enroll_activate=True, enroll_finished=False).exists()
+
 
 @register.filter
 def group_state(state):

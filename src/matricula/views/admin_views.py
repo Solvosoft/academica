@@ -525,7 +525,7 @@ def pre_enroll_group(request, pk=None):
                             emails.append(instance.student.user.email)
                         schema = request.scheme + "://"
                         send_email_from_template(
-                            'preenroll_success', [i for i in emails],
+                            'email_open_group', [i for i in emails],
                             {
                                 "url": request.build_absolute_uri(reverse('enrollment')),
                                 "group": group,
@@ -918,8 +918,8 @@ def edit_enroll(request, pk=None):
                 return render(request, 'enrolls/enroll_update.html', {'form': form})
         else:
             if request.method == "GET":
-                instance = Enroll.objects.get(pk=pk)
-                form = EnrollCreateForm(initial=instance.__dict__)
+                instance = get_object_or_404(Enroll, pk=pk)
+                form = EnrollCreateForm(instance=instance)
                 return render(request, 'enrolls/enroll_update.html', {'form': form})
     return HttpResponseRedirect(reverse('enrolls'))
 

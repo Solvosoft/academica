@@ -708,26 +708,20 @@ class PageCreateForm(forms.ModelForm, GTForm):
             del self.fields['create_menu']
 
 
-class EnrollCreateForm(forms.ModelForm, GTForm):
+class EnrollCreateForm(GTForm, forms.ModelForm):
 
     class Meta:
         model = Enroll
-        fields = ['group', 'student', 'enroll_finished', 'enroll_activate', 'paid_excluded']
+        fields = ['group', 'student', 'enroll_finished', 'enroll_activate', 'paid_excluded', 'rejected']
         widgets = {
             'group': djgentelella.Select,
             'student': djgentelella.Select,
             'enroll_finished': djgentelella.YesNoInput,
             'enroll_activate': djgentelella.YesNoInput,
             'paid_excluded': djgentelella.YesNoInput,
+            'rejected': djgentelella.YesNoInput,
         }
 
-    def __init__(self, *args, **kwargs):
-        super(EnrollCreateForm, self).__init__(*args, **kwargs)
-        if 'initial' in kwargs:
-            if 'student' in kwargs['initial']:
-                self.fields['student'].initial = kwargs['initial']['student']
-            if 'group' in kwargs:
-                self.fields['group'].initial = kwargs['initial']['group']
 
 
 class MenuItemAddForm(forms.ModelForm, GTForm):
