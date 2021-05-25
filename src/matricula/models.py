@@ -298,8 +298,10 @@ class Enroll(models.Model):
 
 
 class WaitingList(models.Model):
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    group = models.ForeignKey(
+        Group, on_delete=models.CASCADE, verbose_name=_("Group"))
+    student = models.ForeignKey(
+        Student, on_delete=models.CASCADE, verbose_name=_("Student"))
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

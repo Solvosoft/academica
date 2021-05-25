@@ -1138,6 +1138,58 @@ class GroupDetailView(DetailView):
     model = Group
     template_name = 'groups/waitinglist_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = EnrollCreateForm(initial={'group': self.get_object()})
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        context = super(GroupDetailView, self).get_context_data(**kwargs)
+        form = EnrollCreateForm(request.POST)
+        context['form'] = form
+        if form.is_valid():
+            student = form.cleaned_data['student']
+            group = form.cleaned_data['group']
+            enroll = Enroll.objects.filter(group=group, student=student)
+            if enroll.exists():
+                if enroll.first().enroll_finished:
+                    messages.success(request, 'El estudiante ya está matriculado')
+                else:
+                    messages.success(request, "El estudiante ya está inscrito")
+            else:
+                schema = request.scheme + "://"
+                template = 'email_preenroll_success'
+                paid_excluded = form.cleaned_data['paid_excluded']
+                msg = "pre-inscrito"
+                if form.cleaned_data['enroll_finished']:
+                    template = 'email_enroll_success'
+                    msg = 'matriculado'
+                send_email_from_template(
+                    template, [student.user.email],
+                    {
+                        "url": request.build_absolute_uri(reverse('enrollment')),
+                        "group": group,
+                        'domain': schema + request.get_host(),
+                    },
+                    enqueued=False, user=None)
+                form.save()
+                if paid_excluded:
+                    send_email_from_template(
+                    'enroll_paid_excluded', student.user.email,
+                    {
+                        "url": request.build_absolute_uri(reverse('login')),
+                        'domain': schema+request.get_host(),
+                        "user": student.user,
+                        'group': group
+                    },
+                    enqueued=False,
+                    user=None)
+                messages.success(request, f"El estudiante fue {msg} correctamente")
+        else:
+            messages.error(request, "Error al guardar los datos")
+        return self.render_to_response(context=context)
+
 
 @permission_required('matricula.view_student')
 def export_waitinglist_xls(request, pk=None):
