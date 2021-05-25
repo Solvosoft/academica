@@ -12,7 +12,7 @@
     <div class="row" style="margin-bottom:3%; margin-top:5%;">
         <h1 class="text-center" style="margin-bottom: -2%;">{{ course }}</h1>
         <br/><br/>
-        <div class="text-center" style="font-size:15px;"><strong>Grupos y descripción del curso</strong></div>
+        <div class="text-center" style="font-size:15px;"><strong>Grupos y Descripción del Curso</strong></div>
     </div>
     {% if request.user.is_authenticated and not request.user.student %}
         <form method="post" action="{% url 'add_student' %}">
@@ -44,13 +44,13 @@
                         <div class="x_content">
                             <div class="col-md-6">
                                 <strong>Curso: </strong>
-                                <a href="#" data-toggle="tooltip" title="{{group.course}}">{{group.course|truncatechars:100}}</a>
+                                <a href="#descripcion" data-toggle="tooltip" title="{{group.course}}">{{group.course|truncatechars:100}}</a>
                             </div>
                             <div class="col-md-6">
                                 <strong>Categoría: </strong>{{ group.course.category }}
                             </div>
                             <div class="col-md-6">
-                                <strong>Matriculades: </strong>{{ group.enroll_set.count }} de {{ group.maximum }}
+                                <strong>Matriculades: </strong>{{ group.get_enrolls_completed }} de {{ group.maximum }}
                             </div>
                             {% if group.is_paid %}
                                 <div class="col-md-6">
@@ -79,7 +79,7 @@
                                     {% if group.in_preenrollment or group.in_enrollment %}
                                         <a class="btn btn-primary btn-sm" data-href="{% url 'enrollme' group.pk %}"
                                            data-ajax="true">
-                                            {% if group.flow == group.AUTO_ENROLL %}{% trans 'Enroll me' %}{% else %}
+                                            {% if group.flow == group.AUTO_ENROLL  or group.in_enrollment%}{% trans 'Enroll me' %}{% else %}
                                                 {% trans 'Pre-enroll me' %}{% endif %}
                                         </a>
                                     {% endif %}
@@ -95,7 +95,7 @@
         <div class='col-md-10 col-md-offset-1 col-xs-12'>
             <div class="x_panel">
                 <div class="x_title">
-                    <h1 class="text-center" style="float:none;">Descripción del curso</h1>
+                    <h1 id="descripcion" class="text-center" style="float:none;">Descripción del Curso</h1>
                     <div class="clearfix"></div>
                 </div>
                 <div id="html_content" class="x_content">

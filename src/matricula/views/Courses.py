@@ -7,7 +7,7 @@ Created on 16/5/2015
 from .utils import get_active_period
 from django.shortcuts import render, get_object_or_404
 from matricula.models import Course, Category, Group, Professor
-from matricula.forms import CourseMainSearchForm
+from matricula.forms import CourseMainSearchForm, ProfessorEditProfileForm
 from django.db.models import Q
 
 
@@ -15,21 +15,14 @@ def list_courses(request):
     form_search = CourseMainSearchForm()
     cat = request.GET.get('cat', None)
     period = get_active_period()
-    show_info_modal = 0
+    show_info_modal = False
+    context = {}
     if request.user.is_authenticated:
         professor = Professor.objects.filter(user=request.user).first()
         if professor:
-            if professor.email:
-                if professor.email == "":
-                    show_info_modal = 1
-            else:
-                show_info_modal = 1
-
-            if professor.description:
-                if professor.description == "":
-                    show_info_modal = 1
-            else:
-                show_info_modal = 1
+            context['professor'] = professor
+            show_info_modal = professor.email is None or professor.email == "" or professor.description is None \
+                    or professor.description == ""
 
     category = Category.objects.filter(course__group__period__in=period).distinct()
     if cat:
@@ -49,9 +42,10 @@ def list_courses(request):
             courses[course.pk] = {'course': course,
                                   'groups': []}
         courses[course.pk]['groups'].append(group)
-    return render(request, 'courses.html', {
+    context.update({
         'courses': courses, 'show_info_modal': show_info_modal,
         'form_search': form_search})
+    return render(request, 'courses.html', context )
 
 
 def view_course(request, pk=None):

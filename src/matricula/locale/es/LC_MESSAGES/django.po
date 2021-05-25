@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-05-12 18:27-0600\n"
-"PO-Revision-Date: 2020-11-27 20:41-0600\n"
+"PO-Revision-Date: 2021-05-25 01:02-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.1\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: src/matricula/admin.py:40
 msgid "Active user for enrollment"
@@ -114,8 +114,8 @@ msgid ""
 "It can be your company or organization where you work or the community that "
 "you represent."
 msgstr ""
-"Puede ser el nombre de la empresa u organización donde trabaje o la "
-"comunidad que represente."
+"Puede ser el nombre de la empresa u organización donde trabaje o la comunidad "
+"que represente."
 
 #: src/matricula/forms.py:68
 msgid "User name exist "
@@ -238,8 +238,7 @@ msgstr "Facilitadores"
 
 #: src/matricula/models.py:86 src/matricula/models.py:100
 #: src/matricula/models.py:116 src/matricula/models.py:157
-#: src/matricula/models.py:381
-#: src/matricula/templates/Pdf/student_list.html:235
+#: src/matricula/models.py:381 src/matricula/templates/Pdf/student_list.html:235
 #: src/matricula/templates/enrolls/enroll_list.html:76
 msgid "Name"
 msgstr "Nombre"
@@ -546,13 +545,11 @@ msgstr "Bienvenide a Académica"
 msgid "Pre-enroll courses"
 msgstr "Cursos pre-inscritos"
 
-#: src/matricula/templates/enroll.html:15
-#: src/matricula/templates/enroll.html:44
+#: src/matricula/templates/enroll.html:15 src/matricula/templates/enroll.html:44
 msgid "Rejected"
 msgstr "Rechazada"
 
-#: src/matricula/templates/enroll.html:21
-#: src/matricula/templates/enroll.html:56
+#: src/matricula/templates/enroll.html:21 src/matricula/templates/enroll.html:56
 msgid "Enroll not available"
 msgstr "Matricula no disponible"
 
@@ -665,8 +662,8 @@ msgstr "Registrate"
 #: src/matricula/templates/menuitems/menuitem_create.html:8
 msgid "Work with caution in this view check the manual to see how it works."
 msgstr ""
-"Trabaje con mucho cuidado está vista, para más detalles ver el video "
-"asociado a esta funcionalidad."
+"Trabaje con mucho cuidado está vista, para más detalles ver el video asociado "
+"a esta funcionalidad."
 
 #: src/matricula/templates/menuitems/menuitem_list.html:102
 msgid "There are not menu items available"
@@ -690,8 +687,8 @@ msgid ""
 "Are you sure you want to delete this professor? It is recommended that it be "
 "deactivated instead."
 msgstr ""
-"¿Realmente quiere eliminar este facilitadore? Es recomendable que en lugar "
-"de eliminar este facilitadore, le desactive."
+"¿Realmente quiere eliminar este facilitadore? Es recomendable que en lugar de "
+"eliminar este facilitadore, le desactive."
 
 #: src/matricula/templates/professor/professors_list.html:51
 #: src/matricula/templates/student_add.html:23
@@ -756,7 +753,8 @@ msgstr ""
 
 #: src/matricula/templates/student_create.html:4
 msgid "New user"
-msgstr "Nueva usuarie"
+msgstr ""
+"Será una aventura fascinante al aprender con nosotros <br> Ingresa Ahora"
 
 #: src/matricula/templates/student_create.html:8
 msgid "Your data"
@@ -801,8 +799,7 @@ msgstr "Pre-inscrito pero no matriculado"
 #: src/matricula/templates/student_login.html:15
 msgid "Your username and password didn't match. Please try again."
 msgstr ""
-"Su nombre de usuarie y contraseña no coinciden. Por favor vuelva a "
-"intentarle."
+"Su nombre de usuarie y contraseña no coinciden. Por favor vuelva a intentarle."
 
 #: src/matricula/templates/student_login.html:20
 msgid ""
@@ -912,8 +909,7 @@ msgstr ""
 "Tu estas inscrito en el curso pero tu pago está pendiente, si no realizas el "
 "pago en el periodo definido tu matrícula será eliminada."
 
-#: src/matricula/views/Enrollments.py:120
-#: src/matricula/views/Enrollments.py:125
+#: src/matricula/views/Enrollments.py:120 src/matricula/views/Enrollments.py:125
 msgid "Sorry your pre-enroll was rejected"
 msgstr "Lo sentimos pero su pre matrícula fue rechazade."
 

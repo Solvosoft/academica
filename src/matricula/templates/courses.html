@@ -6,7 +6,7 @@
 {% endblock %}
 {% block content %}
 	<div class="row">
-		<h1 class="text-center">Lista de cursos disponibles</h1>
+		<h1 class="text-center">Lista de Cursos Disponibles</h1>
 		{% if request.user.is_authenticated and not request.user.student %}
 			<form method="post" action="{% url 'add_student' %}">
 				{% csrf_token %}
@@ -85,6 +85,7 @@
 		</div>
 		{% endif %}
 	</div>
+{% if professor and show_info_modal %}
 	<div id="infoprofessormodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
@@ -93,7 +94,9 @@
 					<h4 class="modal-title">Atención</h4>
 				</div>
 				<div class="modal-body">
-					Es necesario que aporte información en su perfil.
+					Es necesario llenar información sobre el rol profesor en su perfil.
+					 <a href="{% url 'edit_professor' professor.pk  %}" > Actualizar</a>
+
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -102,15 +105,16 @@
 			</div>
 		</div>
 	</div>
+{% endif %}
 {% endblock %}
 {% block js %}
 <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
 <script>
+{% if show_info_modal %}
 	 $(document).ready(function(){
-		if({{show_info_modal}} == 1){
 			$("#infoprofessormodal").modal();
-		}
     });
+{% endif %}
 </script>
 {% endblock %}

@@ -221,7 +221,7 @@ def get_profile(request):
 
 
 
-@method_decorator(login_required, name='dispatch')
+#@method_decorator(login_required, name='dispatch')
 class ProfessorProfileView(DetailView):
     model = Professor
     template_name = "professor/professor_profile.html"
