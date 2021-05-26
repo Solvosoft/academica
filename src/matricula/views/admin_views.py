@@ -598,26 +598,33 @@ def create_group(request):
             form.fields['currency'].required = True
         context['form'] = form
         if form.is_valid():
-            group = Group(
-                name=form.cleaned_data['name'],
-                course=form.cleaned_data['course'],
-                period=form.cleaned_data['period'],
-                schedule=form.cleaned_data['schedule'],
-                pre_enroll_start=form.cleaned_data['pre_enroll_start'],
-                pre_enroll_finish=form.cleaned_data['pre_enroll_finish'],
-                enroll_start=form.cleaned_data['enroll_start'],
-                enroll_finish=form.cleaned_data['enroll_finish'],
-                is_paid=form.cleaned_data['is_paid'],
-                currency=form.cleaned_data['currency'],
-                cost=form.cleaned_data['cost'],
-                maximum=form.cleaned_data['maximum'],
-                flow=form.cleaned_data['flow'],
-                expedition_date=form.cleaned_data['expedition_date'],
-                duration_hours=form.cleaned_data['duration_hours'],
-            )
-            group.save()
-            group.professors.set(form.cleaned_data['professors'])
-            messages.success(request, "Grupo guardado con éxito")
+            preenroll = form.cleaned_data['pre_enroll_start'] <= form.cleaned_data['pre_enroll_finish'] 
+            enroll = form.cleaned_data['enroll_start'] <= form.cleaned_data['enroll_finish'] 
+            in_ranges = form.cleaned_data['pre_enroll_finish'] <= form.cleaned_data['enroll_start']
+            if preenroll and enroll and in_ranges:
+                group = Group(
+                    name=form.cleaned_data['name'],
+                    course=form.cleaned_data['course'],
+                    period=form.cleaned_data['period'],
+                    schedule=form.cleaned_data['schedule'],
+                    pre_enroll_start=form.cleaned_data['pre_enroll_start'],
+                    pre_enroll_finish=form.cleaned_data['pre_enroll_finish'],
+                    enroll_start=form.cleaned_data['enroll_start'],
+                    enroll_finish=form.cleaned_data['enroll_finish'],
+                    is_paid=form.cleaned_data['is_paid'],
+                    currency=form.cleaned_data['currency'],
+                    cost=form.cleaned_data['cost'],
+                    maximum=form.cleaned_data['maximum'],
+                    flow=form.cleaned_data['flow'],
+                    expedition_date=form.cleaned_data['expedition_date'],
+                    duration_hours=form.cleaned_data['duration_hours'],
+                )
+                group.save()
+                group.professors.set(form.cleaned_data['professors'])
+                messages.success(request, "Grupo guardado con éxito")
+            else:
+                messages.success(request, "Error en los rangos de fechas.")
+                return render(request, 'groups/group_create.html', context)
             return HttpResponseRedirect(reverse('groups_enroll'))
         else:
             messages.error(request, "Error al guardar grupo")
