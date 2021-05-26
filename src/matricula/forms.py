@@ -711,7 +711,7 @@ class EnrollCreateForm(GTForm, forms.ModelForm):
         fields = ['group', 'student', 'enroll_finished', 'enroll_activate', 'paid_excluded', 'rejected']
         widgets = {
             'group': djgentelella.Select,
-            'student': AutocompleteSelect('studentenroll'),
+            'student': djgentelella.Select,
             'enroll_finished': djgentelella.YesNoInput,
             'enroll_activate': djgentelella.YesNoInput,
             'paid_excluded': djgentelella.YesNoInput,
