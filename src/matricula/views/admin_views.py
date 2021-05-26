@@ -523,33 +523,42 @@ def pre_enroll_group(request, pk=None):
                             instance.enroll_activate = True
                             instance.save()
                             emails.append(instance.student.user.email)
-                        schema = request.scheme + "://"
-                        send_email_from_template(
-                            'email_open_group', [i for i in emails],
-                            {
-                                "url": request.build_absolute_uri(reverse('enrollment')),
-                                "group": group,
-                                'domain': schema + request.get_host(),
-                            },
-                            enqueued=False, user=None)
-                        messages.success(request, "Estudiantes activades para matrícule.")
+                        if enrolls.exists():
+                            schema = request.scheme + "://"
+                            send_email_from_template(
+                                'email_open_group', [i for i in emails],
+                                {
+                                    "url": request.build_absolute_uri(reverse('enrollment')),
+                                    "group": group,
+                                    'domain': schema + request.get_host(),
+                                },
+                                enqueued=False, user=None)
+                            messages.success(request, "Estudiantes activades para matrícule.")
+                        else:
+                            messages.error(request, "No se seleccionaron estudiantes.")
                     elif action == "Rechazar pre-inscripción":
                         enrolls = Enroll.objects.filter(pk__in=form.cleaned_data['students'], group=group)
                         emails = []
                         for instance in enrolls:
                             instance.rejected = True
+                            instance.enroll_finished = False
+                            instance.enroll_activate = False
+                            instance.paid_excluded = False
                             instance.save()
                             emails.append(instance.student.user.email)
                         schema = request.scheme + "://"
-                        send_email_from_template(
-                            'email_enroll_rejected', [i for i in emails],
-                            {
-                                "url": request.build_absolute_uri(reverse('enrollment')),
-                                "group": group,
-                                'domain': schema + request.get_host(),
-                            },
-                            enqueued=False, user=None)
-                        messages.success(request, "Estudiantes notificades con éxito")
+                        if enrolls.exists():
+                            send_email_from_template(
+                                'email_enroll_rejected', [i for i in emails],
+                                {
+                                    "url": request.build_absolute_uri(reverse('enrollment')),
+                                    "group": group,
+                                    'domain': schema + request.get_host(),
+                                },
+                                enqueued=False, user=None)
+                            messages.success(request, "Estudiantes notificades con éxito")
+                        else:
+                            messages.error(request, "No se seleccionaron estudiantes.")
                     elif action == "Agregar a lista de espera":
                         students = form.cleaned_data['students']
                         students_pk = list(students.values_list('student', flat=True))
