@@ -562,19 +562,22 @@ def pre_enroll_group(request, pk=None):
                     elif action == "Agregar a lista de espera":
                         students = form.cleaned_data['students']
                         students_pk = list(students.values_list('student', flat=True))
-                        enrolls = set(WaitingList.objects.filter(
-                            student__pk__in=students_pk, group=group).values_list("student__pk",flat=True))
-                        for i in enrolls:
-                            try:
-                                students_pk.remove(i)
-                            except IndexError:
-                                pass
-                        waiting_list = []
-                        list_students = Student.objects.filter(pk__in=students_pk)
-                        for i in list_students:
-                            waiting_list.append(WaitingList(student=i, group=group))
-                        WaitingList.objects.bulk_create(waiting_list)
-                        messages.success(request, "Estudiantes agregados a la lista de espera.")
+                        if len(students_pk)>0:
+                            enrolls = set(WaitingList.objects.filter(
+                                student__pk__in=students_pk, group=group).values_list("student__pk",flat=True))
+                            for i in enrolls:
+                                try:
+                                    students_pk.remove(i)
+                                except IndexError:
+                                    pass
+                            waiting_list = []
+                            list_students = Student.objects.filter(pk__in=students_pk)
+                            for i in list_students:
+                                waiting_list.append(WaitingList(student=i, group=group))
+                            WaitingList.objects.bulk_create(waiting_list)
+                            messages.success(request, "Estudiantes agregados a la lista de espera.")
+                        else:
+                            messages.error(request, "No se seleccionaron estudiantes.")
                     return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
             messages.error(request, "Error al realizar la acción")
             return HttpResponseRedirect(reverse('pre_enroll_group', args=[pk]))
@@ -954,7 +957,7 @@ def notify_rejected(request, pk=None):
         enqueued=False, user=None)
     messages.success(
         request, "Se ha notificado al usuarie que la matrícula ha sido rechazada")
-    return HttpResponseRedirect(reverse('students'))
+    return HttpResponseRedirect(reverse('enrolls'))
 
 
 @method_decorator(permission_required('matricula.delete_enroll'), name='dispatch')

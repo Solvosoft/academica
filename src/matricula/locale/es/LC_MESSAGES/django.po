@@ -532,8 +532,6 @@ msgstr "para recuperar contraseña."
 #: src/matricula/templates/email_recovery.html:194
 #: src/matricula/templates/set_email_first.html:199
 #: src/matricula/templates/welcome_professor.html:201
-#, fuzzy
-#| msgid "Your username"
 msgid "Your username is:"
 msgstr "Su nombre de usuarie"
 
@@ -543,7 +541,7 @@ msgstr "Bienvenide a Académica"
 
 #: src/matricula/templates/enroll.html:4
 msgid "Pre-enroll courses"
-msgstr "Cursos Pre-inscritos"
+msgstr "Cursos Pre-Inscritos"
 
 #: src/matricula/templates/enroll.html:15 src/matricula/templates/enroll.html:44
 msgid "Rejected"
