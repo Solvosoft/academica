@@ -6,7 +6,7 @@ Created on 03/11/2020
 @author: allexiusw
 '''
 from django import forms
-from djgentelella.widgets.selects import AutocompleteSelectMultiple
+from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 from .models import Bill
 from matricula.models import Student, Group
 from djgentelella.widgets import core as djgentelella
@@ -71,7 +71,7 @@ class BillCreateForm(forms.ModelForm, GTForm):
             'description': tinymce.EditorTinymce,
             'amount': djgentelella.NumberInput,
             'currency': djgentelella.Select(choices=Group.COURRENCY_CHOICES),
-            'student': djgentelella.Select,
+            'student': AutocompleteSelect('studentsearch')
         }
 
     def __init__(self, *args, **kwargs):
