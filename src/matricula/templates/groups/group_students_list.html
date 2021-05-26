@@ -80,6 +80,9 @@
 {% endblock %}
 {% block content %}
     <h1 class="text-center">Lista de estudiantes del curso</h1>
+    <div class="jumbotron" style="margin-top:10px; padding:20px;">
+			<p><b>Los estudiantes con pagos pendientes no se muestran en el listado.<b></p>
+		</div>
     <div class="col-sm-12">
         <div class="x_panel">
             <h2 class="green text-center">Grupo: {{ group.name }}</h2>
