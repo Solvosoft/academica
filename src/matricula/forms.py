@@ -723,7 +723,7 @@ class EnrollCreateForm(GTForm, forms.ModelForm):
         }
 
     def clean(self):
-        if self.fields['rejected']:
+        if self.cleaned_data['rejected']:
             self.cleaned_data['enroll_finished'] = False
             self.cleaned_data['paid_excluded'] = False
             self.cleaned_data['enroll_activate'] = False
