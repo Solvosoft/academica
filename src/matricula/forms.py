@@ -468,7 +468,7 @@ class EnrollSearchForm(GTForm, forms.Form):
     )
     student = forms.ModelMultipleChoiceField(
         queryset=Student.objects.all(), label="Estudiante",
-        widget=djgentelella.SelectMultiple, required=False
+        widget=AutocompleteSelectMultiple('studentsearch'), required=False
     )
     group = forms.ModelMultipleChoiceField(
         queryset=Group.objects.all(), widget=djgentelella.SelectMultiple,
@@ -509,7 +509,7 @@ class StudentSearchForm(GTForm, forms.Form):
     )
     student = forms.ModelMultipleChoiceField(
         queryset=Student.objects.all(),
-        label="Nombre", widget=djgentelella.SelectMultiple,
+        label="Estudiante", widget=AutocompleteSelectMultiple('studentsearch'),
         required=False)
     group = forms.ModelChoiceField(
         label="Grupo", widget=djgentelella.Select, required=False,
@@ -605,13 +605,9 @@ class StudentAddForm(GTForm, forms.ModelForm):
             'user', 'organization2', 'country2','city2', 'phone_number']
 
         widgets = {
-            'user': djgentelella.Select,
+            'user': AutocompleteSelect('studentuserbase'),
             'phone_number': djgentelella.TextInput,
         }
-
-    def __init__(self, *args, **kwargs):
-        super(StudentAddForm, self).__init__(*args, **kwargs)
-        self.fields['user'].queryset = User.objects.filter(is_active=True, student__isnull=True)
 
 
 class StudentChangePasswordForm(GTForm, forms.ModelForm):
@@ -715,7 +711,7 @@ class EnrollCreateForm(GTForm, forms.ModelForm):
         fields = ['group', 'student', 'enroll_finished', 'enroll_activate', 'paid_excluded', 'rejected']
         widgets = {
             'group': djgentelella.Select,
-            'student': djgentelella.Select,
+            'student': AutocompleteSelect('studentenroll'),
             'enroll_finished': djgentelella.YesNoInput,
             'enroll_activate': djgentelella.YesNoInput,
             'paid_excluded': djgentelella.YesNoInput,
@@ -837,7 +833,7 @@ class CouponsSearchForm(GTForm, forms.Form):
     )
 
     student = forms.ModelMultipleChoiceField(
-        queryset=Student.objects.all(), widget=djgentelella.SelectMultiple,
+        queryset=Student.objects.all(), widget=AutocompleteSelectMultiple('studentsearch'),
         required=False, label="Estudiante")
 
     group = forms.ModelMultipleChoiceField(
@@ -868,7 +864,7 @@ class CouponAddForm(GTForm, forms.Form):
     )
 
     student = forms.ModelMultipleChoiceField(
-        queryset=Student.objects.all(), widget=djgentelella.SelectMultiple,
+        queryset=Student.objects.all(), widget=AutocompleteSelectMultiple('studentenroll'),
         required=False, label="Estudiante * ")
 
     group = forms.ModelChoiceField(
@@ -888,7 +884,7 @@ class CouponEditForm(GTForm, forms.Form):
     )
 
     student = forms.ModelChoiceField(
-        queryset=Student.objects.all(), widget=djgentelella.Select,
+        queryset=Student.objects.all(), widget=AutocompleteSelect('studentenroll'),
         required=False, label="Estudiante * ")
 
     group = forms.ModelChoiceField(
