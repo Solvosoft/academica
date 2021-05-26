@@ -1,7 +1,7 @@
 {% extends 'gentelella/base.html'%}
 {% load i18n static %}
 {% block content %}
-	<h1 class="text-center">Lista de categorías con cursos disponibles</h1>
+	<h1 class="text-center">Lista de Categorías con Cursos Disponibles</h1>
 	{% if request.user.is_authenticated and not request.user.student %}
 		<form method="post" action="{% url 'add_student' %}">
 			{% csrf_token %}

@@ -543,7 +543,7 @@ msgstr "Bienvenide a Académica"
 
 #: src/matricula/templates/enroll.html:4
 msgid "Pre-enroll courses"
-msgstr "Cursos pre-inscritos"
+msgstr "Cursos Pre-inscritos"
 
 #: src/matricula/templates/enroll.html:15 src/matricula/templates/enroll.html:44
 msgid "Rejected"
@@ -565,7 +565,7 @@ msgstr "No tiene cursos pre-inscritos"
 #: src/matricula/templates/enroll.html:89
 #: src/matricula/templates/matricula/student_form.html:49
 msgid "Enrolled courses"
-msgstr "Cursos matriculados"
+msgstr "Cursos Matriculados"
 
 #: src/matricula/templates/enroll.html:107
 msgid "You don't have any enrolled courses"

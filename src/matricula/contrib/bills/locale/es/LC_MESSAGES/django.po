@@ -74,7 +74,7 @@ msgstr ""
 
 #: src/matricula/contrib/bills/templates/bills.html:24
 msgid "Unpaid bills"
-msgstr "Pagos pendientes"
+msgstr "Pagos Pendientes"
 
 #: src/matricula/contrib/bills/templates/bills.html:28
 msgid ""
@@ -94,7 +94,7 @@ msgstr "No tiene pagos pendientes"
 
 #: src/matricula/contrib/bills/templates/bills.html:55
 msgid "Paid bills"
-msgstr "Pagos realizados"
+msgstr "Pagos Realizados"
 
 #: src/matricula/contrib/bills/templates/bills.html:65
 msgid "You don't have paid bills"
