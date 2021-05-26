@@ -145,7 +145,7 @@ def edit_category(request, pk=None):
         else:
             if request.method == "GET":
                 category = Category.objects.get(pk=pk)
-                form = CategoryCreateForm(category.__dict__)
+                form = CategoryCreateForm(instance=category)
             else:
                 form = CategoryCreateForm()
         return render(request, 'categories/category_update.html', {
