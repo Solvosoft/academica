@@ -740,6 +740,28 @@ class EnrollCreateForm(GTForm, forms.ModelForm):
             self.fields['group'].queryset = course
 
 
+class EnrollCreateAdminForm(GTForm, forms.ModelForm):
+    
+    class Meta:
+        model = Enroll
+        fields = ['group', 'student', 'enroll_finished', 'enroll_activate', 'paid_excluded', 'rejected']
+        widgets = {
+            'group': djgentelella.Select,
+            'student': AutocompleteSelect('studentenroll'),
+            'enroll_finished': djgentelella.YesNoInput,
+            'enroll_activate': djgentelella.YesNoInput,
+            'paid_excluded': djgentelella.YesNoInput,
+            'rejected': djgentelella.YesNoInput,
+        }
+
+    def clean(self):
+        if self.cleaned_data['rejected']:
+            self.cleaned_data['enroll_finished'] = False
+            self.cleaned_data['paid_excluded'] = False
+            self.cleaned_data['enroll_activate'] = False
+        return self.cleaned_data
+
+
 class MenuItemAddForm(forms.ModelForm, GTForm):
     parent = forms.ModelChoiceField(
         queryset=DJMenuItem.objects.all(), label="Menú padre",

@@ -32,7 +32,7 @@ import django_excel as excel
 
 from matricula.certificate_utils import build_pdf_certificate
 from matricula.forms import CategoryCreateForm, CategorySearchForm, \
-    CourseSearchForm, CourseCreateForm, MenuItemSearchForm, \
+    CourseSearchForm, CourseCreateForm, EnrollCreateAdminForm, MenuItemSearchForm, \
     MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, \
     GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentAddForm, \
         StudentAdminEditForm, StudentSearchForm, \
@@ -859,7 +859,7 @@ class EnrollList(ListView):
 def create_enroll(request):
     context = {}
     if request.method == 'POST':
-        form = EnrollCreateForm(request.POST)
+        form = EnrollCreateAdminForm(request.POST)
         context['form'] = form
         if form.is_valid():
             group = form.cleaned_data['group']
@@ -897,7 +897,7 @@ def create_enroll(request):
         else:
             messages.error(request, "Error al guardar matrícula")
     else:
-        context['form'] = EnrollCreateForm()
+        context['form'] = EnrollCreateAdminForm()
     return render(request, 'enrolls/enroll_create.html', context)
 
 
@@ -908,7 +908,7 @@ def edit_enroll(request, pk=None):
             instance = Enroll.objects.get(pk=pk)
             enroll_finished = instance.enroll_finished
             paid_excluded = instance.paid_excluded
-            form = EnrollCreateForm(request.POST, instance=instance)
+            form = EnrollCreateAdminForm(request.POST, instance=instance)
             if form.is_valid():
                 schema = request.scheme + "://"
                 student = form.cleaned_data['student']
@@ -951,7 +951,7 @@ def edit_enroll(request, pk=None):
         else:
             if request.method == "GET":
                 instance = get_object_or_404(Enroll, pk=pk)
-                form = EnrollCreateForm(instance=instance)
+                form = EnrollCreateAdminForm(instance=instance)
                 return render(request, 'enrolls/enroll_update.html', {'form': form})
     return HttpResponseRedirect(reverse('enrolls'))
 
