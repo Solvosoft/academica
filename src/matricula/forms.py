@@ -725,6 +725,11 @@ class EnrollCreateForm(GTForm, forms.ModelForm):
             self.cleaned_data['enroll_activate'] = False
         return self.cleaned_data
 
+    def __init__(self, *args, **kwargs):
+        super(EnrollCreateForm, self).__init__(*args, **kwargs)
+        if 'initial' in kwargs and 'group' in kwargs['initial']:
+            course = Group.objects.filter(course=kwargs['initial']['group'].course)
+            self.fields['group'].queryset = course
 
 
 class MenuItemAddForm(forms.ModelForm, GTForm):

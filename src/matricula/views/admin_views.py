@@ -1183,26 +1183,25 @@ class GroupDetailView(DetailView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         context = super(GroupDetailView, self).get_context_data(**kwargs)
-        form = EnrollCreateForm(request.POST)
+        form = EnrollCreateForm(request.POST, initial={'group':self.object})
         context['form'] = form
         if form.is_valid():
             student = form.cleaned_data['student']
             group = form.cleaned_data['group']
+            waitinglist = WaitingList.objects.filter(group=self.object, student=student)
             enroll = Enroll.objects.filter(group=group, student=student)
             if enroll.exists():
-                waitinglist = WaitingList.objects.filter(group=self.object, student=student)
                 if enroll.first().enroll_finished:
                     messages.success(request, 'Proceso de matrícula finalizado con éxito')
-                    waitinglist.delete()
                 else:
                     update = EnrollCreateForm(request.POST, instance=enroll.first())
                     if update.is_valid():
                         instance = update.save()
                         if instance.enroll_finished:
-                            waitinglist.delete()
                             messages.success(request, 'Proceso de matrícula finalizado con éxito')
                         else:
-                            messages.success(request, "La pre-inscripción fue actualizada correctamente, para matricular seleccione el botón 'Finalizar matrícula'")
+                            messages.success(request, "La pre-inscripción fue actualizada correctamente.")
+                waitinglist.delete()
             else:
                 schema = request.scheme + "://"
                 template = 'email_preenroll_success'
@@ -1230,10 +1229,10 @@ class GroupDetailView(DetailView):
                     enqueued=False,
                     user=None)
                 if instance.enroll_finished:
-                    WaitingList.objects.filter(group=self.object, student=student).delete()
                     messages.success(request, f"La matrícula fue realizada con éxito")
                 else:
-                    messages.success(request, "La pre-inscripción fue actualizada correctamente, para matricular seleccione el botón 'Finalizar matrícula'")
+                    messages.success(request, "La pre-inscripción fue actualizada correctamente.")
+            WaitingList.objects.filter(group=self.object, student=student).delete()
         else:
             messages.error(request, "Error al guardar los datos")
         return self.render_to_response(context=context)
