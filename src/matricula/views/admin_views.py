@@ -1199,7 +1199,8 @@ class GroupDetailView(DetailView):
         form = EnrollCreateForm(request.POST, initial={'group':self.object})
         context['form'] = form
         if form.is_valid():
-            student = form.cleaned_data['student']
+            pk = form.cleaned_data['student_pk']
+            student = get_object_or_404(Student, pk=pk)
             group = form.cleaned_data['group']
             waitinglist = WaitingList.objects.filter(group=self.object, student=student)
             enroll = Enroll.objects.filter(group=group, student=student)
@@ -1247,6 +1248,7 @@ class GroupDetailView(DetailView):
                     messages.success(request, "La pre-inscripción fue actualizada correctamente.")
             WaitingList.objects.filter(group=self.object, student=student).delete()
         else:
+            context['errors'] = True
             messages.error(request, "Error al guardar los datos")
         return self.render_to_response(context=context)
 

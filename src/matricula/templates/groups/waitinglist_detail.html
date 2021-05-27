@@ -28,7 +28,7 @@
 						<tbody>
 							{% for enroll in object.waitinglist_set.all %}
 								<tr>
-									<td>{{enroll.student}}</td>
+									<td class="name">{{enroll.student}}</td>
 									<td>{{enroll.created_at}}</td>
 									<td><button type="button" class="btn btn-success enroll" id="{{enroll.student.pk}}" data-toggle="modal" data-target="#exampleModal">Matricular</button></td>
 								</tr>
@@ -44,7 +44,7 @@
 		</div>
 	</div>
 	<!-- Modal -->
-	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<form method="post">
 				<div class="modal-content">
@@ -70,11 +70,14 @@
 {% block js %}
 	<script>
 		$(document).ready(function(){
-			$("#id_group").select2({ width: '100%' });
-			$("#id_student").select2({ width: '100%' });
+			$('.select2-container').css('width','100%');
 			$(".enroll").click(function(){
-				$("#id_student").val($(this).attr('id')).trigger('change');
+				$("#id_student_txt").val($(this).parent().parent().find('.name').html())
+				$("#id_student_pk").val($(this).attr('id'))
 			});
+			if("{{errors}}"){
+				$('#exampleModal').modal('show');
+			}
 		});
 	</script>
 {% endblock %}
