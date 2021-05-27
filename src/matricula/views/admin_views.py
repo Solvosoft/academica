@@ -1190,9 +1190,9 @@ class GroupDetailView(DetailView):
             group = form.cleaned_data['group']
             enroll = Enroll.objects.filter(group=group, student=student)
             if enroll.exists():
-                waitinglist = WaitingList.objects.filter(group=group, student=student)
+                waitinglist = WaitingList.objects.filter(group=self.object, student=student)
                 if enroll.first().enroll_finished:
-                    messages.success(request, 'El estudiante ya está matriculado')
+                    messages.success(request, 'Proceso de matrícula finalizado con éxito')
                     waitinglist.delete()
                 else:
                     update = EnrollCreateForm(request.POST, instance=enroll.first())
@@ -1200,15 +1200,15 @@ class GroupDetailView(DetailView):
                         instance = update.save()
                         if instance.enroll_finished:
                             waitinglist.delete()
-                    messages.success(request, "La matrícula fue actualizada correctamente")
+                            messages.success(request, 'Proceso de matrícula finalizado con éxito')
+                        else:
+                            messages.success(request, "La pre-inscripción fue actualizada correctamente, para matricular seleccione el botón 'Finalizar matrícula'")
             else:
                 schema = request.scheme + "://"
                 template = 'email_preenroll_success'
                 paid_excluded = form.cleaned_data['paid_excluded']
-                msg = "pre-inscrito"
                 if form.cleaned_data['enroll_finished']:
                     template = 'email_enroll_success'
-                    msg = 'matriculado'
                 send_email_from_template(
                     template, [student.user.email],
                     {
@@ -1217,7 +1217,7 @@ class GroupDetailView(DetailView):
                         'domain': schema + request.get_host(),
                     },
                     enqueued=False, user=None)
-                form.save()
+                instance = form.save()
                 if paid_excluded:
                     send_email_from_template(
                     'enroll_paid_excluded', student.user.email,
@@ -1229,8 +1229,11 @@ class GroupDetailView(DetailView):
                     },
                     enqueued=False,
                     user=None)
-                WaitingList.objects.filter(group=group, student=student).delete()
-                messages.success(request, f"El estudiante fue {msg} correctamente")
+                if instance.enroll_finished:
+                    WaitingList.objects.filter(group=self.object, student=student).delete()
+                    messages.success(request, f"La matrícula fue realizada con éxito")
+                else:
+                    messages.success(request, "La pre-inscripción fue actualizada correctamente, para matricular seleccione el botón 'Finalizar matrícula'")
         else:
             messages.error(request, "Error al guardar los datos")
         return self.render_to_response(context=context)
