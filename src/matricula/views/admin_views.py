@@ -536,6 +536,27 @@ def pre_enroll_group(request, pk=None):
                             messages.success(request, "Estudiantes activades para matrícule.")
                         else:
                             messages.error(request, "No se seleccionaron estudiantes.")
+                    elif action == "Matricular":
+                        enrolls = Enroll.objects.filter(pk__in=form.cleaned_data['students'], group=group)
+                        emails = []
+                        for instance in enrolls:
+                            instance.enroll_activate = True
+                            instance.enroll_finished = True
+                            instance.save()
+                            emails.append(instance.student.user.email)
+                        if enrolls.exists():
+                            schema = request.scheme + "://"
+                            send_email_from_template(
+                                'email_enroll_success', [i for i in emails],
+                                {
+                                    "url": request.build_absolute_uri(reverse('enrollment')),
+                                    "group": group,
+                                    'domain': schema + request.get_host(),
+                                },
+                                enqueued=True, user=None)
+                            messages.success(request, "Transacción realizada satisfactoriamente.")
+                        else:
+                            messages.error(request, "No se seleccionaron estudiantes.")
                     elif action == "Rechazar pre-inscripción":
                         enrolls = Enroll.objects.filter(pk__in=form.cleaned_data['students'], group=group)
                         emails = []
