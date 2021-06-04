@@ -156,6 +156,7 @@
                     <a class="btn btn-dark" href="{% url 'groups_enroll' %}">Atras</a>
                     {% if perms.matricula.can_open_group %}
                         <a class="btn btn-primary" href="{% url 'open_group' group.pk %}">Abrir grupo</a>
+                        <a class="btn btn-primary" href="{% url 'notify_enroll_group' group.pk %}">Notificar Matricula</a>
                         {% if group.notified_open %}
                             <a class="btn btn-primary disabled" href="#">Ya se notifico de apertura</a>
                         {% else %}

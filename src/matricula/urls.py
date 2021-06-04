@@ -27,7 +27,7 @@ from .views.admin_views import CategoryList, GroupDetailView, create_category, \
     create_menupage, pre_enroll_group, add_group_course, list_students_group, \
     export_enrolled_group, open_group, close_group, regenerate_certificate, \
     build_pdf_certificate_list, edit_password_student, notify_rejected, \
-    StudentDetailView
+    StudentDetailView, email_enrolled_group
 
 from .views.coupons_views import coupons_list, create_cupon, delete_coupon, edit_coupon, coupons_bill_list, \
     add_coupons_group
@@ -88,6 +88,7 @@ urlpatterns = [
     path('enrrolment/delete_group/<int:pk>/', GroupDelete.as_view(), name="delete_group_enroll"),
     path('enrrolment/edit_group/<int:pk>/', edit_group, name="edit_group_enroll"),
     path('enrrolment/open_group/<int:pk>/', open_group, name="open_group"),
+    path('enrrolment/notify_enroll_group/<int:pk>/', email_enrolled_group, name="notify_enroll_group"),
     path('enrrolment/close_group/<int:pk>/', close_group, name="close_group"),
     path('enrrolment/export_group/<int:pk>/', export_group, name="export_group"),
     path('enrrolment/list_students_group/<int:pk>/', list_students_group, name="list_students_group"),

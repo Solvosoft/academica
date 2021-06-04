@@ -806,6 +806,26 @@ def open_group(request, pk):
     return HttpResponseRedirect(reverse('list_students_group', args=[pk, ]))
 
 
+@permission_required('matricula.can_open_group')
+def email_enrolled_group(request, pk):
+    group = Group.objects.get(pk=pk)
+    enrolls = Enroll.objects.filter(group=group, enroll_finished=True)
+    for enroll in enrolls:
+        schema = request.scheme + "://"
+        send_email_from_template(
+            'email_enroll_success',
+            [enroll.student.user.email],
+            {
+                "url": request.build_absolute_uri(
+                    reverse('course', args=[group.course.pk])),
+                "group": group,
+                'domain': schema + request.get_host(),
+            },
+            enqueued=True,
+            user=None)
+    messages.success(request, "Notificaciones enviadas con éxito")
+    return HttpResponseRedirect(reverse('list_students_group', args=[pk, ]))
+
 @permission_required('matricula.can_close_group')
 def close_group(request, pk):
     group = Group.objects.get(pk=pk)
