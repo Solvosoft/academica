@@ -706,12 +706,20 @@ class PageCreateForm(forms.ModelForm, GTForm):
 
 class EnrollCreateForm(GTForm, forms.ModelForm):
 
+    student_txt = forms.CharField(
+        label="Estudiante", widget=djgentelella.TextInput(
+            attrs={'readonly': True}), max_length=200,
+        required=True)
+
+    student_pk = forms.CharField(
+        label="Id estudiante", required=True, widget=forms.HiddenInput()
+    )
+
     class Meta:
         model = Enroll
-        fields = ['group', 'student', 'enroll_finished', 'enroll_activate', 'paid_excluded', 'rejected']
+        fields = ['group', 'student_txt', 'student_pk', 'enroll_finished', 'enroll_activate', 'paid_excluded', 'rejected']
         widgets = {
             'group': djgentelella.Select,
-            'student': djgentelella.Select,
             'enroll_finished': djgentelella.YesNoInput,
             'enroll_activate': djgentelella.YesNoInput,
             'paid_excluded': djgentelella.YesNoInput,
@@ -730,6 +738,28 @@ class EnrollCreateForm(GTForm, forms.ModelForm):
         if 'initial' in kwargs and 'group' in kwargs['initial']:
             course = Group.objects.filter(course=kwargs['initial']['group'].course)
             self.fields['group'].queryset = course
+
+
+class EnrollCreateAdminForm(GTForm, forms.ModelForm):
+    
+    class Meta:
+        model = Enroll
+        fields = ['group', 'student', 'enroll_finished', 'enroll_activate', 'paid_excluded', 'rejected']
+        widgets = {
+            'group': djgentelella.Select,
+            'student': AutocompleteSelect('studentenroll'),
+            'enroll_finished': djgentelella.YesNoInput,
+            'enroll_activate': djgentelella.YesNoInput,
+            'paid_excluded': djgentelella.YesNoInput,
+            'rejected': djgentelella.YesNoInput,
+        }
+
+    def clean(self):
+        if self.cleaned_data['rejected']:
+            self.cleaned_data['enroll_finished'] = False
+            self.cleaned_data['paid_excluded'] = False
+            self.cleaned_data['enroll_activate'] = False
+        return self.cleaned_data
 
 
 class MenuItemAddForm(forms.ModelForm, GTForm):
