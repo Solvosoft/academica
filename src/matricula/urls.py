@@ -27,7 +27,7 @@ from .views.admin_views import CategoryList, GroupDetailView, create_category, \
     create_menupage, pre_enroll_group, add_group_course, list_students_group, \
     export_enrolled_group, open_group, close_group, regenerate_certificate, \
     build_pdf_certificate_list, edit_password_student, notify_rejected, \
-    StudentDetailView, email_enrolled_group
+    StudentDetailView, email_enrolled_group, notify_enroll_success
 
 from .views.coupons_views import coupons_list, create_cupon, delete_coupon, edit_coupon, coupons_bill_list, \
     add_coupons_group
@@ -94,10 +94,12 @@ urlpatterns = [
     path('enrrolment/list_students_group/<int:pk>/', list_students_group, name="list_students_group"),
     path('enrrolment/export_enrolled_group/<int:pk>/', export_enrolled_group, name="export_enrolled_group"),
     path('enrrolment/notify_rejected/<int:pk>/', notify_rejected, name="notify_rejected"),
+    path('enrrolment/notify_success_enroll/<int:pk>/', notify_enroll_success, name="notify_enroll_success"),
     url('enrrolment/enrolls', EnrollList.as_view(), name="enrolls"),
     url('enrrolment/create_enroll', create_enroll, name="create_enroll"),
     path('enrrolment/delete_enroll/<int:pk>/', EnrollDelete.as_view(), name="delete_enroll"),
     path('enrrolment/edit_enroll/<int:pk>/', edit_enroll, name="edit_enroll"),
+    path('enrrolment/notify/<int:pk>/', edit_enroll, name="edit_enroll"),
     url('enrrolment/students', StudentList.as_view(), name="students"),
     path('enrrolment/<int:pk>/qualify_students', qualify_students, name="qualify_students"),
     path('enrrolment/recovery_pass_student/<int:pk>/', recovery_pass_student, name="recovery_pass_student"),

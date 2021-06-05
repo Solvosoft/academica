@@ -1013,6 +1013,22 @@ def notify_rejected(request, pk=None):
         request, "Se ha notificado al usuarie que la matrícula ha sido rechazada")
     return HttpResponseRedirect(reverse('enrolls'))
 
+@permission_required('matricula.can_recovery_pass_student')
+def notify_enroll_success(request, pk=None):
+    enroll = get_object_or_404(Enroll, pk=pk)
+    schema = request.scheme + "://"
+    send_email_from_template(
+        'email_enroll_success', enroll.student.user.email,
+        {
+            "url": request.build_absolute_uri(reverse('enrollment')),
+            "group": enroll.group,
+            'domain': schema + request.get_host(),
+        },
+        enqueued=False, user=None)
+    messages.success(
+        request, "Se ha enviado el correo con éxito")
+    return HttpResponseRedirect(reverse('enrolls'))
+
 
 @method_decorator(permission_required('matricula.delete_enroll'), name='dispatch')
 class EnrollDelete(DeleteView):

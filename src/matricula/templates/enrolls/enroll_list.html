@@ -57,6 +57,11 @@
 				<div class="x_title">
 					<h2 class="green">{{object.student|wordwrap:100}}</h2>
 					<ul class="nav navbar-right panel_toolbox" style="min-width:unset;">
+						{% if not object.enroll_finished and object.rejected %}
+							<li>
+								<a href="{% url 'notify_rejected' object.pk %}" title="Notificar rechazo"><i class="fa fa-envelope"></i></a>
+							</li>
+						{% endif %}
 						{% if perms.matricula.change_enroll %}
 							<li>
 								<a title="{% trans 'Edit enrollment'%}" href="{% url 'edit_enroll' object.pk %}" class="edit-link"><i class="fa fa-edit"></i></a>
@@ -89,7 +94,10 @@
 						<div class="col-md-6 col-sm-6 col-xs-6">
 							<ul class="list-unstyled user_data">
 								<li>
-									<strong>Matrícula finalizada: </strong>{% if object.enroll_finished %}Sí{%else%}No{%endif%}	
+									<strong>Matrícula finalizada: </strong>{% if object.enroll_finished %}Sí{%else%}No{%endif%}
+									{% if object.enroll_finished %}
+										<a title="Notificar " class="btn btn-sm" href="{% url 'notify_enroll_success' object.pk %}"><i class="fa fa-bell red"></i> </a>
+									{%endif%}
 								</li>
 								<li>
 									<strong>Activa para matrícula: </strong>{% if object.enroll_activate%}Sí{%else%}No{%endif%}
@@ -100,12 +108,7 @@
 								<li>
 									<strong>Pagado: </strong>{% if object.bill_set.first.is_paid%}Sí{% else %}No{% endif %}
 								</li>
-								<li>
-									{% if not object.enroll_finished and object.rejected %}
-									<strong>Notificar de rechazado: </strong>
-										<a href="{% url 'notify_rejected' object.pk%}"><i class="fa fa-envelope"></i></a>
-									{% endif %}
-								</li>
+
 							</ul>
 						</div>
 					</div>
