@@ -3,7 +3,7 @@ from django.conf import settings
 from django.utils.translation import gettext as _
 from django.utils.safestring import mark_safe
 
-from matricula.models import Enroll
+from matricula.models import Enroll, Group
 
 register = template.Library()
 @register.filter(name='index')
@@ -33,8 +33,10 @@ def can_enroll(group, user):
         student = user.student
     except:
         return False
-
-    return Enroll.objects.filter(group=group, student=student, enroll_activate=True, enroll_finished=False).exists()
+    if group.flow in (Group.NORMAL, Group.AUTO_PREENROLL):
+        return Enroll.objects.filter(
+            group=group, student=student, enroll_activate=True,enroll_finished=False).exists()
+    return True
 
 
 @register.filter
