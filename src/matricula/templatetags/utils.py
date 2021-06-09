@@ -36,7 +36,9 @@ def can_enroll(group, user):
     if group.flow in (Group.NORMAL, Group.AUTO_PREENROLL):
         return Enroll.objects.filter(
             group=group, student=student, enroll_activate=True,enroll_finished=False).exists()
-    return True
+    else:
+        return not Enroll.objects.filter(
+            group=group, student=student, enroll_finished=True).exists()
 
 
 @register.filter
