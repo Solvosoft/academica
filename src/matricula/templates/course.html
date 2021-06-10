@@ -53,7 +53,7 @@
 							<strong>Categoría: </strong>{{group.course.category}}
 						</div>
 						<div class="col-md-6">
-							<strong>Matriculades: </strong>{{group.get_label_enrolls}}
+							<strong>Horario: </strong>{{group.schedule}}
 						</div>
 						{% if group.is_paid %}
 							<div class="col-md-6">
@@ -69,9 +69,6 @@
 									<li>No hay facilitadores asignados</li>
 								{% endfor%}
 							</ul>
-						</div>
-						<div class="col-md-12">
-							<strong>Horario: </strong>{{group.schedule}}
 						</div>
 						<div class="col-md-12">
 							<strong>Rango pre-inscripción: </strong>{{group.pre_enroll_start}} - {{group.pre_enroll_finish}}
