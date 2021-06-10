@@ -104,22 +104,168 @@
 										</a>
 									{% endif %}
 								{% endif %}
-							{% endif%}
+							{% else %}
+								{% if group.in_enrollment and group.flow == group.AUTO_ENROLL  %}
+									<a style="margin-botton:10px;" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#showModal">
+										{% trans 'Enroll me' %}
+									</a>
+								{% elif group.in_preenrollment %}
+									<a style="margin-botton:10px;" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#showModal">
+										{% trans 'Pre-enroll me' %}
+									</a>
+								{% endif %}
+							{% endif %}
 						</div>
 					</div>
 				</div>
 			</div>
 		{% endfor %}
+		{% if not request.user.is_authenticated %}
+			<div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="title" aria-hidden="true">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<h1 id="title">{% trans 'Login' %}</h1>
+						</div>
+						<div class="modal-body">
+							<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+								<li class="nav-item">
+									<a class="nav-link" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Iniciar Sesión</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Registrarme</a>
+								</li>
+							</ul>
+							<div class="tab-content" id="pills-tabContent">
+								<br/>
+								<div class="tab-pane fade" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+									<form method="POST">
+										{% csrf_token %}
+										<div id="login-errors" style="display:none; color: red;">Usuarie y/o contraseña incorrectos o usuarie deshabilitado.</div>
+										{{login_form.as_horizontal}}
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+											<button type="submit" name='login-form' value="1" class="btn btn-primary">Iniciar Sesión</button>
+										</div>
+									</form>
+								</div>
+								<div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+									<form method="POST">
+										{% csrf_token %}
+										{{student_form.as_horizontal}}
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+											<button type="submit" name='student-form' value="1" class="btn btn-primary">Registrarme</button>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endif %}
 	</div>
 {% endblock %}
 {% block js %}
 	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
 	<script>
-		$(document).ready(function(){
-			$('.enrollme').on('click', function(){
-				$('html, body').animate({ scrollTop: 0 }, 'low');
-			});
+		const Toast = Swal.mixin({
+			toast: true,
+			position: 'top-end',
+			showConfirmButton: false,
+			timer: 3000,
+			timerProgressBar: true,
+			didOpen: (toast) => {
+				toast.addEventListener('mouseenter', Swal.stopTimer)
+				toast.addEventListener('mouseleave', Swal.resumeTimer)
+			}
 		});
 	</script>
+	{% if request.user.is_authenticated %}
+		<script>
+			$(document).ready(function(){
+				$('.enrollme').on('click', function(){
+					$('html, body').animate({ scrollTop: 0 }, 'low');
+				});
+				if("{{authenticated}}" == 'on'){
+					Toast.fire({
+						icon: 'success',
+						title: 'Sesión inicidada exitosamente.'
+					});
+				}
+			});
+		</script>
+	{% else %}
+		<script>
+		$(document).ready(function(){
+			$("#id_password").after("<input type='checkbox' onclick='myFunction(\"id_password\")'> Mostrar contraseña<br/>");
+			$("#id_password2").after("<input type='checkbox' onclick='myFunction(\"id_password2\")'> Mostrar contraseña<br/>");
+            $('#show_password').parent().css({'text-align':'left', "margin-bottom":"5px"});
+			$('#pills-tab li:nth-child({{display_form}}) a').tab('show');
+			if("{{display_form}}" == '2'){
+				$('#title').html("Registrarme");
+			}
+			$('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+				$('#title').html($(this).html());
+			});
+			$('.select2-container').css('width','100%');
+		});
+		function myFunction(id) {
+			let x = document.getElementById(id)
+			if (x.type === "password") {
+				x.type = "text";
+			} else {
+				x.type = "password";
+			}
+		}
+		if("{{show_modal}}" == "on"){
+			$('#showModal').modal('show');
+			if ("{{login_errors}}"){
+				$("#login-errors").show()
+			}
+		}
+		if("{{student_created}}" == 'on'){
+			Toast.fire({
+				icon: 'success',
+				title: 'El usuario fue creado exitosamente, deberá acceder a su correo para validar su cuenta e iniciar sesión.'
+			});
+		}
+		var input = document.querySelector('#id_organization'),
+		tagify = new Tagify(input, {whitelist:[]}),
+		controller; // for aborting the call
+		// listen to any keystrokes which modify tagify's input
+		tagify.on('input', onInput)
+		function onInput( e ){
+			var value = e.detail.value;
+			tagify.settings.whitelist.length = 0; // reset the whitelist
+
+			// https://developer.mozilla.org/en-US/docs/Web/API/AbortController/abort
+			controller && controller.abort();
+			controller = new AbortController();
+
+			// show loading animation and hide the suggestions dropdown
+			tagify.loading(true).dropdown.hide.call(tagify)
+
+			fetch("/gtapis/student/?q="+e.detail.value, {signal:controller.signal})
+				.then(RES => RES.json())
+				.then(function(whitelist){
+				// update inwhitelist Array in-place
+				var whitelst = []
+				for(rows of whitelist.results){
+					tags = JSON.parse(rows.text)
+					for(tag of tags){
+						whitelst.push(tag.value)
+					}
+				}
+				tagify.settings.whitelist.splice(0, whitelist.total_count, ...whitelst)
+				tagify.loading(false).dropdown.show.call(tagify, value); // render the suggestions dropdown
+			})
+		}
+		</script>
+	{% endif %}
 {% endblock %}

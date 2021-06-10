@@ -4,11 +4,18 @@ Created on 16/5/2015
 
 @author: luisza
 '''
-from .utils import get_active_period
+
+from django.contrib import auth
+from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
-from matricula.models import Course, Category, Group, Professor
-from matricula.forms import CourseMainSearchForm, ProfessorEditProfileForm
 from django.db.models import Q
+from django.urls import reverse
+
+from async_notifications.utils import send_email_from_template
+
+from matricula.models import Course, Category, Group, Professor, Student
+from matricula.forms import CourseMainSearchForm, LoginForm, StudentCreateForm
+from matricula.views.utils import get_active_period, get_expire_date
 
 
 def list_courses(request):
@@ -76,13 +83,124 @@ def view_course(request, pk=None):
                 Q(course__category__name__icontains=form_search.cleaned_data['name']))
         groups = groups.filter(is_open=True)
         groups = sorted(groups, key=lambda t: t.in_preenrollment, reverse=True)
-    return render(request, 'course.html', {
-            'course': {'course': course, 'groups': groups},
-            'add_schedule': True, 'form_search': form_search
-        }
-    )
+    context =   {
+        'course': {'course': course, 'groups': groups},
+        'add_schedule': True, 'form_search': form_search,
+        'display_form': '1', 'login_form': LoginForm(),
+        'student_form': StudentCreateForm(), 'show_modal': "off",
+    }
+    if request.method == "POST":
+        if request.POST.get('login-form', False):
+            login_form = LoginForm(request.POST)
+            if login_form.is_valid():
+                user = auth.authenticate(
+                    username=login_form.cleaned_data['username'],
+                    password=login_form.cleaned_data['password2'])
+                if user is not None and user.is_active:
+                    auth.login(request, user)
+                    context['authenticated'] = 'on'
+                else:
+                    context['login_errors'] = "on"
+                    context['show_modal'] = 'on'
+            else:
+                context['login_form'] = login_form
+                context['show_modal'] = 'on'
+        else:
+            student_form = StudentCreateForm(request.POST)
+            if student_form.is_valid():
+                user = User.objects.create_user(
+                    student_form.cleaned_data['name'],
+                    student_form.cleaned_data['email'],
+                    student_form.cleaned_data['password'])
+                user.first_name = student_form.cleaned_data['first_name']
+                user.last_name = student_form.cleaned_data['last_name']
+                user.is_active = False
+                user.save()
+                student = Student(
+                    user=user, organization=student_form.cleaned_data['organization'],
+                    country=student_form.cleaned_data['country'],
+                    phone_number=student_form.cleaned_data['phone_number'],
+                    expired_at=get_expire_date(),
+                )
+                student.save()
+                schema = request.scheme+"://"
+                send_email_from_template(
+                    'new_user_created_academy', user.email,
+                    {
+                        "url": request.build_absolute_uri(reverse('confirm_email')),
+                        'domain': schema+request.get_host(),
+                        "user": user,
+                        'student': student
+                    },
+                    enqueued=False,
+                    user=None)
+                context['display_form'] = '1'
+                context['student_created'] = "on"
+                context['show_modal'] = 'on'
+            else:
+                context['student_form'] = student_form
+                context['display_form'] = '2'
+                context['show_modal'] = 'on'
+    return render(request, 'course.html', context)
 
 
 def course_detail(request, pk):
     course = get_object_or_404(Course, pk=pk)
-    return render(request, "course_detail.html", context={'course': course})
+    context =   {
+        'display_form': '1', 'login_form': LoginForm(),
+        'student_form': StudentCreateForm(), 'show_modal': "off",
+        'course': course,
+    }
+    if request.method == "POST":
+        if request.POST.get('login-form', False):
+            login_form = LoginForm(request.POST)
+            if login_form.is_valid():
+                user = auth.authenticate(
+                    username=login_form.cleaned_data['username'],
+                    password=login_form.cleaned_data['password2'])
+                if user is not None and user.is_active:
+                    auth.login(request, user)
+                    context['authenticated'] = 'on'
+                else:
+                    context['login_errors'] = "on"
+                    context['show_modal'] = 'on'
+            else:
+                context['login_form'] = login_form
+                context['show_modal'] = 'on'
+        else:
+            student_form = StudentCreateForm(request.POST)
+            if student_form.is_valid():
+                user = User.objects.create_user(
+                    student_form.cleaned_data['name'],
+                    student_form.cleaned_data['email'],
+                    student_form.cleaned_data['password'])
+                user.first_name = student_form.cleaned_data['first_name']
+                user.last_name = student_form.cleaned_data['last_name']
+                user.is_active = False
+                user.save()
+                student = Student(
+                    user=user, organization=student_form.cleaned_data['organization'],
+                    country=student_form.cleaned_data['country'],
+                    phone_number=student_form.cleaned_data['phone_number'],
+                    expired_at=get_expire_date(),
+                )
+                student.save()
+                schema = request.scheme+"://"
+                send_email_from_template(
+                    'new_user_created_academy', user.email,
+                    {
+                        "url": request.build_absolute_uri(reverse('confirm_email')),
+                        'domain': schema+request.get_host(),
+                        "user": user,
+                        'student': student
+                    },
+                    enqueued=True,
+                    user=None)
+                context['display_form'] = '1'
+                context['student_created'] = "on"
+                context['show_modal'] = 'on'
+            else:
+                context['student_form'] = student_form
+                context['display_form'] = '2'
+                context['show_modal'] = 'on'
+    return render(request, "course_detail.html", context)

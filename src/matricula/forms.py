@@ -949,3 +949,8 @@ class CourseMainSearchForm(GTForm, forms.Form):
     is_paid = forms.ChoiceField(
         choices=IS_PAID, widget=djgentelella.Select,
         required=False, label="Pagado")
+
+
+class LoginForm(GTForm, forms.Form):
+    username = forms.CharField(label="Usuarie", max_length=100, widget=djgentelella.TextInput)
+    password2 = forms.CharField(label="Contraseña", widget=djgentelella.PasswordInput, max_length=100)
