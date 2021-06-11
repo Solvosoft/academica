@@ -61,6 +61,9 @@ class StudentCreateForm(GTForm, forms.ModelForm):
             'country': djgentelella.Select,
             'phone_number': djgentelella.TextInput,
         }
+        labels = {
+            'country': 'País',
+        }
 
     def clean(self):
         cleaned_data = super(StudentCreateForm, self).clean()
