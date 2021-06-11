@@ -132,7 +132,7 @@ def view_course(request, pk=None):
                         "user": user,
                         'student': student
                     },
-                    enqueued=False,
+                    enqueued=True,
                     user=None)
                 context['display_form'] = '1'
                 context['student_created'] = "on"
