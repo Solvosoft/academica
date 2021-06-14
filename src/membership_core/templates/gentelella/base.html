@@ -127,6 +127,23 @@
           {% block footer %}
 
             <footer>
+              {% if not request.user.is_authenticated %}
+                  <div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="title" aria-hidden="true">
+                      <div class="modal-dialog modal-lg" role="document">
+                          <div class="modal-content">
+                              <div class="modal-header">
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                  </button>
+                                  <h1 id="title">{% trans 'Login' %}</h1>
+                              </div>
+                              <div class="modal-body" id="result_modal">
+
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              {% endif %}
               {% include "gentelella/app/footer.html" %}
             </footer>
 
@@ -189,14 +206,48 @@
         {% endif %}
 
 
-      <!-- Custom Theme Scripts -->
-      <script src="{% static 'gentelella/js/base.js' %}?v={% get_version %}"></script>
-      <script src="{% static 'gentelella/js/widgets.js' %}?v={% get_version %}"></script>
-      <script src="{% static 'gentelella/js/custom.js' %}?v={% get_version %}"></script>
-      {% render_menu_js_widget %}
+        <!-- Custom Theme Scripts -->
+        <script src="{% static 'gentelella/js/base.js' %}?v={% get_version %}"></script>
+        <script src="{% static 'gentelella/js/widgets.js' %}?v={% get_version %}"></script>
+        <script src="{% static 'gentelella/js/custom.js' %}?v={% get_version %}"></script>
+        {% render_menu_js_widget %}
+        <script>
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+          });
+        </script>
+
+        {% if request.user.is_authenticated %}
+          <script>
+            $(document).ready(function(){
+              $('.enrollme').on('click', function(){
+                $('html, body').animate({ scrollTop: 0 }, 'low');
+              });
+              if("{{authenticated}}" == 'on'){
+                Toast.fire({
+                  icon: 'success',
+                  title: 'Sesión inicidada exitosamente.'
+                });
+              }
+            });
+          </script>
+        {% else %}
+          <script>
+            var modal_context = {
+              'forms_url': "{% url 'modalforms-list' %}",
+            };
+          </script>
+          <script src="{% static 'gentelella/js/login_modal.js' %}"></script>
+        {% endif %}
       {% endblock %}
-
-
     {% endblock body %}
     {% block js %}{% endblock %}
   {% render_extra_html_menu %}
