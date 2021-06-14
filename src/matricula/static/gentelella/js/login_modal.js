@@ -168,9 +168,33 @@ $('#showModal').on('show.bs.modal', function (e) {
                     $('#result_modal').html(result['data']);
                     $('#pills-tab li:nth-child('+result['display_form']+') a').tab('show');
                     $('#modal_msg').addClass('alert alert-warning').html('Para iniciar sesión debe ingresar a su correo electrónico y validar su cuenta accediendo al enlace que se le ha enviado.')
+                    modal_context.student_token = result['key'];
                     tagify();
                     $("#id_password").after("<input type='checkbox' onclick='myFunction(\"id_password\")'> Mostrar contraseña<br/>");
                     $('#id_country').select2({});
+                    $(function() {
+                        var nre = setInterval(checkit, 5000);
+                        function checkit() {
+                            url = modal_context.student_active_url.replace("/0", "/"+modal_context.student_token);
+                            $.ajax({
+                                url: url,
+                                method: 'GET',
+                                dataType: "json",
+                                success: function(data){
+                                    result = JSON.parse(data['content']);
+                                    console.log(result)
+                                    if (result['result'] == 'ok' && result['is_active']==true) {
+                                        $('#modal_msg').removeClass('alert-warning').addClass('alert-success').html("Ya puede iniciar sesión, su usuarie ha sido validado exitosamente.");
+                                        clearInterval(nre);
+                                    }
+                                },error: function(xhr, ajaxOptions, thrownError){
+                                    if(xhr.status==404) {
+                                        return false;
+                                    }
+                                }
+                            });
+                        }
+                    });
                     Swal.fire({
                         title:'El usuario ha sido creado con éxito!',
                         icon:'success',

@@ -239,6 +239,8 @@
             var modal_context = {
               'forms_url': "{% url 'modalforms-list' %}",
               'url_login': "{% url 'autenticate' %}",
+              'student_active_url': "{% url 'student_isactive' '0' %}",
+              'student_token': "",
               'url_enroll': "{% url 'enroll_ajax' %}",
               'validation_error': "Hay errores de validación en el formulario",
               'non_validation_error': "Usuarie y/o contraseña incorrecto o usuarie inactivo.",

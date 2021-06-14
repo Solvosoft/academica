@@ -1597,6 +1597,7 @@ def do_login(request):
         response['message'] = 'Los campos del formulario son requeridos.'
     return JsonResponse(response)
 
+
 @ajax
 @require_http_methods(["POST"])
 def create_student(request):
@@ -1646,3 +1647,11 @@ def create_student(request):
         response['message'] = 'Los campos del formulario son requiridos.'
         response['errors'] = form.errors
     return JsonResponse(response)
+
+
+@ajax
+@require_http_methods(['GET'])
+def student_isactive(request, key):
+    student = get_object_or_404(Student, key=key)
+    result = {'result': 'ok', 'is_active':student.user.is_active}
+    return JsonResponse(result)
