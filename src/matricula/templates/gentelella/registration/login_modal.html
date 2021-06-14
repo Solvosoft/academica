@@ -9,23 +9,23 @@
 <div class="tab-content" id="pills-tabContent">
     <br/>
     <div class="tab-pane fade" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-        <form method="POST">
+        <form id="frm_login" method="POST" autocomplete="off">
             <div id="login-errors" style="display:none; color: red;">
                 Usuarie y/o contraseña incorrectos o usuarie deshabilitado.
             </div>
             {{login_form.as_horizontal}}
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="submit" name='login-form' value="1" class="btn btn-primary">Iniciar Sesión</button>
+                <button type="submit" name='login-form' value="1" id="btn_login" class="btn btn-primary">Iniciar Sesión</button>
             </div>
         </form>
     </div>
     <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-        <form method="POST">
+        <form id="frm_enroll" method="POST" autocomplete="off">
             {{student_form.as_horizontal}}
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="submit" name='student-form' value="1" class="btn btn-primary">Registrarme</button>
+                <button type="submit" name='student-form' id="btn_enroll" value="1" class="btn btn-primary">Registrarme</button>
             </div>
         </form>
     </div>

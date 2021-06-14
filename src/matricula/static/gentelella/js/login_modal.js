@@ -16,17 +16,17 @@ $('#showModal').on('show.bs.modal', function (e) {
         method: 'GET',
         dataType: "json",
         success: function(data){
-            result = data['result'];
+            result = JSON.parse(data['content']);
             if (result == "" ){
                 result = "Error al cargar los datos";
             }
-            $('#result_modal').html(result);
+            $('#result_modal').html(result['result']);
             if (result != ""){
                 $('#id_country').select2({});
                 $("#id_password").after("<input type='checkbox' onclick='myFunction(\"id_password\")'> Mostrar contraseña<br/>");
                 $("#id_password2").after("<input type='checkbox' onclick='myFunction(\"id_password2\")'> Mostrar contraseña<br/>");
                 $('#show_password').parent().css({'text-align':'left', "margin-bottom":"5px"});
-                $('#pills-tab li:nth-child('+data['display_form']+') a').tab('show');
+                $('#pills-tab li:nth-child('+result['display_form']+') a').tab('show');
                 if(data['display_form'] == '2'){
                     $('#title').html("Registrarme");
                 }else{
@@ -88,5 +88,57 @@ $('#showModal').on('show.bs.modal', function (e) {
                 $('#result_modal').html("Error al cargar los datos");
             }
         }
+    });
+    function doLogin(){
+        login = {
+            "modal": modal,
+            "username": $("#id_username").val(),
+            "password2": $("#id_password2").val(),
+        };
+
+        $.ajax({
+            url: modal_context.url_login,
+            method: "POST",
+            dataType: "json",
+            data: login,
+            headers: {'X-CSRFToken': getCookie('csrftoken') },
+            success: function(data){
+                result = JSON.parse(data['content']);
+                if(result['result']=='error'){
+                    Toast.fire({
+                        icon: 'error',
+                        title: modal_context.validation_error,
+                    });
+                }else if(result['result'] == 'ok'){
+                    $('#showModal').modal('hide');
+                    Swal.fire({
+                        title:'Inicio de sesión exitosa',
+                        icon:'success',
+                        timer: 1500,
+                    }).then((result) => {
+                       location.reload(); 
+                    });
+                }else{
+                    Toast.fire({
+                        icon: 'error',
+                        title: modal_context.non_validation_error,
+                    });
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError){
+                Toast.fire({
+                    icon: 'error',
+                    title: "Ocurrio un error mientras se realizaba la operación.",
+                });
+            }
+        });
+        return false;
+    }
+    $(document).on('click', '#btn_login, #btn_enroll', function(e){
+        modal = $(this).val();
+        if(modal == "1"){
+            doLogin();
+        }
+        return false;
     });
 });

@@ -10,20 +10,25 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
+from django.contrib import auth
 
-from django.conf import settings
-from django.core.paginator import Paginator
-from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http.response import JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
-from django.template.loader import get_template, render_to_string
-from django.urls import reverse
+
 from django.views.generic import ListView, DeleteView, DetailView
+from django.views.decorators.http import require_http_methods
 
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
+from django_ajax.decorators import ajax
+
+from django.conf import settings
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import get_template, render_to_string
+from django.urls import reverse
 
 from djgentelella.models import MenuItem as DJMenuItem
 from async_notifications.utils import send_email_from_template
@@ -1543,6 +1548,7 @@ def build_pdf_certificate_list(request, pk):
     return redirect("list_students_group", pk=pk)
 
 
+@ajax
 def get_forms_modal(request):
     context = {
         'login_form': LoginForm(),
@@ -1552,6 +1558,29 @@ def get_forms_modal(request):
         'result': render_to_string(
             'gentelella/registration/login_modal.html', context
         ),
-        'display_form': request.GET.get('modal',1),
+        'display_form': request.GET.get('modal',"1"),
     }
+    return JsonResponse(response)
+
+
+@ajax
+@require_http_methods(["POST"])
+def do_login(request):
+    form = LoginForm(request.POST)
+    response = {}
+    if form.is_valid():
+        user = auth.authenticate(
+            username=form.cleaned_data['username'],
+            password=form.cleaned_data['password2']
+        )
+        if user is not None and user.is_active:
+            auth.login(request, user)
+            response['result'] = 'ok'
+        else:
+            response['result'] = 'error-nonfield'
+            response['message'] = "Usuario y/o contraseña incorrectos o usuario deshabilitado"
+    else:
+        response['result'] = 'error'
+        response['message'] = 'Los campos del formulario son requiridos.'
+        response['errors'] = form.errors
     return JsonResponse(response)

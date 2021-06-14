@@ -955,7 +955,11 @@ class CourseMainSearchForm(GTForm, forms.Form):
 
 
 class LoginForm(GTForm, forms.Form):
-    username = forms.CharField(label="Usuarie", max_length=100, widget=djgentelella.TextInput)
+    username = forms.CharField(
+        label="Usuarie", max_length=100, widget=djgentelella.TextInput,
+        required=True,
+    )
     password2 = forms.CharField(
         label="Contraseña", widget=djgentelella.PasswordInput, max_length=100,
+        required=True,
     )

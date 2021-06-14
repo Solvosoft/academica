@@ -17,7 +17,7 @@ from matricula.views.Enrollments import addmetoquee, list_enroll, enrollme, \
 from matricula.views.Pages import PageDetail
 from .admin import admin_site
 from .views.admin_views import CategoryList, GroupDetailView, create_category, \
-    CategoryDelete, edit_category, CourseList, create_course, \
+    CategoryDelete, do_login, edit_category, CourseList, create_course, \
     CourseDelete, edit_course, MenuItemList, create_menuitem, MenuItemDelete, \
     edit_menuitem, PeriodList, create_period, edit_period, PeriodDelete, \
     GroupList, create_group, edit_group, GroupDelete, EnrollList, \
@@ -132,4 +132,5 @@ urlpatterns = [
     path('enrrolment_certificate_enroll/<int:pk_group>/<int:pk>/', regenerate_certificate, name="build_pdf_certificate_view"),
     path('enrollment/users/create', AddUser.as_view(), name="create_simple_user"),
     path('enrrolment/modalforms', get_forms_modal, name="modalforms-list"),
+    path('enrrolment/autenticate', do_login, name="autenticate"),
 ] + billurls
