@@ -6,8 +6,8 @@
 		</div>
 		<ul class="nav navbar-nav navbar-right">
             {% if not request.user.is_authenticated %}
-			    <li><a href="#" id="login" data-toggle="modal" data-target="#showModal">Iniciar sesión</a><li>
 				<li><a href="#" id="enroll" data-toggle="modal" data-target="#showModal">Registrarme</a><li>
+			    <li><a href="#" id="login" data-toggle="modal" data-target="#showModal">Iniciar sesión</a><li>
 			{% else %}
 				<li class="nav-item dropdown" style="padding-left: 15px;">
 					<a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
