@@ -178,6 +178,7 @@ $('#showModal').on('show.bs.modal', function (e) {
                     $("#id_password").after("<input type='checkbox' onclick='myFunction(\"id_password\")'> Mostrar contraseña<br/>");
                     $("#id_password2").after("<input type='checkbox' onclick='myFunction(\"id_password2\")'> Mostrar contraseña<br/>");
                     $('#id_country').select2({});
+                    $('.select2-container').css('width','100%');
                     $(function() {
                         var nre = setInterval(checkit, 5000);
                         function checkit() {
