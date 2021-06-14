@@ -76,11 +76,11 @@ def view_course(request, pk=None):
             groups = groups.filter(is_paid=True)
         elif form_search.cleaned_data['is_paid'] and int(form_search.cleaned_data['is_paid']) == 2:
             groups = groups.filter(is_paid=False)
-        if form_search.cleaned_data['name']:
+        if form_search.cleaned_data['course_name']:
             groups = groups.filter(
-                Q(name__icontains=form_search.cleaned_data['name'])|
-                Q(course__name__icontains=form_search.cleaned_data['name'])|
-                Q(course__category__name__icontains=form_search.cleaned_data['name']))
+                Q(name__icontains=form_search.cleaned_data['course_name'])|
+                Q(course__name__icontains=form_search.cleaned_data['course_name'])|
+                Q(course__category__name__icontains=form_search.cleaned_data['course_name']))
         groups = groups.filter(is_open=True)
         groups = sorted(groups, key=lambda t: t.in_preenrollment, reverse=True)
     context =   {
