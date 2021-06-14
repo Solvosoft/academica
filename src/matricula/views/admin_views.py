@@ -1627,7 +1627,14 @@ def create_student(request):
             },
             enqueued=False,
             user=None)
+        context = {
+            'login_form': LoginForm(),
+            'student_form': StudentCreateForm(),
+        }
         response['result'] = 'ok'
+        response['key'] = student.key
+        response['data'] = render_to_string('gentelella/registration/login_modal.html', context)
+        response['display_form'] = "1",
     else:
         context = {
             'login_form': LoginForm(),

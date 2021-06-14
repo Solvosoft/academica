@@ -165,6 +165,12 @@ $('#showModal').on('show.bs.modal', function (e) {
                     $("#id_password").after("<input type='checkbox' onclick='myFunction(\"id_password\")'> Mostrar contraseña<br/>");
                     $('#id_country').select2({});
                 }else if(result['result'] == 'ok'){
+                    $('#result_modal').html(result['data']);
+                    $('#pills-tab li:nth-child('+result['display_form']+') a').tab('show');
+                    $('#modal_msg').addClass('alert alert-warning').html('Para iniciar sesión debe ingresar a su correo electrónico y validar su cuenta accediendo al enlace que se le ha enviado.')
+                    tagify();
+                    $("#id_password").after("<input type='checkbox' onclick='myFunction(\"id_password\")'> Mostrar contraseña<br/>");
+                    $('#id_country').select2({});
                     Swal.fire({
                         title:'El usuario ha sido creado con éxito!',
                         icon:'success',
