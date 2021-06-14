@@ -231,12 +231,6 @@
               $('.enrollme').on('click', function(){
                 $('html, body').animate({ scrollTop: 0 }, 'low');
               });
-              if("{{authenticated}}" == 'on'){
-                Toast.fire({
-                  icon: 'success',
-                  title: 'Sesión inicidada exitosamente.'
-                });
-              }
             });
           </script>
         {% else %}
