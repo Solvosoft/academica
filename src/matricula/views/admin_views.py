@@ -1549,6 +1549,7 @@ def build_pdf_certificate_list(request, pk):
 
 
 @ajax
+@require_http_methods(["GET"])
 def get_forms_modal(request):
     context = {
         'login_form': LoginForm(),
@@ -1579,6 +1580,43 @@ def do_login(request):
         else:
             response['result'] = 'error-nonfield'
             response['message'] = "Usuario y/o contraseña incorrectos o usuario deshabilitado"
+    else:
+        response['result'] = 'error'
+        response['message'] = 'Los campos del formulario son requiridos.'
+        response['errors'] = form.errors
+    return JsonResponse(response)
+
+@ajax
+@require_http_methods(["POST"])
+def create_student(request):
+    form = StudentCreateForm(request.POST)
+    response = {}
+    if form.is_valid():
+        user = User.objects.create_user(
+                form.cleaned_data['name'], form.cleaned_data['email'],
+                form.cleaned_data['password'])
+        user.first_name = form.cleaned_data['first_name']
+        user.last_name = form.cleaned_data['last_name']
+        user.is_active = False
+        user.save()
+        student = Student(
+            user=user, organization=form.cleaned_data['organization'],
+            country=form.cleaned_data['country'],
+            phone_number=form.cleaned_data['phone_number'],
+            expired_at=get_expire_date(),)
+        student.save()
+        schema = request.scheme+"://"
+        send_email_from_template(
+            'new_user_created_academy', user.email,
+            {
+                "url": request.build_absolute_uri(reverse('confirm_email')),
+                'domain': schema+request.get_host(),
+                "user": user,
+                'student': student
+            },
+            enqueued=False,
+            user=None)
+        response['result'] = 'ok'
     else:
         response['result'] = 'error'
         response['message'] = 'Los campos del formulario son requiridos.'

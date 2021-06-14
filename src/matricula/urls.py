@@ -133,4 +133,5 @@ urlpatterns = [
     path('enrollment/users/create', AddUser.as_view(), name="create_simple_user"),
     path('enrrolment/modalforms', get_forms_modal, name="modalforms-list"),
     path('enrrolment/autenticate', do_login, name="autenticate"),
+    path('enrrolment/create_student', do_login, name="enroll_ajax"),
 ] + billurls

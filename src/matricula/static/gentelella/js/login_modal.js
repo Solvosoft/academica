@@ -72,7 +72,6 @@ $('#showModal').on('show.bs.modal', function (e) {
                     var whitelst = []
                     for(rows of whitelist.results){
                         if(rows.text != ""){
-                            console.log(rows.text)
                             tags = JSON.parse(rows.text)
                             for(tag of tags){
                                 whitelst.push(tag.value)
@@ -89,7 +88,7 @@ $('#showModal').on('show.bs.modal', function (e) {
             }
         }
     });
-    function doLogin(){
+    function doLogin(modal){
         login = {
             "modal": modal,
             "username": $("#id_username").val(),
@@ -97,7 +96,7 @@ $('#showModal').on('show.bs.modal', function (e) {
         };
 
         $.ajax({
-            url: modal_context.url_login,
+            url: modal_context.url_login+"?modal="+modal,
             method: "POST",
             dataType: "json",
             data: login,
@@ -132,12 +131,60 @@ $('#showModal').on('show.bs.modal', function (e) {
                 });
             }
         });
-        return false;
+    }
+
+    function enrollUser(modal){
+        enroll = {
+            "modal": modal,
+            "name": $("#id_name").val(),
+            "first_name": $("#id_first_name").val(),
+            "last_name": $("#id_last_name").val(),
+            "email": $("#id_email").val(),
+            'phone_number': $("#id_phone_number").val(),
+            'country': $('#id_country').val(),
+            "password": $("#id_password").val(),
+            "organization": $("#organization").val(),
+        };
+        $.ajax({
+            url: modal_context.url_enroll+"?modal="+modal,
+            method: "POST",
+            dataType: "json",
+            data: enroll,
+            headers: {'X-CSRFToken': getCookie('csrftoken') },
+            success: function(data){
+                result = JSON.parse(data['content']);
+                if(result['result']=='error'){
+                    Toast.fire({
+                        icon: 'error',
+                        title: modal_context.validation_error,
+                    });
+                }else if(result['result'] == 'ok'){
+                    Swal.fire({
+                        title:'El usuario ha sido creado con éxito!',
+                        icon:'success',
+                        timer: 1500,
+                    });
+                }else{
+                    Toast.fire({
+                        icon: 'error',
+                        title: modal_context.non_validation_error,
+                    });
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError){
+                Toast.fire({
+                    icon: 'error',
+                    title: "Ocurrio un error mientras se realizaba la operación.",
+                });
+            }
+        });
     }
     $(document).on('click', '#btn_login, #btn_enroll', function(e){
-        modal = $(this).val();
+        modal = e.target.value
         if(modal == "1"){
-            doLogin();
+            doLogin(modal);
+        }else{
+            enrollUser(modal);
         }
         return false;
     });
