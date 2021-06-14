@@ -243,6 +243,11 @@
           <script>
             var modal_context = {
               'forms_url': "{% url 'modalforms-list' %}",
+              'url_login': "{% url 'autenticate' %}",
+              'validation_error': "Hay errores de validación en el formulario",
+              'non_validation_error': "Usuarie y/o contraseña incorrecto o usuarie inactivo.",
+              'save_messages': "Usuarie creado correctamente.",
+              'error': "Ha ocurrido un error mientras se realizaba la acción.",
             };
           </script>
           <script src="{% static 'gentelella/js/login_modal.js' %}"></script>
