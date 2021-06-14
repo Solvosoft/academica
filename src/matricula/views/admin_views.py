@@ -1578,12 +1578,23 @@ def do_login(request):
             auth.login(request, user)
             response['result'] = 'ok'
         else:
+            context = {
+                'login_form': form,
+                'student_form': StudentCreateForm(),
+            }
             response['result'] = 'error-nonfield'
+            response['data'] = render_to_string('gentelella/registration/login_modal.html', context)
+            response['display_form'] = request.GET.get('modal',"1"),
             response['message'] = "Usuario y/o contraseña incorrectos o usuario deshabilitado"
     else:
+        context = {
+            'login_form': form,
+            'student_form': StudentCreateForm(),
+        }
         response['result'] = 'error'
-        response['message'] = 'Los campos del formulario son requiridos.'
-        response['errors'] = form.errors
+        response['data'] = render_to_string('gentelella/registration/login_modal.html', context)
+        response['display_form'] = request.GET.get('modal',"1"),
+        response['message'] = 'Los campos del formulario son requeridos.'
     return JsonResponse(response)
 
 @ajax
@@ -1618,6 +1629,12 @@ def create_student(request):
             user=None)
         response['result'] = 'ok'
     else:
+        context = {
+            'login_form': LoginForm(),
+            'student_form': form,
+        }
+        response['data'] = render_to_string('gentelella/registration/login_modal.html', context)
+        response['display_form'] = request.GET.get('modal',"2"),
         response['result'] = 'error'
         response['message'] = 'Los campos del formulario son requiridos.'
         response['errors'] = form.errors
