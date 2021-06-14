@@ -22,6 +22,7 @@ $('#showModal').on('show.bs.modal', function (e) {
             }
             $('#result_modal').html(result);
             if (result != ""){
+                $('#id_country').select2({});
                 $("#id_password").after("<input type='checkbox' onclick='myFunction(\"id_password\")'> Mostrar contraseña<br/>");
                 $("#id_password2").after("<input type='checkbox' onclick='myFunction(\"id_password2\")'> Mostrar contraseña<br/>");
                 $('#show_password').parent().css({'text-align':'left', "margin-bottom":"5px"});
