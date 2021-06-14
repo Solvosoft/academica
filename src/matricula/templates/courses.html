@@ -16,6 +16,16 @@
 				</div>
 			</form>
 		{% endif %}
+		{% if professor and show_info_modal %}
+			<div class="col-md-10 col-md-offset-1">
+				<div class="alert alert-info">
+					Es necesario llenar información sobre el rol profesor en su perfil. <a type="button" class="btn btn-success" href="{% url 'profile' %}">Ir</a>
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+			</div>
+		{% endif %}
 		<div class="col-md-10 col-md-offset-1">
 			{% if courses.items %}
 				<div class="x_panel">
@@ -85,33 +95,8 @@
 		</div>
 		{% endif %}
 	</div>
-{% if professor and show_info_modal %}
-	<div id="infoprofessormodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title">Atención</h4>
-				</div>
-				<div class="modal-body">
-					Es necesario llenar información sobre el rol profesor en su perfil.
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
-				</div>
-			</div>
-		</div>
-	</div>
-{% endif %}
 {% endblock %}
 {% block js %}
 <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
-<script>
-{% if show_info_modal %}
-	 $(document).ready(function(){
-			$("#infoprofessormodal").modal();
-    });
-{% endif %}
-</script>
 {% endblock %}
