@@ -5,17 +5,12 @@ Created on 16/5/2015
 @author: luisza
 '''
 
-from django.contrib import auth
-from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
-from django.urls import reverse
 
-from async_notifications.utils import send_email_from_template
-
-from matricula.models import Course, Category, Group, Professor, Student
-from matricula.forms import CourseMainSearchForm, LoginForm, StudentCreateForm
-from matricula.views.utils import get_active_period, get_expire_date
+from matricula.models import Course, Category, Group, Professor
+from matricula.forms import CourseMainSearchForm
+from matricula.views.utils import get_active_period
 
 
 def list_courses(request):
