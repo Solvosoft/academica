@@ -102,8 +102,10 @@ $('#showModal').on('show.bs.modal', function (e) {
                     $('#result_modal').html(result['data']);
                     $('#pills-tab li:nth-child('+result['display_form']+') a').tab('show');
                     $("#id_password2").after("<input type='checkbox' onclick='myFunction(\"id_password2\")'> Mostrar contraseña<br/>");
+                    $("#id_password").after("<input type='checkbox' onclick='myFunction(\"id_password\")'> Mostrar contraseña<br/>");
                     tagify();
                     $('#id_country').select2({});
+                    $('.select2-container').css('width','100%');
                 }else if(result['result'] == 'ok'){
                     $('#showModal').modal('hide');
                     Swal.fire({
@@ -118,7 +120,9 @@ $('#showModal').on('show.bs.modal', function (e) {
                     tagify();
                     $('#id_country').select2({});
                     $('#pills-tab li:nth-child('+result['display_form']+') a').tab('show');
+                    $('.select2-container').css('width','100%');
                     $("#id_password2").after("<input type='checkbox' onclick='myFunction(\"id_password2\")'> Mostrar contraseña<br/>");
+                    $("#id_password").after("<input type='checkbox' onclick='myFunction(\"id_password\")'> Mostrar contraseña<br/>");
                     Toast.fire({
                         icon: 'error',
                         title: modal_context.non_validation_error,
@@ -163,6 +167,7 @@ $('#showModal').on('show.bs.modal', function (e) {
                     $('#pills-tab li:nth-child('+result['display_form']+') a').tab('show');
                     tagify();
                     $("#id_password").after("<input type='checkbox' onclick='myFunction(\"id_password\")'> Mostrar contraseña<br/>");
+                    $("#id_password2").after("<input type='checkbox' onclick='myFunction(\"id_password2\")'> Mostrar contraseña<br/>");
                     $('#id_country').select2({});
                 }else if(result['result'] == 'ok'){
                     $('#result_modal').html(result['data']);
@@ -171,6 +176,7 @@ $('#showModal').on('show.bs.modal', function (e) {
                     modal_context.student_token = result['key'];
                     tagify();
                     $("#id_password").after("<input type='checkbox' onclick='myFunction(\"id_password\")'> Mostrar contraseña<br/>");
+                    $("#id_password2").after("<input type='checkbox' onclick='myFunction(\"id_password2\")'> Mostrar contraseña<br/>");
                     $('#id_country').select2({});
                     $(function() {
                         var nre = setInterval(checkit, 5000);
