@@ -940,7 +940,7 @@ class CourseMainSearchForm(GTForm, forms.Form):
         (1, "Pagados"),
         (2, "Gratis")
     )
-    name = forms.CharField(
+    course_name = forms.CharField(
         label='Término', required=False,
         widget=djgentelella.TextInput)
     category = forms.ModelMultipleChoiceField(
@@ -956,4 +956,6 @@ class CourseMainSearchForm(GTForm, forms.Form):
 
 class LoginForm(GTForm, forms.Form):
     username = forms.CharField(label="Usuarie", max_length=100, widget=djgentelella.TextInput)
-    password2 = forms.CharField(label="Contraseña", widget=djgentelella.PasswordInput, max_length=100)
+    password2 = forms.CharField(
+        label="Contraseña", widget=djgentelella.PasswordInput, max_length=100,
+    )
