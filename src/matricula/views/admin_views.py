@@ -13,10 +13,11 @@ from django.contrib.auth.models import User
 
 from django.conf import settings
 from django.core.paginator import Paginator
-from django.db.models import Q, Count
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
+from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.template.loader import get_template
+from django.template.loader import get_template, render_to_string
 from django.urls import reverse
 from django.views.generic import ListView, DeleteView, DetailView
 
@@ -32,10 +33,10 @@ import django_excel as excel
 
 from matricula.certificate_utils import build_pdf_certificate
 from matricula.forms import CategoryCreateForm, CategorySearchForm, \
-    CourseSearchForm, CourseCreateForm, EnrollCreateAdminForm, MenuItemSearchForm, \
+    CourseSearchForm, CourseCreateForm, EnrollCreateAdminForm, LoginForm, MenuItemSearchForm, \
     MenuItemCreateForm, PeriodCreateForm, PeriodSearchForm, GroupCreateForm, \
     GroupSearchForm, EnrollSearchForm, EnrollCreateForm, StudentAddForm, \
-        StudentAdminEditForm, StudentSearchForm, \
+        StudentAdminEditForm, StudentCreateForm, StudentSearchForm, \
     StudentAdminCreateForm, PageCreateForm, PageSearchForm, MenuItemAddForm, \
     PreEnrollAddGroupForm, GroupAddForm, GroupEditForm, PermissionForm, \
     StudentChangePasswordForm
@@ -1540,3 +1541,17 @@ def build_pdf_certificate_list(request, pk):
     task_generate_group_certificate.delay(pk)
     messages.success(request, "Certificados se han iniciado a procesar, regrese en unos minutos y refresque la página.")
     return redirect("list_students_group", pk=pk)
+
+
+def get_forms_modal(request):
+    context = {
+        'login_form': LoginForm(),
+        'student_form': StudentCreateForm(),
+    }
+    response = {
+        'result': render_to_string(
+            'gentelella/registration/login_modal.html', context
+        ),
+        'display_form': request.GET.get('modal',1),
+    }
+    return JsonResponse(response)
