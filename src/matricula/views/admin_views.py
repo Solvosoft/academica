@@ -739,7 +739,7 @@ def export_group(request, pk=None):
             last_name = enroll.student.user.last_name if enroll.student.user.last_name != "" else "default"
             organizations = enroll.student.organizations
             if organizations:
-                organizations = ", ".join([x['value'] for x in enroll.student.organizations if 'value' in x])
+                org = " - ".join([x['value'] for x in enroll.student.organizations if 'value' in x])
             else:
                 organizations = ""
             writer.writerow([
@@ -747,8 +747,8 @@ def export_group(request, pk=None):
                 first_name,
                 last_name,
                 enroll.student.user.email,
-                organizations,
-                enroll.student.country.name,
+                org,
+                enroll.student.country.code,
                 enroll.student.city,
                 group.name])
         return response
