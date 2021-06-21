@@ -1600,13 +1600,14 @@ def do_login(request):
 
 @ajax
 @require_http_methods(["POST"])
-def create_student(request):
+def create_student_ajax(request):
     form = StudentCreateForm(request.POST)
     response = {}
     if form.is_valid():
         user = User.objects.create_user(
-                form.cleaned_data['name'], form.cleaned_data['email'],
-                form.cleaned_data['password'])
+                username=form.cleaned_data['name'],
+                email=form.cleaned_data['email'],
+                password=form.cleaned_data['password'])
         user.first_name = form.cleaned_data['first_name']
         user.last_name = form.cleaned_data['last_name']
         user.is_active = False

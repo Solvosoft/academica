@@ -189,7 +189,6 @@ $('#showModal').on('show.bs.modal', function (e) {
                                 dataType: "json",
                                 success: function(data){
                                     result = JSON.parse(data['content']);
-                                    console.log(result)
                                     if (result['result'] == 'ok' && result['is_active']==true) {
                                         $('#modal_msg').removeClass('alert-warning').addClass('alert-success').html("Ya puede iniciar sesión, su usuarie ha sido validado exitosamente.");
                                         clearInterval(nre);

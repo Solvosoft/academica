@@ -28,7 +28,7 @@ from .views.admin_views import CategoryList, GroupDetailView, create_category, \
     export_enrolled_group, open_group, close_group, regenerate_certificate, \
     build_pdf_certificate_list, edit_password_student, notify_rejected, \
     StudentDetailView, email_enrolled_group, notify_enroll_success, get_forms_modal,\
-    student_isactive
+    student_isactive, create_student_ajax
 
 from .views.coupons_views import coupons_list, create_cupon, delete_coupon, edit_coupon,\
     coupons_bill_list, add_coupons_group
@@ -134,6 +134,6 @@ urlpatterns = [
     path('enrollment/users/create', AddUser.as_view(), name="create_simple_user"),
     path('enrrolment/modalforms', get_forms_modal, name="modalforms-list"),
     path('enrrolment/autenticate', do_login, name="autenticate"),
-    path('enrrolment/create_student', do_login, name="enroll_ajax"),
+    path('enrrolment/create_using_ajax', create_student_ajax, name="enroll_ajax"),
     path('enrrolment/student_is_active/<str:key>', student_isactive, name="student_isactive"),
 ] + billurls

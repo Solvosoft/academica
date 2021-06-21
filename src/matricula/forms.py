@@ -65,10 +65,11 @@ class StudentCreateForm(GTForm, forms.ModelForm):
             'country': 'País',
         }
 
-    def clean(self):
-        cleaned_data = super(StudentCreateForm, self).clean()
-        if User.objects.filter(username=cleaned_data.get('name')).exists():
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        if User.objects.filter(username=name).exists():
             raise forms.ValidationError(_("User name exist "))
+        return name
     
     def clean_password(self):
         password = self.cleaned_data.get('password')
@@ -315,7 +316,6 @@ class MenuItemCreateForm(forms.ModelForm, GTForm):
     def __init__(self, *args, **kwargs):
         super(MenuItemCreateForm, self).__init__(*args, **kwargs)
         if 'initial' in kwargs:
-            print(kwargs)
             if 'permission_id' in kwargs['initial']:
                 self.fields['permission'].initial = kwargs['initial']['permission_id']
 
