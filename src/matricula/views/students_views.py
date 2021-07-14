@@ -20,7 +20,7 @@ from matricula.models import Enroll, Group
 def qualify_students(request, pk):
     if hasattr(request.user, 'professor') and request.user.professor.active:
         group = get_object_or_404(Group, pk=pk)
-        enroll_list = Enroll.objects.filter(group=group, enroll_finished=True)
+        enroll_list = Enroll.objects.filter(group=group, enroll_finished=True).order_by('student__user__first_name')
         if group.is_paid:
             enroll_list = enroll_list.filter(Q(bill__is_paid=True) | Q(paid_excluded=True))
         context = {'group': group,
@@ -36,19 +36,25 @@ def qualify_students(request, pk):
 @ajax
 def update_enroll(request):
     if request.is_ajax():
-       enroll_list = json.loads(request.body)
+        enroll_list = json.loads(request.body)
 
-       for enroll in enroll_list:
-           Enroll.objects.filter(pk=int(enroll['pk'])).update(course_status=enroll['Estado'])
+        for enroll in enroll_list:
+            item = Enroll.objects.filter(pk=int(enroll['pk']))
+            if enroll['Estado'] == "reproved":
+                item.update(pdf_certificate=None)
+            item.update(course_status=enroll['Estado'])
 
 
 @ajax
 def update_enroll_status(request, pk, status):
     if request.is_ajax():
-       enroll_list = json.loads(request.body)
+        enroll_list = json.loads(request.body)
 
-       for enroll in enroll_list:
-           Enroll.objects.filter(pk=int(enroll['pk']), group__pk=pk).update(course_status=status)
+        for enroll in enroll_list:
+            items = Enroll.objects.filter(pk=int(enroll['pk']), group__pk=pk)
+            if status == "reproved":
+                items.update(pdf_certificate=None)
+            items.update(course_status=status)
 
 
 @method_decorator(login_required, name='dispatch')

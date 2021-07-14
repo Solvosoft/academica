@@ -256,20 +256,18 @@ $.ajax({
 
 
 (function(){
-    $('#studentstable').DataTable();
     $(window).load(function() {
-      $('.select2-container').width('100%');
-      $(".icheckbox_flat-green").removeClass("checked");
-    });
+        $('.select2-container').width('100%');
+        $(".icheckbox_flat-green").removeClass("checked");
+        $("#selectall").on("ifChanged", function(){
+            select_rows($(this));
+        });
 
-    $("#selectall").on("ifChanged", function(){
-        select_rows($(this));
+        $('.checkstudent').on("ifChanged", function(){
+            change_key($(this));
+        });
+        $('#studentstable').DataTable();
     });
-
-    $('.checkstudent').on("ifChanged", function(){
-        change_key($(this));
-    });
-
 })(jQuery);
 </script>
 {% endblock %}
