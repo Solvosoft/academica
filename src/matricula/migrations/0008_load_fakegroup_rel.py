@@ -8,8 +8,10 @@ def load_initial_groups(apps, schema_editor):
     Group = apps.get_model('auth', 'Group')
     professor_group = Group.objects.filter(name=settings.PROFESSOR_GROUP_NAME).first()
     admin_group = Group.objects.filter(name=settings.ADMIN_GROUP_NAME).first()
-    FakeGroup.objects.create(group=professor_group, name=professor_group.name)
-    FakeGroup.objects.create(group=admin_group, name=admin_group.name)
+    if professor_group is not None:
+        FakeGroup.objects.create(group=professor_group, name=professor_group.name)
+    if admin_group is not None:
+        FakeGroup.objects.create(group=admin_group, name=admin_group.name)
 
 class Migration(migrations.Migration):
 
