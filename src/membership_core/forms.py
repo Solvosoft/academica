@@ -39,7 +39,7 @@ class UserAddForm(GTForm, forms.ModelForm):
             'username': genwidgets.TextInput,
             'first_name': genwidgets.TextInput,
             'last_name': genwidgets.TextInput,
-            'email': genwidgets.EmailMaskInput,
+            'email': genwidgets.TextInput(attrs={'type':'email'}),
             'is_active': genwidgets.YesNoInput,
             'groups': genwidgets.SelectMultiple
         }
@@ -69,7 +69,7 @@ class UserEditForm(GTForm, forms.ModelForm):
             'username': genwidgets.TextInput,
             'first_name': genwidgets.TextInput,
             'last_name': genwidgets.TextInput,
-            'email': genwidgets.EmailMaskInput,
+            'email': genwidgets.TextInput(attrs={'type':'email'}),
             'is_active': genwidgets.YesNoInput,
         }
 

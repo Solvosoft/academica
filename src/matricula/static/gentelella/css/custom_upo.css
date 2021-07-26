@@ -4501,3 +4501,8 @@ div.form-group {
     border: 0;
     line-height:30px;
 }
+
+.tooltip-inner { max-width: 300px; }
+a[data-toggle=tooltip]{
+    color: #73879C !important;
+}

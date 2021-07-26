@@ -79,7 +79,7 @@
                             <h4>Información:</h4>
                         </div>
                         <div>Nombre de usuarie: {% if user.username %} {{user.username}} {% else %} Sin especificar {% endif %}</div>
-                        <div>Correo: {% if user.email %} {{user.email}} {% else %} Sin especificar {% endif %}</div>
+                        <div>Correo: {% if user.email %} <a href="#" data-toggle="tooltip" title="{{user.email}}"> {{user.email|truncatechars:30}} </a>{% else %} Sin especificar {% endif %}</div>
                         <div>Estado: {% if user.is_active%} Activo {% else %} Inactivo {% endif %}</div>
                         {% if user.groups.all.count == 0 %}
                             <div>Grupos: Ninguno </div>

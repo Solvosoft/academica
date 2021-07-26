@@ -110,7 +110,7 @@ class UserEditForm(GTForm, forms.ModelForm):
         widgets = {
             'last_name': djgentelella.TextInput,
             'first_name': djgentelella.TextInput,
-            'email': djgentelella.EmailMaskInput,
+            'email': djgentelella.TextInput(attrs={'type':'email'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -534,7 +534,7 @@ class StudentAdminEditForm(GTForm, forms.ModelForm):
     last_name = forms.CharField(
         label="Apellidos", widget=djgentelella.TextInput, required=True)
     email = forms.CharField(
-        label="Correo", widget=djgentelella.EmailMaskInput, required=True)
+        label="Correo", widget=djgentelella.TextInput, required=True)
     country = forms.ModelChoiceField(
         label="País", queryset=Country.objects.all(), required=True, widget=djgentelella.Select)
     city = forms.CharField(label=_("City"), widget=djgentelella.TextInput, required=True, max_length=100)
@@ -569,7 +569,7 @@ class StudentAdminCreateForm(GTForm, forms.ModelForm):
     last_name = forms.CharField(
         label="Apellidos", widget=djgentelella.TextInput, required=True)
     email = forms.CharField(
-        label="Correo", widget=djgentelella.EmailMaskInput, required=True)
+        label="Correo", widget=djgentelella.TextInput(attrs={'type':'email'}), required=True)
     country = forms.ModelChoiceField(
         label="País", queryset=Country.objects.all(), required=True, widget=djgentelella.Select)
     city = forms.CharField(label=_("City"), widget=djgentelella.TextInput, required=True, max_length=100)
@@ -816,7 +816,7 @@ class ProfessorAddForm(GTForm, forms.ModelForm):
         model = Professor
         fields = ('user', "email", "description", "active",'photo')
         widgets = {
-            'email': djgentelella.EmailMaskInput,
+            'email': djgentelella.TextInput(attrs={'type':'email'}),
             'description': tinymce.EditorTinymce,
             'active': djgentelella.YesNoInput,
             'user': AutocompleteSelect('studentuser'),
@@ -830,7 +830,7 @@ class ProfessorEditForm(GTForm, forms.ModelForm):
         model = Professor
         fields = ("email", "description", "photo", "active",)
         widgets = {
-            'email': djgentelella.EmailMaskInput,
+            'email': djgentelella.TextInput(attrs={'type':'email'}),
             'description': djgentelella.Textarea,
             'active': djgentelella.YesNoInput,
             'description': tinymce.EditorTinymce,
@@ -841,7 +841,7 @@ class ProfessorEditForm(GTForm, forms.ModelForm):
 class ProfessorEditProfileForm(GTForm, forms.ModelForm):
     email_professor = forms.CharField(
         label="Correo electrónico para estudiantes: ",
-        required=True, widget=djgentelella.EmailMaskInput)
+        required=True, widget=djgentelella.TextInput(attrs={'type':'email'}))
     
     class Meta:
         model = Professor
