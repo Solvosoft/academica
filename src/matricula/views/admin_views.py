@@ -1105,7 +1105,7 @@ class StudentList(ListView):
                 sheet.colnames = sheet_header
                 return excel.make_response(sheet, 'xls',file_name='students')
             except:
-                messages.error(request, "No fue posible expotar el excel por error los filtros")
+                messages.error(request, "No fue posible exportar el excel por que no hay datos a mostrar")
         return super().get(request, *args, **kwargs)
 
 
