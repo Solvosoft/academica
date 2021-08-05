@@ -1084,8 +1084,26 @@ class StudentList(ListView):
         if request.GET.get("action")=="Exportar correos":
             try:
                 query_sets = self.get_queryset()
-                column_names = ['user__first_name','user__last_name', 'user__email', 'country__name', 'city', 'phone_number']
-                return excel.make_response_from_query_sets(query_sets, column_names, 'xls')
+                column_names = [
+                    'user__first_name',
+                    'user__last_name',
+                    'user__email',
+                    'country__name',
+                    'city',
+                    'phone_number',
+                ]
+                sheet_header = [
+                    'First name',
+                    'Last name',
+                    'Email',
+                    'Country',
+                    'City',
+                    'Phone number',
+                ]
+                sheet = excel.pe.get_sheet(query_sets=query_sets, column_names=column_names)
+                sheet.name_columns_by_row(0)
+                sheet.colnames = sheet_header
+                return excel.make_response(sheet, 'xls',file_name='students')
             except:
                 messages.error(request, "No fue posible expotar el excel por error los filtros")
         return super().get(request, *args, **kwargs)
