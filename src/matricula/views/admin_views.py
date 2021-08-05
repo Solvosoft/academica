@@ -1093,12 +1093,12 @@ class StudentList(ListView):
                     'phone_number',
                 ]
                 sheet_header = [
-                    'First name',
-                    'Last name',
-                    'Email',
-                    'Country',
-                    'City',
-                    'Phone number',
+                    'Nombres',
+                    'Apellidos',
+                    'Correo electrónico',
+                    'País',
+                    'Ciudad',
+                    'Teléfono',
                 ]
                 sheet = excel.pe.get_sheet(query_sets=query_sets, column_names=column_names)
                 sheet.name_columns_by_row(0)
