@@ -1,5 +1,9 @@
 # Change log file
 
+05/08/2021
+- Update requirements
+    `pip install -r requirements.txt`
+
 14/05/2021
 - Add template paid_excluded
     `python manage.py add_template_paid_excluded`
