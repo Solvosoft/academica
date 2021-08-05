@@ -1080,6 +1080,16 @@ class StudentList(ListView):
         context['has_data'] = Student.objects.exists()
         return context
 
+    def get(self, request, *args, **kwargs):
+        if request.GET.get("action")=="Exportar correos":
+            try:
+                query_sets = self.get_queryset()
+                column_names = ['user__first_name','user__last_name', 'user__email', 'country__name', 'city', 'phone_number']
+                return excel.make_response_from_query_sets(query_sets, column_names, 'xls')
+            except:
+                messages.error(request, "No fue posible expotar el excel por error los filtros")
+        return super().get(request, *args, **kwargs)
+
 
 @permission_required('matricula.add_student')
 def create_student(request):

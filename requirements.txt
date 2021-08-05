@@ -27,3 +27,4 @@ requests==2.11.0
 requests-oauthlib==0.6.2
 webencodings==0.5.1
 django-excel==0.0.10
+pyexcel-xls==0.6.2
