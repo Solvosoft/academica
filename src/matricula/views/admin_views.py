@@ -1329,7 +1329,9 @@ class GroupDetailView(DetailView):
                         'domain': schema + request.get_host(),
                     },
                     enqueued=False, user=None)
-                instance = form.save()
+                instance = form.save(commit=False)
+                instance.student=student
+                instance.save()
                 if paid_excluded:
                     send_email_from_template(
                     'enroll_paid_excluded', student.user.email,

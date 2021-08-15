@@ -24,7 +24,7 @@ from matricula.models import Group, Enroll, WaitingList
 @ajax
 @login_required
 def addmetoquee(request, pk):
-    message = 'El registro en la lista de espera fue realizado exitosamente'
+    message = '<div class="alert alert-success" role="alert">El registro en la lista de espera fue realizado exitosamente</div>'
     group = get_object_or_404(Group, pk=pk)
     student = request.user.student
     all_enrolls = Enroll.objects.filter(group=group)
@@ -60,7 +60,12 @@ def enrollme(request, pk):
         and not all_enrolls.filter(student=student).exists():
         in_waitinglist = WaitingList.objects.filter(group=group, student=student).exists()
         if(not in_waitinglist):
-            WaitingList.objects.create(group=group, student=student)
+            return { 
+                    "inner-fragments": {
+                        "#count_" + str(group.pk): group.enroll_set.count(),
+                        "#group_message": '<div class="alert alert-error" role="alert">' + str(_('The group is full and was not possible to enroll you.')) + ' Pero puede agregarte a la lista de espera.'+' <a class="btn btn-success" data-href="'+ reverse('addmetoquee', kwargs={'pk':pk})+'" data-ajax="true">Agregarme</a></div>'
+                    },
+                }
         else:
             return { 
                     "inner-fragments": {
