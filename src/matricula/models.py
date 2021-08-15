@@ -199,6 +199,15 @@ class Group(models.Model):
         return self.enroll_set.filter(enroll_finished=True).count()
 
     @property
+    def approved_enrrolls(self):
+        return self.enroll_set.filter(enroll_finished=True,
+                                      course_status="approved").count()
+
+    @property
+    def reproved_enrrolls(self):
+        return self.enroll_set.filter(enroll_finished=True,
+                                      course_status="reproved").count()
+    @property
     def get_label_enrolls(self):
         enrolls = self.get_enrolls_completed
         dev = f'{enrolls} de {self.maximum}'

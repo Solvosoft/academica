@@ -139,7 +139,11 @@
                               </div>
                               <div class="modal-body">
                                 <div id="modal_msg"></div>
-                                <div id="result_modal"></div>
+                                <div id="result_modal">
+                                    Cargando el contenido, si no aparece el formulario por favor use los siguientes enlaces
+                                    <a href="{% url 'login' %}" style="margin-left: 2em"> Iniciar Sesión</a> --
+                                    <a href="{% url 'create_user_academy' %}" class="text-danger"> Registrarme </a>
+                                </div>
                               </div>
                           </div>
                       </div>

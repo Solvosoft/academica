@@ -1,0 +1,90 @@
+{% extends 'gentelella/base.html'%}
+{% load static utils membership_code i18n %}
+{% block content %}
+	<h1 class="text-center">Grupos</h1>
+	<div class="row">
+		<div class="col-sm-12 col-xs-12 col-md-8 col-md-offset-2">
+
+			<div class="x_panel">
+					<div class="x_content">
+						<form method="GET">
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								{% include 'field.html' with field=form_search.name %}
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								{% include 'field.html' with field=form_search.course %}
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								{% include 'field.html' with field=form_search.period %}
+							</div>
+
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								{% include 'field.html' with field=form_search.category %}
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+								{% include 'field.html' with field=form_search.open %}
+							</div>
+							<div style="text-align:right">
+								<a href="{% url 'report_student_status' %}" class="btn btn-dark">Limpiar</a>
+								<button class="btn btn-success" type="submit">Buscar</button>
+							</div>
+						</form>
+					</div>
+				</div>
+
+		</div>
+
+	</div>
+		<div class="row">
+
+
+<div class="table-responsive">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Estado</th>
+                <th>Nombre del grupo</th>
+                <th>Aprobados</th>
+                <th>Reprobados</th>
+                </tr>
+
+	{% for object in object_list %}
+		<tr>
+            <td>{{object.is_open|group_state }}  </td>
+            <td> {{object }} </td>
+            <td> <a href="{% url 'list_students_group' object.pk %}?course_status=approved" target="_blank">{{object.approved_enrrolls}}</a></td>
+            <td> <a href="{% url 'list_students_group' object.pk %}?course_status=reproved" target="_blank">{{object.reproved_enrrolls}}</a> </td>
+        </tr>
+	{% empty %}
+           <tr>  <td colspan="4">
+		<div class="alert alert-info" role="alert">
+			{% trans 'There are not groups available' %}
+        </div></td></tr>
+	{% endfor %}
+            </table>
+</div></div>
+	<div class="clearfix"></div>
+	<div class="paginator_container text-center">
+		{% if is_paginated %}
+			<ul class="pagination">
+				{% if paginator.has_previous %}
+					<li><a href="?{% url_replace request 'page' paginator.previous_page_number %}">&laquo;</a></li>
+				{% else %}
+					<li class="disabled"><span>&laquo;</span></li>
+				{% endif %}
+				{% for i in paginator.page_range %}
+					{% if page_obj.number == i %}
+						<li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+					{% else %}
+						<li><a href="?{% url_replace request 'page' i %}">{{ i }}</a></li>
+					{% endif %}
+				{% endfor %}
+				{% if paginator.has_next %}
+					<li><a href="?{% url_replace request 'page' paginator.next_page_number %}">&raquo;</a></li>
+				{% else %}
+					<li class="disabled"><span>&raquo;</span></li>
+				{% endif %}
+			</ul>
+		{% endif %}
+	</div>
+	<div class="clearfix"></div>
+{% endblock %}

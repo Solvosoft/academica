@@ -378,6 +378,37 @@ class GroupSearchForm(GTForm, forms.Form):
     )
 
 
+class GroupSearchStudentReportForm(GTForm, forms.Form):
+    OPEN = 0
+    CLOSE = 1
+    DO_NOT_APPLY = 2
+
+    OPTIONS = (
+        (DO_NOT_APPLY, "No aplicar"),
+        (OPEN, "Abierto"),
+        (CLOSE, "Cerrado"),
+    )
+    name = forms.CharField(
+        required=False, widget=djgentelella.TextInput,
+        label="Nombre")
+    course = forms.ModelMultipleChoiceField(
+        queryset=Course.objects.all(), widget=djgentelella.SelectMultiple,
+        label="Curso", required=False
+    )
+    period = forms.ModelMultipleChoiceField(
+        queryset=Period.objects.all(), label="Periodo", widget=djgentelella.SelectMultiple,
+        required=False
+    )
+    category = forms.ModelMultipleChoiceField(
+        queryset=Category.objects.all(), widget=djgentelella.SelectMultiple, label="Categoría",
+        required=False
+    )
+    open = forms.ChoiceField(
+        choices=OPTIONS, widget=djgentelella.Select, label="Abierto", required=False,
+    )
+
+
+
 class GroupCreateForm(forms.ModelForm, GTForm):
     schedule = forms.CharField(
         required=False, max_length=250, widget=djgentelella.TextInput,

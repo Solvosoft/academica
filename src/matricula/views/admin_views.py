@@ -760,12 +760,20 @@ def list_students_group(request, pk=None):
     context = {}
     show_buttons_certificates = False
     show_column_action = False
+    course_status = request.GET.get('course_status', '')
+    filters = {}
+    if course_status in ('approved', 'reproved'):
+        filters['course_status']=course_status
     if pk != None:
         context = {}
         instance = Group.objects.get(pk=pk)
-        enroll_list = Enroll.objects.filter(group=instance, enroll_finished=True)
+        filters['group'] = instance
+        filters['enroll_finished'] = True
+        enroll_list = Enroll.objects.filter(**filters)
         if instance.is_paid:
             enroll_list = enroll_list.filter(Q(bill__is_paid=True) | Q(paid_excluded=True))
+
+
         context['object'] = enroll_list
         context['group'] = instance
         approved_students = enroll_list.filter(course_status="approved")

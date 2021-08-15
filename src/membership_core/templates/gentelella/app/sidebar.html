@@ -46,6 +46,7 @@
                                 {% endif %}
                                 {% if perms.matricula.view_enroll %}
                                     <li><a href="{% url 'enrolls' %}">{% trans 'Enrolls' %}</a></li>
+                                    <li><a href="{% url 'report_student_status' %}">{% trans 'Estado de grupos' %}</a></li>
                                 {% endif %}
                                 {% if perms.matricula.view_period %}
                                     <li><a href="{% url 'periods' %}">{% trans 'Periods' %}</a></li>

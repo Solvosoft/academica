@@ -37,6 +37,7 @@ from matricula.views.Auth import get_profile
 
 from .views.professor_views import AddUser, ProfessorsList, CreateProfessor, EditProfessor,\
     edit_profile, delete_professor, deactivate_professor
+from .views.report import GroupEstudentStatusList
 from .views.students_views import qualify_students, update_enroll, update_enroll_status, GradeList
 
 urlpatterns = [
@@ -132,6 +133,7 @@ urlpatterns = [
     path('enrrolment_certificate/build/<int:pk>/', build_pdf_certificate_list, name="build_pdf_certificate_list"),
     path('enrrolment_certificate_enroll/<int:pk_group>/<int:pk>/', regenerate_certificate, name="build_pdf_certificate_view"),
     path('enrollment/users/create', AddUser.as_view(), name="create_simple_user"),
+    path('group/report_student_status', GroupEstudentStatusList.as_view(), name="report_student_status"),
     path('enrrolment/modalforms', get_forms_modal, name="modalforms-list"),
     path('enrrolment/autenticate', do_login, name="autenticate"),
     path('enrrolment/create_using_ajax', create_student_ajax, name="enroll_ajax"),
