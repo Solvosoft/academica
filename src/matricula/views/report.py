@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, permission_required
 from django.db.models import Q
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
@@ -7,7 +7,7 @@ from django.views.generic import ListView
 from matricula.forms import GroupSearchStudentReportForm
 from matricula.models import Group
 
-
+@permission_required('matricula.view_reports')
 def list_reports(request):
     context = {}
     return render(request, 'reports/list_reports.html', context)

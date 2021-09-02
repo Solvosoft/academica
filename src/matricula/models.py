@@ -79,6 +79,7 @@ class Professor(models.Model):
         verbose_name_plural = _("Professors")
         permissions = [
             ("change_profile", "Can change_profile"),
+            ("view_reports", "Can view_reports")
         ]
         ordering = ['user__last_name', 'active']
     
