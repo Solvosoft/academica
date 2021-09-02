@@ -1,10 +1,16 @@
 from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Q
+from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
 
 from matricula.forms import GroupSearchStudentReportForm
 from matricula.models import Group
+
+
+def list_reports(request):
+    context = {}
+    return render(request, 'reports/list_reports.html', context)
 
 @method_decorator(user_passes_test(lambda x: x.has_perm('matricula.view_enroll')), name='dispatch')
 class GroupEstudentStatusList(ListView):
