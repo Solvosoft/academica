@@ -4,7 +4,6 @@ from djgentelella.models import MenuItem
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 
-
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
@@ -13,9 +12,10 @@ class Command(BaseCommand):
         view_group = Permission.objects.filter(codename="view_group", content_type__app_label="matricula").first()
         view_qualifications = Permission.objects.filter(codename="can_view_qualifications", content_type__app_label="matricula").first()
         qualify_students = Permission.objects.filter(codename="can_qualify_students", content_type__app_label="matricula").first()
+        view_reports = Permission.objects.filter(codename="view_reports", content_type__app_label="matricula").first()
 
-        permissions_professor = [change_profile, view_group, view_qualifications, qualify_students]
-        professor_group = Group.objects.filter(name=settings.PROFESSOR_GROUP_NAME).exists()
+        permissions_professor = [change_profile, view_group, view_qualifications, qualify_students, view_reports]
+        professor_group = Group.objects.filter(name=settings.PROFESSOR_GROUP_NAME).first()
         if not professor_group:
             professor_group = Group(name=settings.PROFESSOR_GROUP_NAME)
             professor_group.save()
@@ -36,7 +36,7 @@ class Command(BaseCommand):
         dashboard_systemcurrency = Permission.objects.filter(codename="can_show_dashboard", content_type__app_label="membership_core").first()
         add_user = Permission.objects.filter(codename="add_user", content_type__app_label="auth").first()
         permissions_systemcurrency = [dashboard_systemcurrency, change_systemcurrency, view_systemcurrency, add_systemcurrency, delete_systemcurrency, add_user]
-        enroll_group = Group.objects.filter(name=settings.ADMIN_GROUP_NAME).exists()
+        enroll_group = Group.objects.filter(name=settings.ADMIN_GROUP_NAME).first()
         if not enroll_group:
             enroll_group = Group(name=settings.ADMIN_GROUP_NAME)
             enroll_group.save()

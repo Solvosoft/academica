@@ -12,5 +12,5 @@ urlpatterns = [
     path('users/deactivate/<int:pk>/', deactivate_user, name="deactivate_user"),
     path('groups/', groups_list, name="groups_list"),
     path('groups/edit/<int:pk>', EditGroup.as_view(), name="edit_group"),
-    path('groups/delete/<int:pk>/', delete_group, name="delete_group"),
+    path('groups/delete/<int:pk>/', delete_group, name="delete_group")
 ]

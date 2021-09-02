@@ -1,10 +1,15 @@
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, permission_required
 from django.db.models import Q
+from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
 
 from matricula.forms import GroupSearchStudentReportForm
 from matricula.models import Group
+
+@permission_required('matricula.view_reports')
+def list_reports(request):
+    return render(request, 'reports/list_reports.html')
 
 @method_decorator(user_passes_test(lambda x: x.has_perm('matricula.view_enroll')), name='dispatch')
 class GroupEstudentStatusList(ListView):
