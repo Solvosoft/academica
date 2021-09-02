@@ -9,8 +9,7 @@ from matricula.models import Group
 
 @permission_required('matricula.view_reports')
 def list_reports(request):
-    context = {}
-    return render(request, 'reports/list_reports.html', context)
+    return render(request, 'reports/list_reports.html')
 
 @method_decorator(user_passes_test(lambda x: x.has_perm('matricula.view_enroll')), name='dispatch')
 class GroupEstudentStatusList(ListView):
