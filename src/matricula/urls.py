@@ -37,7 +37,7 @@ from matricula.views.Auth import get_profile
 
 from .views.professor_views import AddUser, ProfessorsList, CreateProfessor, EditProfessor,\
     edit_profile, delete_professor, deactivate_professor
-from .views.report import GroupEstudentStatusList, list_reports
+from .views.report import GroupEstudentStatusList, list_reports, enrolls_report
 from .views.students_views import qualify_students, update_enroll, update_enroll_status, GradeList
 
 urlpatterns = [
@@ -138,5 +138,6 @@ urlpatterns = [
     path('enrrolment/autenticate', do_login, name="autenticate"),
     path('enrrolment/create_using_ajax', create_student_ajax, name="enroll_ajax"),
     path('enrrolment/student_is_active/<str:key>', student_isactive, name="student_isactive"),
-    path('reports/', list_reports, name='list_reports')
+    path('reports/', list_reports, name='list_reports'),
+    path('reports/enrolls_report', enrolls_report, name='enrolls_report')
 ] + billurls
