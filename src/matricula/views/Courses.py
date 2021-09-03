@@ -16,6 +16,11 @@ from matricula.views.utils import get_active_period
 def list_courses(request):
     form_search = CourseMainSearchForm()
     cat = request.GET.get('cat', None)
+    if cat is not None:
+        try:
+            cat = int(cat)
+        except ValueError:
+            cat = None
     period = get_active_period()
     show_info_modal = False
     context = {}

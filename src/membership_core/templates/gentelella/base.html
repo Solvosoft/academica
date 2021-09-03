@@ -17,6 +17,10 @@
 
       <title>{% block title %}{% get_settings 'site_title' %} {% endblock %}</title>
 
+      <!-- Avoid add append /favicon.ico to queryparams -->
+      <link rel="icon" type="image/png" href="{% static 'favicon.png' %}" />
+      <!-- End /favicon.ico configurations -->
+
       {% block stylesheets %}
         <!-- Bootstrap -->
         <link href="{% static 'vendors/bootstrap/bootstrap.min.css' %}" rel="stylesheet">
