@@ -16,6 +16,7 @@ from matricula.views.Enrollments import addmetoquee, list_enroll, enrollme, \
     finish_enroll
 from matricula.views.Pages import PageDetail
 from .admin import admin_site
+
 from .views.admin_views import CategoryList, GroupDetailView, create_category, \
     CategoryDelete, do_login, edit_category, CourseList, create_course, \
     CourseDelete, edit_course, MenuItemList, create_menuitem, MenuItemDelete, \
@@ -39,6 +40,14 @@ from .views.professor_views import AddUser, ProfessorsList, CreateProfessor, Edi
     edit_profile, delete_professor, deactivate_professor
 from .views.report import GroupEstudentStatusList, list_reports
 from .views.students_views import qualify_students, update_enroll, update_enroll_status, GradeList
+from .reports.issue10 import consolidado_estadisticas_cursos
+
+reports = [
+    path('reports/', list_reports, name='list_reports'),
+    path('group/report_student_status', GroupEstudentStatusList.as_view(), name="report_student_status"),
+    path('consolidado_estadisticas_cursos', consolidado_estadisticas_cursos, name='consolidado_estadisticas_cursos'),
+]
+
 
 urlpatterns = [
     url('enrrolment/accounts/profile/?$', get_profile, name='profile'),
@@ -133,10 +142,8 @@ urlpatterns = [
     path('enrrolment_certificate/build/<int:pk>/', build_pdf_certificate_list, name="build_pdf_certificate_list"),
     path('enrrolment_certificate_enroll/<int:pk_group>/<int:pk>/', regenerate_certificate, name="build_pdf_certificate_view"),
     path('enrollment/users/create', AddUser.as_view(), name="create_simple_user"),
-    path('group/report_student_status', GroupEstudentStatusList.as_view(), name="report_student_status"),
     path('enrrolment/modalforms', get_forms_modal, name="modalforms-list"),
     path('enrrolment/autenticate', do_login, name="autenticate"),
     path('enrrolment/create_using_ajax', create_student_ajax, name="enroll_ajax"),
     path('enrrolment/student_is_active/<str:key>', student_isactive, name="student_isactive"),
-    path('reports/', list_reports, name='list_reports')
-] + billurls
+] + billurls + reports
