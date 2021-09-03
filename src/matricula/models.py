@@ -240,7 +240,8 @@ class Group(models.Model):
 
 class Enroll(models.Model):
     COURSE_STATUS = (("approved", _("Approved")),
-                     ("reproved", _("Reproved"))
+                     ("reproved", _("Reproved")),
+                     ('uncomplete', _("Not complete the course"))
                      )
 
     enroll_finished = models.BooleanField(
@@ -262,6 +263,7 @@ class Enroll(models.Model):
     course_status = models.CharField(max_length=20, choices=COURSE_STATUS, blank=True, null=True,
                                      verbose_name=_("Status"))
     pdf_certificate = models.FileField(upload_to="certificates/", null=True, blank=True, verbose_name=_("Certificate"))
+    go_to_one_class = models.BooleanField(default=True, verbose_name=_('Go to classes'))
 
     def __str__(self):
         return self.student.user.username + " -- " + smart_text(self.group)
