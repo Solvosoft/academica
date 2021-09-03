@@ -90,7 +90,8 @@ class ListReportsTestCase(TestCase):
             enroll = self.get_enroll(groups[x%3])
             if x%4 == 0:
                 enroll.go_to_one_class = False
-                enroll.course_status = "reproved"
+            if x == 7:
+                enroll.course_status = "uncomplete"
 
             if x%3==0:
                 enroll.course_status = "reproved"
@@ -98,15 +99,19 @@ class ListReportsTestCase(TestCase):
                 # course_status
                 # go_to_one_class
             if x == 0:
+                enroll.go_to_one_class = True
                 enroll.course_status = "approved"
             enroll.save()
 
-        #  4, 8, 3, 6, 9 reprobados
-        #  0, 1,2,5,7
+        #  0 1 2 5 7 approved
+        #  4 8       withoutlessons
+        #  7         uncomplete
+        #  3 6  9    reproved
 
-        # c1g1   0, 3, 6, 9    -> 1 approved
-        # c1g2   1, 4, 7        -> 1 approved, 1 rep, 1 go to
-        # c2g1   2, 5, 8        -> 2 approved, 1 rep, 1 go to
+        #  C1 0 1 3 4 6 7 9        3 approved 3 reproved 1 uncomplete  1 withoutlessons
+        #  C2 2  5  8              2 approved 0 reproved 0 uncomplete  1 withoutlessons
+
+
 
     def setUp(self):
         self.client = Client()
@@ -121,15 +126,19 @@ class ListReportsTestCase(TestCase):
 
     def test_graph_data(self):
         response = self.client.get(self.url)
+
         data = response.json()['data']
         dataset = data['datasets']
-        # c1g1   0, 3, 6, 9    -> 1 approved
-        # c1g2   1, 4, 7        -> 1 approved, 1 rep, 1 go to
-        # c2g1   2, 5, 8        -> 2 approved, 1 rep, 1 go to
+        #  0 1 2 5 7 approved
+        #  4 8       uncomplete
+        #  3 6  9 reproved
 
-        self.assertListEqual(dataset[0]['data'], [1, 0, 0])
-        self.assertListEqual(dataset[1]['data'], [1, 1, 1])
-        self.assertListEqual(dataset[2]['data'], [2, 1, 1])
+        #  C1 0 1 3 4 6 7 9        3 approved 3 reproved 1 uncomplete  1 withoutlessons
+        #  C2 2  5  8              2 approved 0 reproved 0 uncomplete  1 withoutlessons
+
+        self.assertListEqual(dataset[0]['data'], [2, 3, 1, 1])
+        self.assertListEqual(dataset[1]['data'], [2, 0, 0, 1])
+
 
     def test_graph_type(self):
         response = self.client.get(self.url)
