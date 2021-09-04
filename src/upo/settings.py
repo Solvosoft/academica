@@ -226,3 +226,4 @@ PAYPAL_ERROR_EMAIL_NOFIFY = ("secretaria@universidadpopular.red",)
 PROFESSOR_GROUP_NAME = "Profesores"
 ADMIN_GROUP_NAME = "Administradores Académica"
 HOURS_TO_PAY = 4
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

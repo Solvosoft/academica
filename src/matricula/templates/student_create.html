@@ -16,7 +16,8 @@
 								{% csrf_token %}
 								{{form.as_horizontal}}
 							<div style="margin-top:10px; text-align:right;">
-								<button type="submit" class="btn btn-success" value="{% trans 'Save'%}" >
+								<button type="submit" class="btn btn-success" value="{% trans 'Save'%}"
+									onclick="this.disabled=true,this.form.submit();">
 									<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> {% trans 'Save'%}
 								</button>
 							</div>

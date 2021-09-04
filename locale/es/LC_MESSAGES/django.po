@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-12 18:27-0600\n"
+"POT-Creation-Date: 2021-09-03 09:40-0600\n"
 "PO-Revision-Date: 2020-01-09 08:15-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -134,70 +134,79 @@ msgstr "Grupos"
 msgid "Menu items"
 msgstr "Elementos del menú"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:51
+#: src/membership_core/templates/gentelella/app/sidebar.html:49
+msgid "Estado de grupos"
+msgstr ""
+
+#: src/membership_core/templates/gentelella/app/sidebar.html:52
 msgid "Periods"
 msgstr "Periodos"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:54
+#: src/membership_core/templates/gentelella/app/sidebar.html:55
 msgid "Pages"
 msgstr "Páginas"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:57
+#: src/membership_core/templates/gentelella/app/sidebar.html:58
 msgid "Students"
 msgstr "Estudiantes"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:61
+#: src/membership_core/templates/gentelella/app/sidebar.html:62
 msgid "Professors"
 msgstr "Facilitadores"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:64
+#: src/membership_core/templates/gentelella/app/sidebar.html:65
 msgid "Coupons"
 msgstr "Cupones"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:76
+#: src/membership_core/templates/gentelella/app/sidebar.html:68
+msgid "Reports"
+msgstr "Reportes"
+
+#: src/membership_core/templates/gentelella/app/sidebar.html:80
 msgid "Bills"
 msgstr "Pagos"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:81
+#: src/membership_core/templates/gentelella/app/sidebar.html:85
 msgid "Currency Exchanges"
 msgstr "Monedas de intercambio"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:84
+#: src/membership_core/templates/gentelella/app/sidebar.html:88
 msgid "Bill list"
 msgstr "Lista de pagos"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:95
+#: src/membership_core/templates/gentelella/app/sidebar.html:99
 msgid "Administration"
 msgstr "Administración"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:101
+#: src/membership_core/templates/gentelella/app/sidebar.html:105
 msgid "User list"
 msgstr "Lista de usuaries"
 
-#: src/membership_core/templates/gentelella/app/sidebar.html:106
+#: src/membership_core/templates/gentelella/app/sidebar.html:110
 msgid "Group list"
 msgstr "Lista de grupos"
 
-#: src/membership_core/templates/gentelella/app/top_navigation.html:53
+#: src/membership_core/templates/gentelella/app/top_navigation.html:17
 msgid "Profile"
 msgstr "Perfil"
 
-#: src/membership_core/templates/gentelella/app/top_navigation.html:54
+#: src/membership_core/templates/gentelella/app/top_navigation.html:18
 msgid "Log out"
 msgstr "Cerrar sesión"
 
-#: src/membership_core/templates/gentelella/base.html:108
+#: src/membership_core/templates/gentelella/base.html:112
 msgid "Student"
 msgstr "Estudiante"
 
-#: src/membership_core/templates/gentelella/base.html:111
+#: src/membership_core/templates/gentelella/base.html:115
 msgid "Superadmin"
 msgstr "Superusuarie"
 
-#: src/membership_core/templates/gentelella/base.html:117
+#: src/membership_core/templates/gentelella/base.html:121
 msgid "Professor"
 msgstr "Facilitadore"
 
+#: src/membership_core/templates/gentelella/base.html:142
 #: src/membership_core/templates/gentelella/registration/login.html:19
 msgid "Login"
 msgstr "Iniciar Sesión"
@@ -291,7 +300,7 @@ msgstr "Le enviaremos un correo para verificar que usted es quien dice ser"
 msgid "Send email"
 msgstr "Enviar correo"
 
-#: src/membership_core/templates/groups/groups_list.html:72
+#: src/membership_core/templates/groups/groups_list.html:71
 msgid "There are not groups available"
 msgstr "No hay grupos registrados"
 
