@@ -247,7 +247,7 @@ class Group(models.Model):
 class Enroll(models.Model):
     COURSE_STATUS = (("approved", _("Approved")),
                      ("reproved", _("Reproved")),
-                     ('uncompleted', _("Not complete the course"))
+                     ('uncompleted', _("Not complete the course")),
                      )
 
     enroll_finished = models.BooleanField(

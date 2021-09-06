@@ -1,0 +1,28 @@
+{% extends 'gentelella/base.html'%}
+{% load static i18n %}
+{% load gtsettings %}
+
+{% block pre_head %}
+    {% define_true "use_chartjs" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="center col-md-12">
+    {% include 'gentelella/widgets/chartjs.html' %}
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        //beginAtZero: true
+        var chart = document.getElementsByClassName("chartjs-render-monitor");
+        console.log(chart)
+        chart.options.scales.yAxes[0].ticks.suggestedMin = 0;
+        chart.options.scales.yAxes[0].ticks.beginAtZero = true;
+        chart.update();
+    </script>
+
+{% endblock %}
+

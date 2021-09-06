@@ -40,13 +40,15 @@ from .views.professor_views import AddUser, ProfessorsList, CreateProfessor, Edi
     edit_profile, delete_professor, deactivate_professor
 from .views.report import GroupEstudentStatusList, list_reports
 from .views.students_views import qualify_students, update_enroll, update_enroll_status, GradeList
-from .reports.issue10 import consolidado_estadisticas_cursos
+from .reports.issue_10 import consolidado_estadisticas_cursos
 from .reports.issue_6 import uncompleted_student_report
+from .reports.issue_7 import student_without_lessons_report
 
 reports = [
     path('reports/', list_reports, name='list_reports'),
     path('group/report_student_status', GroupEstudentStatusList.as_view(), name="report_student_status"),
     path('consolidado_estadisticas_cursos', consolidado_estadisticas_cursos, name='consolidado_estadisticas_cursos'),
+    path('reports/student_without_lessons_report', student_without_lessons_report, name='student_without_lessons_report'),
     path('reports/uncompleted_student_report', uncompleted_student_report, name='uncompleted_student_report'),
 ]
 

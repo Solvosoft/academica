@@ -90,3 +90,37 @@ class UncompletedStudentReport(BaseChart, VerticalBarChart):
         return {'display': True,
                 'text': 'Reporte de estudiantes que desertaron por curso'
                 }
+
+@register_lookups(prefix="student_without_lessons_report", basename="student_without_lessons_report")
+class NeverAttendStudentReport(BaseChart, VerticalBarChart):
+
+    def get_courses(self):
+        queryset = Course.objects.all().order_by('name').annotate(
+            withoutlessons=Count('group__enroll', filter=Q(group__enroll__enroll_finished=True,
+                                                           group__enroll__go_to_one_class=False))
+        ).values('name', 'withoutlessons')
+
+        return queryset
+
+    def get_labels(self):
+        return ['Nunca asistieron a clases']
+
+    def get_datasets(self):
+        self.index = 0
+        dataset = []
+        courses = self.get_courses()
+        for course in courses:
+            dataset.append(
+                {'label': course['name'],
+                 'backgroundColor': self.get_color(),
+                 'borderColor': self.get_color(),
+                 'borderWidth': 1,
+                 'data': [course['withoutlessons']],
+                },
+            )
+        return dataset
+
+    def get_title(self):
+        return {'display': True,
+                'text': 'Reporte de estudiantes que nunca ingresaron a los cursos'
+                }
