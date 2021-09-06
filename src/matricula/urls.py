@@ -43,7 +43,7 @@ from .views.students_views import qualify_students, update_enroll, update_enroll
 from .reports.issue10 import consolidado_estadisticas_cursos
 from .reports.issue_6 import uncompleted_student_report
 from .reports.issue_5 import approved_student_report
-from .reports_issue4.issue4 import enrolls_report
+from .reports.issue4 import enrolls_report
 
 reports = [
     path('reports/', list_reports, name='list_reports'),

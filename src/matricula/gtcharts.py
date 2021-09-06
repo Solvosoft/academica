@@ -94,10 +94,10 @@ class UncompletedStudentReport(BaseChart, VerticalBarChart):
 @register_lookups(prefix="totalestmatriculados", basename="totalestmatriculados")
 class EnrollStudentsReport(BaseChart, VerticalBarChart):
     def get_enrolls_completed(self):
-        queryset = Enroll.objects.all().order_by('student').annotate(
+        queryset = Course.objects.all().order_by('name').annotate(
             enrrols_count=Count('group__enroll', filter=Q(
                     group__enroll__enroll_finished = True))
-        ).values('student', 'enrrols_count')
+        ).values('name', 'enrrols_count')
 
         return queryset
 
@@ -111,7 +111,7 @@ class EnrollStudentsReport(BaseChart, VerticalBarChart):
         students = self.get_enrolls_completed()
         for student in students:
             dataset.append(
-                {'label': student['student'],
+                {'label': student['name'],
                  'backgroundColor': self.get_color(),
                  'borderColor': self.get_color(),
                  'borderWidth': 1,
