@@ -49,7 +49,7 @@ reports = [
     path('group/report_student_status', GroupEstudentStatusList.as_view(), name="report_student_status"),
     path('consolidado_estadisticas_cursos', consolidado_estadisticas_cursos, name='consolidado_estadisticas_cursos'),
     path('reports/uncompleted_student_report', uncompleted_student_report, name='uncompleted_student_report'),
-    path('enrolls_report', enrolls_report, name='enrolls_report'),
+    path('reports/enrolls_report', enrolls_report, name='enrolls_report'),
 ]
 
 

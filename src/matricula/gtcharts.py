@@ -96,9 +96,8 @@ class EnrollStudentsReport(BaseChart, VerticalBarChart):
     def get_enrolls_completed(self):
         queryset = Enroll.objects.all().order_by('student').annotate(
             enrrols_count=Count('group__enroll', filter=Q(
-                    group__enroll__enroll_finished = True)),
-            enrolledstudents=Count('group__enroll', filter=Q(group__enroll__enroll_finished=True))
-        ).values('student', 'enrrols_count', 'enrolledstudents')
+                    group__enroll__enroll_finished = True))
+        ).values('student', 'enrrols_count')
 
         return queryset
 
@@ -116,7 +115,7 @@ class EnrollStudentsReport(BaseChart, VerticalBarChart):
                  'backgroundColor': self.get_color(),
                  'borderColor': self.get_color(),
                  'borderWidth': 1,
-                 'data': [student['enrrols_count'], student['enrolledstudents']]
+                 'data': [student['enrrols_count']]
                  },
             )
         return dataset
@@ -124,5 +123,5 @@ class EnrollStudentsReport(BaseChart, VerticalBarChart):
 
     def get_title(self):
         return {'display': True,
-                'text': 'Total de personas matriculadas'
+                'text': 'Reporte del total de personas matriculadas'
                 }
