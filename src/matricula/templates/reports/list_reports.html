@@ -7,8 +7,8 @@
     <div class="list-group">
         <a href="#" class="list-group-item list-group-item-action">Total de cursos, por año o por mes</a>
         <a href="#" class="list-group-item list-group-item-action">Temas de los cursos que se han impartido en la Upo en total, por año o por mes.</a>
-        <a href="#" class="list-group-item list-group-item-action">Total de personas matriculadas</a>
-        <a href="#" class="list-group-item list-group-item-action">Total de personas que aprobaron los cursos</a>
+        <a href="{% url 'enrolls_report' %}" class="list-group-item list-group-item-action">Total de personas matriculadas</a>
+        <a href="{% url 'approved_student_report' %}" class="list-group-item list-group-item-action">Total de personas que aprobaron los cursos</a>
         <a href="{% url 'uncompleted_student_report' %}" class="list-group-item list-group-item-action">Total de personas que desertaron</a>
         <a href="{% url 'student_without_lessons_report' %}" class="list-group-item list-group-item-action">Personas que nunca ingresaron a los cursos</a>
         <a href="#" class="list-group-item list-group-item-action">Países de los cuales participan en los cursos</a>
