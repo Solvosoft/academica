@@ -51,7 +51,7 @@ reports = [
     path('consolidado_estadisticas_cursos', consolidado_estadisticas_cursos, name='consolidado_estadisticas_cursos'),
     path('reports/uncompleted_student_report', uncompleted_student_report, name='uncompleted_student_report'),
     path('reports/enrolls_report', enrolls_report, name='enrolls_report'),
-    path('approved_student_report', approved_student_report, name='approved_student_report'),
+    path('reports/approved_student_report', approved_student_report, name='approved_student_report'),
 ]
 
 
