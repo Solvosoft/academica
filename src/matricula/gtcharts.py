@@ -54,3 +54,39 @@ class ConsolidadoEstadisticasCurso(BaseChart, VerticalBarChart):
         return {'display': True,
                 'text': 'Consolidado de estadísticas por curso'
                 }
+
+
+@register_lookups(prefix="uncompleted_student", basename="uncompleted_student")
+class UncompletedStudentReport(BaseChart, VerticalBarChart):
+    def get_courses(self):
+        queryset = Course.objects.all().order_by('name').annotate(
+            uncomplete=Count('group__enroll', filter=Q(
+                    group__enroll__enroll_finished = True,
+                    group__enroll__go_to_one_class=True,
+                    group__enroll__course_status= """uncomplete"""))
+        ).values('name','uncomplete')
+
+        return queryset
+
+    def get_labels(self):
+        return ['Desertaron']
+
+    def get_datasets(self):
+        self.index=0
+        dataset = []
+        courses = self.get_courses()
+        for course in courses:
+            dataset.append(
+                {'label': course['name'],
+                 'backgroundColor': self.get_color(),
+                 'borderColor': self.get_color(),
+                 'borderWidth': 1,
+                 'data': [course['uncomplete']]
+                 },
+            )
+        return dataset
+
+    def get_title(self):
+        return {'display': True,
+                'text': 'Reporte de estudiantes que desertaron por curso'
+                }
