@@ -120,6 +120,15 @@ class NeverAttendStudentReport(BaseChart, VerticalBarChart):
             )
         return dataset
 
+    def get_scales(self):
+        return {'yAxes': [{
+                    'ticks': {
+                        'suggestedMin': 0, # minimum will be 0, unless there is a lower value.
+                        'beginAtZero': True # minimum value will be 0.
+                    }
+            }]
+        }
+
     def get_title(self):
         return {'display': True,
                 'text': 'Reporte de estudiantes que nunca ingresaron a los cursos'
