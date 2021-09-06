@@ -14,15 +14,3 @@
 </div>
 {% endblock %}
 
-{% block js %}
-    <script>
-        //beginAtZero: true
-        var chart = document.getElementsByClassName("chartjs-render-monitor");
-        console.log(chart)
-        chart.options.scales.yAxes[0].ticks.suggestedMin = 0;
-        chart.options.scales.yAxes[0].ticks.beginAtZero = true;
-        chart.update();
-    </script>
-
-{% endblock %}
-

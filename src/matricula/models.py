@@ -248,6 +248,7 @@ class Enroll(models.Model):
     COURSE_STATUS = (("approved", _("Approved")),
                      ("reproved", _("Reproved")),
                      ('uncompleted', _("Not complete the course")),
+                     ('never_attend', _("Without lessons attended"))
                      )
 
     enroll_finished = models.BooleanField(
@@ -292,6 +293,8 @@ class Enroll(models.Model):
                 dev = "Reprobada"
             if self.course_status == 'uncompleted':
                 dev = "Desertada"
+            if self.course_status == 'never_attend':
+                dev = "Nunca asistió"
         return dev
 
     @property
