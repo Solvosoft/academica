@@ -3,7 +3,7 @@ from django.db.models.functions import Upper
 from djgentelella.chartjs import VerticalBarChart
 from djgentelella.groute import register_lookups
 
-from matricula.models import Course
+from matricula.models import Course, Enroll
 from membership_core.gtcharts import BaseChart
 
 
@@ -53,4 +53,40 @@ class ConsolidadoEstadisticasCurso(BaseChart, VerticalBarChart):
     def get_title(self):
         return {'display': True,
                 'text': 'Consolidado de estadísticas por curso'
+                }
+
+@register_lookups(prefix="totalestmatriculados", basename="totalestmatriculados")
+class EnrollStudentsReport(BaseChart, VerticalBarChart):
+    def get_enrolls_completed(self):
+        queryset = Enroll.objects.all().order_by('student').annotate(
+            enrrols_count=Count('group__enroll', filter=Q(
+                    group__enroll__enroll_finished = True)),
+            enrolledstudents=Count('group__enroll', filter=Q(group__enroll__enroll_finished=True))
+        ).values('student', 'enrrols_count', 'enrolledstudents')
+
+        return queryset
+
+
+    def get_labels(self):
+        return [' Total de estudiantes matriculados']
+
+    def get_datasets(self):
+        self.index=0
+        dataset = []
+        students = self.get_enrolls_completed()
+        for student in students:
+            dataset.append(
+                {'label': student['student'],
+                 'backgroundColor': self.get_color(),
+                 'borderColor': self.get_color(),
+                 'borderWidth': 1,
+                 'data': [student['enrrols_count'], student['enrolledstudents']]
+                 },
+            )
+        return dataset
+
+
+    def get_title(self):
+        return {'display': True,
+                'text': 'Total de personas matriculadas'
                 }

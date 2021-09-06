@@ -38,14 +38,16 @@ from matricula.views.Auth import get_profile
 
 from .views.professor_views import AddUser, ProfessorsList, CreateProfessor, EditProfessor,\
     edit_profile, delete_professor, deactivate_professor
-from .views.report import GroupEstudentStatusList, list_reports, enrolls_report
+from .views.report import GroupEstudentStatusList, list_reports
 from .views.students_views import qualify_students, update_enroll, update_enroll_status, GradeList
 from .reports.issue10 import consolidado_estadisticas_cursos
+from .reports_issue4.issue4 import enrolls_report
 
 reports = [
     path('reports/', list_reports, name='list_reports'),
     path('group/report_student_status', GroupEstudentStatusList.as_view(), name="report_student_status"),
     path('consolidado_estadisticas_cursos', consolidado_estadisticas_cursos, name='consolidado_estadisticas_cursos'),
+    path('enrolls_report', enrolls_report, name='enrolls_report'),
 ]
 
 
