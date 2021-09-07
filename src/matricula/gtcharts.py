@@ -160,14 +160,58 @@ class ApprovedStudentReport(BaseChart, VerticalBarChart):
     def get_title(self):
         return {'display': True,
             'text': 'Total de estudiantes aprobados por curso'}
+@register_lookups(prefix="student_without_lessons_report", basename="student_without_lessons_report")
+class NeverAttendStudentReport(BaseChart, VerticalBarChart):
+
+    def get_courses(self):
+        queryset = Course.objects.all().order_by('name').annotate(
+            withoutlessons=Count('group__enroll', filter=Q(group__enroll__enroll_finished=True,
+                                                           group__enroll__go_to_one_class=False))
+        ).values('name', 'withoutlessons')
+
+        return queryset
+
+    def get_labels(self):
+        return ['Nunca asistieron a clases']
+
+    def get_datasets(self):
+        self.index = 0
+        dataset = []
+        courses = self.get_courses()
+        for course in courses:
+            dataset.append(
+                {'label': course['name'],
+                 'backgroundColor': self.get_color(),
+                 'borderColor': self.get_color(),
+                 'borderWidth': 1,
+                 'data': [course['withoutlessons']],
+                },
+            )
+        return dataset
+
+    def get_scales(self):
+        return {'yAxes': [{
+                    'ticks': {
+                        'suggestedMin': 0, # minimum will be 0, unless there is a lower value.
+                        'beginAtZero': True # minimum value will be 0.
+                    }
+            }]
+        }
+
+    def get_title(self):
+        return {'display': True,
+                'text': 'Reporte de estudiantes que nunca ingresaron a los cursos'
+                }
+
 
 @register_lookups(prefix="organitations_per_country", basename="organitations_per_country")
 class OrganitationsPerCountryReport(BaseChart, VerticalBarChart):
-    def get_enrolls_completed(self):
+    def get_organizations_per_country(self):
+        #Need to fix
         queryset = Student.objects.all().order_by('organization').annotate(
-            enrrols_count=Count('country', filter=Q(
+            organizationspr_country=Count('country', filter=Q(
                     organization = """Organización"""))
-        ).values('organization', 'enrrols_count')
+        ).values('organization', 'organizationspr_country')
 
         return queryset
 
@@ -178,14 +222,14 @@ class OrganitationsPerCountryReport(BaseChart, VerticalBarChart):
     def get_datasets(self):
         self.index=0
         dataset = []
-        students = self.get_enrolls_completed()
-        for student in students:
+        organizations = self.get_organizations_per_country()
+        for country in organizations:
             dataset.append(
-                {'label': student['organization'],
+                {'label': country['organization'],
                  'backgroundColor': self.get_color(),
                  'borderColor': self.get_color(),
                  'borderWidth': 1,
-                 'data': [student['enrrols_count']]
+                 'data': [country['organizationspr_country']]
                  },
             )
         return dataset
