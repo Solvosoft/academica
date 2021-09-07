@@ -1,0 +1,16 @@
+{% extends 'gentelella/base.html'%}
+{% load static  i18n %}
+{% load gtsettings %}
+
+
+{% block pre_head %}
+    {% define_true  "use_chartjs" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+    {% include 'gentelella/widgets/chartjs.html' %}
+    </div>
+</div>
+{% endblock %}

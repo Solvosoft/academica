@@ -3,8 +3,9 @@ from django.db.models.functions import Upper
 from djgentelella.chartjs import VerticalBarChart
 from djgentelella.groute import register_lookups
 
-from matricula.models import Course, Enroll
+from matricula.models import Course, Enroll, Student
 from membership_core.gtcharts import BaseChart
+from membership_core.models import Country
 
 
 @register_lookups(prefix="consolidadoestcurso", basename="consolidadoestcurso")
@@ -159,3 +160,38 @@ class ApprovedStudentReport(BaseChart, VerticalBarChart):
     def get_title(self):
         return {'display': True,
             'text': 'Total de estudiantes aprobados por curso'}
+
+@register_lookups(prefix="organitations_per_country", basename="organitations_per_country")
+class OrganitationsPerCountryReport(BaseChart, VerticalBarChart):
+    def get_enrolls_completed(self):
+        queryset = Student.objects.all().order_by('organization').annotate(
+            enrrols_count=Count('country', filter=Q(
+                    organization = """Organización"""))
+        ).values('organization', 'enrrols_count')
+
+        return queryset
+
+
+    def get_labels(self):
+        return ['Cantidad de organizaciones por país']
+
+    def get_datasets(self):
+        self.index=0
+        dataset = []
+        students = self.get_enrolls_completed()
+        for student in students:
+            dataset.append(
+                {'label': student['organization'],
+                 'backgroundColor': self.get_color(),
+                 'borderColor': self.get_color(),
+                 'borderWidth': 1,
+                 'data': [student['enrrols_count']]
+                 },
+            )
+        return dataset
+
+
+    def get_title(self):
+        return {'display': True,
+                'text': 'Reporte de organizaciones por país'
+                }
