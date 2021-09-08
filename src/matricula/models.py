@@ -208,6 +208,12 @@ class Group(models.Model):
     def reproved_enrrolls(self):
         return self.enroll_set.filter(enroll_finished=True,
                                       course_status="reproved").count()
+
+    @property
+    def uncompleted_enrrolls(self):
+        return self.enroll_set.filter(enroll_finished=True,
+                                      course_status="uncompleted").count()
+
     @property
     def get_label_enrolls(self):
         enrolls = self.get_enrolls_completed
@@ -241,7 +247,8 @@ class Group(models.Model):
 class Enroll(models.Model):
     COURSE_STATUS = (("approved", _("Approved")),
                      ("reproved", _("Reproved")),
-                     ('uncomplete', _("Not complete the course"))
+                     ('uncompleted', _("Not complete the course")),
+                     ('never_attend', _("Without lessons attended"))
                      )
 
     enroll_finished = models.BooleanField(
@@ -284,6 +291,10 @@ class Enroll(models.Model):
             dev = "Aprobada"
             if self.course_status == 'reproved':
                 dev = "Reprobada"
+            if self.course_status == 'uncompleted':
+                dev = "Desertada"
+            if self.course_status == 'never_attend':
+                dev = "Nunca asistió"
         return dev
 
     @property
