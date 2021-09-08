@@ -66,17 +66,20 @@ def view_course(request, pk=None):
     else:
         course = Course.objects.none()
         groups = Group.objects.filter(period__in=period)
-        if form_search.cleaned_data['category']:
+        if 'category' in form_search.cleaned_data and form_search.cleaned_data['category']:
             groups = groups.filter(
                 course__category__pk__in=form_search.cleaned_data['category'])
-        if form_search.cleaned_data['course']:
+        if 'course' in form_search.cleaned_data and  form_search.cleaned_data['course']:
             groups = groups.filter(
                 course__pk__in=form_search.cleaned_data['course'])
-        if form_search.cleaned_data['is_paid'] and int(form_search.cleaned_data['is_paid']) == 1:
-            groups = groups.filter(is_paid=True)
-        elif form_search.cleaned_data['is_paid'] and int(form_search.cleaned_data['is_paid']) == 2:
-            groups = groups.filter(is_paid=False)
-        if form_search.cleaned_data['course_name']:
+        is_paid = form_search.cleaned_data.get('is_paid', None)
+        if is_paid is not None:
+            if is_paid == '1':
+                groups = groups.filter(is_paid=True)
+            elif is_paid == '2':
+                groups = groups.filter(is_paid=False)
+
+        if 'course_name' in form_search.cleaned_data and form_search.cleaned_data['course_name']:
             groups = groups.filter(
                 Q(name__icontains=form_search.cleaned_data['course_name'])|
                 Q(course__name__icontains=form_search.cleaned_data['course_name'])|

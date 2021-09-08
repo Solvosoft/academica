@@ -469,21 +469,21 @@ class GroupList(ListView):
 
         self.form = GroupSearchForm(self.request.GET)
         self.form.is_valid()
-        if self.form.cleaned_data['name']:
+        if 'name' in self.form.cleaned_data and self.form.cleaned_data['name']:
             queryset = queryset.filter(
                 Q(name__icontains=self.form.cleaned_data['name']) |
                 Q(course__name__icontains=self.form.cleaned_data['name']) |
                 Q(course__category__name__icontains=self.form.cleaned_data['name']))
-        if self.form.cleaned_data['course']:
+        if 'course' in self.form.cleaned_data and self.form.cleaned_data['course']:
             queryset = queryset.filter(
                 course__in=self.form.cleaned_data['course'])
-        if self.form.cleaned_data['period']:
+        if 'period' in self.form.cleaned_data  and self.form.cleaned_data['period']:
             queryset = queryset.filter(period__in=self.form.cleaned_data['period'])
-        if self.form.cleaned_data['currency']:
+        if 'currency' in self.form.cleaned_data and self.form.cleaned_data['currency']:
             queryset = queryset.filter(currency__in=self.form.cleaned_data['currency'])
-        if self.form.cleaned_data['category']:
+        if 'category' in self.form.cleaned_data and self.form.cleaned_data['category']:
             queryset = queryset.filter(course__category__in=self.form.cleaned_data['category'])
-        if self.form.cleaned_data['open'] and int(self.form.cleaned_data['open']) != GroupSearchForm.DO_NOT_APPLY:
+        if 'open' in self.form.cleaned_data and self.form.cleaned_data['open'] and int(self.form.cleaned_data['open']) != GroupSearchForm.DO_NOT_APPLY:
             if int(self.form.cleaned_data['open']) == GroupSearchForm.OPEN:
                 queryset = queryset.filter(is_open=True)
             else:
@@ -721,7 +721,7 @@ def export_group(request, pk=None):
     writer = csv.writer(response, delimiter=';', quotechar='|')
     response.write(u'\ufeff'.encode('utf8'))
     if pk is not None:
-        group = Group.objects.get(pk=pk)
+        group = get_object_or_404(Group, pk=pk)
         enrolls = Enroll.objects.filter(group=group, enroll_finished=True)
         if group.is_paid:
             enrolls = enrolls.filter(bill__is_paid=True)
@@ -765,7 +765,7 @@ def list_students_group(request, pk=None):
         filters['course_status']=course_status
     if pk != None:
         context = {}
-        instance = Group.objects.get(pk=pk)
+        instance = get_object_or_404(Group, pk=pk)
         filters['group'] = instance
         filters['enroll_finished'] = True
         enroll_list = Enroll.objects.filter(**filters)
