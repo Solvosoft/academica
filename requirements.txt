@@ -10,7 +10,7 @@ python-dateutil
 django-markitup==4.0.0
 markdown==3.2.2
 psycopg2-binary
-djgentelella==0.1.8
+djgentelella==0.2.7
 djangorestframework==3.11.0
 django-ckeditor==6.0.0
 django-paypal==1.0.0

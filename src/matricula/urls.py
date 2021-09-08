@@ -7,6 +7,7 @@ Created on 7/4/2015
 
 from django.conf.urls import url
 from django.urls import path
+from rest_framework.routers import DefaultRouter
 
 from matricula.views.Auth import ProfessorProfileView, recover_password, \
     mail_recover_pass, authenticate, create_user, login_user, \
@@ -40,11 +41,15 @@ from .views.professor_views import AddUser, ProfessorsList, CreateProfessor, Edi
     edit_profile, delete_professor, deactivate_professor
 from .views.report import GroupEstudentStatusList, list_reports
 from .views.students_views import qualify_students, update_enroll, update_enroll_status, GradeList
+from .reports.issue_11 import RankingCourseEnrollsViewSet, ranking_course_enrolls_view
 from .reports.issue_10 import consolidado_estadisticas_cursos
 from .reports.issue_6 import uncompleted_student_report
 from .reports.issue_7 import student_without_lessons_report
 from .reports.issue_5 import approved_student_report
 from .reports_issue4.issue4 import enrolls_report
+
+router = DefaultRouter()
+router.register('ranking_course_enrolls_api', RankingCourseEnrollsViewSet, 'ranking_course_enrolls_api')
 
 reports = [
     path('reports/', list_reports, name='list_reports'),
@@ -54,6 +59,7 @@ reports = [
     path('reports/uncompleted_student_report', uncompleted_student_report, name='uncompleted_student_report'),
     path('reports/enrolls_report', enrolls_report, name='enrolls_report'),
     path('reports/approved_student_report', approved_student_report, name='approved_student_report'),
+    path('reports/ranking_course_enrolls', ranking_course_enrolls_view, name='ranking_course_enrolls'),
 ]
 
 
@@ -154,4 +160,4 @@ urlpatterns = [
     path('enrrolment/autenticate', do_login, name="autenticate"),
     path('enrrolment/create_using_ajax', create_student_ajax, name="enroll_ajax"),
     path('enrrolment/student_is_active/<str:key>', student_isactive, name="student_isactive"),
-] + billurls + reports
+] + billurls + reports + router.urls
