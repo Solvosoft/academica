@@ -160,6 +160,8 @@ class ApprovedStudentReport(BaseChart, VerticalBarChart):
     def get_title(self):
         return {'display': True,
             'text': 'Total de estudiantes aprobados por curso'}
+
+
 @register_lookups(prefix="student_without_lessons_report", basename="student_without_lessons_report")
 class NeverAttendStudentReport(BaseChart, VerticalBarChart):
 
@@ -209,15 +211,15 @@ class OrganitationsPerCountryReport(BaseChart, VerticalBarChart):
     def get_organizations_per_country(self):
         #Need to fix
         queryset = Student.objects.all().order_by('organization').annotate(
-            organizationspr_country=Count('country', filter=Q(
-                    organization = """Organización"""))
+            organizationspr_country=Count('country__name', filter=Q(
+                   country__name = """name"""))
         ).values('organization', 'organizationspr_country')
 
         return queryset
 
 
     def get_labels(self):
-        return ['Cantidad de organizaciones por país']
+        return ['Organizaciones por país']
 
     def get_datasets(self):
         self.index=0

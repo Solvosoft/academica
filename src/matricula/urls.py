@@ -45,7 +45,7 @@ from .reports.issue_10 import consolidado_estadisticas_cursos
 from .reports.issue_6 import uncompleted_student_report
 from .reports.issue_7 import student_without_lessons_report
 from .reports.issue_5 import approved_student_report
-from .reports.issue4 import enrolls_report
+from .reports.issue_4 import enrolls_report
 
 reports = [
     path('reports/', list_reports, name='list_reports'),
