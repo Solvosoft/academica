@@ -1,5 +1,6 @@
 from django.db.models import Count, Q
 from django.db.models.functions import Upper
+from django.utils.translation import gettext as _
 from djgentelella.chartjs import VerticalBarChart
 from djgentelella.groute import register_lookups
 
@@ -209,14 +210,17 @@ class NeverAttendStudentReport(BaseChart, VerticalBarChart):
 @register_lookups(prefix="organitations_per_country", basename="organitations_per_country")
 class OrganitationsPerCountryReport(BaseChart, VerticalBarChart):
     def get_organizations_per_country(self):
-        #Need to fix
-        queryset = Student.objects.all().order_by('organization').annotate(
-            organizationspr_country=Count('country__name', filter=Q(
-                   country__name = """name"""))
-        ).values('organization', 'organizationspr_country')
+        queryset = Country.objects.filter(
+                   student__organization__isnull= False
+        ).exclude(student__organization=''
+        ).values('pk', 'student__organization')
 
+        country_dict = {}
+
+        for country in Country.objects.filter(student__organization__isnull= False):
+            country_dict['p_%d'%country.pk]=  Count('pk', filter=Q(pk=country.pk))
+            queryset.aggregate(**country_dict)
         return queryset
-
 
     def get_labels(self):
         return ['Organizaciones por país']
@@ -225,13 +229,13 @@ class OrganitationsPerCountryReport(BaseChart, VerticalBarChart):
         self.index=0
         dataset = []
         organizations = self.get_organizations_per_country()
-        for country in organizations:
+        for countries in organizations:
             dataset.append(
-                {'label': country['organization'],
+                {'label': countries['student__organization'],
                  'backgroundColor': self.get_color(),
                  'borderColor': self.get_color(),
                  'borderWidth': 1,
-                 'data': [country['organizationspr_country']]
+                 'data': [countries['pk']]
                  },
             )
         return dataset
