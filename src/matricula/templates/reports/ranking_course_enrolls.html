@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="row">
+<div class="row align-items-center">
     <div class="col-md-12">
         <table id="ranking_course_id" class="table">
         </table>
@@ -24,7 +24,6 @@
         createDataTable("#ranking_course_id", "{% url 'ranking_course_enrolls_api-list' %}", {
             'columns': [
                 {data: "name", name: "name", title: "Nombre", type: "string", visible: true},
-                {data: "content", name: "description", title: "Descripción", type: "string", visible: true},
                 {data: "enroll_count", name: "enroll_count", title: "Cantidad de matriculados", type: "string", visible: true}
             ] } )
     });

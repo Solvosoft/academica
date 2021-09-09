@@ -1,11 +1,11 @@
 from django.contrib.auth.decorators import permission_required
+from django.db.models import Count
 from django.shortcuts import render
-from django.urls import reverse
 from rest_framework import viewsets
 from rest_framework.response import Response
 
 from matricula.models import Course
-from matricula.serializers import CourseDataTableSerializer, CourseSerializerForTable
+from matricula.serializers import CourseDataTableSerializer
 
 
 @permission_required('matricula.view_reports')
@@ -14,14 +14,13 @@ def ranking_course_enrolls_view(request):
     return render(request, 'reports/ranking_course_enrolls.html', context=context)
 
 class RankingCourseEnrollsViewSet(viewsets.ModelViewSet):
-    queryset = Course.objects.all()
+    queryset = Course.objects.all().annotate(enroll_count=Count('group__enroll'))
     serializer_class = CourseDataTableSerializer
     ordering_fields = ['enroll_count']
     ordering = ['-enroll_count']
 
     def get_queryset(self):
-        #Hacer annotate para realizar un count de enroll_count
-        return Course.objects.all()
+        return Course.objects.all().annotate(enroll_count=Count('group__enroll')).order_by('-enroll_count')
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -32,5 +31,4 @@ class RankingCourseEnrollsViewSet(viewsets.ModelViewSet):
             'recordsFiltered': queryset.distinct().count()
         }
         return Response(self.get_serializer(response).data)
-
 
