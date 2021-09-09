@@ -130,8 +130,9 @@ class ListReportsTestCase(TestCase):
         data = response.json()['data']
         dataset = data['datasets']
         #  0 1 2 5 7 approved
-        #  4 8       uncomplete
-        #  3 6  9 reproved
+        #  4 8       withoutlessons
+        #  7         uncomplete
+        #  3 6  9    reproved
 
         #  C1 0 1 3 4 6 7 9        3 approved 3 reproved 1 uncomplete  1 withoutlessons
         #  C2 2  5  8              2 approved 0 reproved 0 uncomplete  1 withoutlessons

@@ -47,6 +47,7 @@ from .reports.issue_6 import uncompleted_student_report
 from .reports.issue_7 import student_without_lessons_report
 from .reports.issue_5 import approved_student_report
 from .reports_issue4.issue4 import enrolls_report
+from .reports.issue_8 import countries_in_courses_report
 
 router = DefaultRouter()
 router.register('ranking_course_enrolls_api', RankingCourseEnrollsViewSet, 'ranking_course_enrolls_api')
@@ -60,6 +61,7 @@ reports = [
     path('reports/enrolls_report', enrolls_report, name='enrolls_report'),
     path('reports/approved_student_report', approved_student_report, name='approved_student_report'),
     path('reports/ranking_course_enrolls', ranking_course_enrolls_view, name='ranking_course_enrolls'),
+    path('reports/countries_in_courses', countries_in_courses_report, name='countries_in_courses_report'),
 ]
 
 
