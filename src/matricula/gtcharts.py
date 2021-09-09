@@ -59,6 +59,7 @@ class ConsolidadoEstadisticasCurso(BaseChart, VerticalBarChart):
 
 @register_lookups(prefix="uncompleted_student", basename="uncompleted_student")
 class UncompletedStudentReport(BaseChart, VerticalBarChart):
+
     def get_courses(self):
         queryset = Course.objects.all().order_by('name').annotate(
             uncomplete=Count('group__enroll', filter=Q(
