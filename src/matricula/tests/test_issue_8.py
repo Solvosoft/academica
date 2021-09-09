@@ -8,16 +8,28 @@ from matricula.models import Category, Course, Period, Group, Enroll, Student
 from membership_core.models import SystemCurrency, Country
 
 
-class Uncompleted_Student_TestCase(TestCase):
+class Countries_In_Courses_TestCase(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.create_user(username='nombre1',
-                                              email='prueba1@gmail.com',
-                                              password='password1')
+
+        self.user1 = User.objects.create_user(username='nombre1',
+                                         email='prueba1@gmail.com',
+                                         password='password1')
+
+        self.user2 = User.objects.create_user(username='nombre2',
+                                         email='prueba2@gmail.com',
+                                         password='password2')
+
+        self.user3 = User.objects.create_user(username='nombre3',
+                                         email='prueba3@gmail.com',
+                                         password='password3')
+
         view_reports = Permission.objects.filter(codename="view_reports", content_type__app_label="matricula").first()
-        self.user.user_permissions.add(view_reports)
-        self.url = reverse('uncompleted_student-list')
+        self.user1.user_permissions.add(view_reports)
+        self.user2.user_permissions.add(view_reports)
+        self.user3.user_permissions.add(view_reports)
+        self.url = reverse('countries_in_courses-list')
         self.generate_scenarius()
 
 
@@ -96,29 +108,50 @@ class Uncompleted_Student_TestCase(TestCase):
 
         groups = [c1g1, c2g1, c3g1, c3g2]
 
-        country, created = Country.objects.get_or_create(name='Costa Rica', flag='cr', code='CRC')
-        student = Student.objects.create(
-            user=self.user,
+        country1 = Country.objects.create(name='Costa Rica', flag='cr', code='CR')
+        country2 = Country.objects.create(name='Afganistán', flag='af', code='AF')
+        country3 = Country.objects.create(name='Australia', flag='au', code='AU')
+
+        student1 = Student.objects.create(
+            user=self.user1,
             organization='org',
-            country=country,
+            country=country1,
             city='CR',
             phone_number='88888888',
             expired_at=now()
         )
 
-        enroll1 = self.get_enroll(groups[0], self.user, student)
-        enroll1.go_to_one_class = True
-        enroll1.course_status = "approved"
+        student2 = Student.objects.create(
+            user=self.user2,
+            organization='org',
+            country=country2,
+            city='AF',
+            phone_number='88888888',
+            expired_at=now()
+        )
 
-        enroll2 = self.get_enroll(groups[1], self.user, student)
+        student3 = Student.objects.create(
+            user=self.user3,
+            organization='org',
+            country=country3,
+            city='AU',
+            phone_number='88888888',
+            expired_at=now()
+        )
+
+        enroll1 = self.get_enroll(groups[0], self.user1, student1)
+        enroll1.go_to_one_class = False
+        enroll1.course_status = "uncomplete"
+
+        enroll2 = self.get_enroll(groups[1], self.user1, student1)
         enroll2.go_to_one_class = True
-        enroll2.course_status = "uncomplete"
+        enroll2.course_status = "reproved"
 
-        enroll3 = self.get_enroll(groups[2], self.user, student)
+        enroll3 = self.get_enroll(groups[2], self.user3, student3)
         enroll3.go_to_one_class = False
-        enroll3.course_status = "uncomplete"
+        enroll3.course_status = "approved"
 
-        enroll4 = self.get_enroll(groups[3], self.user, student)
+        enroll4 = self.get_enroll(groups[3], self.user2, student2)
         enroll4.go_to_one_class = True
         enroll4.course_status = "uncomplete"
 
@@ -134,12 +167,25 @@ class Uncompleted_Student_TestCase(TestCase):
         data = response.json()['data']
         dataset = data['datasets']
 
-        self.assertEqual(dataset[0]['data'], [0])
-        self.assertEqual(dataset[1]['data'], [1])
-        self.assertEqual(dataset[2]['data'], [1])
+        self.assertEqual(dataset[0]['data'], [1, 1, 2])
 
 
     def test_graph_type(self):
         response = self.client.get(self.url)
         data = response.json()
-        self.assertEqual(data['type'], 'bar')
+        self.assertEqual(data['type'], 'pie')
+
+
+    def test_graph_title(self):
+        response = self.client.get(self.url)
+
+        options = response.json()['options']
+        data = options['title']
+        self.assertEqual(data['text'], 'Reporte de países los cuales participan en los cursos')
+
+
+    def test_graph_labels(self):
+        response = self.client.get(self.url)
+
+        data = response.json()['data']
+        self.assertEqual(data['labels'], ['Australia', 'Costa Rica', 'Afganistán'])
