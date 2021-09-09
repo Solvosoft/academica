@@ -42,11 +42,12 @@ from .views.professor_views import AddUser, ProfessorsList, CreateProfessor, Edi
 from .views.report import GroupEstudentStatusList, list_reports
 from .views.students_views import qualify_students, update_enroll, update_enroll_status, GradeList
 from .reports.issue_11 import RankingCourseEnrollsViewSet, ranking_course_enrolls_view
+from .reports.issue_13 import organizations_per_country_report
 from .reports.issue_10 import consolidado_estadisticas_cursos
 from .reports.issue_6 import uncompleted_student_report
 from .reports.issue_7 import student_without_lessons_report
 from .reports.issue_5 import approved_student_report
-from .reports_issue4.issue4 import enrolls_report
+from .reports.issue_4 import enrolls_report
 from .reports.issue_8 import countries_in_courses_report
 
 router = DefaultRouter()
@@ -62,6 +63,7 @@ reports = [
     path('reports/approved_student_report', approved_student_report, name='approved_student_report'),
     path('reports/ranking_course_enrolls', ranking_course_enrolls_view, name='ranking_course_enrolls'),
     path('reports/countries_in_courses', countries_in_courses_report, name='countries_in_courses_report'),
+    path('reports/organizations_per_country_report', organizations_per_country_report, name='organizations_per_country_report'),
 ]
 
 

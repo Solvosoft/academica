@@ -97,10 +97,10 @@ class UncompletedStudentReport(BaseChart, VerticalBarChart):
 @register_lookups(prefix="totalestmatriculados", basename="totalestmatriculados")
 class EnrollStudentsReport(BaseChart, VerticalBarChart):
     def get_enrolls_completed(self):
-        queryset = Enroll.objects.all().order_by('student').annotate(
+        queryset = Course.objects.all().order_by('name').annotate(
             enrrols_count=Count('group__enroll', filter=Q(
                     group__enroll__enroll_finished = True))
-        ).values('student', 'enrrols_count')
+        ).values('name', 'enrrols_count')
 
         return queryset
 
@@ -114,7 +114,7 @@ class EnrollStudentsReport(BaseChart, VerticalBarChart):
         students = self.get_enrolls_completed()
         for student in students:
             dataset.append(
-                {'label': student['student'],
+                {'label': student['name'],
                  'backgroundColor': self.get_color(),
                  'borderColor': self.get_color(),
                  'borderWidth': 1,
@@ -248,4 +248,44 @@ class CountriesInCoursesReport(BaseChart, PieChart):
     def get_title(self):
         return {'display': True,
                 'text': 'Reporte de países los cuales participan en los cursos'
+                }
+
+@register_lookups(prefix="organitations_per_country", basename="organitations_per_country")
+class OrganitationsPerCountryReport(BaseChart, VerticalBarChart):
+    def get_organizations_per_country(self):
+        qp = Country.objects.filter(
+                   student__organization__isnull= False
+        ).exclude(student__organization=''
+        ).values('pk', 'student__organization')
+
+        country_dict = {}
+        
+        for country in Country.objects.filter(student__organization__isnull= False):
+            country_dict[country.name]=  Count('pk', filter=Q(pk=country.pk))
+
+        queryset = qp.aggregate(**country_dict)
+        return queryset
+
+    def get_labels(self):
+        return ['Organizaciones por país']
+
+    def get_datasets(self):
+        self.index=0
+        dataset = []
+        organizations = self.get_organizations_per_country()
+        for countries in organizations:
+            dataset.append(
+                {'label': countries,
+                 'backgroundColor': self.get_color(),
+                 'borderColor': self.get_color(),
+                 'borderWidth': 1,
+                 'data': [organizations[countries]]
+                 },
+            )
+        return dataset
+
+
+    def get_title(self):
+        return {'display': True,
+                'text': 'Reporte de organizaciones por país'
                 }
