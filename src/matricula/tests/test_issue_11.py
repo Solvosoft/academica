@@ -13,7 +13,7 @@ class RankingCourseEnrollsTestCase(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.url = reverse('student_without_lessons_report-list')
+        self.url = reverse('ranking_course_enrolls_api-list')
         self.generate_scenarios()
 
     def get_enroll(self, group):
@@ -102,17 +102,16 @@ class RankingCourseEnrollsTestCase(TestCase):
 
         # c1g1: 5 , c2g1: 4, c3g1: 3
 
-    def test_graph_data(self):
+    def test_dataTable_order(self):
         response = self.client.get(self.url)
 
         data = response.json()['data']
-        dataset = data['datasets']
 
-        self.assertEqual(dataset[0]['data'], [4])
-        self.assertEqual(dataset[1]['data'], [3])
-        self.assertEqual(dataset[2]['data'], [3])
+        self.assertEqual(data[0]['enroll_count'], 5)
+        self.assertEqual(data[1]['enroll_count'], 4)
+        self.assertEqual(data[2]['enroll_count'], 3)
 
-    def test_graph_type(self):
+    def test_total_records(self):
         response = self.client.get(self.url)
         data = response.json()
-        self.assertEqual(data['type'], 'bar')
+        self.assertEqual(data['recordsTotal'], 3)
