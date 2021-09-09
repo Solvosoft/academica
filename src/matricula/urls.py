@@ -46,6 +46,7 @@ from .reports.issue_6 import uncompleted_student_report
 from .reports.issue_7 import student_without_lessons_report
 from .reports.issue_5 import approved_student_report
 from .reports.issue_4 import enrolls_report
+from .reports.issue_8 import countries_in_courses_report
 
 reports = [
     path('reports/', list_reports, name='list_reports'),
@@ -55,6 +56,7 @@ reports = [
     path('reports/uncompleted_student_report', uncompleted_student_report, name='uncompleted_student_report'),
     path('reports/enrolls_report', enrolls_report, name='enrolls_report'),
     path('reports/approved_student_report', approved_student_report, name='approved_student_report'),
+    path('reports/countries_in_courses', countries_in_courses_report, name='countries_in_courses_report'),
     path('reports/organizations_per_country_report', organizations_per_country_report, name='organizations_per_country_report'),
 ]
 

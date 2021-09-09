@@ -1,7 +1,6 @@
 from django.db.models import Count, Q
 from django.db.models.functions import Upper
-from django.utils.translation import gettext as _
-from djgentelella.chartjs import VerticalBarChart
+from djgentelella.chartjs import VerticalBarChart, PieChart
 from djgentelella.groute import register_lookups
 
 from matricula.models import Course, Enroll, Student
@@ -92,6 +91,7 @@ class UncompletedStudentReport(BaseChart, VerticalBarChart):
         return {'display': True,
                 'text': 'Reporte de estudiantes que desertaron por curso'
                 }
+
 
 @register_lookups(prefix="totalestmatriculados", basename="totalestmatriculados")
 class EnrollStudentsReport(BaseChart, VerticalBarChart):
@@ -206,6 +206,48 @@ class NeverAttendStudentReport(BaseChart, VerticalBarChart):
                 'text': 'Reporte de estudiantes que nunca ingresaron a los cursos'
                 }
 
+
+@register_lookups(prefix="countries_in_courses", basename="countries_in_courses")
+class CountriesInCoursesReport(BaseChart, PieChart):
+
+    def __init__(self, *args, **kwargs):
+        self.countries = Student.objects.filter(enroll__enroll_activate=True).annotate(
+            num_appearances=Count('country_id')
+        ).values('country_id__name', 'num_appearances')
+
+        super().__init__(*args, **kwargs)
+
+    def get_labels(self):
+        labels = []
+        for country in self.countries:
+            labels.append(
+                country['country_id__name'],
+            )
+
+        return labels
+
+    def get_datasets(self):
+        self.index=0
+        dataset = []
+        country_data = []
+        colors = []
+        for country in self.countries:
+            country_data.append(country['num_appearances'])
+            colors.append(self.get_color())
+
+        dataset.append(
+            {'label': 'Country',
+             'data': country_data,
+             'backgroundColor': colors,
+             },
+        )
+
+        return dataset
+
+    def get_title(self):
+        return {'display': True,
+                'text': 'Reporte de países los cuales participan en los cursos'
+                }
 
 @register_lookups(prefix="organitations_per_country", basename="organitations_per_country")
 class OrganitationsPerCountryReport(BaseChart, VerticalBarChart):
