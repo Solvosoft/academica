@@ -293,6 +293,7 @@ class OrganitationsPerCountryReport(BaseChart, VerticalBarChart):
             )
         return dataset
 
+
     def get_title(self):
         return {'display': True,
                 'text': 'Reporte de organizaciones por país'
