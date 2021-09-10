@@ -15,8 +15,8 @@
         <a href="{% url 'countries_in_courses_report' %}" class="list-group-item list-group-item-action">Países de los cuales participan en los cursos</a>
         <a href="#" class="list-group-item list-group-item-action">Participantes por organización</a>
         <a href="{% url 'consolidado_estadisticas_cursos' %}" class="list-group-item list-group-item-action">Estadísticas por curso</a>
-        <a href="#" class="list-group-item list-group-item-action">Ranking de cursos (personas matriculadas)</a>
+        <a href="{% url 'ranking_course_enrolls' %}" class="list-group-item list-group-item-action">Ranking de cursos (personas matriculadas)</a>
         <a href="#" class="list-group-item list-group-item-action">Ranking de cursos (personas aprobadas)</a>
-        <a href="#" class="list-group-item list-group-item-action">Cantidad de organizaciones por país</a>
+        <a href="{% url 'organizations_per_country_report' %}" class="list-group-item list-group-item-action">Cantidad de organizaciones por país</a>
     </div>
 {% endblock %}
