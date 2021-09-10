@@ -3,7 +3,7 @@ from django.db.models.functions import Upper
 from djgentelella.chartjs import VerticalBarChart, PieChart
 from djgentelella.groute import register_lookups
 
-from matricula.models import Course, Enroll, Student
+from matricula.models import Course, Enroll, Student, Period
 from membership_core.gtcharts import BaseChart
 from membership_core.models import Country
 
@@ -71,7 +71,7 @@ class UncompletedStudentReport(BaseChart, VerticalBarChart):
         return queryset
 
     def get_labels(self):
-        return ['Desertaron']
+        return ['Estudiantes que desertaron cursos']
 
     def get_datasets(self):
         self.index=0
@@ -87,6 +87,15 @@ class UncompletedStudentReport(BaseChart, VerticalBarChart):
                  },
             )
         return dataset
+
+    def get_scales(self):
+        return {'yAxes': [{
+                    'ticks': {
+                        'suggestedMin': 0,  # minimum will be 0, unless there is a lower value.
+                        'beginAtZero': True  # minimum value will be 0.
+                    }
+            }]
+        }
 
     def get_title(self):
         return {'display': True,
@@ -289,3 +298,114 @@ class OrganitationsPerCountryReport(BaseChart, VerticalBarChart):
         return {'display': True,
                 'text': 'Reporte de organizaciones por país'
                 }
+
+
+@register_lookups(prefix="total_courses_by_year", basename="total_courses_by_year")
+class TotalCoursesByYear(BaseChart, VerticalBarChart):
+    def get_years(self):
+        queryset = Period.objects.filter(group__enroll__enroll_activate=True).order_by('start_date').values('start_date')
+
+        years = {}
+        for date in queryset:
+            val = date['start_date'].strftime('%Y')
+            if val in years:
+                years[val] += 1
+            else:
+                years[val] = 1
+
+        return years
+
+    def get_labels(self):
+        return ['Año correspondiente al curso']
+
+    def get_datasets(self):
+        self.index=0
+        dataset = []
+        years = self.get_years()
+        for year, val in years.items():
+            dataset.append(
+                {'label': year,
+                 'backgroundColor': self.get_color(),
+                 'borderColor': self.get_color(),
+                 'borderWidth': 1,
+                 'data': [val]
+                 },
+            )
+        return dataset
+
+    def get_scales(self):
+        return {'yAxes': [{
+                'ticks': {
+                    'suggestedMin': 0,  # minimum will be 0, unless there is a lower value.
+                    'beginAtZero': True  # minimum value will be 0.
+                }
+            }]
+        }
+
+    def get_title(self):
+        return {'display': True,
+                'text': 'Reporte total de cursos por año'
+                }
+
+
+@register_lookups(prefix="total_courses_by_month", basename="total_courses_by_month")
+class TotalCoursesByMonth(BaseChart, VerticalBarChart):
+    def get_months(self):
+        queryset = Period.objects.filter(group__enroll__enroll_activate=True).values('start_date')
+
+        months = {}
+        for date in queryset:
+            val = date['start_date'].strftime('%m')
+            if val in months:
+                months[val] += 1
+            else:
+                months[val] = 1
+
+        return months
+
+    def get_labels(self):
+        return ['Mes correspondiente al curso']
+
+    def get_datasets(self):
+        self.index = 0
+        dataset = []
+        dic_months = {
+            '01': 'Enero',
+            '02': 'Febrero',
+            '03': 'Marzo',
+            '04': 'Abril',
+            '05': 'Mayo',
+            '06': 'Junio',
+            '07': 'Julio',
+            '08': 'Agosto',
+            '09': 'Septiembre',
+            '10': 'Octubre',
+            '11': 'Noviembre',
+            '12': 'Diciembre',
+        }
+        months = self.get_months()
+        for month, val in months.items():
+            dataset.append(
+                {
+                    'label': dic_months[month],
+                    'backgroundColor': self.get_color(),
+                    'borderColor': self.get_color(),
+                    'borderWidth': 1,
+                    'data': [val]
+                },
+            )
+        return dataset
+
+    def get_scales(self):
+        return {'yAxes': [{
+                    'ticks': {
+                        'suggestedMin': 0,  # minimum will be 0, unless there is a lower value.
+                        'beginAtZero': True  # minimum value will be 0.
+                    }
+            }]
+        }
+
+    def get_title(self):
+        return {'display': True,
+                'text': 'Reporte total de cursos por mes'
+        }
