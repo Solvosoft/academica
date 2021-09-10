@@ -46,6 +46,7 @@ from .reports.issue_7 import student_without_lessons_report
 from .reports.issue_5 import approved_student_report
 from .reports_issue4.issue4 import enrolls_report
 from .reports.issue_8 import countries_in_courses_report
+from .reports.issue_1 import total_courses_by_year_report, total_courses_by_month_report
 
 reports = [
     path('reports/', list_reports, name='list_reports'),
@@ -56,6 +57,8 @@ reports = [
     path('reports/enrolls_report', enrolls_report, name='enrolls_report'),
     path('reports/approved_student_report', approved_student_report, name='approved_student_report'),
     path('reports/countries_in_courses', countries_in_courses_report, name='countries_in_courses_report'),
+    path('reports/courses_by_year', total_courses_by_year_report, name='total_courses_by_year_report'),
+    path('reports/courses_by_month', total_courses_by_month_report, name='total_courses_by_month_report'),
 ]
 
 

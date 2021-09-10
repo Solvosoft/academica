@@ -167,7 +167,7 @@ class Countries_In_Courses_TestCase(TestCase):
         data = response.json()['data']
         dataset = data['datasets']
 
-        self.assertEqual(dataset[0]['data'], [1, 1, 2])
+        self.assertEqual(dataset[0]['data'], [2, 1, 1])
 
 
     def test_graph_type(self):
@@ -188,4 +188,4 @@ class Countries_In_Courses_TestCase(TestCase):
         response = self.client.get(self.url)
 
         data = response.json()['data']
-        self.assertEqual(data['labels'], ['Australia', 'Costa Rica', 'Afganistán'])
+        self.assertEqual(data['labels'], ['Costa Rica', 'Australia', 'Afganistán'])
