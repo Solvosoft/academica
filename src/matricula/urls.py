@@ -44,6 +44,7 @@ from .reports.issue_10 import consolidado_estadisticas_cursos
 from .reports.issue_6 import uncompleted_student_report
 from .reports.issue_7 import student_without_lessons_report
 from .reports.issue_5 import approved_student_report
+from .reports.issue_9 import student_by_organization_report
 from .reports_issue4.issue4 import enrolls_report
 
 reports = [
@@ -54,6 +55,7 @@ reports = [
     path('reports/uncompleted_student_report', uncompleted_student_report, name='uncompleted_student_report'),
     path('reports/enrolls_report', enrolls_report, name='enrolls_report'),
     path('reports/approved_student_report', approved_student_report, name='approved_student_report'),
+    path('reports/student_by_organization_report', student_by_organization_report, name='student_by_organization_report'),
 ]
 
 

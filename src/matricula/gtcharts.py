@@ -1,9 +1,11 @@
-from django.db.models import Count, Q
+import json
+
+from django.db.models import Count, Q, Func, F, Exists, Sum
 from django.db.models.functions import Upper
 from djgentelella.chartjs import VerticalBarChart
 from djgentelella.groute import register_lookups
 
-from matricula.models import Course, Enroll
+from matricula.models import Course, Enroll, Student
 from membership_core.gtcharts import BaseChart
 
 
@@ -91,6 +93,7 @@ class UncompletedStudentReport(BaseChart, VerticalBarChart):
                 'text': 'Reporte de estudiantes que desertaron por curso'
                 }
 
+
 @register_lookups(prefix="totalestmatriculados", basename="totalestmatriculados")
 class EnrollStudentsReport(BaseChart, VerticalBarChart):
     def get_enrolls_completed(self):
@@ -159,6 +162,8 @@ class ApprovedStudentReport(BaseChart, VerticalBarChart):
     def get_title(self):
         return {'display': True,
             'text': 'Total de estudiantes aprobados por curso'}
+
+
 @register_lookups(prefix="student_without_lessons_report", basename="student_without_lessons_report")
 class NeverAttendStudentReport(BaseChart, VerticalBarChart):
 
@@ -201,3 +206,90 @@ class NeverAttendStudentReport(BaseChart, VerticalBarChart):
         return {'display': True,
                 'text': 'Reporte de estudiantes que nunca ingresaron a los cursos'
                 }
+
+
+@register_lookups(prefix="student_by_org_report", basename="student_by_org_report")
+class StudentByOrganizationReport(BaseChart, VerticalBarChart):
+
+    def get_organizations(self):
+
+        orgs = Student.objects.filter(enroll__enroll_finished=True, organization__isnull=False).exclude(organization='').annotate(
+            org_lower=Func(F('organization'), function='LOWER')).values('org_lower').distinct()
+        self.organizations = []
+        str = '"value"'
+        for item in orgs:
+            if isinstance(item, dict):
+                if 'org_lower' in item:
+                    if str in item['org_lower']:
+                        temp_org = list(item['org_lower'])
+                        temp = temp_org[10:]
+                        temp2 = temp[:-2]
+                        org_str = ''.join(temp2)
+                        self.organizations.append(org_str)
+                    else:
+                        self.organizations.append(item['org_lower'])
+                else:
+                    self.organizations.append(item)
+            else:
+                self.organizations.append(item)
+
+        self.organizations = set(self.organizations)
+        return self.organizations
+
+    def get_students(self):
+
+        '''org_dict = {}
+        queryset = Student.objects.filter(enroll__enroll_finished=True, organization__isnull=False).exclude(organization='').annotate(
+            org_lower=Func(F('organization'), function='LOWER')).values('org_lower').annotate(
+            num=Count('org_lower')).values('org_lower', 'num')
+
+        for value in queryset:
+            if value['org_lower'] in org_dict:
+
+                org_dict[value['org_lower']] += 1
+            else:
+                org_dict[value['org_lower']] = 1 '''
+
+        orga_dict = {}
+        for values in self.get_organizations():
+            temp = Student.objects.filter(enroll__enroll_finished=True).filter(organization__iexact=values).count()
+            if temp == 0:
+                temp = Student.objects.filter(enroll__enroll_finished=True).filter(organization__icontains=values).count()
+            orga_dict[values] = temp
+
+        return orga_dict
+
+    def get_labels(self):
+
+        return ['Cantidad de estudiantes por organización']
+
+    def get_datasets(self):
+        self.index = 0
+        dataset = []
+
+        students = self.get_students()
+        keys_list = list(students.keys())
+        for stud, val in students.items():
+            dataset.append(
+                {'label': stud,
+                 'backgroundColor': self.get_color(),
+                 'borderColor': self.get_color(),
+                 'borderWidth': 1,
+                 'data': [val]
+                 },
+        )
+        return dataset
+
+    def get_title(self):
+        return {'display': True,
+            'text': 'Total de estudiantes matriculados por organización'}
+
+    def get_scales(self):
+        return {'yAxes': [{
+            'ticks': {
+                'suggestedMin': 0,  # minimum will be 0, unless there is a lower value.
+                'beginAtZero': True  # minimum value will be 0.
+            }
+        }]
+        }
+
