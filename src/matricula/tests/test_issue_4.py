@@ -102,10 +102,8 @@ class EnrollsReportTestCase(TestCase):
         #  3 == (eif004,  enrolledstudents = True) 
         #  5 == (eif408,  enrolledstudents = False)
         
-        #self.assertListEqual(dataset[0]['data'], [3, 5])
-        #self.assertListEqual(dataset[1]['data'], [2, 4])
-        self.assertListEqual(dataset[3]['data'], 
-        dataset[5]['data'])
+        self.assertListEqual(dataset[0]['data'], [12])
+        self.assertListEqual(dataset[1]['data'], [12])
 
     def test_enrolls_student_graph_type(self):
         '''
