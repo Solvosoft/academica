@@ -127,14 +127,10 @@ class OrganizationsperCountryReportTestCase(TestCase):
         data = response.json()['data']
         dataset = data['datasets']
 
-        #self.assertEqual(dataset[0]['data'], [0])
-        #self.assertEqual(dataset[1]['data'], [1])
-        #self.assertEqual(dataset[2]['data'], [3])
+        
 
-        self.assertListEqual(dataset[0]['data'], [0])
-        self.assertListEqual(dataset[1]['data'], [1])
-        self.assertListEqual(dataset[2]['data'], [3])
-        self.assertListEqual(dataset[3]['data'], [4])
+        self.assertListEqual(dataset[0]['data'], [1])
+        self.assertListEqual(dataset[1]['data'], [3])
         
 
     def test_organizations_per_country_graph_type(self):
