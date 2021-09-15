@@ -5,7 +5,7 @@ from django.db.models.functions import Upper
 from djgentelella.chartjs import VerticalBarChart, PieChart
 from djgentelella.groute import register_lookups
 
-from matricula.models import Course, Enroll, Student, Period
+from matricula.models import Course, Enroll, Student, Period, Group
 from membership_core.gtcharts import BaseChart
 from membership_core.models import Country
 
@@ -225,7 +225,7 @@ class CountriesInCoursesReport(BaseChart, PieChart):
     def __init__(self, *args, **kwargs):
         self.countries = Student.objects.filter(enroll__enroll_activate=True).annotate(
             num_appearances=Count('country_id')
-        ).values('country_id__name', 'num_appearances')
+        ).order_by('country_id__name').values('country_id__name', 'num_appearances')
 
         super().__init__(*args, **kwargs)
 
@@ -305,17 +305,11 @@ class OrganitationsPerCountryReport(BaseChart, VerticalBarChart):
 @register_lookups(prefix="total_courses_by_year", basename="total_courses_by_year")
 class TotalCoursesByYear(BaseChart, VerticalBarChart):
     def get_years(self):
-        queryset = Period.objects.filter(group__enroll__enroll_activate=True).order_by('start_date').values('start_date')
+        queryset = Group.objects.filter(enroll__enroll_finished=True).values('enroll_finish__year').annotate(
+            num_appearances=Count('enroll_finish__year')
+        ).order_by('enroll_finish__year').values('enroll_finish__year', 'num_appearances')
 
-        years = {}
-        for date in queryset:
-            val = date['start_date'].strftime('%Y')
-            if val in years:
-                years[val] += 1
-            else:
-                years[val] = 1
-
-        return years
+        return queryset
 
     def get_labels(self):
         return ['Año correspondiente al curso']
@@ -324,13 +318,13 @@ class TotalCoursesByYear(BaseChart, VerticalBarChart):
         self.index=0
         dataset = []
         years = self.get_years()
-        for year, val in years.items():
+        for year in years:
             dataset.append(
-                {'label': year,
+                {'label': year['enroll_finish__year'],
                  'backgroundColor': self.get_color(),
                  'borderColor': self.get_color(),
                  'borderWidth': 1,
-                 'data': [val]
+                 'data': [year['num_appearances']]
                  },
             )
         return dataset
@@ -353,17 +347,11 @@ class TotalCoursesByYear(BaseChart, VerticalBarChart):
 @register_lookups(prefix="total_courses_by_month", basename="total_courses_by_month")
 class TotalCoursesByMonth(BaseChart, VerticalBarChart):
     def get_months(self):
-        queryset = Period.objects.filter(group__enroll__enroll_activate=True).values('start_date')
+        queryset = Group.objects.filter(enroll__enroll_finished=True).values('enroll_finish__month').annotate(
+            num_appearances=Count('enroll_finish__month')
+        ).order_by('enroll_finish__month').values('enroll_finish__month', 'num_appearances')
 
-        months = {}
-        for date in queryset:
-            val = date['start_date'].strftime('%m')
-            if val in months:
-                months[val] += 1
-            else:
-                months[val] = 1
-
-        return months
+        return queryset
 
     def get_labels(self):
         return ['Mes correspondiente al curso']
@@ -372,28 +360,28 @@ class TotalCoursesByMonth(BaseChart, VerticalBarChart):
         self.index = 0
         dataset = []
         dic_months = {
-            '01': 'Enero',
-            '02': 'Febrero',
-            '03': 'Marzo',
-            '04': 'Abril',
-            '05': 'Mayo',
-            '06': 'Junio',
-            '07': 'Julio',
-            '08': 'Agosto',
-            '09': 'Septiembre',
-            '10': 'Octubre',
-            '11': 'Noviembre',
-            '12': 'Diciembre',
+            1: 'Enero',
+            2: 'Febrero',
+            3: 'Marzo',
+            4: 'Abril',
+            5: 'Mayo',
+            6: 'Junio',
+            7: 'Julio',
+            8: 'Agosto',
+            9: 'Septiembre',
+            10: 'Octubre',
+            11: 'Noviembre',
+            12: 'Diciembre',
         }
         months = self.get_months()
-        for month, val in months.items():
+        for month in months:
             dataset.append(
                 {
-                    'label': dic_months[month],
+                    'label': dic_months[month['enroll_finish__month']],
                     'backgroundColor': self.get_color(),
                     'borderColor': self.get_color(),
                     'borderWidth': 1,
-                    'data': [val]
+                    'data': [month['num_appearances']]
                 },
             )
         return dataset
@@ -411,7 +399,6 @@ class TotalCoursesByMonth(BaseChart, VerticalBarChart):
         return {'display': True,
                 'text': 'Reporte total de cursos por mes'
         }
-
 
 @register_lookups(prefix="student_by_org_report", basename="student_by_org_report")
 class StudentByOrganizationReport(BaseChart, VerticalBarChart):
