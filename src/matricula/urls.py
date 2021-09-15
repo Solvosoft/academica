@@ -42,6 +42,7 @@ from .views.professor_views import AddUser, ProfessorsList, CreateProfessor, Edi
 from .views.report import GroupEstudentStatusList, list_reports
 from .views.students_views import qualify_students, update_enroll, update_enroll_status, GradeList
 from .reports.issue_11 import RankingCourseEnrollsViewSet, ranking_course_enrolls_view
+from .reports.issue_12 import RankingCourseApprovedViewSet, ranking_course_approved_view
 from .reports.issue_13 import organizations_per_country_report
 from .reports.issue_10 import consolidado_estadisticas_cursos
 from .reports.issue_6 import uncompleted_student_report
@@ -53,6 +54,7 @@ from .reports.issue_1 import total_courses_by_year_report, total_courses_by_mont
 
 router = DefaultRouter()
 router.register('ranking_course_enrolls_api', RankingCourseEnrollsViewSet, 'ranking_course_enrolls_api')
+router.register('ranking_course_approved_api', RankingCourseApprovedViewSet, 'ranking_course_approved_api')
 
 reports = [
     path('reports/', list_reports, name='list_reports'),
@@ -63,6 +65,7 @@ reports = [
     path('reports/enrolls_report', enrolls_report, name='enrolls_report'),
     path('reports/approved_student_report', approved_student_report, name='approved_student_report'),
     path('reports/ranking_course_enrolls', ranking_course_enrolls_view, name='ranking_course_enrolls'),
+    path('reports/ranking_course_approved', ranking_course_approved_view, name='ranking_course_approved'),
     path('reports/countries_in_courses', countries_in_courses_report, name='countries_in_courses_report'),
     path('reports/courses_by_year', total_courses_by_year_report, name='total_courses_by_year_report'),
     path('reports/courses_by_month', total_courses_by_month_report, name='total_courses_by_month_report'),
