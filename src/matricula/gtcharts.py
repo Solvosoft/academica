@@ -295,6 +295,14 @@ class OrganitationsPerCountryReport(BaseChart, VerticalBarChart):
             )
         return dataset
 
+    def get_scales(self):
+        return {'yAxes': [{
+                    'ticks': {
+                        'suggestedMin': 0, 
+                        'beginAtZero': True 
+                    }
+            }]
+        }
 
     def get_title(self):
         return {'display': True,
