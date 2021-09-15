@@ -48,7 +48,6 @@ from .reports.issue_6 import uncompleted_student_report
 from .reports.issue_7 import student_without_lessons_report
 from .reports.issue_5 import approved_student_report
 from .reports.issue_9 import student_by_organization_report
-from .reports_issue4.issue4 import enrolls_report
 from .reports.issue_4 import enrolls_report
 from .reports.issue_8 import countries_in_courses_report
 from .reports.issue_1 import total_courses_by_year_report, total_courses_by_month_report
