@@ -51,9 +51,11 @@ from .reports.issue_9 import student_by_organization_report
 from .reports.issue_4 import enrolls_report
 from .reports.issue_8 import countries_in_courses_report
 from .reports.issue_1 import total_courses_by_year_report, total_courses_by_month_report
+from .reports.issue_2 import CourseTopicsViewSet, course_topics_report
 
 router = DefaultRouter()
 router.register('ranking_course_enrolls_api', RankingCourseEnrollsViewSet, 'ranking_course_enrolls_api')
+router.register('course_topics_api', CourseTopicsViewSet, 'course_topics_api')
 
 reports = [
     path('reports/', list_reports, name='list_reports'),
@@ -69,6 +71,7 @@ reports = [
     path('reports/courses_by_year', total_courses_by_year_report, name='total_courses_by_year_report'),
     path('reports/courses_by_month', total_courses_by_month_report, name='total_courses_by_month_report'),
     path('reports/organizations_per_country_report', organizations_per_country_report, name='organizations_per_country_report'),
+    path('reports/course_topics_report', course_topics_report, name='course_topics_report'),
 ]
 
 
