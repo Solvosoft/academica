@@ -26,7 +26,6 @@ class ApprovedCourseSerializerForTable(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = ['name', 'approved_count']
-        ordering = ['name', 'approved_count']
 
 
 class ApprovedCourseDataTableSerializer(serializers.Serializer):
