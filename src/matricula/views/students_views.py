@@ -51,8 +51,10 @@ def update_enroll_status(request, pk, status):
         enroll_list = json.loads(request.body)
 
         for enroll in enroll_list:
+            if not enroll:
+                continue
             items = Enroll.objects.filter(pk=int(enroll['pk']), group__pk=pk)
-            if status == "reproved":
+            if status in ["reproved", 'uncompleted', 'never_attend']:
                 items.update(pdf_certificate=None)
             items.update(course_status=status)
 

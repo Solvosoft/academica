@@ -69,11 +69,11 @@ class UncompletedStudentReport(BaseChart, VerticalBarChart):
                     group__enroll__enroll_finished = True,
                     group__enroll__go_to_one_class=True,
                     group__enroll__course_status= """uncomplete"""))
-        ).values('name','uncomplete')
+        )
         period = self.request.GET.get('period', None)
         if period:
             queryset = queryset.filter(group__period=period)
-        return queryset
+        return queryset.values('name','uncomplete')
 
     def get_labels(self):
         return ['Estudiantes que desertaron cursos']

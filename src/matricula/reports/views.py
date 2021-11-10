@@ -72,7 +72,7 @@ def uncompleted_student_report(request):
         })
     context = {
          'periods': period_list,
-        'title': ''
+         'title': 'Estudiantes que desertaron cursos'
     }
     return render(request, 'reports/standard_period_report.html', context=context)
 

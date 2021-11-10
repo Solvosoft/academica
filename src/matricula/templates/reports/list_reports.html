@@ -2,6 +2,12 @@
 {% load static utils membership_code i18n %}
 
 {% block content %}
+<style>
+    .list-group i{
+        font-size: 1.7em;
+        margin-right: 1em;
+    }
+</style>
 <div class="clearfix"></div>
 <br><br>
 <div class="col-md-10 col-md-offset-1">
@@ -11,13 +17,13 @@
         </div>
 
         <div class="x_content">
+
+            <div class="col-md-6 ">
             <div class="list-group">
                 <a href="{% url 'total_courses_by_year_report' %}" class="list-group-item list-group-item-action">
                     <i class="fa fa-bar-chart"></i>Total de cursos por año</a>
                 <a href="{% url 'total_courses_by_month_report' %}" class="list-group-item list-group-item-action">
                     <i class="fa fa-bar-chart"></i>Total de cursos por mes</a>
-                <a href="{% url 'course_topics_report' %}" class="list-group-item list-group-item-action">
-                    <i class="fa fa-table"></i>Temas de los cursos que se han impartido en la UPO en total, por año y por mes.</a>
                 <a href="{% url 'enrolls_report' %}" class="list-group-item list-group-item-action">
                     <i class="fa fa-bar-chart"></i>Total de personas matriculadas</a>
                 <a href="{% url 'approved_student_report' %}" class="list-group-item list-group-item-action">
@@ -26,19 +32,25 @@
                     <i class="fa fa-bar-chart"></i>Total de personas que desertaron</a>
                 <a href="{% url 'student_without_lessons_report' %}" class="list-group-item list-group-item-action">
                     <i class="fa fa-bar-chart"></i>Personas que nunca ingresaron a los cursos</a>
-                <a href="{% url 'student_by_organization_report' %}" class="list-group-item list-group-item-action">
-                    Participantes por organización</a>
-                <a href="{% url 'countries_in_courses_report' %}" class="list-group-item list-group-item-action">
-                    <i class="fa fa-pie-chart"></i>Países de los cuales participan en los cursos</a>
                 <a href="{% url 'consolidado_estadisticas_cursos' %}" class="list-group-item list-group-item-action">
                     <i class="fa fa-bar-chart"></i>Estadísticas por curso</a>
+                <a href="{% url 'organizations_per_country_report' %}" class="list-group-item list-group-item-action">
+                   <i class="fa fa-bar-chart "></i>Cantidad de organizaciones por país</a>
+
+            </div>
+            </div>
+            <div class="col-md-6 "><div class="list-group">
+                 <a href="{% url 'course_topics_report' %}" class="list-group-item list-group-item-action">
+                    <i class="fa fa-table"></i>Temas de los cursos que se han impartido en la UPO en total, por año y por mes.</a>
                 <a href="{% url 'ranking_course_enrolls' %}" class="list-group-item list-group-item-action">
                     <i class="fa fa-table"></i>Ranking de cursos (personas matriculadas)</a>
                 <a href="{% url 'ranking_course_approved' %}" class="list-group-item list-group-item-action">
                     <i class="fa fa-table"></i>Ranking de cursos (personas aprobadas)</a>
-                <a href="{% url 'organizations_per_country_report' %}" class="list-group-item list-group-item-action">
-                   <i class="fa fa-bar-chart 2x"></i>Cantidad de organizaciones por país</a>
-            </div>
+                <a href="{% url 'student_by_organization_report' %}" class="list-group-item list-group-item-action">
+                    <i class="fa fa-table"></i>Participantes por organización</a>
+                <a href="{% url 'countries_in_courses_report' %}" class="list-group-item list-group-item-action">
+                    <i class="fa fa-pie-chart"></i>Países de los cuales participan en los cursos</a>
+            </div></div>
         </div>
     </div>
 </div>
