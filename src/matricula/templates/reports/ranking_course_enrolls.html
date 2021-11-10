@@ -1,0 +1,40 @@
+{% extends 'gentelella/base.html'%}
+{% load static i18n %}
+{% load gtsettings %}
+
+{% block pre_head %}
+    {% define_true "use_datatables" %}
+{% endblock %}
+
+{% block content %}
+<div class="clearfix"></div>
+<br><br>
+<div class="col-md-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h3 class="green">{{title}}</h3>
+        </div>
+
+        <div class="x_content">
+            <table id="ranking_course_id" class="table"> </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+{{block.super}}
+
+<script>
+    $(document).ready(function () {
+        createDataTable("#ranking_course_id", "{% url 'ranking_course_enrolls_api-list' %}", {
+            'columns': [
+                {data: "name", name: "name", title: "Nombre", type: "string", visible: true},
+                {data: "enroll_count", name: "enroll_count", title: "Cantidad de matriculados", type: "string", visible: true}
+            ] } )
+    });
+
+</script>
+
+{% endblock %}

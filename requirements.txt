@@ -8,10 +8,10 @@ xhtml2pdf
 fake
 python-dateutil
 django-markitup==4.0.0
+django-filter==2.4.0
 markdown==3.2.2
 psycopg2-binary
-djgentelella==0.1.8
-djangorestframework==3.11.0
+djgentelella==0.2.8
 django-ckeditor==6.0.0
 django-paypal==1.0.0
 django-simple-math-captcha==1.0.7

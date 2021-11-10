@@ -7,6 +7,7 @@ Created on 7/4/2015
 
 from django.conf.urls import url
 from django.urls import path
+from rest_framework.routers import DefaultRouter
 
 from matricula.views.Auth import ProfessorProfileView, recover_password, \
     mail_recover_pass, authenticate, create_user, login_user, \
@@ -15,7 +16,7 @@ from matricula.views.Courses import list_courses, view_course, course_detail
 from matricula.views.Enrollments import addmetoquee, list_enroll, enrollme, \
     finish_enroll
 from matricula.views.Pages import PageDetail
-from .admin import admin_site
+
 from .views.admin_views import CategoryList, GroupDetailView, create_category, \
     CategoryDelete, do_login, edit_category, CourseList, create_course, \
     CourseDelete, edit_course, MenuItemList, create_menuitem, MenuItemDelete, \
@@ -37,8 +38,32 @@ from matricula.views.Auth import get_profile
 
 from .views.professor_views import AddUser, ProfessorsList, CreateProfessor, EditProfessor,\
     edit_profile, delete_professor, deactivate_professor
-from .views.report import GroupEstudentStatusList
+from .views.report import GroupEstudentStatusList, list_reports
 from .views.students_views import qualify_students, update_enroll, update_enroll_status, GradeList
+from .reports import views, api
+router = DefaultRouter()
+router.register('ranking_course_enrolls_api', api.RankingCourseEnrollsViewSet, 'ranking_course_enrolls_api')
+router.register('ranking_course_approved_api', api.RankingCourseApprovedViewSet, 'ranking_course_approved_api')
+router.register('course_topics_api', api.CourseTopicsViewSet, 'course_topics_api')
+
+reports = [
+    path('reports/', list_reports, name='list_reports'),
+    path('group/report_student_status', GroupEstudentStatusList.as_view(), name="report_student_status"),
+    path('consolidado_estadisticas_cursos', views.consolidado_estadisticas_cursos, name='consolidado_estadisticas_cursos'),
+    path('reports/student_without_lessons_report', views.student_without_lessons_report, name='student_without_lessons_report'),
+    path('reports/uncompleted_student_report', views.uncompleted_student_report, name='uncompleted_student_report'),
+    path('reports/enrolls_report', views.enrolls_report, name='enrolls_report'),
+    path('reports/approved_student_report', views.approved_student_report, name='approved_student_report'),
+    path('reports/student_by_organization_report', views.student_by_organization_report, name='student_by_organization_report'),
+    path('reports/ranking_course_enrolls', views.ranking_course_enrolls_view, name='ranking_course_enrolls'),
+    path('reports/ranking_course_approved', views.ranking_course_approved_view, name='ranking_course_approved'),
+    path('reports/countries_in_courses', views.countries_in_courses_report, name='countries_in_courses_report'),
+    path('reports/courses_by_year', views.total_courses_by_year_report, name='total_courses_by_year_report'),
+    path('reports/courses_by_month', views.total_courses_by_month_report, name='total_courses_by_month_report'),
+    path('reports/organizations_per_country_report', views.organizations_per_country_report, name='organizations_per_country_report'),
+    path('reports/course_topics_report', views.course_topics_report, name='course_topics_report'),
+]
+
 
 urlpatterns = [
     url('enrrolment/accounts/profile/?$', get_profile, name='profile'),
@@ -133,9 +158,8 @@ urlpatterns = [
     path('enrrolment_certificate/build/<int:pk>/', build_pdf_certificate_list, name="build_pdf_certificate_list"),
     path('enrrolment_certificate_enroll/<int:pk_group>/<int:pk>/', regenerate_certificate, name="build_pdf_certificate_view"),
     path('enrollment/users/create', AddUser.as_view(), name="create_simple_user"),
-    path('group/report_student_status', GroupEstudentStatusList.as_view(), name="report_student_status"),
     path('enrrolment/modalforms', get_forms_modal, name="modalforms-list"),
     path('enrrolment/autenticate', do_login, name="autenticate"),
     path('enrrolment/create_using_ajax', create_student_ajax, name="enroll_ajax"),
     path('enrrolment/student_is_active/<str:key>', student_isactive, name="student_isactive"),
-] + billurls
+] + billurls + reports + router.urls

@@ -26,12 +26,12 @@ class GroupsAdmin(GroupAdmin):
 class EnrollAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
-            'fields': (('enroll_finished', 'enroll_activate'), 'group', 'student', 'bill_created', 'course_status', 'pdf_certificate')
+            'fields': (('enroll_finished', 'enroll_activate'), 'group', 'student', 'bill_created', 'course_status', 'pdf_certificate', 'go_to_one_class')
         }),)
 
-    list_display = ('student', 'group', 'enroll_finished', 'enroll_activate')
+    list_display = ('student', 'group', 'enroll_finished', 'enroll_activate', 'go_to_one_class')
     list_filter = ('enroll_activate', 'enroll_finished', 'group')
-    list_editable = ('enroll_activate', 'enroll_finished')
+    list_editable = ('enroll_activate', 'enroll_finished', 'go_to_one_class')
     actions = ['set_enroll_finished_true', 'set_enroll_activate_true']
     # 'enroll_date'
 
