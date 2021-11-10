@@ -1,13 +1,13 @@
-import json
-
-from django.db.models import Count, Q, Func, F, Exists, Sum
-from django.db.models.functions import Upper
+from django.db.models import Count, Q, Func, F
+from django.utils.text import slugify
 from djgentelella.chartjs import VerticalBarChart, PieChart
 from djgentelella.groute import register_lookups
 
-from matricula.models import Course, Enroll, Student, Period, Group
+from matricula.models import Course, Student, Group
+from matricula.utils import get_label_months
 from membership_core.gtcharts import BaseChart
 from membership_core.models import Country
+import json
 
 
 @register_lookups(prefix="consolidadoestcurso", basename="consolidadoestcurso")
@@ -29,9 +29,10 @@ class ConsolidadoEstadisticasCurso(BaseChart, VerticalBarChart):
             withoutlessons=Count('group__enroll', filter=Q(group__enroll__enroll_finished=True,
                                                            group__enroll__go_to_one_class=False))
         ).values('name', 'approve_count', 'reproved','uncomplete', 'withoutlessons')
-
+        period = self.request.GET.get('period', None)
+        if period:
+            queryset = queryset.filter(group__period=period)
         return queryset
-
 
     def get_labels(self):
         return ['Aprobaron','Reprobaron', 'Desertaron', 'Nunca Ingresaron']
@@ -47,7 +48,7 @@ class ConsolidadoEstadisticasCurso(BaseChart, VerticalBarChart):
                  'borderColor': self.get_color(),
                  'borderWidth': 1,
                  'data': [course['approve_count'], course['reproved'], course['uncomplete'], course['withoutlessons']]
-                 },
+                 }
             )
         return dataset
 
@@ -69,7 +70,9 @@ class UncompletedStudentReport(BaseChart, VerticalBarChart):
                     group__enroll__go_to_one_class=True,
                     group__enroll__course_status= """uncomplete"""))
         ).values('name','uncomplete')
-
+        period = self.request.GET.get('period', None)
+        if period:
+            queryset = queryset.filter(group__period=period)
         return queryset
 
     def get_labels(self):
@@ -112,7 +115,9 @@ class EnrollStudentsReport(BaseChart, VerticalBarChart):
             enrrols_count=Count('group__enroll', filter=Q(
                     group__enroll__enroll_finished = True))
         ).values('name', 'enrrols_count')
-
+        period = self.request.GET.get('period', None)
+        if period:
+            queryset = queryset.filter(group__period=period)
         return queryset
 
 
@@ -150,6 +155,10 @@ class ApprovedStudentReport(BaseChart, VerticalBarChart):
                 group__enroll__enroll_finished=True,
                 group__enroll__go_to_one_class=True,
                 group__enroll__course_status="""approved"""))).values('name', 'approve_count')
+
+        period = self.request.GET.get('period', None)
+        if period:
+            queryset = queryset.filter(group__period=period)
         return queryset
 
     def get_labels(self):
@@ -183,7 +192,9 @@ class NeverAttendStudentReport(BaseChart, VerticalBarChart):
             withoutlessons=Count('group__enroll', filter=Q(group__enroll__enroll_finished=True,
                                                            group__enroll__go_to_one_class=False))
         ).values('name', 'withoutlessons')
-
+        period = self.request.GET.get('period', None)
+        if period:
+            queryset = queryset.filter(group__period=period)
         return queryset
 
     def get_labels(self):
@@ -223,28 +234,26 @@ class NeverAttendStudentReport(BaseChart, VerticalBarChart):
 class CountriesInCoursesReport(BaseChart, PieChart):
 
     def __init__(self, *args, **kwargs):
-        self.countries = Student.objects.filter(enroll__enroll_activate=True).annotate(
-            num_appearances=Count('country_id')
-        ).order_by('country_id__name').values('country_id__name', 'num_appearances')
-
+        self.countries = Country.objects.all().annotate(
+            num_appearances=Count('student', filter=Q(student__enroll__enroll_activate=True))
+        ).filter(num_appearances__gt=0)
         super().__init__(*args, **kwargs)
 
     def get_labels(self):
         labels = []
         for country in self.countries:
-            labels.append(
-                country['country_id__name'],
-            )
+            labels.append("%s (%d)"%(country.name, country.num_appearances))
 
         return labels
 
     def get_datasets(self):
+
         self.index=0
         dataset = []
         country_data = []
         colors = []
         for country in self.countries:
-            country_data.append(country['num_appearances'])
+            country_data.append(country.num_appearances)
             colors.append(self.get_color())
 
         dataset.append(
@@ -263,19 +272,37 @@ class CountriesInCoursesReport(BaseChart, PieChart):
 
 @register_lookups(prefix="organitations_per_country", basename="organitations_per_country")
 class OrganitationsPerCountryReport(BaseChart, VerticalBarChart):
+
+    def update_organizations(self, countries):
+        delete_countries=[]
+        for country in countries:
+            countries[country]['count']=len(countries[country]['orgs'])
+            if not countries[country]['count']:
+                delete_countries.append(country)
+        for delcountry in delete_countries:
+            del countries[delcountry]
+        return countries
+
     def get_organizations_per_country(self):
-        qp = Country.objects.filter(
-                   student__organization__isnull= False
-        ).exclude(student__organization=''
-        ).values('pk', 'student__organization')
+        countriesquery = Country.objects.filter(student__isnull=False).distinct().values('id', 'name')
+        countries = {}
+        for country in countriesquery:
+            countries[country['id']] = {
+                'name': country['name'],
+                'orgs': [],
+                'count': 0
+            }
+        orgs = Student.objects.exclude(organization='').values('organization', 'country').distinct()
+        for org in orgs:
+            try:
+                for value in json.loads(org["organization"]):
+                    if value['value'].lower() not in countries[org['country']]['orgs']:
+                        countries[org['country']]['orgs'].append(value['value'].lower())
+            except json.decoder.JSONDecodeError as e:
+                if org["organization"].lower() not in countries[org['country']]['orgs']:
+                    countries[org['country']]['orgs'].append(org["organization"].lower())
 
-        country_dict = {}
-
-        for country in Country.objects.filter(student__organization__isnull= False):
-            country_dict[country.name]=  Count('pk', filter=Q(pk=country.pk))
-
-        queryset = qp.aggregate(**country_dict)
-        return queryset
+        return self.update_organizations(countries)
 
     def get_labels(self):
         return ['Organizaciones por país']
@@ -283,14 +310,15 @@ class OrganitationsPerCountryReport(BaseChart, VerticalBarChart):
     def get_datasets(self):
         self.index=0
         dataset = []
+
         organizations = self.get_organizations_per_country()
-        for countries in organizations:
+        for countries in organizations.values():
             dataset.append(
-                {'label': countries,
+                {'label': countries['name'],
                  'backgroundColor': self.get_color(),
                  'borderColor': self.get_color(),
                  'borderWidth': 1,
-                 'data': [organizations[countries]]
+                 'data': [countries['count']]
                  },
             )
         return dataset
@@ -313,26 +341,30 @@ class OrganitationsPerCountryReport(BaseChart, VerticalBarChart):
 @register_lookups(prefix="total_courses_by_year", basename="total_courses_by_year")
 class TotalCoursesByYear(BaseChart, VerticalBarChart):
     def get_years(self):
-        queryset = Group.objects.filter(enroll__enroll_finished=True).values('enroll_finish__year').annotate(
-            num_appearances=Count('enroll_finish__year')
-        ).order_by('enroll_finish__year').values('enroll_finish__year', 'num_appearances')
-
-        return queryset
+        years = Group.objects.dates('period__finish_date', 'year')
+        yearparams ={str(x.year) : Count('pk', filter=Q(period__finish_date__year=x.year)) for x in years }
+        return Group.objects.aggregate(**yearparams)
 
     def get_labels(self):
         return ['Año correspondiente al curso']
 
+    def sort_years(self, years):
+        years = list(map(lambda x: int(x), years))
+        years.sort()
+        return years
+
     def get_datasets(self):
         self.index=0
         dataset = []
-        years = self.get_years()
-        for year in years:
+        years=dict(self.get_years())
+        yearskeys = self.sort_years(years.keys())
+        for yearkey in yearskeys:
             dataset.append(
-                {'label': year['enroll_finish__year'],
+                {'label': str(yearkey),
                  'backgroundColor': self.get_color(),
                  'borderColor': self.get_color(),
                  'borderWidth': 1,
-                 'data': [year['num_appearances']]
+                 'data': [years[str(yearkey)]]
                  },
             )
         return dataset
@@ -347,7 +379,7 @@ class TotalCoursesByYear(BaseChart, VerticalBarChart):
         }
 
     def get_title(self):
-        return {'display': True,
+        return {'display': False,
                 'text': 'Reporte total de cursos por año'
                 }
 
@@ -355,11 +387,15 @@ class TotalCoursesByYear(BaseChart, VerticalBarChart):
 @register_lookups(prefix="total_courses_by_month", basename="total_courses_by_month")
 class TotalCoursesByMonth(BaseChart, VerticalBarChart):
     def get_months(self):
-        queryset = Group.objects.filter(enroll__enroll_finished=True).values('enroll_finish__month').annotate(
-            num_appearances=Count('enroll_finish__month')
-        ).order_by('enroll_finish__month').values('enroll_finish__month', 'num_appearances')
 
-        return queryset
+        months = Group.objects.dates('enroll_finish', 'month')
+        monthsparams ={str(x.month) : Count('pk', filter=Q(enroll_finish__month=x.month)) for x in months }
+        return Group.objects.aggregate(**monthsparams)
+
+    def sort_months(self, months):
+        months = list(map(lambda x: int(x), months))
+        months.sort()
+        return months
 
     def get_labels(self):
         return ['Mes correspondiente al curso']
@@ -367,29 +403,18 @@ class TotalCoursesByMonth(BaseChart, VerticalBarChart):
     def get_datasets(self):
         self.index = 0
         dataset = []
-        dic_months = {
-            1: 'Enero',
-            2: 'Febrero',
-            3: 'Marzo',
-            4: 'Abril',
-            5: 'Mayo',
-            6: 'Junio',
-            7: 'Julio',
-            8: 'Agosto',
-            9: 'Septiembre',
-            10: 'Octubre',
-            11: 'Noviembre',
-            12: 'Diciembre',
-        }
-        months = self.get_months()
-        for month in months:
+
+
+        months=dict(self.get_months())
+        monthskeys = self.sort_months(months.keys())
+        for month in monthskeys:
             dataset.append(
                 {
-                    'label': dic_months[month['enroll_finish__month']],
+                    'label': get_label_months(month),
                     'backgroundColor': self.get_color(),
                     'borderColor': self.get_color(),
                     'borderWidth': 1,
-                    'data': [month['num_appearances']]
+                    'data': [months[str(month)]]
                 },
             )
         return dataset
@@ -404,46 +429,38 @@ class TotalCoursesByMonth(BaseChart, VerticalBarChart):
         }
 
     def get_title(self):
-        return {'display': True,
+        return {'display': False,
                 'text': 'Reporte total de cursos por mes'
         }
 
 @register_lookups(prefix="student_by_org_report", basename="student_by_org_report")
 class StudentByOrganizationReport(BaseChart, VerticalBarChart):
-
     def get_organizations(self):
+        orgsname=[]
+        orgs = Student.objects.exclude(organization='').values('organization', 'country').distinct()
+        for org in orgs:
+            try:
+                for value in json.loads(org["organization"]):
+                    if value['value'].lower() not in orgsname:
+                        orgsname.append(value['value'].lower())
+            except json.decoder.JSONDecodeError as e:
+                if org["organization"].lower() not in orgsname:
+                    orgsname.append(org["organization"].lower())
 
-        orgs = Student.objects.filter(enroll__enroll_finished=True, organization__isnull=False).exclude(organization='').annotate(
-            org_lower=Func(F('organization'), function='LOWER')).values('org_lower').distinct()
-        self.organizations = []
-        str = '"value"'
-        for item in orgs:
-            if isinstance(item, dict):
-                if 'org_lower' in item:
-                    if str in item['org_lower']:
-                        temp_org = list(item['org_lower'])
-                        temp = temp_org[10:]
-                        temp2 = temp[:-2]
-                        org_str = ''.join(temp2)
-                        self.organizations.append(org_str)
-                    else:
-                        self.organizations.append(item['org_lower'])
-                else:
-                    self.organizations.append(item)
-            else:
-                self.organizations.append(item)
-
-        self.organizations = set(self.organizations)
-        return self.organizations
+        return orgsname
 
     def get_students(self):
+        orgs = self.get_organizations()
+        queryset=Student.objects.filter(enroll__enroll_finished=True)
+        queryparams = {}
+        for org in orgs:
+            queryparams[slugify(org)] = Count('pk', filter=Q(organization__icontains=org))
+
+        queryset=queryset.aggregate(**queryparams)
 
         orga_dict = {}
-        for values in self.get_organizations():
-            temp = Student.objects.filter(enroll__enroll_finished=True).filter(organization__iexact=values).count()
-            if temp == 0:
-                temp = Student.objects.filter(enroll__enroll_finished=True).filter(organization__icontains=values).count()
-            orga_dict[values] = temp
+        for org in orgs:
+            orga_dict[org]=queryset[slugify(org)]
 
         return orga_dict
 
@@ -454,12 +471,11 @@ class StudentByOrganizationReport(BaseChart, VerticalBarChart):
     def get_datasets(self):
         self.index = 0
         dataset = []
-
         students = self.get_students()
-        keys_list = list(students.keys())
+
         for stud, val in students.items():
             dataset.append(
-                {'label': stud,
+                {'label': stud.title(),
                  'backgroundColor': self.get_color(),
                  'borderColor': self.get_color(),
                  'borderWidth': 1,

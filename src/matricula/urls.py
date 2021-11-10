@@ -16,7 +16,6 @@ from matricula.views.Courses import list_courses, view_course, course_detail
 from matricula.views.Enrollments import addmetoquee, list_enroll, enrollme, \
     finish_enroll
 from matricula.views.Pages import PageDetail
-from .admin import admin_site
 
 from .views.admin_views import CategoryList, GroupDetailView, create_category, \
     CategoryDelete, do_login, edit_category, CourseList, create_course, \
@@ -41,40 +40,28 @@ from .views.professor_views import AddUser, ProfessorsList, CreateProfessor, Edi
     edit_profile, delete_professor, deactivate_professor
 from .views.report import GroupEstudentStatusList, list_reports
 from .views.students_views import qualify_students, update_enroll, update_enroll_status, GradeList
-from .reports.issue_11 import RankingCourseEnrollsViewSet, ranking_course_enrolls_view
-from .reports.issue_12 import RankingCourseApprovedViewSet, ranking_course_approved_view
-from .reports.issue_13 import organizations_per_country_report
-from .reports.issue_10 import consolidado_estadisticas_cursos
-from .reports.issue_6 import uncompleted_student_report
-from .reports.issue_7 import student_without_lessons_report
-from .reports.issue_5 import approved_student_report
-from .reports.issue_9 import student_by_organization_report
-from .reports.issue_4 import enrolls_report
-from .reports.issue_8 import countries_in_courses_report
-from .reports.issue_1 import total_courses_by_year_report, total_courses_by_month_report
-from .reports.issue_2 import CourseTopicsViewSet, course_topics_report
-
+from .reports import views, api
 router = DefaultRouter()
-router.register('ranking_course_enrolls_api', RankingCourseEnrollsViewSet, 'ranking_course_enrolls_api')
-router.register('ranking_course_approved_api', RankingCourseApprovedViewSet, 'ranking_course_approved_api')
-router.register('course_topics_api', CourseTopicsViewSet, 'course_topics_api')
+router.register('ranking_course_enrolls_api', api.RankingCourseEnrollsViewSet, 'ranking_course_enrolls_api')
+router.register('ranking_course_approved_api', api.RankingCourseApprovedViewSet, 'ranking_course_approved_api')
+router.register('course_topics_api', api.CourseTopicsViewSet, 'course_topics_api')
 
 reports = [
     path('reports/', list_reports, name='list_reports'),
     path('group/report_student_status', GroupEstudentStatusList.as_view(), name="report_student_status"),
-    path('consolidado_estadisticas_cursos', consolidado_estadisticas_cursos, name='consolidado_estadisticas_cursos'),
-    path('reports/student_without_lessons_report', student_without_lessons_report, name='student_without_lessons_report'),
-    path('reports/uncompleted_student_report', uncompleted_student_report, name='uncompleted_student_report'),
-    path('reports/enrolls_report', enrolls_report, name='enrolls_report'),
-    path('reports/approved_student_report', approved_student_report, name='approved_student_report'),
-    path('reports/student_by_organization_report', student_by_organization_report, name='student_by_organization_report'),
-    path('reports/ranking_course_enrolls', ranking_course_enrolls_view, name='ranking_course_enrolls'),
-    path('reports/ranking_course_approved', ranking_course_approved_view, name='ranking_course_approved'),
-    path('reports/countries_in_courses', countries_in_courses_report, name='countries_in_courses_report'),
-    path('reports/courses_by_year', total_courses_by_year_report, name='total_courses_by_year_report'),
-    path('reports/courses_by_month', total_courses_by_month_report, name='total_courses_by_month_report'),
-    path('reports/organizations_per_country_report', organizations_per_country_report, name='organizations_per_country_report'),
-    path('reports/course_topics_report', course_topics_report, name='course_topics_report'),
+    path('consolidado_estadisticas_cursos', views.consolidado_estadisticas_cursos, name='consolidado_estadisticas_cursos'),
+    path('reports/student_without_lessons_report', views.student_without_lessons_report, name='student_without_lessons_report'),
+    path('reports/uncompleted_student_report', views.uncompleted_student_report, name='uncompleted_student_report'),
+    path('reports/enrolls_report', views.enrolls_report, name='enrolls_report'),
+    path('reports/approved_student_report', views.approved_student_report, name='approved_student_report'),
+    path('reports/student_by_organization_report', views.student_by_organization_report, name='student_by_organization_report'),
+    path('reports/ranking_course_enrolls', views.ranking_course_enrolls_view, name='ranking_course_enrolls'),
+    path('reports/ranking_course_approved', views.ranking_course_approved_view, name='ranking_course_approved'),
+    path('reports/countries_in_courses', views.countries_in_courses_report, name='countries_in_courses_report'),
+    path('reports/courses_by_year', views.total_courses_by_year_report, name='total_courses_by_year_report'),
+    path('reports/courses_by_month', views.total_courses_by_month_report, name='total_courses_by_month_report'),
+    path('reports/organizations_per_country_report', views.organizations_per_country_report, name='organizations_per_country_report'),
+    path('reports/course_topics_report', views.course_topics_report, name='course_topics_report'),
 ]
 
 
