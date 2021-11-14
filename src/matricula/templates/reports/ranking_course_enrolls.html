@@ -31,7 +31,9 @@
         createDataTable("#ranking_course_id", "{% url 'ranking_course_enrolls_api-list' %}", {
             'columns': [
                 {data: "name", name: "name", title: "Nombre", type: "string", visible: true},
-                {data: "enroll_count", name: "enroll_count", title: "Cantidad de matriculados", type: "string", visible: true}
+                {data: "enroll_count", name: "enroll_count", title: "Cantidad de matriculados", type: "string", visible: true},
+                {data: "workload", name: "workload", title: "Carga Horaria", type: "string", visible: true}
+
             ] } )
     });
 

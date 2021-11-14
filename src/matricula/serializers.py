@@ -26,7 +26,7 @@ class ApprovedCourseSerializerForTable(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ['name', 'approved_count']
+        fields = ['name', 'approved_count', 'workload']
 
 
 class ApprovedCourseDataTableSerializer(serializers.Serializer):

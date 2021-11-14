@@ -8,18 +8,30 @@
 {% endblock %}
 
 {% block content %}
+
 <div class="clearfix"></div>
 <br><br>
 <div class="col-md-12">
     <div class="x_panel">
         <div class="x_title">
-            <h3 class="green">Total de cursos por mes</h3>
+            <h3 class="green">{{title}}</h3>
         </div>
 
         <div class="x_content">
+            <div class="row"><form method="get">
+                <div class="col-md-10">
+                {{form.as_horizontal}}
+                </div><div class="col-md-2">
+                <button type="submit" class="btn btn-info">Filtrar</button>
+
+                </div>
+
+            </form>
+            </div>
             {% include 'gentelella/widgets/chartjs.html' %}
             </div>
         </div>
 </div>
+
 
 {% endblock %}

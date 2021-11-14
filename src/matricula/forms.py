@@ -8,6 +8,7 @@ Created on 7/4/2015
 import re
 
 from django import forms
+from django.db.models import QuerySet
 from django.utils.translation import ugettext_lazy as _
 from django.core import validators
 from django.contrib.auth.models import User, Permission
@@ -21,6 +22,7 @@ from membership_core.models import Country, SystemCurrency
 from matricula.models import Student, Page, MenuItem, Category, Course,\
     Period, Group, Enroll, Professor
 
+from django.db import models
 
 class StudentCreateForm(GTForm, forms.ModelForm):
     MIN_LENGTH = 8
@@ -995,3 +997,77 @@ class LoginForm(GTForm, forms.Form):
         label="Contraseña", widget=djgentelella.PasswordInput, max_length=100,
         required=True,
     )
+
+def load_workload():
+    workload = list(set(Course.objects.all().values_list('workload').distinct()))
+    workload.sort()
+    for hours in workload:
+        yield (hours[0], "%d horas"%hours)
+
+class CourseGraphForm(GTForm, forms.Form):
+    workload = forms.MultipleChoiceField(
+        widget=djgentelella.SelectMultiple, required=False,
+        choices=load_workload, label='Carga horaria')
+
+    mapitem = {
+        'workload': 'course__workload__in'
+    }
+
+    def get_urlencode(self):
+        dev  = ''
+        for item in self.cleaned_data:
+            if isinstance(self.cleaned_data[item], list):
+                for x in self.cleaned_data[item]:
+                    dev += '&%s=%s'%(item, str(x))
+        return dev
+
+    def filter_queryset(self, queryset):
+        filters = {}
+        for item in self.cleaned_data:
+            if self.cleaned_data[item]:
+                filters[self.mapitem[item]] = self.cleaned_data[item]
+        if not filters:
+            return queryset
+        return queryset.filter(**filters)
+
+class CourseWithCoursefilterGraphForm(GTForm, forms.Form):
+    all_period = forms.BooleanField(
+        widget=djgentelella.YesNoInput,
+        label='Listar todos los periodos',
+        initial=False, required=False, help_text='Por defecto solo se filtran los periodos activos'
+    )
+    workload = forms.MultipleChoiceField(
+        widget=djgentelella.SelectMultiple, required=False,
+        choices=load_workload, label='Carga horaria')
+
+    course = forms.ModelMultipleChoiceField(queryset=Course.objects.all(),
+                                             widget=djgentelella.SelectMultiple,
+                                             required=False,
+                                             label='Cursos disponibles')
+    mapitem = {
+        'workload': 'workload__in',
+        'course': 'pk__in'
+    }
+
+    def get_urlencode(self):
+        dev = ''
+        for item in self.cleaned_data:
+            if isinstance(self.cleaned_data[item], (list,QuerySet)):
+                for x in self.cleaned_data[item]:
+                    if isinstance(x, models.Model):
+                        dev += '&%s=%s' % (item, str(x.pk))
+                    else:
+                        dev += '&%s=%s'%(item, str(x))
+            elif self.cleaned_data[item]:
+                dev+='&%s=%s'%(item, self.cleaned_data[item])
+
+        return dev
+
+    def filter_queryset(self, queryset):
+        filters = {}
+        for item in self.cleaned_data:
+            if item in self.mapitem and self.cleaned_data[item]:
+                filters[self.mapitem[item]] = self.cleaned_data[item]
+        if not filters:
+            return queryset
+        return queryset.filter(**filters)

@@ -3,6 +3,7 @@ from django.utils.text import slugify
 from djgentelella.chartjs import VerticalBarChart, PieChart
 from djgentelella.groute import register_lookups
 
+from matricula.forms import CourseGraphForm, CourseWithCoursefilterGraphForm
 from matricula.models import Course, Student, Group
 from matricula.utils import get_label_months
 from membership_core.gtcharts import BaseChart
@@ -13,7 +14,14 @@ import json
 @register_lookups(prefix="consolidadoestcurso", basename="consolidadoestcurso")
 class ConsolidadoEstadisticasCurso(BaseChart, VerticalBarChart):
     def get_courses(self):
-        queryset = Course.objects.all().order_by('name').annotate(
+        queryset = Course.objects.all().order_by('name')
+        period = self.request.GET.get('period', None)
+        if period:
+            queryset = queryset.filter(group__period=period)
+        form = CourseWithCoursefilterGraphForm(self.request.GET)
+        if form.is_valid():
+            queryset= form.filter_queryset(queryset)
+        return queryset.annotate(
             approve_count=Count('group__enroll', filter=Q(
                     group__enroll__enroll_finished = True,
                     group__enroll__go_to_one_class=True,
@@ -29,13 +37,9 @@ class ConsolidadoEstadisticasCurso(BaseChart, VerticalBarChart):
             withoutlessons=Count('group__enroll', filter=Q(group__enroll__enroll_finished=True,
                                                            group__enroll__go_to_one_class=False))
         ).values('name', 'approve_count', 'reproved','uncomplete', 'withoutlessons')
-        period = self.request.GET.get('period', None)
-        if period:
-            queryset = queryset.filter(group__period=period)
-        return queryset
 
     def get_labels(self):
-        return ['Aprobaron','Reprobaron', 'Desertaron', 'Nunca Ingresaron']
+        return ['Aprobaron','Reprobaron', 'No Siguieron', 'Nunca Ingresaron']
 
     def get_datasets(self):
         self.index=0
@@ -52,7 +56,14 @@ class ConsolidadoEstadisticasCurso(BaseChart, VerticalBarChart):
             )
         return dataset
 
-
+    def get_scales(self):
+        return {'yAxes': [{
+                    'ticks': {
+                        'suggestedMin': 0,  # minimum will be 0, unless there is a lower value.
+                        'beginAtZero': True  # minimum value will be 0.
+                    }
+            }]
+        }
 
     def get_title(self):
         return {'display': True,
@@ -73,10 +84,13 @@ class UncompletedStudentReport(BaseChart, VerticalBarChart):
         period = self.request.GET.get('period', None)
         if period:
             queryset = queryset.filter(group__period=period)
+        form = CourseWithCoursefilterGraphForm(self.request.GET)
+        if form.is_valid():
+            queryset= form.filter_queryset(queryset)
         return queryset.values('name','uncomplete')
 
     def get_labels(self):
-        return ['Estudiantes que desertaron cursos']
+        return ['Estudiantes que no siguieron el curso']
 
     def get_datasets(self):
         self.index=0
@@ -104,7 +118,7 @@ class UncompletedStudentReport(BaseChart, VerticalBarChart):
 
     def get_title(self):
         return {'display': True,
-                'text': 'Reporte de estudiantes que desertaron por curso'
+                'text': 'Reporte de estudiantes que no siguieron por curso'
                 }
 
 
@@ -118,8 +132,19 @@ class EnrollStudentsReport(BaseChart, VerticalBarChart):
         period = self.request.GET.get('period', None)
         if period:
             queryset = queryset.filter(group__period=period)
+        form = CourseWithCoursefilterGraphForm(self.request.GET)
+        if form.is_valid():
+            queryset= form.filter_queryset(queryset)
         return queryset
 
+    def get_scales(self):
+        return {'yAxes': [{
+                    'ticks': {
+                        'suggestedMin': 0, # minimum will be 0, unless there is a lower value.
+                        'beginAtZero': True # minimum value will be 0.
+                    }
+            }]
+        }
 
     def get_labels(self):
         return [' Total de estudiantes matriculados']
@@ -159,6 +184,9 @@ class ApprovedStudentReport(BaseChart, VerticalBarChart):
         period = self.request.GET.get('period', None)
         if period:
             queryset = queryset.filter(group__period=period)
+        form = CourseWithCoursefilterGraphForm(self.request.GET)
+        if form.is_valid():
+            queryset= form.filter_queryset(queryset)
         return queryset
 
     def get_labels(self):
@@ -183,6 +211,15 @@ class ApprovedStudentReport(BaseChart, VerticalBarChart):
         return {'display': True,
             'text': 'Total de estudiantes aprobados por curso'}
 
+    def get_scales(self):
+        return {'yAxes': [{
+                    'ticks': {
+                        'suggestedMin': 0, # minimum will be 0, unless there is a lower value.
+                        'beginAtZero': True # minimum value will be 0.
+                    }
+            }]
+        }
+
 
 @register_lookups(prefix="student_without_lessons_report", basename="student_without_lessons_report")
 class NeverAttendStudentReport(BaseChart, VerticalBarChart):
@@ -195,6 +232,9 @@ class NeverAttendStudentReport(BaseChart, VerticalBarChart):
         period = self.request.GET.get('period', None)
         if period:
             queryset = queryset.filter(group__period=period)
+        form = CourseWithCoursefilterGraphForm(self.request.GET)
+        if form.is_valid():
+            queryset= form.filter_queryset(queryset)
         return queryset
 
     def get_labels(self):
@@ -271,7 +311,12 @@ class CountriesInCoursesReport(BaseChart, PieChart):
                 }
 
 @register_lookups(prefix="organitations_per_country", basename="organitations_per_country")
-class OrganitationsPerCountryReport(BaseChart, VerticalBarChart):
+class OrganitationsPerCountryReport(BaseChart, PieChart):
+    def __init__(self, *args, **kwargs):
+        self.countries = Country.objects.all().annotate(
+            num_appearances=Count('student', filter=Q(student__enroll__enroll_activate=True))
+        ).filter(num_appearances__gt=0).values('id', 'name')
+        super().__init__(*args, **kwargs)
 
     def update_organizations(self, countries):
         delete_countries=[]
@@ -284,9 +329,9 @@ class OrganitationsPerCountryReport(BaseChart, VerticalBarChart):
         return countries
 
     def get_organizations_per_country(self):
-        countriesquery = Country.objects.filter(student__isnull=False).distinct().values('id', 'name')
+
         countries = {}
-        for country in countriesquery:
+        for country in self.countries:
             countries[country['id']] = {
                 'name': country['name'],
                 'orgs': [],
@@ -294,6 +339,8 @@ class OrganitationsPerCountryReport(BaseChart, VerticalBarChart):
             }
         orgs = Student.objects.exclude(organization='').values('organization', 'country').distinct()
         for org in orgs:
+            if org['country'] not in countries:
+                continue
             try:
                 for value in json.loads(org["organization"]):
                     if value['value'].lower() not in countries[org['country']]['orgs']:
@@ -305,20 +352,28 @@ class OrganitationsPerCountryReport(BaseChart, VerticalBarChart):
         return self.update_organizations(countries)
 
     def get_labels(self):
-        return ['Organizaciones por país']
+        labels = []
+        for country in self.countries:
+            labels.append(country['name'])
+
+        return labels
 
     def get_datasets(self):
         self.index=0
         dataset = []
 
         organizations = self.get_organizations_per_country()
-        for countries in organizations.values():
-            dataset.append(
-                {'label': countries['name'],
-                 'backgroundColor': self.get_color(),
+        data = []
+        colors = []
+        for country in self.countries:
+            data.append(organizations[country['id']]['count'])
+            colors.append(self.get_color())
+        dataset.append(
+                {'label': 'Cantidad de organizaciones',
+                 'backgroundColor': colors,
                  'borderColor': self.get_color(),
                  'borderWidth': 1,
-                 'data': [countries['count']]
+                 'data': data
                  },
             )
         return dataset
@@ -343,7 +398,11 @@ class TotalCoursesByYear(BaseChart, VerticalBarChart):
     def get_years(self):
         years = Group.objects.dates('period__finish_date', 'year')
         yearparams ={str(x.year) : Count('pk', filter=Q(period__finish_date__year=x.year)) for x in years }
-        return Group.objects.aggregate(**yearparams)
+        form = CourseGraphForm(self.request.GET)
+        queryset = Group.objects.all()
+        if form.is_valid():
+            queryset = form.filter_queryset(queryset)
+        return queryset.aggregate(**yearparams)
 
     def get_labels(self):
         return ['Año correspondiente al curso']
@@ -387,10 +446,13 @@ class TotalCoursesByYear(BaseChart, VerticalBarChart):
 @register_lookups(prefix="total_courses_by_month", basename="total_courses_by_month")
 class TotalCoursesByMonth(BaseChart, VerticalBarChart):
     def get_months(self):
-
         months = Group.objects.dates('enroll_finish', 'month')
         monthsparams ={str(x.month) : Count('pk', filter=Q(enroll_finish__month=x.month)) for x in months }
-        return Group.objects.aggregate(**monthsparams)
+        form = CourseGraphForm(self.request.GET)
+        queryset = Group.objects.all()
+        if form.is_valid():
+            queryset = form.filter_queryset(queryset)
+        return queryset.aggregate(**monthsparams)
 
     def sort_months(self, months):
         months = list(map(lambda x: int(x), months))

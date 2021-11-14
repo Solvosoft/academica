@@ -16,6 +16,16 @@
         </div>
 
         <div class="x_content">
+            {% if form %}
+                <div class="row"><form method="get">
+                    <div class="col-md-10">
+                    {{form.as_horizontal}}
+                    </div><div class="col-md-2">
+                    <button type="submit" class="btn btn-info">Filtrar</button>
+                    </div>
+                </form>
+                </div>
+            {% endif %}
             {% for period in periods %}
             <h3 class="green">{{period.title}}</h3>
             {% include 'gentelella/widgets/chartjs.html' with graph_url=period.url %}

@@ -1,28 +1,38 @@
 import json
-
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Count, Q
 from django.shortcuts import render
 from django.urls import reverse
+from django.utils.http import urlencode
 from django.utils.text import slugify
 
-from matricula.models import Student
+from matricula.forms import CourseGraphForm, CourseWithCoursefilterGraphForm
+from matricula.models import Student, Period
 from matricula.views.utils import get_active_period
 
 
 @permission_required('matricula.view_reports')
 def total_courses_by_year_report(request):
+    form = CourseGraphForm(request.GET)
+    form.is_valid()
     context = {
-         'graph_url': reverse('total_courses_by_year-list')
+         'title': 'Total de cursos por año',
+         'form': form,
+         'graph_url': reverse('total_courses_by_year-list')+ '?'+form.get_urlencode(),
+
     }
-    return render(request, 'reports/total_courses_by_year.html', context=context)
+    return render(request, 'reports/generic_chart_with_form.html', context=context)
 
 @permission_required('matricula.view_reports')
 def total_courses_by_month_report(request):
+    form = CourseGraphForm(request.GET)
+    form.is_valid()
     context = {
-         'graph_url': reverse('total_courses_by_month-list')
+        'title': 'Total de cursos por mes',
+         'form': form,
+         'graph_url': reverse('total_courses_by_month-list') + '?'+form.get_urlencode(),
     }
-    return render(request, 'reports/total_courses_by_month.html', context=context)
+    return render(request, 'reports/generic_chart_with_form.html', context=context)
 
 
 @permission_required('matricula.view_reports')
@@ -32,30 +42,44 @@ def course_topics_report(request):
 
 @permission_required('matricula.view_reports')
 def enrolls_report(request):
-    periods= get_active_period()
+
+    form = CourseWithCoursefilterGraphForm(request.GET)
+    form.is_valid()
+    urlsparams=form.get_urlencode()
+    if 'all_period' in form.cleaned_data and form.cleaned_data['all_period']:
+        periods = Period.objects.all()
+    else:
+        periods= get_active_period()
     period_list =[]
     for period in periods:
         period_list.append({
             'title': str(period),
-            'url': reverse('totalestmatriculados-list')+"?period=%d"%period.pk
+            'url': reverse('totalestmatriculados-list')+"?period=%d%s"%(period.pk, urlsparams)
         })
     context = {
-         'periods': period_list,
+        'form': form,
+        'periods': period_list,
         'title': 'Total de personas matriculadas'
     }
     return render(request, 'reports/standard_period_report.html', context=context)
 
 @permission_required('matricula.view_reports')
 def approved_student_report(request):
-
-    periods= get_active_period()
+    form = CourseWithCoursefilterGraphForm(request.GET)
+    form.is_valid()
+    urlsparams=form.get_urlencode()
+    if 'all_period' in form.cleaned_data and form.cleaned_data['all_period']:
+        periods = Period.objects.all()
+    else:
+        periods= get_active_period()
     period_list =[]
     for period in periods:
         period_list.append({
             'title': str(period),
-            'url': reverse('approvedstudentreport-list')+"?period=%d"%period.pk
+            'url': reverse('approvedstudentreport-list')+"?period=%d%s"%(period.pk, urlsparams)
         })
     context = {
+        'form': form,
          'periods': period_list,
          'title': 'Total de estudiantes aprobados por curso'
     }
@@ -63,14 +87,21 @@ def approved_student_report(request):
 
 @permission_required('matricula.view_reports')
 def uncompleted_student_report(request):
-    periods= get_active_period()
+    form = CourseWithCoursefilterGraphForm(request.GET)
+    form.is_valid()
+    urlsparams = form.get_urlencode()
+    if 'all_period' in form.cleaned_data and form.cleaned_data['all_period']:
+        periods = Period.objects.all()
+    else:
+        periods = get_active_period()
     period_list =[]
     for period in periods:
         period_list.append({
             'title': str(period),
-            'url': reverse('uncompleted_student-list')+"?period=%d"%period.pk
+            'url': reverse('uncompleted_student-list')+"?period=%d%s"%(period.pk, urlsparams)
         })
     context = {
+        'form': form,
          'periods': period_list,
          'title': 'Estudiantes que desertaron cursos'
     }
@@ -79,14 +110,21 @@ def uncompleted_student_report(request):
 
 @permission_required('matricula.view_reports')
 def student_without_lessons_report(request):
-    periods= get_active_period()
+    form = CourseWithCoursefilterGraphForm(request.GET)
+    form.is_valid()
+    urlsparams = form.get_urlencode()
+    if 'all_period' in form.cleaned_data and form.cleaned_data['all_period']:
+        periods = Period.objects.all()
+    else:
+        periods = get_active_period()
     period_list =[]
     for period in periods:
         period_list.append({
             'title': str(period),
-            'url': reverse('student_without_lessons_report-list')+"?period=%d"%period.pk
+            'url': reverse('student_without_lessons_report-list')+"?period=%d%s"%(period.pk, urlsparams)
         })
     context = {
+        'form': form,
          'periods': period_list,
         'title': "Personas que nunca ingresaron a los cursos"
     }
@@ -143,18 +181,22 @@ def student_by_organization_report(request):
 
 @permission_required('matricula.view_reports')
 def consolidado_estadisticas_cursos(request):
-    context = {
-         'graph_url': reverse('consolidadoestcurso-list')
-    }
-    periods= get_active_period()
+    form = CourseWithCoursefilterGraphForm(request.GET)
+    form.is_valid()
+    urlsparams = form.get_urlencode()
+    if 'all_period' in form.cleaned_data and form.cleaned_data['all_period']:
+        periods = Period.objects.all()
+    else:
+        periods = get_active_period()
     period_list =[]
     for period in periods:
         period_list.append({
             'title': str(period),
-            'url': reverse('consolidadoestcurso-list')+"?period=%d"%period.pk
+            'url': reverse('consolidadoestcurso-list')+"?period=%d%s"%(period.pk, urlsparams)
         })
     context = {
-         'periods': period_list,
+        'form': form,
+        'periods': period_list,
         'title': "Estadísticas por curso"
     }
     return render(request, 'reports/standard_period_report.html', context=context)

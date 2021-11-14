@@ -58,11 +58,11 @@ class RankingCourseApprovedViewSet(mixins.ListModelMixin, GenericViewSet):
     queryset = Course.objects.all().annotate(
             approved_count=Count('group__enroll', filter=Q(
                 group__enroll__enroll_finished=True, group__enroll__course_status='approved'))).\
-            values('name','approved_count').order_by('-approved_count')
+            values('name','approved_count', 'workload').order_by('-approved_count')
     serializer_class = ApprovedCourseDataTableSerializer
     filter_class = ApprovedRankingFilterSet
-    search_fields = ['name']
-    ordering_fields = ['approved_count']
+    search_fields = ['name', 'workload']
+    ordering_fields = ['approved_count', 'workload']
     ordering = ['-approved_count']
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
