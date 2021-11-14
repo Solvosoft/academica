@@ -41,7 +41,7 @@
 
 <script>
     $(document).ready(function () {
-        createDataTable("#course_topics_id", "{{url}}", {
+        createDataTable("#course_topics_id","{{url}}", {
             'columns': [
                 {data: "course_id__name", name: "course_id__name", title: "Nombre del curso", type: "string", visible: true},
                 {data: "enroll_finish__year", name: "enroll_finish__year", title: "Año", type: "int", visible: true},
@@ -63,7 +63,7 @@
                         'value': data[keys[x]]
                         })
                     }
-                    return $.extend(formdata,data);
+                    return formdata;
                 }
             }
              } )

@@ -16,6 +16,16 @@
         </div>
 
         <div class="x_content">
+            <div class="row"><form method="get" id="filterform">
+                <div class="col-md-10">
+                {{form.as_horizontal}}
+                </div><div class="col-md-2">
+                <button type="submit" class="btn btn-info">Filtrar</button>
+
+                </div>
+
+            </form>
+            </div>
             <table id="ranking_course_id" class="table"> </table>
         </div>
     </div>
@@ -28,13 +38,30 @@
 
 <script>
     $(document).ready(function () {
-        createDataTable("#ranking_course_id", "{% url 'ranking_course_enrolls_api-list' %}", {
+        createDataTable("#ranking_course_id", "{{url}}",{
             'columns': [
                 {data: "name", name: "name", title: "Nombre", type: "string", visible: true},
                 {data: "enroll_count", name: "enroll_count", title: "Cantidad de matriculados", type: "string", visible: true},
                 {data: "workload", name: "workload", title: "Carga Horaria", type: "string", visible: true}
 
-            ] } )
+            ],
+             ajax: {
+             url: '{{url}}',
+                type: 'GET',
+                data: function(dataTableParams, settings) {
+                    var data = formatDataTableParams(dataTableParams, settings);
+                    var formdata = $("#filterform").serializeArray();
+                    var keys=Object.keys(data);
+                    for(var x=0; x<keys.length; x++){
+                        formdata.push({
+                        'name': keys[x],
+                        'value': data[keys[x]]
+                        })
+                    }
+                    return formdata;
+                }
+            }
+            } )
     });
 
 </script>

@@ -37,6 +37,14 @@ class RankingCourseEnrollsViewSet(mixins.ListModelMixin, GenericViewSet):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated, ReportPermission]
 
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        form = CourseTableForm(self.request.GET)
+        form.set_course_map()
+        if form.is_valid():
+            queryset = form.filter_queryset(queryset)
+        return queryset
+
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset().distinct())
         paginator = self.paginate_queryset(queryset)
@@ -69,6 +77,14 @@ class RankingCourseApprovedViewSet(mixins.ListModelMixin, GenericViewSet):
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated, ReportPermission]
+
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        form = CourseTableForm(self.request.GET)
+        form.set_course_map()
+        if form.is_valid():
+            queryset = form.filter_queryset(queryset)
+        return queryset
 
     def list(self, request, *args, **kwargs):
 
@@ -106,6 +122,7 @@ class CourseTopicsViewSet(mixins.ListModelMixin, GenericViewSet):
             'course_id__name', 'enroll_finish__year', 'enroll_finish__month', 'course_id__category_id__name',
             'course_id__workload'
         )
+
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
         form = CourseTableForm(self.request.GET)

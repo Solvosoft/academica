@@ -10,7 +10,7 @@ class CourseSerializerForTable(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ['name', 'enroll_count']
+        fields = ['name', 'enroll_count', 'workload']
 
 
 

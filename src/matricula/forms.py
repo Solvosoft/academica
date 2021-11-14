@@ -1118,3 +1118,11 @@ class CourseTableForm(GTForm, forms.Form):
         if not filters:
             return queryset
         return queryset.filter(**filters)
+
+    def set_course_map(self):
+        self.mapitem = {
+            'workload': 'workload__in',
+            'categories': 'category__in',
+            'anio': 'group__enroll_finish__year__in',
+            'month': 'group__enroll_finish__month__in'
+        }

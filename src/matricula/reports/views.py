@@ -210,7 +210,11 @@ def consolidado_estadisticas_cursos(request):
 
 @permission_required('matricula.view_reports')
 def ranking_course_enrolls_view(request):
+    form = CourseTableForm(request.GET)
+    form.is_valid()
     context = {
+        'form': form,
+        "url": reverse('ranking_course_enrolls_api-list'),
         "title": "Ranking de cursos (personas matriculadas)"
     }
     return render(request, 'reports/ranking_course_enrolls.html', context=context)
@@ -218,9 +222,14 @@ def ranking_course_enrolls_view(request):
 
 @permission_required('matricula.view_reports')
 def ranking_course_approved_view(request):
+    form = CourseTableForm(request.GET)
+    form.is_valid()
     context = {
+        'form': form,
+        "url": reverse('ranking_course_approved_api-list'),
         "title": "Ranking de cursos (personas aprobadas)"
     }
+
     return render(request, 'reports/ranking_course_approved.html', context=context)
 
 
@@ -228,6 +237,7 @@ def ranking_course_approved_view(request):
 @permission_required('matricula.view_reports')
 def organizations_per_country_report(request):
     context = {
+
          'graph_url': reverse('organitations_per_country-list'),
          'title': 'Cantidad de organizaciones por país'
     }
