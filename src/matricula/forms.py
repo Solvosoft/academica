@@ -224,6 +224,7 @@ class CourseCreateForm(forms.ModelForm, GTForm):
             'name': djgentelella.TextInput,
             'content': tinymce.EditorTinymce,
             'category': AutocompleteSelect('categorybasename'),
+            'workload': djgentelella.NumberInput
         }
 
     def __init__(self, *args, **kwargs):

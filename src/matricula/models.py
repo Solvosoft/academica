@@ -123,6 +123,7 @@ class Course(models.Model):
         Category, verbose_name=_("Category")+" * ", on_delete=models.CASCADE)
     name = models.CharField(max_length=300, verbose_name=_("Name")+ " * ")
     content = models.TextField(verbose_name=_("Content")+" * ")
+    workload = models.IntegerField(help_text="En horas", verbose_name="Carga horaria", default=20)
 
     def __str__(self):
         return self.name
@@ -189,7 +190,8 @@ class Group(models.Model):
 
     @property
     def in_preenrollment(self):
-        return timezone.localtime(self.pre_enroll_start) <= timezone.localtime() <= timezone.localtime(self.pre_enroll_finish)
+        return timezone.localtime(self.pre_enroll_start) <= timezone.localtime() <= timezone.localtime(
+            self.pre_enroll_finish)
 
     @property
     def in_enrollment(self):

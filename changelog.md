@@ -1,4 +1,7 @@
 # Change log file
+14/11/2021
+- Update workload on courses
+    `python manage.py load_workload`
 
 05/08/2021
 - Update requirements
