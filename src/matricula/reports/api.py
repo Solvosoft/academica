@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from matricula.forms import CourseTableForm
 from matricula.models import Course
 from matricula.models import Group
 from matricula.serializers import ApprovedCourseDataTableSerializer
@@ -99,12 +100,18 @@ class CourseTopicsViewSet(mixins.ListModelMixin, GenericViewSet):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated, ReportPermission]
 
-
     def get_queryset(self):
         queryset=super().get_queryset()
         return queryset.values(
-            'course_id__name', 'enroll_finish__year', 'enroll_finish__month', 'course_id__category_id__name'
+            'course_id__name', 'enroll_finish__year', 'enroll_finish__month', 'course_id__category_id__name',
+            'course_id__workload'
         )
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        form = CourseTableForm(self.request.GET)
+        if form.is_valid():
+            queryset = form.filter_queryset(queryset)
+        return queryset
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())

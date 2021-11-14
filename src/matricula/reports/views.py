@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.text import slugify
 
-from matricula.forms import CourseGraphForm, CourseWithCoursefilterGraphForm
+from matricula.forms import CourseGraphForm, CourseWithCoursefilterGraphForm, CourseTableForm
 from matricula.models import Student, Period
 from matricula.views.utils import get_active_period
 
@@ -37,7 +37,14 @@ def total_courses_by_month_report(request):
 
 @permission_required('matricula.view_reports')
 def course_topics_report(request):
-    return render(request, 'reports/course_topics_report.html')
+    form = CourseTableForm(request.GET)
+    form.is_valid()
+    context = {
+        'form': form,
+        'url': reverse('course_topics_api-list'),
+        'title': 'Temas de los cursos que se han impartido en la Upo en total, por año o por mes.'
+    }
+    return render(request, 'reports/course_topics_report.html', context=context)
 
 
 @permission_required('matricula.view_reports')

@@ -40,6 +40,7 @@ class CourseTopicsSerializerForTable(serializers.Serializer):
     enroll_finish__year = serializers.IntegerField()
     enroll_finish__month = serializers.SerializerMethodField()
     course_id__category_id__name = serializers.CharField()
+    course_id__workload = serializers.CharField()
 
     def get_enroll_finish__month(self, obj):
         if obj is not None:

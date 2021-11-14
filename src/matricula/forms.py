@@ -18,6 +18,7 @@ from djgentelella.widgets import core as djgentelella, tinymce
 from djgentelella.forms.forms import GTForm
 from djgentelella.models import MenuItem as DJMenuItem
 
+from matricula.utils import get_label_months, MONTHS
 from membership_core.models import Country, SystemCurrency
 from matricula.models import Student, Page, MenuItem, Category, Course,\
     Period, Group, Enroll, Professor
@@ -1004,6 +1005,11 @@ def load_workload():
     for hours in workload:
         yield (hours[0], "%d horas"%hours)
 
+def get_years():
+    available_year = set(Group.objects.all().values_list('enroll_finish__year', flat=True))
+    for year in available_year:
+        yield (year, year)
+
 class CourseGraphForm(GTForm, forms.Form):
     workload = forms.MultipleChoiceField(
         widget=djgentelella.SelectMultiple, required=False,
@@ -1067,6 +1073,47 @@ class CourseWithCoursefilterGraphForm(GTForm, forms.Form):
         filters = {}
         for item in self.cleaned_data:
             if item in self.mapitem and self.cleaned_data[item]:
+                filters[self.mapitem[item]] = self.cleaned_data[item]
+        if not filters:
+            return queryset
+        return queryset.filter(**filters)
+
+class CourseTableForm(GTForm, forms.Form):
+    workload = forms.MultipleChoiceField(
+        widget=djgentelella.SelectMultiple, required=False,
+        choices=load_workload, label='Carga horaria')
+    categories = forms.ModelMultipleChoiceField(
+        widget=djgentelella.SelectMultiple,
+        required=False, label='Categorías',
+        queryset=Category.objects.all()
+    )
+    anio = forms.MultipleChoiceField(
+        widget=djgentelella.SelectMultiple, required=False,
+        label='Año', choices=get_years
+    )
+    month = forms.MultipleChoiceField(choices=list(MONTHS.items()),
+                                      widget=djgentelella.SelectMultiple,
+                                      required=False,
+                                      label="Meses")
+    mapitem = {
+        'workload': 'course__workload__in',
+        'categories': 'course__category__in',
+        'anio': 'enroll_finish__year__in',
+        'month': 'enroll_finish__month__in'
+    }
+
+    def get_urlencode(self):
+        dev  = ''
+        for item in self.cleaned_data:
+            if isinstance(self.cleaned_data[item], list):
+                for x in self.cleaned_data[item]:
+                    dev += '&%s=%s'%(item, str(x))
+        return dev
+
+    def filter_queryset(self, queryset):
+        filters = {}
+        for item in self.cleaned_data:
+            if self.cleaned_data[item]:
                 filters[self.mapitem[item]] = self.cleaned_data[item]
         if not filters:
             return queryset
