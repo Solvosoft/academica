@@ -13,7 +13,7 @@
 <div class="col-md-12">
     <div class="x_panel">
         <div class="x_title">
-            <h3 class="green">{{title}}</h3>
+            <h3 class="green">{{title}} <span class="pull-right" id="totales">Total: 0</span></h3>
         </div>
 
         <div class="x_content">
@@ -22,4 +22,24 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block js %}
+<script>
+var plugin = {
+    id: 'showtotal',
+    afterRender: function(chart, options) {
+        var total=0;
+       for(var x=0; x<chart.data.datasets.length; x++){
+          var dataset=chart.data.datasets[x].data;
+          for(var y=0;  y<dataset.length; y++){
+            total += dataset[y];
+          }
+       }
+        $('#totales').html("Total: "+total);
+    }
+};
+
+Chart.plugins.register(plugin);
+</script>
 {% endblock %}
