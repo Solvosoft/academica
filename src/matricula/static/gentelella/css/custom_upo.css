@@ -1089,11 +1089,10 @@ html , body{
    }
    .x_title h2 {
        margin: 5px 0 6px;
-       float: left;
+       word-wrap: anywhere;
+       word-break: break-word;
        display: block;
        text-overflow: ellipsis;
-       overflow: hidden;
-       white-space: nowrap
    }
    .x_title h2 small {
        margin-left: 10px
@@ -4505,4 +4504,27 @@ div.form-group {
 .tooltip-inner { max-width: 300px; }
 a[data-toggle=tooltip]{
     color: #73879C !important;
+}
+
+.size-box-300{
+     height:300px;
+     word-break: break-word;
+     overflow: auto;
+}
+
+.size-box-400{
+     height:400px;
+     word-break: break-word;
+     overflow: auto;
+}
+
+.size-box-500{
+     height:500px;
+     word-break: break-word;
+     overflow: auto;
+}
+.size-box-600{
+     height:600px;
+     word-break: break-word;
+     overflow: auto;
 }

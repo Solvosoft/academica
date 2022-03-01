@@ -49,7 +49,7 @@
                                         <option value="" {% if not enroll.course_status %}selected{% endif %}>---------</option>
                                         <option value="approved" {% if enroll.course_status %}{% if enroll.course_status == 'approved' %}selected{% endif %}{% endif %}>Curso Aprobado</option>
                                         <option value="reproved" {% if enroll.course_status %}{% if enroll.course_status == 'reproved' %}selected{% endif %}{% endif %}>Curso Reprobado</option>
-                                        <option value="uncompleted" {% if enroll.course_status %}{% if enroll.course_status == 'uncompleted' %}selected{% endif %}{% endif %}>Avandonó el curso</option>
+                                        <option value="uncompleted" {% if enroll.course_status %}{% if enroll.course_status == 'uncompleted' %}selected{% endif %}{% endif %}>No siguió en el curso</option>
                                         <option value="never_attend" {% if enroll.course_status %}{% if enroll.course_status == 'never_attend' %}selected{% endif %}{% endif %}>Nunca ingresó al curso</option>
 
                                     </select>
