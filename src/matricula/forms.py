@@ -1005,12 +1005,6 @@ def load_workload():
     for hours in workload:
         yield (hours[0], "%d horas"%hours)
 
-def load_periods():
-    periods = list(set(Period.objects.all().values_list('id','name').distinct()))
-    periods.sort()
-    for period in periods:
-        yield (period[0], period[1])
-
 def get_years():
     available_year = set(Group.objects.all().values_list('enroll_finish__year', flat=True))
     for year in available_year:
@@ -1022,11 +1016,11 @@ class CourseGraphForm(GTForm, forms.Form):
         choices=load_workload, label='Carga horaria')
     period = forms.MultipleChoiceField(
         widget=djgentelella.SelectMultiple, required=False,
-        choices=load_periods, label='Periodo')
+        choices=get_years, label='Periodo')
 
     mapitem = {
         'workload': 'course__workload__in',
-        'period': 'course__group__period__in',
+        'period': 'period__finish_date__year__in',
     }
 
     def get_urlencode(self):
@@ -1044,7 +1038,7 @@ class CourseGraphForm(GTForm, forms.Form):
                 filters[self.mapitem[item]] = self.cleaned_data[item]
         if not filters:
             return queryset
-        return queryset.filter(**filters).distinct()
+        return queryset.filter(**filters)
 
 class CourseWithCoursefilterGraphForm(GTForm, forms.Form):
     all_period = forms.BooleanField(

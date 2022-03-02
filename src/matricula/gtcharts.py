@@ -3,7 +3,7 @@ from django.utils.text import slugify
 from djgentelella.chartjs import VerticalBarChart, PieChart
 from djgentelella.groute import register_lookups
 
-from matricula.forms import CourseGraphForm, CourseWithCoursefilterGraphForm
+from matricula.forms import CourseGraphForm, CourseWithCoursefilterGraphForm, GroupSearchForm
 from matricula.models import Course, Student, Group
 from matricula.utils import get_label_months
 from membership_core.gtcharts import BaseChart
@@ -396,11 +396,16 @@ class OrganitationsPerCountryReport(BaseChart, PieChart):
 @register_lookups(prefix="total_courses_by_year", basename="total_courses_by_year")
 class TotalCoursesByYear(BaseChart, VerticalBarChart):
     def get_years(self):
-        years = Group.objects.dates('period__finish_date', 'year')
-        yearparams ={str(x.year) : Count('pk', filter=Q(period__finish_date__year=x.year)) for x in years }
         form = CourseGraphForm(self.request.GET)
+        groups = Group.objects.all()
+        form_isvalid = form.is_valid()
+        if form_isvalid:
+            if form.cleaned_data['period']:
+                groups = groups.filter(period__finish_date__year__in=form.cleaned_data['period'])
+        years = groups.dates('period__finish_date', 'year')
+        yearparams ={str(x.year) : Count('pk', filter=Q(period__finish_date__year=x.year)) for x in years }
         queryset = Group.objects.all()
-        if form.is_valid():
+        if form_isvalid:
             queryset = form.filter_queryset(queryset)
         return queryset.aggregate(**yearparams)
 
