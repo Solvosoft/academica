@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from rest_framework.utils.mediatypes import order_by_precedence
 
-from matricula.models import Course, Group
+from matricula.models import Course, Group, Student
 from matricula.utils import get_label_months
+from membership_core.models import Country
 
 
 class CourseSerializerForTable(serializers.ModelSerializer):
@@ -56,6 +57,36 @@ class CourseTopicsDataTableSerializer(serializers.Serializer):
 
 class OrganizationDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=CourseTopicsSerializerForTable(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class CountriesGroupSerializerForTable(serializers.ModelSerializer):
+    student_count = serializers.IntegerField()
+
+    class Meta:
+        model = Country
+        fields = ['name', 'flag', 'code', 'student_count']
+
+
+class CountriesGroupDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=CountriesGroupSerializerForTable(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class OrganizationsGroupsSerializerForTable(serializers.ModelSerializer):
+    organization_count = serializers.IntegerField()
+
+    class Meta:
+        model = Student
+        fields = ['organization', 'organization_count']
+
+
+class OrganizationsGroupDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=OrganizationsGroupsSerializerForTable(), required=True)
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)

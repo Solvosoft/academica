@@ -1693,3 +1693,14 @@ def student_isactive(request, key):
     student = get_object_or_404(Student, key=key)
     result = {'result': 'ok', 'is_active':student.user.is_active}
     return JsonResponse(result)
+
+
+@permission_required('matricula.view_group')
+def view_organizations_countries_group(request, pk):
+    group = get_object_or_404(Group, pk=pk)
+    context = {
+        "title": group.name or '',
+        "url_countries": reverse('countries_group_api-list')+"?pk=%d"%(pk),
+        "url_organizations": reverse('organizations_group_api-list')+"?pk=%d"%(pk)
+    }
+    return render(request, "groups/organizations_countries.html", context=context)
