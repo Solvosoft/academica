@@ -7,10 +7,14 @@ from matricula.utils import get_label_months
 
 class CourseSerializerForTable(serializers.ModelSerializer):
     enroll_count = serializers.IntegerField()
+    has_groups = serializers.SerializerMethodField()
+
+    def get_has_groups(self, obj):
+        return True if obj.group_set.all() else False
 
     class Meta:
         model = Course
-        fields = ['name', 'enroll_count', 'workload']
+        fields = ['id', 'name', 'enroll_count', 'workload', 'has_groups']
 
 
 
@@ -59,3 +63,14 @@ class OrganizationDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
+
+
+class GroupSerializer(serializers.ModelSerializer):
+    enroll_count = serializers.SerializerMethodField()
+
+    def get_enroll_count(self, obj):
+        return obj.enroll_set.all().count()
+
+    class Meta:
+        model = Group
+        fields = ['name', 'enroll_count', 'duration_hours']

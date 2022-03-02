@@ -37,10 +37,68 @@
 {{block.super}}
 
 <script>
+
+    document.ranking_group_enrolls_url = "{% url 'ranking_group_enrolls' 0 %}";
+    document.groups = "";
+    document.course = "";
+
+
+function load_groups(groups, name){
+    var content = "";
+    var content_groups = "";
+    Array.from(groups).forEach(function(element) {
+        content = "<tr class='"+name+"' style='background-color: #ededed; display: none;'>"
+        content += "<td><div style='margin-left: 5%;'>"+element['name']+"</div></td><td>"+element['enroll_count']+"</td><td>"+element['duration_hours']+"</td></tr>";
+        content_groups += content;
+    });
+
+
+    $(document.course).after(content_groups);
+}
+
+function show_groups(btn){
+    $(btn).css("color", "#7e90a3");
+    var id = $(btn).data("key");
+    if($("."+id).is(":visible") == true){
+        $("."+id).hide();
+        $(btn).html($(btn).html().replace("-", "+"));
+        $(btn).parent().parent().css("font-weight", "normal");
+        $(btn).css("font-weight", "normal");
+    }else{
+        $("."+id).show();
+        if($("."+id).is(":visible")){
+            $(btn).html($(btn).html().replace("+", "-"));
+            $(btn).parent().parent().css("font-weight", "bold");
+            $(btn).css("font-weight", "bold");
+        }
+    }
+
+
+}
+
+function collapsed_course(data, type, row, meta){
+
+    var btn = "";
+    var name = data.replaceAll(' ','');
+    name = name.replaceAll(':','');
+    name = name.replaceAll(',','');
+    name = name.replaceAll('#','');
+
+    if(data){
+        if(row['has_groups']){
+            btn += "<button class='btn border-white' type='button' onclick='show_groups(this)' data-id='"+row['id']+"' data-key='"+"collapse"+row['id']
+            btn += "' style='background-color:white;'>+ "+data+"</button>"
+        }else{
+            btn = "<div style='margin-left: 4%;'>"+data+"</div>";
+        }
+    }
+    return btn;
+}
+
     $(document).ready(function () {
         createDataTable("#ranking_course_id", "{{url}}",{
             'columns': [
-                {data: "name", name: "name", title: "Nombre", type: "string", visible: true},
+                {data: "name", name: "name", title: "Nombre", type: "string", visible: true, render: collapsed_course},
                 {data: "enroll_count", name: "enroll_count", title: "Cantidad de matriculados", type: "string", visible: true},
                 {data: "workload", name: "workload", title: "Carga Horaria", type: "string", visible: true}
 
@@ -61,7 +119,38 @@
                     return formdata;
                 }
             }
-            } )
+
+            });
+
+
+
+            $('#ranking_course_id').on('draw.dt', function() {
+                Array.from($("#ranking_course_id tr.odd, #ranking_course_id tr.even")).forEach(function(element) {
+
+                    var id = $($(element).children().children()[0]).data('id');
+                    if(id){
+
+                        var url = document.ranking_group_enrolls_url;
+                        url = url.replace('0', id);
+
+                        $.ajax({
+                            method: 'GET',
+                            url: url,
+                            dataType: 'json',
+                            success: function (data) {
+                                if(data.result == "ok"){
+                                    document.course = element;
+                                    var btn = $($(document.course).children().children()[0]);
+                                    var name = $(btn).data('key');
+                                    if(data.groups){
+                                        load_groups(data.groups, name);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            });
     });
 
 </script>
