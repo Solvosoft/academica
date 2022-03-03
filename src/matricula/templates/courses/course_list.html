@@ -71,6 +71,11 @@
 									<a href="{% url 'edit_course' course.pk %}" class="edit-link" title="Editar curso"><i class="fa fa-edit"></i></a>
 								</li>
 							{% endif %}
+							{% if perms.matricula.add_course %}
+								<li>
+									<a href="{% url 'create_course' pk=course.pk  %}" title="Clonar curso"><i class="fa fa-clipboard"></i></a>
+								</li>
+							{% endif %}
 							{% if perms.matricula.delete_course %}
 								<li><a data-url="{% url 'delete_course' pk=course.pk %}" title="Eliminar curso" onclick="deleteitem(this)"><i class="fa fa-close"></i></a></li>
 							{% endif %}

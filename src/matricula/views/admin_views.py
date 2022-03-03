@@ -189,8 +189,9 @@ class CourseList(ListView):
 
 
 @permission_required('matricula.add_course')
-def create_course(request):
+def create_course(request, pk=None):
     context = {}
+
     if request.method == 'POST':
         form = CourseCreateForm(request.POST)
         context['form'] = form
@@ -202,6 +203,11 @@ def create_course(request):
             messages.error(request, "Error al guardar curso")
     else:
         context['form'] = CourseCreateForm()
+
+        if pk:
+            course = get_object_or_404(Course, pk=pk)
+            context['form'] = CourseCreateForm(instance=course, initial={"name": course.name+ " (Copia)"})
+
     return render(request, 'courses/course_create.html', context)
 
 
