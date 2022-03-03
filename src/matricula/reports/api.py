@@ -66,8 +66,7 @@ class ApprovedRankingFilterSet(FilterSet):
 class RankingCourseApprovedViewSet(mixins.ListModelMixin, GenericViewSet):
     queryset = Course.objects.all().annotate(
             approved_count=Count('group__enroll', filter=Q(
-                group__enroll__enroll_finished=True, group__enroll__course_status='approved'))).\
-            values('name','approved_count', 'workload').order_by('-approved_count')
+                group__enroll__enroll_finished=True, group__enroll__course_status='approved'))).order_by('-approved_count')
     serializer_class = ApprovedCourseDataTableSerializer
     filter_class = ApprovedRankingFilterSet
     search_fields = ['name', 'workload']
