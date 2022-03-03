@@ -1,8 +1,9 @@
 from django.db.models import Q
 from rest_framework import serializers
 
-from matricula.models import Course, Group
+from matricula.models import Course, Group, Student
 from matricula.utils import get_label_months
+from membership_core.models import Country
 
 
 class CourseSerializerForTable(serializers.ModelSerializer):
@@ -83,3 +84,33 @@ class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = ['name', 'enroll_count', 'course_approved_count', 'duration_hours']
+
+
+class CountriesGroupSerializerForTable(serializers.ModelSerializer):
+    student_count = serializers.IntegerField()
+
+    class Meta:
+        model = Country
+        fields = ['name', 'flag', 'code', 'student_count']
+
+
+class CountriesGroupDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=CountriesGroupSerializerForTable(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class OrganizationsGroupsSerializerForTable(serializers.ModelSerializer):
+    organization_count = serializers.IntegerField()
+
+    class Meta:
+        model = Student
+        fields = ['organization', 'organization_count']
+
+
+class OrganizationsGroupDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=OrganizationsGroupsSerializerForTable(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)

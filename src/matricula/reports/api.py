@@ -9,11 +9,14 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from matricula.forms import CourseTableForm
-from matricula.models import Course
+from matricula.models import Course, Student
 from matricula.models import Group
-from matricula.serializers import ApprovedCourseDataTableSerializer
+from matricula.serializers import ApprovedCourseDataTableSerializer, CountriesGroupDataTableSerializer, \
+    OrganizationsGroupDataTableSerializer
 from matricula.serializers import CourseDataTableSerializer
 from matricula.serializers import CourseTopicsDataTableSerializer
+from membership_core.models import Country
+
 
 class ReportPermission(DjangoModelPermissions):
     perms_map = {
@@ -137,5 +140,82 @@ class CourseTopicsViewSet(mixins.ListModelMixin, GenericViewSet):
             'draw': self.request.GET.get('draw', 1),
             'recordsTotal': self.queryset.distinct().count(),
             'recordsFiltered': queryset.distinct().count()
+        }
+        return Response(self.get_serializer(response).data)
+
+
+class CountriesGroupFilterSet(FilterSet):
+    class Meta:
+        model = Country
+        fields = {'name': ['icontains']}
+
+
+class CountriesGroupViewSet(mixins.ListModelMixin, GenericViewSet):
+    queryset = Country.objects.all()
+    serializer_class = CountriesGroupDataTableSerializer
+    filter_class = CountriesGroupFilterSet
+    search_fields = ['name', 'code']
+    ordering_fields = ['name', 'code']
+    ordering = ['name']
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated, ReportPermission]
+
+    def filter_queryset(self, queryset):
+        pk = self.request.GET.get('pk', None)
+        if pk:
+            queryset = queryset.filter(student__enroll__group=pk).annotate(student_count=Count('student')).order_by('name')
+            queryset = super().filter_queryset(queryset)
+            return queryset
+        return queryset.none()
+
+    def list(self, request, *args, **kwargs):
+
+        queryset = self.filter_queryset(self.get_queryset().distinct())
+        paginator = self.paginate_queryset(queryset)
+        response = {
+            'data': paginator,
+            'draw': self.request.GET.get('draw', 1),
+            'recordsTotal': self.queryset.distinct().count(),
+            'recordsFiltered': queryset.count()
+        }
+        return Response(self.get_serializer(response).data)
+
+
+class OrganizationsGroupFilterSet(FilterSet):
+    class Meta:
+        model = Student
+        fields = {'organization': ['icontains']}
+
+class OrganizationsGroupViewSet(mixins.ListModelMixin, GenericViewSet):
+    queryset = Student.objects.values('organization').annotate(organization_count=Count('organization')).filter(organization__isnull=False).exclude(organization="")
+    serializer_class = OrganizationsGroupDataTableSerializer
+    filter_class = OrganizationsGroupFilterSet
+    search_fields = ['organization']
+    ordering_fields = ['organization']
+    ordering = ['organization']
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated, ReportPermission]
+
+    def filter_queryset(self, queryset):
+        pk = self.request.GET.get('pk', None)
+        if pk:
+            queryset = queryset.filter(enroll__group=pk).distinct().order_by('organization')
+            queryset = super().filter_queryset(queryset)
+            return queryset
+        return queryset.none()
+
+    def list(self, request, *args, **kwargs):
+
+        queryset = self.filter_queryset(self.get_queryset().distinct())
+        paginator = self.paginate_queryset(queryset)
+        response = {
+            'data': paginator,
+            'draw': self.request.GET.get('draw', 1),
+            'recordsTotal': self.queryset.distinct().count(),
+            'recordsFiltered': queryset.count()
         }
         return Response(self.get_serializer(response).data)
