@@ -246,6 +246,7 @@ def organizations_per_country_report(request):
     return render(request, 'reports/organizations_per_country_report.html', context=context)
 
 
+@permission_required('matricula.view_reports')
 def ranking_group_enrolls(request, pk):
 
     course = get_object_or_404(Course, pk=pk)
