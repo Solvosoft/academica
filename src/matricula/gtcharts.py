@@ -129,7 +129,7 @@ class EnrollStudentsReport(BaseChart, VerticalBarChart):
             enrrols_count=Count('group__enroll', filter=Q(
                     group__enroll__enroll_finished = True))
         ).values('name', 'enrrols_count')
-        period = self.request.GET.get('period', None)
+        period = self.request.GET.get('form_period')
         if period:
             queryset = queryset.filter(group__period=period)
         form = CourseWithCoursefilterGraphForm(self.request.GET)

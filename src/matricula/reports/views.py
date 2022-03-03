@@ -53,15 +53,17 @@ def enrolls_report(request):
     form = CourseWithCoursefilterGraphForm(request.GET)
     form.is_valid()
     urlsparams=form.get_urlencode()
+    periods = Period.objects.all()
     if 'all_period' in form.cleaned_data and form.cleaned_data['all_period']:
-        periods = Period.objects.all()
+        if form.cleaned_data['period']:
+            periods = periods.filter(finish_date__year__in=form.cleaned_data['period'])
     else:
         periods= get_active_period()
     period_list =[]
     for period in periods:
         period_list.append({
             'title': str(period),
-            'url': reverse('totalestmatriculados-list')+"?period=%d%s"%(period.pk, urlsparams)
+            'url': reverse('totalestmatriculados-list')+"?form_period=%d%s"%(period.pk, urlsparams)
         })
     context = {
         'form': form,
@@ -69,6 +71,7 @@ def enrolls_report(request):
         'title': 'Total de personas matriculadas'
     }
     return render(request, 'reports/standard_period_report.html', context=context)
+
 
 @permission_required('matricula.view_reports')
 def approved_student_report(request):

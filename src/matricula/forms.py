@@ -1054,9 +1054,13 @@ class CourseWithCoursefilterGraphForm(GTForm, forms.Form):
                                              widget=djgentelella.SelectMultiple,
                                              required=False,
                                              label='Cursos disponibles')
+    period = forms.MultipleChoiceField(
+        widget=djgentelella.SelectMultiple, required=False,
+        choices=get_years, label='Periodo')
     mapitem = {
+        'period': 'group__period__finish_date__year__in',
         'workload': 'workload__in',
-        'course': 'pk__in'
+        'course': 'pk__in',
     }
 
     def get_urlencode(self):
