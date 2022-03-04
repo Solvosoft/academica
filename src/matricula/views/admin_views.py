@@ -1704,9 +1704,20 @@ def student_isactive(request, key):
 @permission_required('matricula.view_group')
 def view_organizations_countries_group(request, pk):
     group = get_object_or_404(Group, pk=pk)
+    student_list = Student.objects.filter(enroll__group=group)
+    orga_list = {}
+
+    for student in student_list:
+        if student.organizations:
+            for orga in student.organizations:
+                if not orga['value'] in orga_list:
+                    orga_list[orga['value']] = 1
+                else:
+                    orga_list[orga['value']] += 1
+
     context = {
         "title": group.name or '',
-        "url_countries": reverse('countries_group_api-list')+"?pk=%d"%(pk),
-        "url_organizations": reverse('organizations_group_api-list')+"?pk=%d"%(pk)
+        "organization_list": orga_list,
+        "url_countries": reverse('countries_group_api-list')+"?pk=%d"%(pk)
     }
     return render(request, "groups/organizations_countries.html", context=context)

@@ -46,7 +46,6 @@ router.register('ranking_course_enrolls_api', api.RankingCourseEnrollsViewSet, '
 router.register('ranking_course_approved_api', api.RankingCourseApprovedViewSet, 'ranking_course_approved_api')
 router.register('course_topics_api', api.CourseTopicsViewSet, 'course_topics_api')
 router.register('countries_group', api.CountriesGroupViewSet, 'countries_group_api')
-router.register('organizations_group', api.OrganizationsGroupViewSet, 'organizations_group_api')
 
 reports = [
     path('reports/', list_reports, name='list_reports'),

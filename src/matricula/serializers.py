@@ -99,18 +99,3 @@ class CountriesGroupDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
-
-
-class OrganizationsGroupsSerializerForTable(serializers.ModelSerializer):
-    organization_count = serializers.IntegerField()
-
-    class Meta:
-        model = Student
-        fields = ['organization', 'organization_count']
-
-
-class OrganizationsGroupDataTableSerializer(serializers.Serializer):
-    data = serializers.ListField(child=OrganizationsGroupsSerializerForTable(), required=True)
-    draw = serializers.IntegerField(required=True)
-    recordsFiltered = serializers.IntegerField(required=True)
-    recordsTotal = serializers.IntegerField(required=True)
