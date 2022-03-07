@@ -15,7 +15,7 @@ import json
 class ConsolidadoEstadisticasCurso(BaseChart, VerticalBarChart):
     def get_courses(self):
         queryset = Course.objects.all().order_by('name')
-        period = self.request.GET.get('period', None)
+        period = self.request.GET.get('form_period', None)
         if period:
             queryset = queryset.filter(group__period=period)
         form = CourseWithCoursefilterGraphForm(self.request.GET)
@@ -81,7 +81,7 @@ class UncompletedStudentReport(BaseChart, VerticalBarChart):
                     group__enroll__go_to_one_class=True,
                     group__enroll__course_status= """uncomplete"""))
         )
-        period = self.request.GET.get('period', None)
+        period = self.request.GET.get('form_period', None)
         if period:
             queryset = queryset.filter(group__period=period)
         form = CourseWithCoursefilterGraphForm(self.request.GET)
@@ -181,7 +181,7 @@ class ApprovedStudentReport(BaseChart, VerticalBarChart):
                 group__enroll__go_to_one_class=True,
                 group__enroll__course_status="""approved"""))).values('name', 'approve_count')
 
-        period = self.request.GET.get('period', None)
+        period = self.request.GET.get('form_period', None)
         if period:
             queryset = queryset.filter(group__period=period)
         form = CourseWithCoursefilterGraphForm(self.request.GET)
@@ -229,7 +229,7 @@ class NeverAttendStudentReport(BaseChart, VerticalBarChart):
             withoutlessons=Count('group__enroll', filter=Q(group__enroll__enroll_finished=True,
                                                            group__enroll__go_to_one_class=False))
         ).values('name', 'withoutlessons')
-        period = self.request.GET.get('period', None)
+        period = self.request.GET.get('form_period', None)
         if period:
             queryset = queryset.filter(group__period=period)
         form = CourseWithCoursefilterGraphForm(self.request.GET)

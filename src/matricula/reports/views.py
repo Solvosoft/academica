@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.text import slugify
 
-from matricula.forms import CourseGraphForm, CourseWithCoursefilterGraphForm, CourseTableForm
+from matricula.forms import CourseGraphForm, CourseWithCoursefilterGraphForm, CourseTableForm, PeriodFilterGraphForm
 from matricula.models import Student, Period
 from matricula.views.utils import get_active_period
 
@@ -52,7 +52,6 @@ def enrolls_report(request):
 
     form = CourseWithCoursefilterGraphForm(request.GET)
     form.is_valid()
-    urlsparams=form.get_urlencode()
     periods = Period.objects.all()
     if 'all_period' in form.cleaned_data and form.cleaned_data['all_period']:
         if form.cleaned_data['period']:
@@ -60,6 +59,8 @@ def enrolls_report(request):
     else:
         periods= get_active_period()
     period_list =[]
+    form.cleaned_data.pop('period')
+    urlsparams = form.get_urlencode()
     for period in periods:
         period_list.append({
             'title': str(period),
@@ -77,16 +78,20 @@ def enrolls_report(request):
 def approved_student_report(request):
     form = CourseWithCoursefilterGraphForm(request.GET)
     form.is_valid()
+    periods = Period.objects.all()
     urlsparams=form.get_urlencode()
     if 'all_period' in form.cleaned_data and form.cleaned_data['all_period']:
-        periods = Period.objects.all()
+        if form.cleaned_data['period']:
+            periods = periods.filter(finish_date__year__in=form.cleaned_data['period'])
     else:
-        periods= get_active_period()
-    period_list =[]
+        periods = get_active_period()
+    period_list = []
+    form.cleaned_data.pop('period')
+    urlsparams = form.get_urlencode()
     for period in periods:
         period_list.append({
             'title': str(period),
-            'url': reverse('approvedstudentreport-list')+"?period=%d%s"%(period.pk, urlsparams)
+            'url': reverse('approvedstudentreport-list')+"?form_period=%d%s"%(period.pk, urlsparams)
         })
     context = {
         'form': form,
@@ -99,16 +104,19 @@ def approved_student_report(request):
 def uncompleted_student_report(request):
     form = CourseWithCoursefilterGraphForm(request.GET)
     form.is_valid()
-    urlsparams = form.get_urlencode()
+    periods = Period.objects.all()
     if 'all_period' in form.cleaned_data and form.cleaned_data['all_period']:
-        periods = Period.objects.all()
+        if form.cleaned_data['period']:
+            periods = periods.filter(finish_date__year__in=form.cleaned_data['period'])
     else:
         periods = get_active_period()
-    period_list =[]
+    period_list = []
+    form.cleaned_data.pop('period')
+    urlsparams = form.get_urlencode()
     for period in periods:
         period_list.append({
             'title': str(period),
-            'url': reverse('uncompleted_student-list')+"?period=%d%s"%(period.pk, urlsparams)
+            'url': reverse('uncompleted_student-list')+"?form_period=%d%s"%(period.pk, urlsparams)
         })
     context = {
         'form': form,
@@ -122,16 +130,19 @@ def uncompleted_student_report(request):
 def student_without_lessons_report(request):
     form = CourseWithCoursefilterGraphForm(request.GET)
     form.is_valid()
-    urlsparams = form.get_urlencode()
+    periods = Period.objects.all()
     if 'all_period' in form.cleaned_data and form.cleaned_data['all_period']:
-        periods = Period.objects.all()
+        if form.cleaned_data['period']:
+            periods = periods.filter(finish_date__year__in=form.cleaned_data['period'])
     else:
         periods = get_active_period()
-    period_list =[]
+    period_list = []
+    form.cleaned_data.pop('period')
+    urlsparams = form.get_urlencode()
     for period in periods:
         period_list.append({
             'title': str(period),
-            'url': reverse('student_without_lessons_report-list')+"?period=%d%s"%(period.pk, urlsparams)
+            'url': reverse('student_without_lessons_report-list')+"?form_period=%d%s"%(period.pk, urlsparams)
         })
     context = {
         'form': form,
@@ -193,16 +204,19 @@ def student_by_organization_report(request):
 def consolidado_estadisticas_cursos(request):
     form = CourseWithCoursefilterGraphForm(request.GET)
     form.is_valid()
-    urlsparams = form.get_urlencode()
+    periods = Period.objects.all()
     if 'all_period' in form.cleaned_data and form.cleaned_data['all_period']:
-        periods = Period.objects.all()
+        if form.cleaned_data['period']:
+            periods = periods.filter(finish_date__year__in=form.cleaned_data['period'])
     else:
         periods = get_active_period()
-    period_list =[]
+    period_list = []
+    form.cleaned_data.pop('period')
+    urlsparams = form.get_urlencode()
     for period in periods:
         period_list.append({
             'title': str(period),
-            'url': reverse('consolidadoestcurso-list')+"?period=%d%s"%(period.pk, urlsparams)
+            'url': reverse('consolidadoestcurso-list')+"?form_period=%d%s"%(period.pk, urlsparams)
         })
     context = {
         'form': form,
