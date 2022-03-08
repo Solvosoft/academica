@@ -9,11 +9,13 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from matricula.forms import CourseTableForm
-from matricula.models import Course
+from matricula.models import Course, Student
 from matricula.models import Group
-from matricula.serializers import ApprovedCourseDataTableSerializer
+from matricula.serializers import ApprovedCourseDataTableSerializer, CountriesGroupDataTableSerializer
 from matricula.serializers import CourseDataTableSerializer
 from matricula.serializers import CourseTopicsDataTableSerializer
+from membership_core.models import Country
+
 
 class ReportPermission(DjangoModelPermissions):
     perms_map = {
@@ -66,8 +68,7 @@ class ApprovedRankingFilterSet(FilterSet):
 class RankingCourseApprovedViewSet(mixins.ListModelMixin, GenericViewSet):
     queryset = Course.objects.all().annotate(
             approved_count=Count('group__enroll', filter=Q(
-                group__enroll__enroll_finished=True, group__enroll__course_status='approved'))).\
-            values('name','approved_count', 'workload').order_by('-approved_count')
+                group__enroll__enroll_finished=True, group__enroll__course_status='approved'))).order_by('-approved_count')
     serializer_class = ApprovedCourseDataTableSerializer
     filter_class = ApprovedRankingFilterSet
     search_fields = ['name', 'workload']
@@ -138,5 +139,44 @@ class CourseTopicsViewSet(mixins.ListModelMixin, GenericViewSet):
             'draw': self.request.GET.get('draw', 1),
             'recordsTotal': self.queryset.distinct().count(),
             'recordsFiltered': queryset.distinct().count()
+        }
+        return Response(self.get_serializer(response).data)
+
+
+class CountriesGroupFilterSet(FilterSet):
+    class Meta:
+        model = Country
+        fields = {'name': ['icontains']}
+
+
+class CountriesGroupViewSet(mixins.ListModelMixin, GenericViewSet):
+    queryset = Country.objects.all()
+    serializer_class = CountriesGroupDataTableSerializer
+    filter_class = CountriesGroupFilterSet
+    search_fields = ['name', 'code']
+    ordering_fields = ['name', 'code']
+    ordering = ['name']
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated, ReportPermission]
+
+    def filter_queryset(self, queryset):
+        pk = self.request.GET.get('pk', None)
+        if pk:
+            queryset = queryset.filter(student__enroll__group=pk).annotate(student_count=Count('student')).order_by('name')
+            queryset = super().filter_queryset(queryset)
+            return queryset
+        return queryset.none()
+
+    def list(self, request, *args, **kwargs):
+
+        queryset = self.filter_queryset(self.get_queryset().distinct())
+        paginator = self.paginate_queryset(queryset)
+        response = {
+            'data': paginator,
+            'draw': self.request.GET.get('draw', 1),
+            'recordsTotal': self.queryset.distinct().count(),
+            'recordsFiltered': queryset.count()
         }
         return Response(self.get_serializer(response).data)

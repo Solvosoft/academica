@@ -70,6 +70,9 @@
 						<a title="Matrículas" class="btn btn-sm" href="{% url 'enrolls' %}?group={{object.pk}}"><i class="fa fa-user red"></i> </a>
 						</li>
 						<li>
+							<a title="Organizaciones y paises" href="{% url 'organizations_countries_group' object.pk %}" class="edit-link"><i class="fa fa-building"></i> </a>
+						</li>
+						<li>
 							<a title="Ver lista de espera" href="{% url 'waitinglist_group' object.pk %}" class="edit-link"><i class="fa fa-clock-o"></i></a>
 						</li>
 						{% if perms.matricula.can_export_enrolled_group %}

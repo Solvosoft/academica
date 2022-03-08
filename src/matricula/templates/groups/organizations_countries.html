@@ -1,0 +1,100 @@
+{% extends 'gentelella/base.html'%}
+{% load static i18n %}
+{% load gtsettings %}
+
+{% block pre_head %}
+    {% define_true "use_datatables" %}
+{% endblock %}
+
+{% block content %}
+<div class="clearfix"></div>
+<br><br>
+<h1 class="text-center">{{title}}</h1>
+<div class="col-md-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h3 class="green">Paises</h3>
+        </div>
+
+        <div class="x_content">
+            <table id="countries_table" class="table"> </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="clearfix"></div>
+<br><br>
+<div class="col-md-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h3 class="green">Organizaciones</h3>
+        </div>
+
+        <div class="x_content">
+            <table id="organizations_table" class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Estudiantes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, value in organization_list.items %}
+                        <tr>
+                            <td>{{key}}</td>
+                            <td>{{value}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+{{block.super}}
+
+<script>
+
+    function render_flag(data, type, row, meta){
+        var flag = '';
+        if(data){
+            flag = "<span style='font-size: 2em;' class='"+data+"'></span>"
+        }
+        return flag;
+    }
+
+
+    $(document).ready(function () {
+        createDataTable("#countries_table", "{{url_countries}}",{
+            'columns': [
+                {data: "name", name: "name", title: "Nombre", type: "string", visible: true},
+                {data: "code", name: "code", title: "Código", type: "string", visible: true},
+                {data: "flag", name: "flag", title: "Bandera", type: "string", visible: true, render: render_flag },
+                {data: "student_count", name: "student_count", title: "Estudiantes", type: "string", visible: true},
+            ],
+             ajax: {
+             url: "{{url_countries}}",
+                type: 'GET',
+                data: function(dataTableParams, settings) {
+                    var data = formatDataTableParams(dataTableParams, settings);
+                    return data;
+                }
+            }
+        });
+
+
+        $("#organizations_table").DataTable({});
+
+        $('#organizations_table input[type="search"]').on( 'keyup', function (){
+            $("#organizations_table").columns(0).search( this.value).draw();
+            $("#organizations_table").columns(1).search( this.value).draw();
+        });
+    });
+
+</script>
+
+{% endblock %}

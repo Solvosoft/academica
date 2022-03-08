@@ -189,8 +189,9 @@ class CourseList(ListView):
 
 
 @permission_required('matricula.add_course')
-def create_course(request):
+def create_course(request, pk=None):
     context = {}
+
     if request.method == 'POST':
         form = CourseCreateForm(request.POST)
         context['form'] = form
@@ -202,6 +203,11 @@ def create_course(request):
             messages.error(request, "Error al guardar curso")
     else:
         context['form'] = CourseCreateForm()
+
+        if pk:
+            course = get_object_or_404(Course, pk=pk)
+            context['form'] = CourseCreateForm(instance=course, initial={"name": course.name+ " (Copia)"})
+
     return render(request, 'courses/course_create.html', context)
 
 
@@ -1693,3 +1699,25 @@ def student_isactive(request, key):
     student = get_object_or_404(Student, key=key)
     result = {'result': 'ok', 'is_active':student.user.is_active}
     return JsonResponse(result)
+
+
+@permission_required('matricula.view_group')
+def view_organizations_countries_group(request, pk):
+    group = get_object_or_404(Group, pk=pk)
+    student_list = Student.objects.filter(enroll__group=group)
+    orga_list = {}
+
+    for student in student_list:
+        if student.organizations:
+            for orga in student.organizations:
+                if not orga['value'] in orga_list:
+                    orga_list[orga['value']] = 1
+                else:
+                    orga_list[orga['value']] += 1
+
+    context = {
+        "title": group.name or '',
+        "organization_list": orga_list,
+        "url_countries": reverse('countries_group_api-list')+"?pk=%d"%(pk)
+    }
+    return render(request, "groups/organizations_countries.html", context=context)

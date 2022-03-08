@@ -1,16 +1,21 @@
+from django.db.models import Q
 from rest_framework import serializers
-from rest_framework.utils.mediatypes import order_by_precedence
 
-from matricula.models import Course, Group
+from matricula.models import Course, Group, Student
 from matricula.utils import get_label_months
+from membership_core.models import Country
 
 
 class CourseSerializerForTable(serializers.ModelSerializer):
     enroll_count = serializers.IntegerField()
+    has_groups = serializers.SerializerMethodField()
+
+    def get_has_groups(self, obj):
+        return True if obj.group_set.all() else False
 
     class Meta:
         model = Course
-        fields = ['name', 'enroll_count', 'workload']
+        fields = ['id', 'name', 'enroll_count', 'workload', 'has_groups']
 
 
 
@@ -23,10 +28,14 @@ class CourseDataTableSerializer(serializers.Serializer):
 
 class ApprovedCourseSerializerForTable(serializers.ModelSerializer):
     approved_count = serializers.IntegerField()
+    has_groups = serializers.SerializerMethodField()
+
+    def get_has_groups(self, obj):
+        return True if obj.group_set.all() else False
 
     class Meta:
         model = Course
-        fields = ['name', 'approved_count', 'workload']
+        fields = ['id', 'name', 'approved_count', 'workload', 'has_groups']
 
 
 class ApprovedCourseDataTableSerializer(serializers.Serializer):
@@ -56,6 +65,37 @@ class CourseTopicsDataTableSerializer(serializers.Serializer):
 
 class OrganizationDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=CourseTopicsSerializerForTable(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class GroupSerializer(serializers.ModelSerializer):
+    enroll_count = serializers.SerializerMethodField()
+    course_approved_count = serializers.SerializerMethodField()
+
+    def get_enroll_count(self, obj):
+        return obj.enroll_set.all().count()
+
+    def get_course_approved_count(self, obj):
+        filter = Q(enroll_finished=True, course_status='approved')
+        return obj.enroll_set.all().filter(filter).count()
+
+    class Meta:
+        model = Group
+        fields = ['name', 'enroll_count', 'course_approved_count', 'duration_hours']
+
+
+class CountriesGroupSerializerForTable(serializers.ModelSerializer):
+    student_count = serializers.IntegerField()
+
+    class Meta:
+        model = Country
+        fields = ['name', 'flag', 'code', 'student_count']
+
+
+class CountriesGroupDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=CountriesGroupSerializerForTable(), required=True)
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)

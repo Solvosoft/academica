@@ -1,13 +1,13 @@
 import json
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Count, Q
-from django.shortcuts import render
+from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-from django.utils.http import urlencode
 from django.utils.text import slugify
-
-from matricula.forms import CourseGraphForm, CourseWithCoursefilterGraphForm, CourseTableForm, PeriodFilterGraphForm
-from matricula.models import Student, Period
+from matricula.forms import CourseGraphForm, CourseWithCoursefilterGraphForm, CourseTableForm
+from matricula.models import Student, Period, Course
+from matricula.serializers import GroupSerializer
 from matricula.views.utils import get_active_period
 
 
@@ -261,17 +261,14 @@ def organizations_per_country_report(request):
     return render(request, 'reports/organizations_per_country_report.html', context=context)
 
 
+@permission_required('matricula.view_reports')
+def ranking_group_enrolls(request, pk):
 
+    course = get_object_or_404(Course, pk=pk)
 
-
-
-
-
-
-
-
-
-
-
-
-
+    if course:
+        groups = course.group_set.all()
+        info = GroupSerializer(data=groups, many=True)
+        info.is_valid()
+        return JsonResponse({"result": "ok", "groups": info.data})
+    return JsonResponse({"result": "error", "message": "Object doesn't exists"})

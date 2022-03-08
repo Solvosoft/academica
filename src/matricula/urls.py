@@ -28,8 +28,8 @@ from .views.admin_views import CategoryList, GroupDetailView, create_category, \
     create_menupage, pre_enroll_group, add_group_course, list_students_group, \
     export_enrolled_group, open_group, close_group, regenerate_certificate, \
     build_pdf_certificate_list, edit_password_student, notify_rejected, \
-    StudentDetailView, email_enrolled_group, notify_enroll_success, get_forms_modal,\
-    student_isactive, create_student_ajax
+    StudentDetailView, email_enrolled_group, notify_enroll_success, get_forms_modal, \
+    student_isactive, create_student_ajax, view_organizations_countries_group
 
 from .views.coupons_views import coupons_list, create_cupon, delete_coupon, edit_coupon,\
     coupons_bill_list, add_coupons_group
@@ -45,6 +45,7 @@ router = DefaultRouter()
 router.register('ranking_course_enrolls_api', api.RankingCourseEnrollsViewSet, 'ranking_course_enrolls_api')
 router.register('ranking_course_approved_api', api.RankingCourseApprovedViewSet, 'ranking_course_approved_api')
 router.register('course_topics_api', api.CourseTopicsViewSet, 'course_topics_api')
+router.register('countries_group', api.CountriesGroupViewSet, 'countries_group_api')
 
 reports = [
     path('reports/', list_reports, name='list_reports'),
@@ -56,6 +57,7 @@ reports = [
     path('reports/approved_student_report', views.approved_student_report, name='approved_student_report'),
     path('reports/student_by_organization_report', views.student_by_organization_report, name='student_by_organization_report'),
     path('reports/ranking_course_enrolls', views.ranking_course_enrolls_view, name='ranking_course_enrolls'),
+    path('reports/ranking_group_enrolls/<int:pk>/', views.ranking_group_enrolls, name='ranking_group_enrolls'),
     path('reports/ranking_course_approved', views.ranking_course_approved_view, name='ranking_course_approved'),
     path('reports/countries_in_courses', views.countries_in_courses_report, name='countries_in_courses_report'),
     path('reports/courses_by_year', views.total_courses_by_year_report, name='total_courses_by_year_report'),
@@ -95,7 +97,7 @@ urlpatterns = [
     path('enrrolment/edit_category/<int:pk>/', edit_category, name="edit_category"),
     url('enrrolment/courses', CourseList.as_view(), name="enrrolment_courses"),
     path('enrrolment_course_detail/<int:pk>/', course_detail, name="course_detail"),
-    url('enrrolment/create_course/', create_course, name="create_course"),
+    url('enrrolment/create_course/(?P<pk>\d+)?', create_course, name="create_course"),
     path('enrrolment/add_group_course/<int:pk>/', add_group_course, name="add_group_course"),
     path('enrrolment/delete_course/<int:pk>/', CourseDelete.as_view(), name="delete_course"),
     path('enrrolment_edit_course/<int:pk>/', edit_course, name="edit_course"),
@@ -108,6 +110,7 @@ urlpatterns = [
     path('enrrolment/delete_period/<int:pk>/', PeriodDelete.as_view() , name="delete_period"),
     path('enrrolment/edit_period/<int:pk>/', edit_period, name="edit_period"),
     url('enrrolment/groups', GroupList.as_view(), name="groups_enroll"),
+    path('groups/organizations_countries/<int:pk>/', view_organizations_countries_group, name="organizations_countries_group"),
     path('enrrolment/<int:pk>/waitinglist', GroupDetailView.as_view(), name="waitinglist_group"),
     path('export/<int:pk>/csv/', export_waitinglist_xls, name='export_waitinglist_group'),
     path('enrrolment/pre_enroll_group/<int:pk>/', pre_enroll_group, name="pre_enroll_group"),
