@@ -2,7 +2,7 @@
 {% load i18n static %}
 {% load utils %}
 {% block extra_css %} 
-	<link href="{% static 'css/matricula.css' %}" rel="stylesheet">
+	<link href="{% static 'css/matricula.css' %}?v={% get_version %}" rel="stylesheet">
 {% endblock %}
 {% block content %}
 	<div class="row">
@@ -97,6 +97,6 @@
 	</div>
 {% endblock %}
 {% block js %}
-<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}?v={% get_version %}"></script>
+<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}?v={% get_version %}"></script>
 {% endblock %}

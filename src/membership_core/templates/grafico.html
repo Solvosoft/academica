@@ -1,6 +1,7 @@
 {% load static %}
+{% load matriculabase %}
 
-<script src="{% static 'js/Chart.js' %}"></script>
+<script src="{% static 'js/Chart.js' %}?v={% get_version %}"></script>
 <div class="chart-container"
      {% if graphsize == 'big' %}
         style="position: relative; height:1200px; width:1800px"

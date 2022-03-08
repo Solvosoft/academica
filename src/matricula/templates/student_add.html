@@ -1,7 +1,7 @@
 {% extends 'gentelella/base.html'%}
 {% load static i18n %}
 {% block extra_css%}
-	<link rel="stylesheet" href="{% static 'css/auth-buttons.css'%}">
+	<link rel="stylesheet" href="{% static 'css/auth-buttons.css'%}?v={% get_version %}">
 {% endblock %}
 {% block content %}
 	<h1>{% trans 'New student' %}</h1>
@@ -33,6 +33,6 @@
 	</div>
 {% endblock %}
 {% block js %}
-	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}?v={% get_version %}"></script>
+	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}?v={% get_version %}"></script>
 {% endblock %}
