@@ -5,10 +5,12 @@ from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils.text import slugify
-from matricula.forms import CourseGraphForm, CourseWithCoursefilterGraphForm, CourseTableForm
+from matricula.forms import CourseGraphForm, CourseWithCoursefilterGraphForm, CourseTableForm, CountryForm
+from matricula.gtcharts import OrganitationsPerCountryReport, get_organizations_per_country
 from matricula.models import Student, Period, Course
 from matricula.serializers import GroupSerializer
 from matricula.views.utils import get_active_period
+from membership_core.models import Country
 
 
 @permission_required('matricula.view_reports')
@@ -250,11 +252,42 @@ def ranking_course_approved_view(request):
     return render(request, 'reports/ranking_course_approved.html', context=context)
 
 
+def get_organization_by_countries(country):
+    orgas_list = []
+    orgs = Student.objects.filter(country__pk=country).exclude(organization='').values("organization")
+    for org in orgs:
+        try:
+            for value in json.loads(org["organization"]):
+                orgas_list.append(value['value'].lower())
+        except json.decoder.JSONDecodeError as e:
+            orgas_list.append(org["organization"].lower())
+
+    return orgas_list
+
+def add_count_student(organizations):
+    aux_list = []
+
+    for key, org_item in organizations.items():
+        orga_country = get_organization_by_countries(key)
+        for item in org_item['orgs']:
+            aux_list.append({"org": item, "count": orga_country.count(item)})
+        org_item['orgs'] = aux_list
+        aux_list = []
+
 
 @permission_required('matricula.view_reports')
 def organizations_per_country_report(request):
-    context = {
+    countries = Country.objects.all().annotate(
+            num_appearances=Count('student', filter=Q(student__enroll__enroll_activate=True))
+        ).filter(num_appearances__gt=0)
 
+    id_list = list(countries.values_list('id', flat=True))
+    organizations = get_organizations_per_country(countries.values('id', 'name'))
+    add_count_student(organizations)
+
+    context = {
+         'countryform': CountryForm(countries=Country.objects.filter(pk__in=id_list)),
+         'organizations': organizations,
          'graph_url': reverse('organitations_per_country-list'),
          'title': 'Cantidad de organizaciones por país'
     }

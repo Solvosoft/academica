@@ -1134,3 +1134,12 @@ class CourseTableForm(GTForm, forms.Form):
             'anio': 'group__enroll_finish__year__in',
             'month': 'group__enroll_finish__month__in'
         }
+
+class CountryForm(forms.Form):
+    country = forms.ModelChoiceField(label="País", queryset=Country.objects.none(), required=True, widget=djgentelella.Select)
+
+    def __init__(self, *args, **kwargs):
+        countries = kwargs.pop('countries', None)
+        super(CountryForm, self).__init__(*args, **kwargs)
+        if countries:
+            self.fields['country'].queryset = countries

@@ -310,6 +310,42 @@ class CountriesInCoursesReport(BaseChart, PieChart):
                 'text': 'Reporte de países los cuales participan en los cursos'
                 }
 
+
+def update_organizations(countries):
+    delete_countries=[]
+    for country in countries:
+        countries[country]['count']=len(countries[country]['orgs'])
+        if not countries[country]['count']:
+            delete_countries.append(country)
+    for delcountry in delete_countries:
+        del countries[delcountry]
+    return countries
+
+def get_organizations_per_country(countries_list):
+
+    countries = {}
+    for country in countries_list:
+        countries[country['id']] = {
+            'name': country['name'],
+            'orgs': [],
+            'count': 0
+        }
+    orgs = Student.objects.exclude(organization='').values('organization', 'country').distinct()
+
+    for org in orgs:
+        if org['country'] not in countries:
+            continue
+        try:
+            for value in json.loads(org["organization"]):
+                if value['value'].lower() not in countries[org['country']]['orgs']:
+                    countries[org['country']]['orgs'].append(value['value'].lower())
+        except json.decoder.JSONDecodeError as e:
+            if org["organization"].lower() not in countries[org['country']]['orgs']:
+                countries[org['country']]['orgs'].append(org["organization"].lower())
+
+    return update_organizations(countries)
+
+
 @register_lookups(prefix="organitations_per_country", basename="organitations_per_country")
 class OrganitationsPerCountryReport(BaseChart, PieChart):
     def __init__(self, *args, **kwargs):
@@ -318,38 +354,8 @@ class OrganitationsPerCountryReport(BaseChart, PieChart):
         ).filter(num_appearances__gt=0).values('id', 'name')
         super().__init__(*args, **kwargs)
 
-    def update_organizations(self, countries):
-        delete_countries=[]
-        for country in countries:
-            countries[country]['count']=len(countries[country]['orgs'])
-            if not countries[country]['count']:
-                delete_countries.append(country)
-        for delcountry in delete_countries:
-            del countries[delcountry]
-        return countries
-
     def get_organizations_per_country(self):
-
-        countries = {}
-        for country in self.countries:
-            countries[country['id']] = {
-                'name': country['name'],
-                'orgs': [],
-                'count': 0
-            }
-        orgs = Student.objects.exclude(organization='').values('organization', 'country').distinct()
-        for org in orgs:
-            if org['country'] not in countries:
-                continue
-            try:
-                for value in json.loads(org["organization"]):
-                    if value['value'].lower() not in countries[org['country']]['orgs']:
-                        countries[org['country']]['orgs'].append(value['value'].lower())
-            except json.decoder.JSONDecodeError as e:
-                if org["organization"].lower() not in countries[org['country']]['orgs']:
-                    countries[org['country']]['orgs'].append(org["organization"].lower())
-
-        return self.update_organizations(countries)
+        return get_organizations_per_country(self.countries)
 
     def get_labels(self):
         labels = []
