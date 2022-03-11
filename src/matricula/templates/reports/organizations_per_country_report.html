@@ -76,7 +76,6 @@ var plugin = {
 Chart.plugins.register(plugin);
 
 document.organizations_per_country = {{ organizations|safe }};
-console.log(document.organizations_per_country);
 document.orga_table = $('#organizations_table').DataTable({});
 
 $("#id_country").on("change", function(){
@@ -88,7 +87,7 @@ $("#id_country").on("change", function(){
         $("#organizations_table").DataTable({}).destroy();
         var content = "";
         document.organizations_per_country[id]['orgs'].forEach(function(item, index){
-            content += "<tr><td>"+item['org'].charAt(0).toUpperCase()+item['org'].slice(1)+"</td><td>"+item['count']+"</td></tr>";
+            content += "<tr><td>"+item['org'].charAt(0).toUpperCase()+item['org'].slice(1)+"</td><td><a class='btn' title='Ver Estudiantes' onclick='gotostudents(this)' data-id='"+item['org']+"'>"+item['count']+"</a></td></tr>";
         });
 
         $("#organizations_table tbody").html(content);
@@ -104,5 +103,11 @@ $(document).ready( function () {
 $('#organizations_table input[type="search"]').on( 'keyup', function (){
     $("#organizations_table").columns(0).search(this.value).draw();
 });
+
+function gotostudents(btn){
+    var organization = $(btn).data('id');
+    var url = '{% url 'students' %}' + '?active=&group=&organization='+organization+'&action=Buscar';
+    window.open(url, '_blank');
+}
 </script>
 {% endblock %}
