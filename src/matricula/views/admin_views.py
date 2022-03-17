@@ -1086,6 +1086,9 @@ class StudentList(ListView):
         if self.form.cleaned_data['organization']:
             queryset = queryset.filter(
                 organization__icontains=self.form.cleaned_data['organization'])
+        if self.form.cleaned_data['country']:
+            queryset = queryset.filter(
+                country__code=self.form.cleaned_data['country'])
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -1715,7 +1718,7 @@ def view_organizations_countries_group(request, pk):
                     country=str(student.country)
                     orga_list[orga['value']]={
                         'value': 1,
-                        'country': country
+                        'country': student.country
                     }
                     if country not in countries:
                         countries.append(country)
@@ -1726,6 +1729,7 @@ def view_organizations_countries_group(request, pk):
 
     context = {
         "title": group.name or '',
+        'group': group,
         "organization_list": orga_list,
         "url_countries": reverse('countries_group_api-list')+"?pk=%d"%(pk),
         "countries": countries

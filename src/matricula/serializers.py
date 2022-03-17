@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.urls import reverse
 from rest_framework import serializers
 
 from matricula.models import Course, Group, Student
@@ -87,7 +88,14 @@ class GroupSerializer(serializers.ModelSerializer):
 
 
 class CountriesGroupSerializerForTable(serializers.ModelSerializer):
-    student_count = serializers.IntegerField()
+    student_count = serializers.SerializerMethodField()
+
+    def get_student_count(self, obj):
+        if obj:
+            return '<a target="_blank" href="%s?country=%s&group=%s">%s</a>'%(reverse('students'),
+                                                            obj.code, obj.group,
+                                                            obj.student_count)
+        return ""
 
     class Meta:
         model = Country

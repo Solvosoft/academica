@@ -54,7 +54,7 @@
                     {% for key, value in organization_list.items %}
                         <tr>
                             <td>{{key}}</td>
-                            <td>{{value.value}}</td>
+                            <td><a target="_blank" href="{% url 'students' %}?organization={{key}}&group={{group.pk}}">{{value.value}}</a></td>
                             <td>{{value.country}}</td>
                         </tr>
                     {% endfor %}

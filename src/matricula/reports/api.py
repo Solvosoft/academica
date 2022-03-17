@@ -1,4 +1,4 @@
-from django.db.models import Q, Count
+from django.db.models import Q, Count, F, Value, IntegerField
 from django_filters.rest_framework import FilterSet, DjangoFilterBackend
 from rest_framework import viewsets, mixins
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -164,7 +164,9 @@ class CountriesGroupViewSet(mixins.ListModelMixin, GenericViewSet):
     def filter_queryset(self, queryset):
         pk = self.request.GET.get('pk', None)
         if pk:
-            queryset = queryset.filter(student__enroll__group=pk).annotate(student_count=Count('student')).order_by('name')
+            queryset = queryset.filter(student__enroll__group=pk).annotate(
+                group=Value(pk, output_field=IntegerField()),
+                student_count=Count('student')).order_by('name')
             queryset = super().filter_queryset(queryset)
             return queryset
         return queryset.none()

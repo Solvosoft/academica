@@ -558,6 +558,7 @@ class StudentSearchForm(GTForm, forms.Form):
         choices=IS_ACTIVE, widget=djgentelella.Select,
         required=False, label="Activo")
 
+    country = forms.CharField(widget=forms.HiddenInput, required=False)
 
 class StudentAdminEditForm(GTForm, forms.ModelForm):
     username = forms.CharField(
