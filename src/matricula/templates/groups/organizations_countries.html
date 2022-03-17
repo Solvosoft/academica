@@ -29,21 +29,33 @@
     <div class="x_panel">
         <div class="x_title">
             <h3 class="green">Organizaciones</h3>
+
         </div>
 
         <div class="x_content">
+            <div class="btn pull-right">
+            <label for="countryselect">Filtar países: </label>
+            <select id="countryselect" autocomplete="off">
+                <option value="all" selected>Todos los países</option>
+                {% for country in countries %}
+                <option value="{{country}}">{{country}}</option>
+                {% endfor %}
+            </select>
+            </div>
             <table id="organizations_table" class="table">
                 <thead>
                     <tr>
                         <th>Nombre</th>
                         <th>Estudiantes</th>
+                        <th>País</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for key, value in organization_list.items %}
                         <tr>
                             <td>{{key}}</td>
-                            <td>{{value}}</td>
+                            <td>{{value.value}}</td>
+                            <td>{{value.country}}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -86,12 +98,22 @@
             }
         });
 
-
-        $("#organizations_table").DataTable({});
+        $('#countryselect').select2();
+        var datatableinstance=$("#organizations_table").DataTable({});
 
         $('#organizations_table input[type="search"]').on( 'keyup', function (){
             $("#organizations_table").columns(0).search( this.value).draw();
             $("#organizations_table").columns(1).search( this.value).draw();
+
+        });
+
+        $('#countryselect').on('select2:select', function (e) {
+            var data = e.params.data;
+            if(data.id == "all"){
+                 datatableinstance.columns(2).search('').draw();
+            }else{
+                datatableinstance.columns(2).search( data.text).draw();
+            }
         });
     });
 

@@ -25,7 +25,7 @@ from django_ajax.decorators import ajax
 
 from django.conf import settings
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import get_template, render_to_string
 from django.urls import reverse
@@ -51,6 +51,7 @@ from matricula.tasks import task_generate_group_certificate
 from matricula.views.utils import get_expire_date
 from matricula.certificate_utils import link_callback
 from matricula.contrib.bills.models import Bill
+from membership_core.models import Country
 
 
 @method_decorator(permission_required('matricula.view_category'), name='dispatch')
@@ -1706,18 +1707,27 @@ def view_organizations_countries_group(request, pk):
     group = get_object_or_404(Group, pk=pk)
     student_list = Student.objects.filter(enroll__group=group)
     orga_list = {}
-
+    countries = []
     for student in student_list:
         if student.organizations:
             for orga in student.organizations:
-                if not orga['value'] in orga_list:
-                    orga_list[orga['value']] = 1
+                if  orga['value'] not in orga_list:
+                    country=str(student.country)
+                    orga_list[orga['value']]={
+                        'value': 1,
+                        'country': country
+                    }
+                    if country not in countries:
+                        countries.append(country)
+
+
                 else:
-                    orga_list[orga['value']] += 1
+                    orga_list[orga['value']]['value'] += 1
 
     context = {
         "title": group.name or '',
         "organization_list": orga_list,
-        "url_countries": reverse('countries_group_api-list')+"?pk=%d"%(pk)
+        "url_countries": reverse('countries_group_api-list')+"?pk=%d"%(pk),
+        "countries": countries
     }
     return render(request, "groups/organizations_countries.html", context=context)
