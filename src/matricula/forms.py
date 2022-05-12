@@ -49,8 +49,8 @@ class StudentCreateForm(GTForm, forms.ModelForm):
         required=True, label=_("Password")+" * ", widget=djgentelella.PasswordInput,
         help_text='El password debe contener al menos 8 caracteres, mezclando mayúsculas, minúsculas, números y caracteres de puntuación')
     organization = forms.CharField(
-        label="Organización * ", required=False, help_text=_("It can be your company or organization where you work or the community that you represent.")
-    )
+        label="Organización * ", required=True, help_text=_("It can be your company or organization where you work or the community that you represent.")
+        )
 
     class Meta:
         model = Student

@@ -40,9 +40,14 @@ def update_enroll(request):
 
         for enroll in enroll_list:
             item = Enroll.objects.filter(pk=int(enroll['pk']))
+            updatedata={'course_status': enroll['Estado']}
             if enroll['Estado'] == "reproved":
-                item.update(pdf_certificate=None)
-            item.update(course_status=enroll['Estado'])
+                updatedata['pdf_certificate']=None
+            if enroll['Estado'] == 'never_attend':
+                updatedata['go_to_one_class']=False
+            else:
+                updatedata['go_to_one_class']=True
+            item.update(**updatedata)
 
 
 @ajax
