@@ -79,7 +79,7 @@ class UncompletedStudentReport(BaseChart, VerticalBarChart):
             uncomplete=Count('group__enroll', filter=Q(
                     group__enroll__enroll_finished = True,
                     group__enroll__go_to_one_class=True,
-                    group__enroll__course_status= """uncomplete"""))
+                    group__enroll__course_status= """uncompleted"""))
         )
         period = self.request.GET.get('form_period', None)
         if period:
