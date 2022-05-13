@@ -93,12 +93,38 @@ def approved_student_report(request):
     for period in periods:
         period_list.append({
             'title': str(period),
-            'url': reverse('approvedstudentreport-list')+"?form_period=%d%s"%(period.pk, urlsparams)
+            'url': reverse('reprovedstudentreport-list')+"?form_period=%d%s"%(period.pk, urlsparams)
         })
     context = {
         'form': form,
          'periods': period_list,
          'title': 'Total de estudiantes aprobados por curso'
+    }
+    return render(request, 'reports/standard_period_report.html', context=context)
+
+@permission_required('matricula.view_reports')
+def reproved_student_report(request):
+    form = CourseWithCoursefilterGraphForm(request.GET)
+    form.is_valid()
+    periods = Period.objects.all()
+    urlsparams=form.get_urlencode()
+    if 'all_period' in form.cleaned_data and form.cleaned_data['all_period']:
+        if form.cleaned_data['period']:
+            periods = periods.filter(finish_date__year__in=form.cleaned_data['period'])
+    else:
+        periods = get_active_period()
+    period_list = []
+    form.cleaned_data.pop('period')
+    urlsparams = form.get_urlencode()
+    for period in periods:
+        period_list.append({
+            'title': str(period),
+            'url': reverse('reprovedstudentreport-list')+"?form_period=%d%s"%(period.pk, urlsparams)
+        })
+    context = {
+        'form': form,
+         'periods': period_list,
+         'title': 'Total de estudiantes reprobados por curso'
     }
     return render(request, 'reports/standard_period_report.html', context=context)
 

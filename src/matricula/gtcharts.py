@@ -220,6 +220,54 @@ class ApprovedStudentReport(BaseChart, VerticalBarChart):
             }]
         }
 
+@register_lookups(prefix="reprovedstudentreport", basename="reprovedstudentreport")
+class ReprovedStudentReport(BaseChart, VerticalBarChart):
+
+    def get_courses(self):
+        queryset = Course.objects.all().order_by('name').annotate(
+            reprove_count=Count('group__enroll', filter=Q(
+                group__enroll__enroll_finished=True,
+                group__enroll__go_to_one_class=True,
+                group__enroll__course_status="""reproved"""))).values('name', 'reprove_count')
+
+        period = self.request.GET.get('form_period', None)
+        if period:
+            queryset = queryset.filter(group__period=period)
+        form = CourseWithCoursefilterGraphForm(self.request.GET)
+        if form.is_valid():
+            queryset= form.filter_queryset(queryset)
+        return queryset
+
+    def get_labels(self):
+        return ['Reprobaron']
+
+    def get_datasets(self):
+        self.index = 0
+        dataset = []
+        courses = self.get_courses()
+        for course in courses:
+            dataset.append(
+                {'label': course['name'],
+                 'backgroundColor': self.get_color(),
+                 'borderColor': self.get_color(),
+                 'borderWidth': 1,
+                 'data': [course['reprove_count']]
+                 },
+            )
+        return dataset
+
+    def get_title(self):
+        return {'display': True,
+            'text': 'Total de estudiantes reprobados por curso'}
+
+    def get_scales(self):
+        return {'yAxes': [{
+                    'ticks': {
+                        'suggestedMin': 0, # minimum will be 0, unless there is a lower value.
+                        'beginAtZero': True # minimum value will be 0.
+                    }
+            }]
+        }
 
 @register_lookups(prefix="student_without_lessons_report", basename="student_without_lessons_report")
 class NeverAttendStudentReport(BaseChart, VerticalBarChart):

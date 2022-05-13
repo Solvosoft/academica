@@ -55,6 +55,7 @@ reports = [
     path('reports/uncompleted_student_report', views.uncompleted_student_report, name='uncompleted_student_report'),
     path('reports/enrolls_report', views.enrolls_report, name='enrolls_report'),
     path('reports/approved_student_report', views.approved_student_report, name='approved_student_report'),
+    path('reports/reproved_student_report', views.reproved_student_report, name='reproved_student_report'),
     path('reports/student_by_organization_report', views.student_by_organization_report, name='student_by_organization_report'),
     path('reports/ranking_course_enrolls', views.ranking_course_enrolls_view, name='ranking_course_enrolls'),
     path('reports/ranking_group_enrolls/<int:pk>/', views.ranking_group_enrolls, name='ranking_group_enrolls'),
