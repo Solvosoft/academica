@@ -4,8 +4,9 @@ from djgentelella.chartjs import VerticalBarChart, PieChart
 from djgentelella.groute import register_lookups
 
 from matricula.forms import CourseGraphForm, CourseWithCoursefilterGraphForm, GroupSearchForm
-from matricula.models import Course, Student, Group
+from matricula.models import Course, Student, Group, Period
 from matricula.utils import get_label_months
+from matricula.views.utils import get_active_period
 from membership_core.gtcharts import BaseChart
 from membership_core.models import Country
 import json
@@ -369,7 +370,7 @@ def update_organizations(countries):
         del countries[delcountry]
     return countries
 
-def get_organizations_per_country(countries_list):
+def get_organizations_per_country(countries_list, extras={}):
 
     countries = {}
     for country in countries_list:
@@ -378,7 +379,10 @@ def get_organizations_per_country(countries_list):
             'orgs': [],
             'count': 0
         }
-    orgs = Student.objects.exclude(organization='').values('organization', 'country').distinct()
+    queryset=Student.objects.all()
+    if extras:
+        queryset = queryset.filter(**extras)
+    orgs = queryset.exclude(organization='').values('organization', 'country').distinct()
 
     for org in orgs:
         if org['country'] not in countries:
@@ -403,7 +407,19 @@ class OrganitationsPerCountryReport(BaseChart, PieChart):
         super().__init__(*args, **kwargs)
 
     def get_organizations_per_country(self):
-        return get_organizations_per_country(self.countries)
+        form = CourseGraphForm(self.request.GET)
+        form.is_valid()
+        filters = {}
+        periods = Period.objects.all()
+        if 'period' in form.cleaned_data and form.cleaned_data['period']:
+            if form.cleaned_data['period']:
+                filters['enroll__group__period__in'] = periods.filter(finish_date__year__in=form.cleaned_data['period'])
+        else:
+            filters['enroll__group__period__in'] = get_active_period()
+        if 'workload' in form.cleaned_data and form.cleaned_data['workload']:
+            filters['enroll__group__duration_hours__in'] = form.cleaned_data['workload']
+
+        return get_organizations_per_country(self.countries, extras=filters)
 
     def get_labels(self):
         labels = []
@@ -420,8 +436,9 @@ class OrganitationsPerCountryReport(BaseChart, PieChart):
         data = []
         colors = []
         for country in self.countries:
-            data.append(organizations[country['id']]['count'])
-            colors.append(self.get_color())
+            if country['id'] in organizations:
+                data.append(organizations[country['id']]['count'])
+                colors.append(self.get_color())
         dataset.append(
                 {'label': 'Cantidad de organizaciones',
                  'backgroundColor': colors,

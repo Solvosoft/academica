@@ -278,9 +278,9 @@ def ranking_course_approved_view(request):
     return render(request, 'reports/ranking_course_approved.html', context=context)
 
 
-def get_organization_by_countries(country):
+def get_organization_by_countries(country, extras={}):
     orgas_list = []
-    orgs = Student.objects.filter(country__pk=country).exclude(organization='').values("organization")
+    orgs = Student.objects.filter(country__pk=country, **extras).exclude(organization='').values("organization")
     for org in orgs:
         try:
             for value in json.loads(org["organization"]):
@@ -290,11 +290,11 @@ def get_organization_by_countries(country):
 
     return orgas_list
 
-def add_count_student(organizations):
+def add_count_student(organizations, extras={}):
     aux_list = []
 
     for key, org_item in organizations.items():
-        orga_country = get_organization_by_countries(key)
+        orga_country = get_organization_by_countries(key, extras=extras)
         for item in org_item['orgs']:
             aux_list.append({"org": item, "count": orga_country.count(item)})
         org_item['orgs'] = aux_list
@@ -308,13 +308,26 @@ def organizations_per_country_report(request):
         ).filter(num_appearances__gt=0)
 
     id_list = list(countries.values_list('id', flat=True))
-    organizations = get_organizations_per_country(countries.values('id', 'name'))
-    add_count_student(organizations)
+    form = CourseGraphForm(request.GET)
+    form.is_valid()
+    filters={}
+    periods = Period.objects.all()
+    if 'period' in form.cleaned_data and form.cleaned_data['period']:
+        if form.cleaned_data['period']:
+            filters['enroll__group__period__in'] = periods.filter(finish_date__year__in=form.cleaned_data['period'])
+    else:
+        filters['enroll__group__period__in'] = get_active_period()
+    if 'workload' in form.cleaned_data and form.cleaned_data['workload']:
+        filters['enroll__group__duration_hours__in'] = form.cleaned_data['workload']
+
+    organizations = get_organizations_per_country(countries.values('id', 'name'), extras=filters)
+    add_count_student(organizations, extras=filters)
 
     context = {
+         'form': form,
          'countryform': CountryForm(countries=Country.objects.filter(pk__in=id_list)),
          'organizations': organizations,
-         'graph_url': reverse('organitations_per_country-list'),
+         'graph_url': reverse('organitations_per_country-list')+'?i=1'+form.get_urlencode(),
          'title': 'Cantidad de organizaciones por país'
     }
     return render(request, 'reports/organizations_per_country_report.html', context=context)
