@@ -182,8 +182,11 @@ def student_without_lessons_report(request):
 
 @permission_required('matricula.view_reports')
 def countries_in_courses_report(request):
+    form = CourseGraphForm(request.GET)
+    form.is_valid()
     context = {
-         'graph_url': reverse('countries_in_courses-list'),
+        'form': form,
+         'graph_url': reverse('countries_in_courses-list')+'?i=1'+form.get_urlencode(),
         'title': "Países de los cuales participan en los cursos"
     }
     return render(request, 'reports/countries_in_courses_report.html', context=context)

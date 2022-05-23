@@ -326,14 +326,34 @@ class CountriesInCoursesReport(BaseChart, PieChart):
         self.countries = Country.objects.all().annotate(
             num_appearances=Count('student', filter=Q(student__enroll__enroll_activate=True))
         ).filter(num_appearances__gt=0)
+        self._countries=None
         super().__init__(*args, **kwargs)
 
     def get_labels(self):
         labels = []
-        for country in self.countries:
+        for country in self.filter_countries():
             labels.append("%s (%d)"%(country.name, country.num_appearances))
 
         return labels
+
+    def filter_countries(self):
+        form = CourseGraphForm(self.request.GET)
+        form.is_valid()
+        filters = {}
+        periods = Period.objects.all()
+        if 'period' in form.cleaned_data and form.cleaned_data['period']:
+            if form.cleaned_data['period']:
+                filters['student__enroll__group__period__in'] = periods.filter(finish_date__year__in=form.cleaned_data['period'])
+        else:
+            filters['student__enroll__group__period__in'] = get_active_period()
+        if 'workload' in form.cleaned_data and form.cleaned_data['workload']:
+            filters['student__enroll__group__duration_hours__in'] = form.cleaned_data['workload']
+        if self._countries is None:
+            self._countries = Country.objects.all().annotate(
+                num_appearances=Count('student', filter=Q(student__enroll__enroll_activate=True, **filters))
+            ).filter(num_appearances__gt=0)
+            self.countries = self._countries
+        return self.countries
 
     def get_datasets(self):
 
@@ -341,7 +361,7 @@ class CountriesInCoursesReport(BaseChart, PieChart):
         dataset = []
         country_data = []
         colors = []
-        for country in self.countries:
+        for country in self.filter_countries():
             country_data.append(country.num_appearances)
             colors.append(self.get_color())
 
