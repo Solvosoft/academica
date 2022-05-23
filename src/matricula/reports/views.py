@@ -93,7 +93,7 @@ def approved_student_report(request):
     for period in periods:
         period_list.append({
             'title': str(period),
-            'url': reverse('reprovedstudentreport-list')+"?form_period=%d%s"%(period.pk, urlsparams)
+            'url': reverse('approvedstudentreport-list')+"?form_period=%d%s"%(period.pk, urlsparams)
         })
     context = {
         'form': form,
