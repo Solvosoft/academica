@@ -1,5 +1,8 @@
+import urllib
+
 from django import template
 from django.conf import settings
+from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.utils.safestring import mark_safe
 
@@ -61,3 +64,13 @@ def as_number_percent(studentscore):
         score= 100
 
     return score
+
+@register.simple_tag(takes_context=True)
+def reverse_login(context):
+    return reverse('login') +'?next=' + urllib.parse.quote_plus(context['request'].path)
+
+
+@register.simple_tag(takes_context=True)
+def reverse_register(context):
+    return reverse('create_user_academy') +'?next=' + urllib.parse.quote_plus(context['request'].path)
+    #return reverse('create_simple_user') +'?next=' + urllib.parse.quote_plus(context['request'].path)

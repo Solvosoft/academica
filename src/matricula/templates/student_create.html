@@ -16,9 +16,9 @@
 								{% csrf_token %}
 								{{form.as_horizontal}}
 							<div style="margin-top:10px; text-align:right;">
-								<button type="submit" class="btn btn-success" value="{% trans 'Save'%}"
-									onclick="this.disabled=true,this.form.submit();">
-									<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> {% trans 'Save'%}
+								<button type="submit" class="btn btn-success" value="{% trans 'Save'%}" >
+									<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+									Registrarme
 								</button>
 							</div>
 						</form>
@@ -52,9 +52,13 @@
 				// update inwhitelist Array in-place
 				var whitelst = []
 				for(rows of whitelist.results){
+				try {
 					tags = JSON.parse(rows.text)
 					for(tag of tags){
 						whitelst.push(tag.value)
+					}
+					}catch(error){
+						console.log(error);
 					}
 				}
 				tagify.settings.whitelist.splice(0, whitelist.total_count, ...whitelst)

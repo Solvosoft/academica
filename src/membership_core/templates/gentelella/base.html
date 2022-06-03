@@ -133,28 +133,6 @@
           {% block footer %}
 
             <footer>
-              {% if not request.user.is_authenticated %}
-                  <div class="modal fade" id="showModal" role="dialog" aria-labelledby="title" aria-hidden="true">
-                      <div class="modal-dialog modal-lg" role="document">
-                          <div class="modal-content">
-                              <div class="modal-header">
-                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                      <span aria-hidden="true">&times;</span>
-                                  </button>
-                                  <h1 id="title">{% trans 'Login' %}</h1>
-                              </div>
-                              <div class="modal-body">
-                                <div id="modal_msg"></div>
-                                <div id="result_modal">
-                                    Cargando el contenido, si no aparece el formulario por favor use los siguientes enlaces
-                                    <a href="{% url 'login' %}" style="margin-left: 2em"> Iniciar Sesión</a> --
-                                    <a href="{% url 'create_user_academy' %}" class="text-danger"> Registrarme </a>
-                                </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              {% endif %}
               {% include "gentelella/app/footer.html" %}
             </footer>
 
@@ -245,21 +223,6 @@
               });
             });
           </script>
-        {% else %}
-          <script>
-            var modal_context = {
-              'forms_url': "{% url 'modalforms-list' %}",
-              'url_login': "{% url 'autenticate' %}",
-              'student_active_url': "{% url 'student_isactive' '0' %}",
-              'student_token': "",
-              'url_enroll': "{% url 'enroll_ajax' %}",
-              'validation_error': "Hay errores de validación en el formulario",
-              'non_validation_error': "Usuarie y/o contraseña incorrecto o usuarie inactivo.",
-              'save_messages': "Usuarie creado correctamente.",
-              'error': "Ha ocurrido un error mientras se realizaba la acción.",
-            };
-          </script>
-          <script src="{% static 'gentelella/js/login_modal.js' %}?v={% get_version %}"></script>
         {% endif %}
       {% endblock %}
     {% endblock body %}

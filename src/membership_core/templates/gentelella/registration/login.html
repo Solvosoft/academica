@@ -13,6 +13,7 @@
         <div class="login_wrapper">
             <div class="animate form login_form">
                 <section class="login_content">
+                    <a href="{% url 'create_user_academy' %}?next={{next}}" class="btn btn-success">Registrarme</a>
                     <form method="post" action="{% url 'login' %}">
                     {% csrf_token %}
                         <input type="hidden" name="next" value="{{ next }}">

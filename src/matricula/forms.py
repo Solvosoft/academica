@@ -55,7 +55,7 @@ class StudentCreateForm(GTForm, forms.ModelForm):
     class Meta:
         model = Student
         fields = [
-            'name', 'first_name', 'last_name', 'email',
+             'first_name', 'last_name', 'email','name',
             'country', 'phone_number', 'password',
             'organization', ]
         widgets = {

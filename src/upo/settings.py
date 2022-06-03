@@ -195,11 +195,12 @@ DATE_INPUT_FORMATS = [
 DATE_FORMAT = 'd/m/Y'
 
 DATETIME_INPUT_FORMATS = [
-    '%Y/%m/%d %H:%M %A',
-    '%m/%d/%Y %H:%M',
     '%d/%m/%Y %H:%M',
+    '%m/%d/%Y %H:%M',
+
     '%Y-%m-%d %H:%M',
-    '%d/%m/%y %H:%M'
+    '%d/%m/%y %H:%M',
+    '%Y/%m/%d %H:%M %A',
 ]
 
 MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})

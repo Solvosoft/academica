@@ -92,11 +92,11 @@
                                     {% endif %}
                                 {% else %}
                                     {% if group.in_enrollment and group.flow == group.AUTO_ENROLL  %}
-                                        <a style="margin-botton:10px;" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#showModal">
+                                        <a style="margin-botton:10px;" class="btn btn-primary btn-sm" href="{% url 'login' %}?next={% url 'course_detail' course.pk %}">
                                             {% trans 'Enroll me' %}
                                         </a>
                                     {% elif group.in_preenrollment %}
-                                        <a style="margin-botton:10px;" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#showModal">
+                                        <a style="margin-botton:10px;" class="btn btn-primary btn-sm" href="{% url 'login' %}?next={% url 'course_detail' course.pk %}">
                                             {% trans 'Pre-enroll me' %}
                                         </a>
                                     {% endif %}
@@ -178,99 +178,14 @@
 {% block js %}
     <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}?v={% get_version %}"></script>
     <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}?v={% get_version %}"></script>
-    <script>
-		const Toast = Swal.mixin({
-			toast: true,
-			position: 'top-end',
-			showConfirmButton: false,
-			timer: 3000,
-			timerProgressBar: true,
-			didOpen: (toast) => {
-				toast.addEventListener('mouseenter', Swal.stopTimer)
-				toast.addEventListener('mouseleave', Swal.resumeTimer)
-			}
-		});
-	</script>
+
 	{% if request.user.is_authenticated %}
 		<script>
 			$(document).ready(function(){
 				$('.enrollme').on('click', function(){
 					$('html, body').animate({ scrollTop: 0 }, 'low');
 				});
-				if("{{authenticated}}" == 'on'){
-					Toast.fire({
-						icon: 'success',
-						title: 'Sesión inicidada exitosamente.'
-					});
-				}
 			});
-		</script>
-	{% else %}
-		<script>
-		$(document).ready(function(){
-			$("#id_password").after("<input type='checkbox' onclick='myFunction(\"id_password\")'> Mostrar contraseña<br/>");
-			$("#id_password2").after("<input type='checkbox' onclick='myFunction(\"id_password2\")'> Mostrar contraseña<br/>");
-            $('#show_password').parent().css({'text-align':'left', "margin-bottom":"5px"});
-			$('#pills-tab li:nth-child({{display_form}}) a').tab('show');
-			$('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
-				$('#title').html($(this).html());
-			});
-			$('.select2-container').css('width','100%');
-            if("{{display_form}}" == '2'){
-				$('#title').html("Registrarme");
-			}
-		});
-		function myFunction(id) {
-			let x = document.getElementById(id)
-			if (x.type === "password") {
-				x.type = "text";
-			} else {
-				x.type = "password";
-			}
-		}
-		if("{{show_modal}}" == "on"){
-			$('#showModal').modal('show');
-			if ("{{login_errors}}"){
-				$("#login-errors").show()
-			}
-		}
-		if("{{student_created}}" == 'on'){
-			Toast.fire({
-				icon: 'success',
-				title: 'El usuario fue creado exitosamente, deberá acceder a su correo para validar su cuenta e iniciar sesión.'
-			});
-		}
-		var input = document.querySelector('#id_organization'),
-		tagify = new Tagify(input, {whitelist:[]}),
-		controller; // for aborting the call
-		// listen to any keystrokes which modify tagify's input
-		tagify.on('input', onInput)
-		function onInput( e ){
-			var value = e.detail.value;
-			tagify.settings.whitelist.length = 0; // reset the whitelist
-
-			// https://developer.mozilla.org/en-US/docs/Web/API/AbortController/abort
-			controller && controller.abort();
-			controller = new AbortController();
-
-			// show loading animation and hide the suggestions dropdown
-			tagify.loading(true).dropdown.hide.call(tagify)
-
-			fetch("/gtapis/student/?q="+e.detail.value, {signal:controller.signal})
-				.then(RES => RES.json())
-				.then(function(whitelist){
-				// update inwhitelist Array in-place
-				var whitelst = []
-				for(rows of whitelist.results){
-					tags = JSON.parse(rows.text)
-					for(tag of tags){
-						whitelst.push(tag.value)
-					}
-				}
-				tagify.settings.whitelist.splice(0, whitelist.total_count, ...whitelst)
-				tagify.loading(false).dropdown.show.call(tagify, value); // render the suggestions dropdown
-			})
-		}
 		</script>
 	{% endif %}
 {% endblock %}

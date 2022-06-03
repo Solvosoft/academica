@@ -9,14 +9,14 @@ import uuid
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 from django.utils.decorators import method_decorator
-
+from django.contrib.auth import login as djlogin
 from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages, auth
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse, reverse_lazy, resolve, Resolver404
 from django.http.response import HttpResponse
 from django.template.loader import render_to_string
 from django.views.generic.edit import UpdateView
@@ -31,6 +31,13 @@ from matricula.views.utils import get_expire_date
 from matricula.forms import ProfessorEditProfileForm, StudentCreateForm,\
     StudentEditForm, UserEditForm, StudentResetPasswordForm
 
+def get_next(request):
+    next = request.GET.get('next', '')
+    try:
+        match = resolve(next)
+    except Resolver404 as e:
+        next=''
+    return next
 
 def create_user(request):
     if request.method == 'POST':
@@ -41,7 +48,7 @@ def create_user(request):
                 form.cleaned_data['password'])
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name']
-            user.is_active = False
+            user.is_active = True
             user.save()
             student = Student(
                 user=user, organization=form.cleaned_data['organization'],
@@ -60,10 +67,13 @@ def create_user(request):
                 },
                 enqueued=False,
                 user=None)
-            return render(
-                request, 'messages.html', {
-                    'message': _('Thank you, We will send you an email soon'),
-                    'mtype': 'success'})
+            messages.success(request, 'Gracias, un correo de activación ha sido enviado a su cuenta, podrá registrarse en los curso, pero si no se activa como usuario será rechazada después de una semana')
+            djlogin(request, user)
+            next  = get_next(request)
+            if next:
+                return redirect(next)
+            return redirect(reverse('courses'))
+
     else:
         form = StudentCreateForm()
     if request.user.is_authenticated and not request.user.is_staff:
@@ -122,35 +132,6 @@ def confirm_email(request):
     return render(
         request, 'messages.html', {
             'message': _('Key not found'), 'mtype': 'warning'})
-
-
-@ajax
-def authenticate(request):
-    '''
-        Realiza la autenticación de los usuarios, redirecciona a la página principal del sistema
-        o a la página inidicada en el next (página que requiere login a la cuál quería ingresar un usuario
-        no logueado a la que va a ser redireccionado al autenticarse correctamente)
-
-        En caso de error devuelve un 0 que indica que la autenticación no fue realizada correctamente 
-        el cual es atrapado al realizar la comprobación para mostrar el mensaje de error al usuario
-    '''
-    username = request.POST.get('username', '')
-    password = request.POST.get('password', '')
-    user = auth.authenticate(username=username, password=password)
-    if user is not None and user.is_active:
-        auth.login(request, user)
-        mnext = request.POST.get('next', '')
-        if mnext:
-            return HttpResponse(mnext)
-    else:
-        return {
-        'inner-fragments': {
-            '#message': '<div class="alert alert-danger"  role="alert">' + str(_('Login failed')) + '</div>'
-            },
-                }
-
-    return redirect(reverse('courses'))
-
 
 @login_required
 def logout(request):

@@ -10,7 +10,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from matricula.views.Auth import ProfessorProfileView, recover_password, \
-    mail_recover_pass, authenticate, create_user, login_user, \
+    mail_recover_pass,  create_user, login_user, \
     confirm_email, logout, StudentEdit, add_student
 from matricula.views.Courses import list_courses, view_course, course_detail
 from matricula.views.Enrollments import addmetoquee, list_enroll, enrollme, \
@@ -77,7 +77,6 @@ urlpatterns = [
     url('enrrolment/add_student$', add_student, name="add_student"),
     url('enrrolment/login_user$', login_user, name="login_user"),
     url('enrrolment/confirm_email$', confirm_email, name="confirm_email"),
-    url('enrrolment/authenticate$', authenticate, name="authenticate"),
     url('enrrolment/logout$', logout, name="logout"),
     url('recover_password$', recover_password, name="recover_password"),
     url('enrrolment/mail_recover_pass$', mail_recover_pass, name='mail_recover_pass'),
@@ -163,7 +162,7 @@ urlpatterns = [
     path('enrrolment_certificate_enroll/<int:pk_group>/<int:pk>/', regenerate_certificate, name="build_pdf_certificate_view"),
     path('enrollment/users/create', AddUser.as_view(), name="create_simple_user"),
     path('enrrolment/modalforms', get_forms_modal, name="modalforms-list"),
-    path('enrrolment/autenticate', do_login, name="autenticate"),
+    #path('enrrolment/autenticate', do_login, name="autenticate"),
     path('enrrolment/create_using_ajax', create_student_ajax, name="enroll_ajax"),
     path('enrrolment/student_is_active/<str:key>', student_isactive, name="student_isactive"),
 ] + billurls + reports + router.urls

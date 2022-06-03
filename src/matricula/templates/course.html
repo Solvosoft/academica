@@ -106,11 +106,11 @@
 								{% endif %}
 							{% else %}
 								{% if group.in_enrollment and group.flow == group.AUTO_ENROLL  %}
-									<a style="margin-botton:10px;" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#showModal">
+									<a style="margin-botton:10px;" class="btn btn-primary btn-sm" href="{% url 'login' %}?next={% url 'course_detail' group.course.pk %}">
 										{% trans 'Enroll me' %}
 									</a>
 								{% elif group.in_preenrollment %}
-									<a style="margin-botton:10px;" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#showModal">
+									<a style="margin-botton:10px;" class="btn btn-primary btn-sm" href="{% url 'login' %}?next={% url 'course_detail' group.course.pk %}">
 										{% trans 'Pre-enroll me' %}
 									</a>
 								{% endif %}

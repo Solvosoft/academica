@@ -1,5 +1,5 @@
 {% block top_navigation %}
-	{% load  gentelellamenu %}
+	{% load  gentelellamenu utils %}
 	<div class="nav_menu">
 		<div class="nav toggle">
 			<a id="menu_toggle"><i class="fa fa-bars"></i></a>
@@ -9,7 +9,7 @@
 				{% top_menu  %}
 			{% endif %}
             {% if not request.user.is_authenticated %}
-			    <li><a href="{% url "login" %}">Iniciar sesión</a><li>
+			    <li><a href="{% reverse_login %}">Iniciar sesión</a><li>
 				<li><a href="{% url "create_user_academy" %}">Registrarme</a><li>
             {% else %}
                 <li><a href="{% url "logout" %}">Cerrar sesión</a><li>
