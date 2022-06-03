@@ -73,4 +73,3 @@ def reverse_login(context):
 @register.simple_tag(takes_context=True)
 def reverse_register(context):
     return reverse('create_user_academy') +'?next=' + urllib.parse.quote_plus(context['request'].path)
-    #return reverse('create_simple_user') +'?next=' + urllib.parse.quote_plus(context['request'].path)

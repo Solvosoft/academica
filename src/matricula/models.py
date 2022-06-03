@@ -187,6 +187,7 @@ class Group(models.Model):
     professors = models.ManyToManyField(Professor, blank=True, verbose_name=_("Professors"))
     duration_hours = models.IntegerField(_("Duración en horas"), default=20)
     expedition_date = models.DateField(_("Certificate expedition date"), blank=True, null=True)
+    featured = models.BooleanField(default=False, verbose_name='Mostrar en destacados')
 
     @property
     def in_preenrollment(self):

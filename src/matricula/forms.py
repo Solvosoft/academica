@@ -248,7 +248,7 @@ class GroupAddForm(forms.ModelForm, GTForm):
             'name', 'period', 'schedule', 'pre_enroll_start', 'pre_enroll_finish',
             'enroll_start', 'enroll_finish', 'is_paid', 'currency', 'cost',
             'maximum', 'is_open', 'flow', 'professors', 'duration_hours',
-            'expedition_date',
+            'expedition_date', 'featured'
         ]
         widgets = {
             "name": djgentelella.TextInput,
@@ -268,6 +268,7 @@ class GroupAddForm(forms.ModelForm, GTForm):
             'professors': djgentelella.SelectMultiple,
             'duration_hours': djgentelella.TextInput(attrs={"type":"number"}),
             'expedition_date': djgentelella.DateInput,
+            'featured': djgentelella.YesNoInput
         }
 
     def __init__(self, *args, **kwargs):
@@ -423,7 +424,7 @@ class GroupCreateForm(forms.ModelForm, GTForm):
         fields = [
             'name', 'course', 'period', 'schedule', 'pre_enroll_start',
             'pre_enroll_finish', 'enroll_start', 'enroll_finish', 'is_paid', 'currency',
-            'cost', 'maximum', 'flow', 'professors', 'expedition_date', 'duration_hours'
+            'cost', 'maximum', 'flow', 'professors', 'expedition_date', 'duration_hours', 'featured'
         ]
         widgets = {
             'name': djgentelella.TextInput,
@@ -442,6 +443,7 @@ class GroupCreateForm(forms.ModelForm, GTForm):
             'professors': djgentelella.SelectMultiple,
             'duration_hours': djgentelella.TextInput(attrs={"type":"number"}),
             'expedition_date': djgentelella.DateInput,
+            'featured': djgentelella.YesNoInput
         }
 
     def __init__(self, *args, **kwargs):
@@ -465,7 +467,7 @@ class GroupEditForm(forms.ModelForm, GTForm):
             'name', 'course', 'period', 'schedule', 'pre_enroll_start',
             'pre_enroll_finish', 'enroll_start', 'enroll_finish', 'is_paid',
             'currency', 'cost', 'maximum', 'flow', 'professors',
-            'duration_hours', 'expedition_date',
+            'duration_hours', 'expedition_date', 'featured'
         ]
         widgets = {
             'name': djgentelella.TextInput,
@@ -484,6 +486,7 @@ class GroupEditForm(forms.ModelForm, GTForm):
             'professors': djgentelella.SelectMultiple,
             'duration_hours': djgentelella.TextInput(attrs={"type":"number"}),
             'expedition_date': djgentelella.DateInput,
+            'featured': djgentelella.YesNoInput
         }
 
     def __init__(self, *args, **kwargs):

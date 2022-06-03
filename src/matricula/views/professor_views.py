@@ -199,28 +199,3 @@ def deactivate_professor(request, pk):
         professor.save()
         messages.success(request, "Facilitadore desactivade con exitosamente.")
         return redirect('professors_list')
-
-
-@method_decorator(permission_required('auth.add_user'), name='dispatch')
-class AddUser(CreateView):
-    model = User
-    form_class = UserCreateForm
-    success_url = reverse_lazy('create_simple_user')
-    template_name = "user/create.html"
-
-    def send_email(self,  user):
-        schema = self.request.scheme+"://"
-        send_email_from_template(
-            'reset_password_academy', user.email, {
-                'user': user,
-                'domain': schema+self.request.get_host(),
-            },
-            enqueued=False,
-            user=None)
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        form.save()
-        self.send_email(self.object)
-        messages.success(self.request, "Usuarie registrade con exitosamente.")
-        return response

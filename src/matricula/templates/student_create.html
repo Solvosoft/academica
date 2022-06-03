@@ -76,5 +76,10 @@
 				x.type = "password";
 			}
 		}
+		$('#id_email').change( function(e){
+			var email=$('#id_email').val();
+			name=email.substring(0, email.lastIndexOf("@"));
+			$('#id_name').val(name);
+		});
 	</script>
 {% endblock %}
