@@ -39,7 +39,7 @@
         <link href="{% static 'vendors/tagify/tagify.min.css' %}?v={% get_version %}" rel="stylesheet">
         <link href="{% static 'vendors/tinymce/skin.min.css' %}?v={% get_version %}" rel="stylesheet" />
         <link href="{% static 'vendors/sweetalert2/sweetalert2.min.css' %}?v={% get_version %}" rel="stylesheet" />
-
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
         {% get_define 'use_chartjs' as use_chartjs %}
         {% if use_chartjs %}
         <link href="{% static 'vendors/chartjs/Chart.min.css' %}?v={% get_version %}" rel="stylesheet">
@@ -52,7 +52,7 @@
 
     {% endblock stylesheets %}
       <!-- Custom Theme Style -->
-      <link href="{% static 'gentelella/css/custom_upo.css' %}?v={% get_version %}" rel="stylesheet">
+      <link href="{% static 'gentelella/css/custom_upo.css' %}?v=200{% get_version %}" rel="stylesheet">
     {% endblock head %}
     {% block extra_css %} {% endblock %}
     <!-- jQuery -->

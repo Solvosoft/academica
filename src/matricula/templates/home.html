@@ -1,0 +1,62 @@
+{% extends 'newstyle/base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="d-flex align-items-center">
+    <div class="container position-relative" data-aos="fade-up" data-aos-delay="100">
+
+
+    <div class="row justify-content-center">
+        <div class="col-xl-7 col-lg-9 text-center">
+          <h1>Pŕoximos Cursos</h1>
+
+        </div>
+      </div>
+
+
+      <div class="row icon-boxes">
+
+        {% for group in object_list %}
+
+        <div class="col-md-6 col-lg-4 d-flex align-items-stretch mb-5 mb-lg-0">
+            <div class="cursos" style="min-height: 20em;">
+                <a href="{% url 'course_detail' group.course.pk %}">
+                  {% if group.featured_image %}
+                    <img class="img-fluid" src="{{group.featured_image.url}}" alt_text="{{group.name}}">
+                  {% else %}
+                    <img class="img-fluid" src="{% static 'assets/group_featured.jpg' %}" alt_text="{{group.name}}">
+                  {% endif %}
+                </a>
+                <h4 class="title" ><a href="{% url 'course_detail' group.course.pk %}">{{group.name}}</a></h4>
+                <p class="description">{{group.course.content|striptags|safe|truncatewords:50}}</p>
+                <a href="{% url 'course_detail' group.course.pk %}" class="btn btn-info btn-lg btn-block btn-cursos">Inscripción Aquí</a>
+            </div>
+        </div>
+      {% endfor %}
+
+
+      </div>
+    </div>
+  </section><!-- End Hero -->
+
+  <main id="main">
+
+    <!-- ======= Cta Section ======= -->
+    <section id="cta" class="cta">
+      <div class="container" data-aos="zoom-in">
+        <div class="text-center">
+          <h3>Acceso al Campus de la Universidad Popular</h3>
+          <p>Para acceder al Campus de la Universidad Popular, recuerda que debes ingresar aquí.</p>
+          <a class="cta-btn" href="https://campus.universidadpopular.red/">Campus Virtual UPo</a>
+        </div>
+      </div>
+    </section><!-- End Cta Section -->
+
+  {% include 'newstyle/faq.html' %}
+
+  </main><!-- End #main -->
+
+{% endblock %}

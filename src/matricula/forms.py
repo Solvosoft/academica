@@ -9,6 +9,7 @@ import re
 
 from django import forms
 from django.db.models import QuerySet
+from django.forms import FileInput
 from django.utils.translation import ugettext_lazy as _
 from django.core import validators
 from django.contrib.auth.models import User, Permission
@@ -424,7 +425,8 @@ class GroupCreateForm(forms.ModelForm, GTForm):
         fields = [
             'name', 'course', 'period', 'schedule', 'pre_enroll_start',
             'pre_enroll_finish', 'enroll_start', 'enroll_finish', 'is_paid', 'currency',
-            'cost', 'maximum', 'flow', 'professors', 'expedition_date', 'duration_hours', 'featured'
+            'cost', 'maximum', 'flow', 'professors', 'expedition_date', 'duration_hours', 'featured',
+            'featured_image'
         ]
         widgets = {
             'name': djgentelella.TextInput,
@@ -443,7 +445,8 @@ class GroupCreateForm(forms.ModelForm, GTForm):
             'professors': djgentelella.SelectMultiple,
             'duration_hours': djgentelella.TextInput(attrs={"type":"number"}),
             'expedition_date': djgentelella.DateInput,
-            'featured': djgentelella.YesNoInput
+            'featured': djgentelella.YesNoInput,
+            'featured_image': FileInput
         }
 
     def __init__(self, *args, **kwargs):
@@ -467,7 +470,7 @@ class GroupEditForm(forms.ModelForm, GTForm):
             'name', 'course', 'period', 'schedule', 'pre_enroll_start',
             'pre_enroll_finish', 'enroll_start', 'enroll_finish', 'is_paid',
             'currency', 'cost', 'maximum', 'flow', 'professors',
-            'duration_hours', 'expedition_date', 'featured'
+            'duration_hours', 'expedition_date', 'featured', 'featured_image'
         ]
         widgets = {
             'name': djgentelella.TextInput,
@@ -486,7 +489,8 @@ class GroupEditForm(forms.ModelForm, GTForm):
             'professors': djgentelella.SelectMultiple,
             'duration_hours': djgentelella.TextInput(attrs={"type":"number"}),
             'expedition_date': djgentelella.DateInput,
-            'featured': djgentelella.YesNoInput
+            'featured': djgentelella.YesNoInput,
+            'featured_image': FileInput
         }
 
     def __init__(self, *args, **kwargs):

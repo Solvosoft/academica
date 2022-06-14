@@ -40,6 +40,9 @@ from .views.professor_views import ProfessorsList, CreateProfessor, EditProfesso
 from .views.report import GroupEstudentStatusList, list_reports
 from .views.students_views import qualify_students, update_enroll, update_enroll_status, GradeList
 from .reports import views, api
+from matricula.views.Courses import list_courses
+from .views import home
+
 router = DefaultRouter()
 router.register('ranking_course_enrolls_api', api.RankingCourseEnrollsViewSet, 'ranking_course_enrolls_api')
 router.register('ranking_course_approved_api', api.RankingCourseApprovedViewSet, 'ranking_course_approved_api')
@@ -68,6 +71,8 @@ reports = [
 
 
 urlpatterns = [
+    path('', home, name="index"),
+    path('categories/', list_courses, name='root'),
     url('enrrolment/accounts/profile/?$', get_profile, name='profile'),
     path('enrrolment/professor/<int:pk>/profile/', 
         ProfessorProfileView.as_view(), name='professor_profile'),

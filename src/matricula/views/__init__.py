@@ -1,6 +1,6 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
-from matricula.models import MenuItem
+from matricula.models import MenuItem, Group
 
 
 def index(request):
@@ -14,3 +14,14 @@ def index(request):
         else:
             return redirect(reverse(index.name))
     return redirect(reverse('courses'))
+
+
+def home(request):
+    context = {}
+    featured = Group.objects.filter(featured=True)
+    if not featured.exists():
+        return redirect(reverse('root'))
+    else:
+        context['object_list'] = featured
+    return render(request, 'home.html', context=context)
+

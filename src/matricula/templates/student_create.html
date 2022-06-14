@@ -1,20 +1,19 @@
 {% extends 'gentelella/base.html'%}
 {% load static i18n %}
 {% block content %}
-	<h1 class="text-center">{% trans 'New user' %}</h1>
-	<div class="col-md-8 col-md-offset-2">
-		<div class="x_panel">
+
+	<div class="col-md-8 col-md-offset-2" >
+		<div class="x_panel" >
 			<div class="x_title">
-				<h2 class="green"> {% trans 'Your data' %}</h2>
-				<ul></ul>
-				<div class="clearfix"></div>
+				<h1 class="green text-center">{% trans 'New user' %}</h1>
 			</div>
-			<div class="x_content">
-				<div class="row">
-					<div>
-						<form method="post" id="{% url 'create_user' %}">
+			<div class="x_content" >
+
+						<form method="post" id="{% url 'create_user' %}" >
 								{% csrf_token %}
-								{{form.as_horizontal}}
+
+								{{form.as_horizontal }}
+
 							<div style="margin-top:10px; text-align:right;">
 								<button type="submit" class="btn btn-success" value="{% trans 'Save'%}" >
 									<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
@@ -22,11 +21,11 @@
 								</button>
 							</div>
 						</form>
-					</div>
-				</div>
+
 			</div>
 		</div>
 	</div>
+<div class="clearfix"></div>
 {% endblock %}
 {% block js %}
 	<script>

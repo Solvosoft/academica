@@ -630,7 +630,7 @@ def pre_enroll_group(request, pk=None):
 def create_group(request):
     context = {}
     if request.method == 'POST':
-        form = GroupCreateForm(request.POST)
+        form = GroupCreateForm(request.POST, files=request.FILES)
         if request.POST.get("is_paid") == 'on':
             form.fields['currency'].required = True
         context['form'] = form
@@ -655,6 +655,9 @@ def create_group(request):
                     flow=form.cleaned_data['flow'],
                     expedition_date=form.cleaned_data['expedition_date'],
                     duration_hours=form.cleaned_data['duration_hours'],
+                    featured_image=form.cleaned_data['featured_image'],
+                    featured=form.cleaned_data['featured'],
+
                 )
                 group.save()
                 group.professors.set(form.cleaned_data['professors'])
@@ -692,7 +695,7 @@ def edit_group(request, pk=None):
     if pk is not None:
         instance = Group.objects.get(pk=pk)
         if request.method == "POST":
-            form = GroupEditForm(request.POST, instance=instance)
+            form = GroupEditForm(request.POST, files=request.FILES, instance=instance)
             if request.POST.get("is_paid") == 'on':
                 form.fields['currency'].required = True
             if form.is_valid():

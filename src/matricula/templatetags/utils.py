@@ -7,6 +7,7 @@ from django.utils.translation import gettext as _
 from django.utils.safestring import mark_safe
 
 from matricula.models import Enroll, Group
+from matricula.views.utils import get_active_period
 
 register = template.Library()
 @register.filter(name='index')
@@ -25,7 +26,10 @@ def is_admin(group_name, name):
 @register.filter
 def is_open(course):
     result = False
-    groups = course.group_set.filter(is_open=True)
+    periods_active = get_active_period()
+    groups = course.group_set.filter(is_open=True,
+                                     period__in=periods_active
+                                     )
     if groups.exists():
         result = groups
     return result

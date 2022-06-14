@@ -1,12 +1,14 @@
-{% load  gentelellamenu i18n  utils %}
+{% load  gentelellamenu i18n static utils %}
 {% block top_navigation %}	
 	<div class="nav_menu">
 		<div class="nav toggle">
 			<a id="menu_toggle"><i class="fa fa-bars"></i></a>
 		</div>
+		 <img src="{% static 'logo-upo.png' %}" style="widht:60px; height: 60px;" />
 		<ul class="nav navbar-nav navbar-right">
+
             {% if not request.user.is_authenticated %}
-				<li><a href="{% reverse_register %}" id="enroll" >Registrarme</a><li>
+				<li><a href="{% reverse_register %}" id="get-started-btn" class="scrollto">Registrarme</a><li>
 			    <li><a href="{% reverse_login %}" id="login" >Iniciar sesión</a><li>
 			{% else %}
 				<li class="nav-item dropdown" style="padding-left: 15px;">
@@ -19,6 +21,8 @@
 					</div>
 				</li>
             {% endif %}
+			<li><a href="http://campus.universidadpopular.red">Campus</a></li>
+			<li><a href="http://universidadpopular.red">UPo</a></li>
 			{% top_menu  %}
 		</ul>
 	</div>

@@ -835,7 +835,14 @@ html , body{
        text-decoration: none
    }
    .nav.navbar-nav>li>a {
-       color: #515356 !important
+       display: block;
+        position: relative;
+        color: #124265!important;
+        transition: 0.3s;
+        font-size: 14px;
+        font-family: "Open Sans", sans-serif;
+        text-decoration: none;
+        background-color: transparent;
    }
    .nav.top_menu>li>a {
        position: relative;
@@ -4527,4 +4534,112 @@ a[data-toggle=tooltip]{
      height:600px;
      word-break: break-word;
      overflow: auto;
+}
+
+.footer-links a{
+    color: #777777;
+    transition: 0.3s;
+    display: inline-block;
+    line-height: 1;
+}
+
+.footer-newsletter p{
+    align: justify;
+    text-align: justify;
+}
+
+.footer-top{
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+.footer-top h4 {
+    font-size: 16px;
+    font-weight: bold;
+    color: #124265;
+    position: relative;
+    padding-bottom: 12px;
+}
+
+
+
+.footer-newsletter h4 {
+    font-size: 16px;
+    font-weight: bold;
+    color: #444444;
+    position: relative;
+    padding-bottom: 12px;
+}
+
+.footer-top .footer-contact h3 {
+    font-size: 26px;
+    margin: 0 0 10px 0;
+    padding: 2px 0 2px 0;
+    line-height: 1;
+    font-weight: 300;
+}
+
+.footer-top .footer-contact a {
+    color: #2487ce;
+    text-decoration: none;
+    background-color: transparent;
+}
+.footer-bottom a{
+    color: #2487ce;
+    text-decoration: none;
+    background-color: transparent;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Raleway", sans-serif;
+}
+
+#get-started-btn {
+  margin-left: 25px;
+  background: #009145;
+  color: #fff!important;
+  border-radius: 5px;
+  padding: 1px 30px 1px 30px;
+  white-space: nowrap;
+  transition: 0.3s;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-block;
+  margin-top: 1em;
+  margin-right: 1em;
+}
+
+#get-started-btn:hover {
+  background: #3a54a3;
+  color: #fff!important;
+}
+
+#login:hover {
+  color: #3a54a3!important;
+  padding: 1px 30px 1px 30px;
+  white-space: nowrap;
+  transition: 0.3s;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-block;
+  border-radius: 5px;
+    margin-top: 1em;
+}
+
+@media (max-width: 768px) {
+  .get-started-btn {
+    margin: 0 48px 0 0;
+    padding: 5px 18px 6px 18px;
+    border-radius: 3px;
+  }
+}
+
+#footerlogin {
+    background: #fff;
+    padding: 15px 20px;
+    display: block;
+}
+
+.right_col{
+background: url("/static/assets/img/hero-bg.jpg") top center !important;
 }
