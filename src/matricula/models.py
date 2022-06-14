@@ -188,7 +188,8 @@ class Group(models.Model):
     duration_hours = models.IntegerField(_("Duración en horas"), default=20)
     expedition_date = models.DateField(_("Certificate expedition date"), blank=True, null=True)
     featured = models.BooleanField(default=False, verbose_name='Mostrar en destacados')
-    featured_image = models.ImageField(upload_to='feautures/', null=True, blank=True, help_text='Imagen de 1200x900')
+    featured_image = models.ImageField(upload_to='feautures/', verbose_name="Imágen destacada",
+                                       null=True, blank=True, help_text='Imagen de 1200x900')
 
     @property
     def in_preenrollment(self):
