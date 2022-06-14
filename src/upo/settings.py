@@ -120,6 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = ["membership_core.authbackend.EmailBackend"]
 # Set in weeks to academic app
 TOKEN_CONFIRMATION_EXPIRE_DAYS = 15
 
