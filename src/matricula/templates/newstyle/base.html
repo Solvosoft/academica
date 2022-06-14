@@ -47,6 +47,7 @@
         <ul>
           <li><a href="https://universidadpopular.red">UPo</a></li>
           <li><a href="https://universidadpopular.red">Campus</a></li>
+          <li><a href="{% url 'root' %}">Cursos</a></li>
         {% if not request.user.is_authenticated %}  <li><a href="{% reverse_login %}">Iniciar Sesión</a></li>
         {% else  %}
 

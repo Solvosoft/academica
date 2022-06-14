@@ -3,7 +3,12 @@
 {% load utils matriculabase %}
 
 {% block content %}
-
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+    <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'root' %}">Cursos</a></li>
+  </ol>
+</nav>
 
     <section id="hero" class="detalle-general-curso">
         <div class="container position-relative" data-aos="fade-up" data-aos-delay="100">
@@ -105,7 +110,12 @@
       </div>
     </section>
 
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
 
+    <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'courses' %}">Atras</a></li>
+  </ol>
+</nav>
       {% include 'newstyle/faq.html' %}
 </main>
 {% endblock %}
