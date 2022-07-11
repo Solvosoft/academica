@@ -5,6 +5,7 @@ Created on 18/10/2020
 @author: allexiusw
 '''
 import csv
+import json
 
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -1376,13 +1377,29 @@ def export_waitinglist_xls(request, pk=None):
         waitinglist = WaitingList.objects.filter(group=pk)
     column_names = [
         'group__name', 'student__user__username','student__user__email',
-        'student__user__first_name', 'student__user__last_name','created_at']
+        'student__user__first_name', 'student__user__last_name','student__organization','created_at']
+
+    sheet_header  = ['Grupo', "Nombre de usuario", "Correo", "Nombre", "Apellidos", "Organización", "Solicitud"]
+
     if not waitinglist.count()>0:
         messages.error(request, "No hay registros para exportar")
         return redirect(reverse('waitinglist_group', kwargs={"pk": pk}))
     else:
-        return excel.make_response_from_query_sets(
-            waitinglist, column_names, 'xlsx', file_name=group_name)
+        sheet = excel.pe.get_sheet(query_sets=waitinglist, column_names=column_names)
+        sheet.name_columns_by_row(0)  # this will take row 0 into colnames
+        sheet.colnames = sheet_header
+        for x in range(len(sheet.column[5])):
+            d=str(sheet['F%d'%x])
+            if 'value' in d:
+                try:
+                    xdic=json.loads(d)
+                    xl = ", ".join([z['value'] for z in xdic])
+                    sheet['F%d'%x] = xl
+                except Exception as e:
+                    print(e)
+        return excel.make_response(sheet, 'xls', file_name=group_name)
+#        return excel.make_response_from_query_sets(
+#            waitinglist, column_names, 'xlsx', file_name=group_name)
 
 
 @permission_required('matricula.can_recovery_pass_student')
