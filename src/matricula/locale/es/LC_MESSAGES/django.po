@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-10 11:25-0600\n"
-"PO-Revision-Date: 2022-02-17 16:51-0600\n"
+"PO-Revision-Date: 2022-08-16 22:04-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -783,8 +783,7 @@ msgstr ""
 
 #: src/matricula/templates/student_create.html:4
 msgid "New user"
-msgstr ""
-"Será una aventura fascinante al aprender con nosotros <br> Ingresa Ahora"
+msgstr "Aquí comienza la aventura de aprender en comunidad <br> Ingresa Ahora"
 
 #: src/matricula/templates/student_create.html:8
 msgid "Your data"
