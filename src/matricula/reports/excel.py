@@ -19,6 +19,7 @@ from matricula.views.utils import get_active_period
 
 @permission_required('matricula.view_reports')
 def export_student_status_xls(request, period, status='approved'):
+    file_name='students_%d_%s'%(period, status)
     filters = {
         'uncompleted': {
             'enroll_finished': True,
@@ -89,5 +90,4 @@ def export_student_status_xls(request, period, status='approved'):
         d = str(sheet['H%d' % x])
         if d in status:
             sheet['H%d' % x] = str(status[d])
-    return excel.make_response(sheet, 'xls', file_name='students_status')
-  # return excel.make_response_from_query_sets(queryset, column_names, "xls", file_name="reporte")
+    return excel.make_response(sheet, 'xls', file_name=file_name)
