@@ -17,17 +17,22 @@
 
         <div class="x_content">
             {% if form %}
-                <div class="row"><form method="get">
+                <div class="row"><form method="get" id="formfilter">
                     <div class="col-md-10">
                     {{form.as_horizontal}}
                     </div><div class="col-md-2">
                     <button type="submit" class="btn btn-info">Filtrar</button>
-                    </div>
+                   </div>
                 </form>
                 </div>
             {% endif %}
             {% for period in periods %}
-            <h3 class="green">{{period.title}}</h3>
+            <h3 class="green">{{period.title}}
+                {% if student_status %}
+                    <button type="button" class="btn btn-success exceldownload"
+                    data-url="{% url 'export_student_status_xls' period.pk student_status %}">Descarga Excel</button>
+                {% endif %}
+            </h3>
             {% include 'gentelella/widgets/chartjs.html' with graph_url=period.url %}
             <hr>
             {% endfor %}
@@ -52,5 +57,12 @@ var plugin = {
 };
 
 Chart.plugins.register(plugin);
+
+$(".exceldownload").on('click', function(){
+    let $this=$(this);
+    let form=$('#formfilter');
+    window.open($this.data('url')+"?"+form.serialize())
+
+});
 </script>
 {% endblock %}

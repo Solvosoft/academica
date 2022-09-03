@@ -16,6 +16,7 @@ from matricula.views.Courses import list_courses, view_course, course_detail
 from matricula.views.Enrollments import addmetoquee, list_enroll, enrollme, \
     finish_enroll
 from matricula.views.Pages import PageDetail
+from .reports.excel import export_student_status_xls
 
 from .views.admin_views import CategoryList, GroupDetailView, create_category, \
     CategoryDelete, edit_category, CourseList, create_course, \
@@ -51,6 +52,7 @@ router.register('countries_group', api.CountriesGroupViewSet, 'countries_group_a
 
 reports = [
     path('reports/', list_reports, name='list_reports'),
+    path('reports/student_status/<int:period>/<str:status>', export_student_status_xls, name='export_student_status_xls'),
     path('group/report_student_status', GroupEstudentStatusList.as_view(), name="report_student_status"),
     path('consolidado_estadisticas_cursos', views.consolidado_estadisticas_cursos, name='consolidado_estadisticas_cursos'),
     path('reports/student_without_lessons_report', views.student_without_lessons_report, name='student_without_lessons_report'),

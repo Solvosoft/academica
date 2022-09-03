@@ -37,6 +37,8 @@ def list_courses(request):
     if len(category) > 1:
         return render(request, 'categories.html', {
             'categories': category, 'form_search': form_search})
+    else:
+        context['category']=category.first()
 
     # courses = Course.objects.filter(
     #   category=category, group__period=period).distinct()

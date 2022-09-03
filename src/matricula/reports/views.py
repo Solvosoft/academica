@@ -82,23 +82,28 @@ def approved_student_report(request):
     form.is_valid()
     periods = Period.objects.all()
     urlsparams=form.get_urlencode()
-    if 'all_period' in form.cleaned_data and form.cleaned_data['all_period']:
-        if form.cleaned_data['period']:
-            periods = periods.filter(finish_date__year__in=form.cleaned_data['period'])
-    else:
-        periods = get_active_period()
+    if 'period' not in form.cleaned_data or not form.cleaned_data['period']:
+        if 'all_period' in form.cleaned_data and not form.cleaned_data['all_period']:
+            periods = get_active_period()
+        else:
+            periods = Period.objects.all()
+    if form.cleaned_data['period']:
+        periods = periods.filter(finish_date__year__in=form.cleaned_data['period'])
+
     period_list = []
     form.cleaned_data.pop('period')
     urlsparams = form.get_urlencode()
     for period in periods:
         period_list.append({
             'title': str(period),
+            'pk': period.pk,
             'url': reverse('approvedstudentreport-list')+"?form_period=%d%s"%(period.pk, urlsparams)
         })
     context = {
         'form': form,
          'periods': period_list,
-         'title': 'Total de estudiantes aprobados por curso'
+         'title': 'Total de estudiantes aprobados por curso',
+         'student_status': 'approved'
     }
     return render(request, 'reports/standard_period_report.html', context=context)
 
@@ -108,23 +113,28 @@ def reproved_student_report(request):
     form.is_valid()
     periods = Period.objects.all()
     urlsparams=form.get_urlencode()
-    if 'all_period' in form.cleaned_data and form.cleaned_data['all_period']:
-        if form.cleaned_data['period']:
-            periods = periods.filter(finish_date__year__in=form.cleaned_data['period'])
-    else:
-        periods = get_active_period()
+    if 'period' not in form.cleaned_data or not form.cleaned_data['period']:
+        if 'all_period' in form.cleaned_data and not form.cleaned_data['all_period']:
+            periods = get_active_period()
+        else:
+            periods = Period.objects.all()
+    if form.cleaned_data['period']:
+        periods = periods.filter(finish_date__year__in=form.cleaned_data['period'])
+
     period_list = []
     form.cleaned_data.pop('period')
     urlsparams = form.get_urlencode()
     for period in periods:
         period_list.append({
             'title': str(period),
+            'pk': period.pk,
             'url': reverse('reprovedstudentreport-list')+"?form_period=%d%s"%(period.pk, urlsparams)
         })
     context = {
         'form': form,
          'periods': period_list,
-         'title': 'Total de estudiantes reprobados por curso'
+         'title': 'Total de estudiantes reprobados por curso',
+        'student_status': 'reproved'
     }
     return render(request, 'reports/standard_period_report.html', context=context)
 
@@ -132,24 +142,28 @@ def reproved_student_report(request):
 def uncompleted_student_report(request):
     form = CourseWithCoursefilterGraphForm(request.GET)
     form.is_valid()
-    periods = Period.objects.all()
-    if 'all_period' in form.cleaned_data and form.cleaned_data['all_period']:
-        if form.cleaned_data['period']:
-            periods = periods.filter(finish_date__year__in=form.cleaned_data['period'])
-    else:
-        periods = get_active_period()
+    if 'period' not in form.cleaned_data or not form.cleaned_data['period']:
+        if 'all_period' in form.cleaned_data and not form.cleaned_data['all_period']:
+            periods = get_active_period()
+        else:
+            periods = Period.objects.all()
+    if form.cleaned_data['period']:
+        periods = periods.filter(finish_date__year__in=form.cleaned_data['period'])
+
     period_list = []
     form.cleaned_data.pop('period')
     urlsparams = form.get_urlencode()
     for period in periods:
         period_list.append({
             'title': str(period),
+            'pk': period.pk,
             'url': reverse('uncompleted_student-list')+"?form_period=%d%s"%(period.pk, urlsparams)
         })
     context = {
         'form': form,
          'periods': period_list,
-         'title': 'Estudiantes que no siguieron los cursos'
+         'title': 'Estudiantes que no siguieron los cursos',
+         'student_status': 'uncompleted'
     }
     return render(request, 'reports/standard_period_report.html', context=context)
 
@@ -158,24 +172,28 @@ def uncompleted_student_report(request):
 def student_without_lessons_report(request):
     form = CourseWithCoursefilterGraphForm(request.GET)
     form.is_valid()
-    periods = Period.objects.all()
-    if 'all_period' in form.cleaned_data and form.cleaned_data['all_period']:
-        if form.cleaned_data['period']:
-            periods = periods.filter(finish_date__year__in=form.cleaned_data['period'])
-    else:
-        periods = get_active_period()
+    if 'period' not in form.cleaned_data or not form.cleaned_data['period']:
+        if 'all_period' in form.cleaned_data and not form.cleaned_data['all_period']:
+            periods = get_active_period()
+        else:
+            periods = Period.objects.all()
+    if form.cleaned_data['period']:
+        periods = periods.filter(finish_date__year__in=form.cleaned_data['period'])
+
     period_list = []
     form.cleaned_data.pop('period')
     urlsparams = form.get_urlencode()
     for period in periods:
         period_list.append({
             'title': str(period),
+            'pk': period.pk,
             'url': reverse('student_without_lessons_report-list')+"?form_period=%d%s"%(period.pk, urlsparams)
         })
     context = {
         'form': form,
          'periods': period_list,
-        'title': "Personas que nunca ingresaron a los cursos"
+        'title': "Personas que nunca ingresaron a los cursos",
+        'student_status': 'never_attend'
     }
     return render(request, 'reports/standard_period_report.html', context=context)
 

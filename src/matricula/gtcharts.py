@@ -76,18 +76,21 @@ class ConsolidadoEstadisticasCurso(BaseChart, VerticalBarChart):
 class UncompletedStudentReport(BaseChart, VerticalBarChart):
 
     def get_courses(self):
-        queryset = Course.objects.all().order_by('name').annotate(
-            uncomplete=Count('group__enroll', filter=Q(
-                    group__enroll__enroll_finished = True,
-                    group__enroll__go_to_one_class=True,
-                    group__enroll__course_status= """uncompleted"""))
-        )
+        queryset = Course.objects.all()
         period = self.request.GET.get('form_period', None)
         if period:
             queryset = queryset.filter(group__period=period)
+        else:
+            queryset = queryset.filter(group__period__in=get_active_period())
+        queryset = queryset.order_by('name').annotate(
+            uncomplete=Count('group__enroll', filter=Q(
+                    group__enroll__enroll_finished = True,
+                    group__enroll__go_to_one_class=True,
+                    group__enroll__course_status= """uncompleted"""), distinct=True)
+        )
         form = CourseWithCoursefilterGraphForm(self.request.GET)
         if form.is_valid():
-            queryset= form.filter_queryset(queryset)
+            queryset = form.filter_queryset(queryset)
         return queryset.values('name','uncomplete')
 
     def get_labels(self):
@@ -176,15 +179,17 @@ class EnrollStudentsReport(BaseChart, VerticalBarChart):
 class ApprovedStudentReport(BaseChart, VerticalBarChart):
 
     def get_courses(self):
-        queryset = Course.objects.all().order_by('name').annotate(
-            approve_count=Count('group__enroll', filter=Q(
-                group__enroll__enroll_finished=True,
-                group__enroll__go_to_one_class=True,
-                group__enroll__course_status="""approved"""))).values('name', 'approve_count')
-
+        queryset = Course.objects.all()
         period = self.request.GET.get('form_period', None)
         if period:
             queryset = queryset.filter(group__period=period)
+        else:
+            queryset = queryset.filter(group__period__in=get_active_period())
+        queryset = queryset.order_by('name').annotate(
+            approve_count=Count('group__enroll', filter=Q(
+                group__enroll__enroll_finished=True,
+                group__enroll__go_to_one_class=True,
+                group__enroll__course_status="""approved"""), distinct=True)).values('name', 'approve_count')
         form = CourseWithCoursefilterGraphForm(self.request.GET)
         if form.is_valid():
             queryset= form.filter_queryset(queryset)
@@ -225,15 +230,18 @@ class ApprovedStudentReport(BaseChart, VerticalBarChart):
 class ReprovedStudentReport(BaseChart, VerticalBarChart):
 
     def get_courses(self):
-        queryset = Course.objects.all().order_by('name').annotate(
-            reprove_count=Count('group__enroll', filter=Q(
-                group__enroll__enroll_finished=True,
-                group__enroll__go_to_one_class=True,
-                group__enroll__course_status="""reproved"""))).values('name', 'reprove_count')
-
+        queryset = Course.objects.all()
         period = self.request.GET.get('form_period', None)
         if period:
             queryset = queryset.filter(group__period=period)
+        else:
+            queryset = queryset.filter(group__period__in=get_active_period())
+
+        queryset = queryset.order_by('name').annotate(
+            reprove_count=Count('group__enroll', filter=Q(
+                group__enroll__enroll_finished=True,
+                group__enroll__go_to_one_class=True,
+                group__enroll__course_status="""reproved"""), distinct=True)).values('name', 'reprove_count')
         form = CourseWithCoursefilterGraphForm(self.request.GET)
         if form.is_valid():
             queryset= form.filter_queryset(queryset)
@@ -274,9 +282,18 @@ class ReprovedStudentReport(BaseChart, VerticalBarChart):
 class NeverAttendStudentReport(BaseChart, VerticalBarChart):
 
     def get_courses(self):
-        queryset = Course.objects.all().order_by('name').annotate(
+
+        queryset = Course.objects.all()
+        period = self.request.GET.get('form_period', None)
+        if period:
+            queryset = queryset.filter(group__period=period)
+        else:
+            queryset = queryset.filter(group__period__in=get_active_period())
+
+
+        queryset = queryset.order_by('name').annotate(
             withoutlessons=Count('group__enroll', filter=Q(group__enroll__enroll_finished=True,
-                                                           group__enroll__go_to_one_class=False))
+                                                           group__enroll__go_to_one_class=False), distinct=True)
         ).values('name', 'withoutlessons')
         period = self.request.GET.get('form_period', None)
         if period:

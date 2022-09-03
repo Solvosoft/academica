@@ -27,6 +27,23 @@
 			</div>
 		{% endif %}
 		<div class="col-md-10 col-md-offset-1">
+			{% if category %}
+			<div class="col-md-3 ">
+				<div class="x_panel">
+						<div class="x_content text-center">
+					{% if category.image %}
+						<img src="{{category.image.url}}" style="width:auto; height:80px;" />
+					{% endif %}<br>
+
+						</div>
+					<div class="x_title" style="border-bottom: 0;">
+						<h4 class="text-center" style="font-size:20px; font-weight:bolder;">{{category.name}}</h4>
+					</div>
+				</div>
+				 </div>
+			<div class="col-md-9">
+			{% endif %}
+
 			{% if courses.items %}
 				<div class="x_panel">
 					<div class="x_content">
@@ -43,10 +60,13 @@
 							<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 								{% include 'field.html' with field=form_search.is_paid %}
 							</div>
+
+
 							<div style="text-align:right">
 								<a href="{% url 'course_list' %}" class="btn btn-dark">Limpiar</a>
 								<button class="btn btn-success" type="submit">Buscar</button>
 							</div>
+
 						</form>
 					</div>
 				</div>
@@ -55,12 +75,15 @@
 					No hay cursos disponibles
 				</div>
 			{% endif %}
+				{% if category %} </div>{% endif %}
+
 		</div>
 		<div id="group_message"></div>
 		<div class="clearfix"></div>
 		{% if courses.items %}
 		<div class="x_panel">
 			<div class="x_content">
+
 				{% for pk, course in courses.items %}
 					<div class="col-md-6 col-sm-12 profile_details">
 						<div class="well profile_view" style="display:block;">
