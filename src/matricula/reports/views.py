@@ -142,11 +142,11 @@ def reproved_student_report(request):
 def uncompleted_student_report(request):
     form = CourseWithCoursefilterGraphForm(request.GET)
     form.is_valid()
+    periods = Period.objects.all()
     if 'period' not in form.cleaned_data or not form.cleaned_data['period']:
         if 'all_period' in form.cleaned_data and not form.cleaned_data['all_period']:
             periods = get_active_period()
-        else:
-            periods = Period.objects.all()
+
     if form.cleaned_data['period']:
         periods = periods.filter(finish_date__year__in=form.cleaned_data['period'])
 
@@ -172,11 +172,11 @@ def uncompleted_student_report(request):
 def student_without_lessons_report(request):
     form = CourseWithCoursefilterGraphForm(request.GET)
     form.is_valid()
+    periods = Period.objects.all()
     if 'period' not in form.cleaned_data or not form.cleaned_data['period']:
         if 'all_period' in form.cleaned_data and not form.cleaned_data['all_period']:
             periods = get_active_period()
-        else:
-            periods = Period.objects.all()
+
     if form.cleaned_data['period']:
         periods = periods.filter(finish_date__year__in=form.cleaned_data['period'])
 

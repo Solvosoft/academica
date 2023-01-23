@@ -6,6 +6,7 @@ from json import JSONDecodeError
 
 from django.db import models
 from django.contrib.auth.models import User, Group as AuthGroup
+from django.db.models import Q
 from django.utils.encoding import smart_text
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -101,7 +102,7 @@ class Period(models.Model):
     class Meta:
         verbose_name = _("Period")
         verbose_name_plural = _("Periods")
-        ordering = ['name']
+        ordering = ['finish_date']
 
 
 class Category(models.Model):
@@ -279,6 +280,22 @@ class Enroll(models.Model):
 
     def __str__(self):
         return self.student.user.username + " -- " + smart_text(self.group)
+
+    @property
+    def is_penalized(self):
+        """
+        enroll__go_to_one_class=False
+
+        """
+
+        periods = list(Period.objects.all().order_by('finish_date').values_list('pk', flat=True))[-2:]
+        queryset = self.__class__.objects.filter(student=self.student).exclude(pk=self.pk)
+        queryset= queryset.filter(group__period__in=periods)
+        queryset=queryset.filter(
+            Q(course_status__in=['uncompleted', 'never_attend'])|Q(go_to_one_class=False)
+        )
+
+        return queryset.exists()
 
     class Meta:
         verbose_name = _("Enrollment")
