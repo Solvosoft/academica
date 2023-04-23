@@ -6,7 +6,7 @@ from djgentelella.views.select2autocomplete import BaseSelect2View
 from matricula.models import Period
 from matricula.views.utils import get_active_period
 from matricula.models import Category, FakeGroup, Student
-from django.db.models import Value
+from django.db.models import Value, F
 from django.db.models.functions import Concat
 
 
@@ -46,7 +46,14 @@ class PeriodGModelLookup(BaseSelect2View):
 @register_lookups(prefix="user", basename="user")
 class UserProfessorGModelLookup(BaseSelect2View):
     model = User
-    fields = ['username']
+    fields = ['full_name', 'email']
+
+    def get_queryset(self):
+        queryset=super().get_queryset().annotate(
+            full_name=Concat('first_name', Value(' '), 'last_name'),
+        )
+
+        return queryset
 
 
 @register_lookups(prefix="studentuser", basename="studentuser")
@@ -93,10 +100,11 @@ class StudentGModelLookup(BaseSelect2View):
 @register_lookups(prefix="studentsearch", basename="studentsearch")
 class UserStudentGModelLookup(BaseSelect2View):
     model = Student
-    fields = ['full_name']
+    fields = ['full_name', 'email']
 
     def get_queryset(self):
         queryset = Student.objects.all().annotate(
-            full_name=Concat('user__first_name', Value(' '), 'user__last_name'), 
+            full_name=Concat('user__first_name', Value(' '), 'user__last_name'),
+            email=F('user__email')
         )
         return queryset
