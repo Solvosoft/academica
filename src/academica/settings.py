@@ -45,9 +45,9 @@ INSTALLED_APPS = [
     'async_notifications',
     'markitup',
     'djgentelella',
-    'mptt',
+  #  'mptt',
     'rest_framework',
-    'chunked_upload',
+  #  'chunked_upload',
     'api.apps.ApiConfig',
     'django_celery_results',
     'django_celery_beat',
@@ -66,7 +66,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'upo.urls'
+ROOT_URLCONF = 'academica.urls'
 
 TEMPLATES = [
     {
@@ -84,7 +84,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'upo.wsgi.application'
+WSGI_APPLICATION = 'academica.wsgi.application'
 
 
 # Database
@@ -92,15 +92,25 @@ WSGI_APPLICATION = 'upo.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'upo',
-        'USER': 'upo',
-        'PASSWORD': 'upo',
-        'HOST': 'localhost',
-        'PORT': '',
-    }
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DBNAME', 'academica'),
+        'USER': os.getenv('DBUSER', 'academica_user'),
+        'PASSWORD': os.getenv('DBPASSWORD', 'NOUSARENPROD'),
+        'HOST': os.getenv('DBHOST', '127.0.0.1'),
+        'PORT': os.getenv('DBPORT', '5432'),
+
+        'TEST': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('DBNAME', 'academica_test'),
+            'USER': os.getenv('DBUSER', 'academica_user'),
+            'PASSWORD': os.getenv('DBPASSWORD', 'NOUSARENPROD'),
+            'HOST': os.getenv('DBHOST', '127.0.0.1'),
+            'PORT': os.getenv('DBPORT', '5432'),
+        }
+    },
 }
 
+READONLY_DATABASE = os.getenv('READONLY_DATABASE', 'default')
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -145,10 +155,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_NOCODE_DIR / 'static/'
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_NOCODE_DIR / 'media/'
+STATIC_URL = os.getenv('STATIC_URL', '/static/')
+STATIC_ROOT = os.getenv('STATIC_ROOT', BASE_NOCODE_DIR / 'static/')
+
+
+MEDIA_URL = os.getenv('MEDIA_URL', '/media/')
+MEDIA_ROOT = Path(os.getenv('MEDIA_ROOT', BASE_NOCODE_DIR / 'media/'))
+
+
 #LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/home/'
 LOCALE_PATHS = (
@@ -170,7 +184,7 @@ EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL','False').lower() == "true"
 
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_CACHE_BACKEND = 'django-cache'
-CELERY_MODULE = "upo.celery"
+CELERY_MODULE = "academica.celery"
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_BROKER_URL = os.getenv('BROKER_URL', 'amqp://guest:guest@localhost:5672')

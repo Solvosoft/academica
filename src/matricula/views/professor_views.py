@@ -14,7 +14,7 @@ from matricula.forms import ProfessorEditForm, ProfessorSearchForm, \
 from matricula.models import Professor
 
 from async_notifications.utils import send_email_from_template
-from chunked_upload.models import ChunkedUpload
+from djgentelella.models import ChunkedUpload
 from matricula.views.utils import checking_user
 
 

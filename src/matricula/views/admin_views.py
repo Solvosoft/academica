@@ -33,7 +33,7 @@ from django.urls import reverse
 
 from djgentelella.models import MenuItem as DJMenuItem
 from async_notifications.utils import send_email_from_template
-from chunked_upload.models import ChunkedUpload
+from djgentelella.models import ChunkedUpload
 from xhtml2pdf import pisa
 import django_excel as excel
 

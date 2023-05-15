@@ -6,7 +6,7 @@ from django.conf import settings
 from async_notifications.utils import send_email_from_template
 
 from matricula.certificate_utils import build_pdf_certificate
-from upo.celery import app
+from academica.celery import app
 from matricula.contrib.bills.models import Bill
 from matricula.models import Enroll
 

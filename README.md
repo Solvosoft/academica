@@ -1,4 +1,4 @@
-# Gestor de cursos de la UPo
+# Gestor de cursos
 
 Este proyecto ayuda a gestionar cursos de la Universidad Popular.
 

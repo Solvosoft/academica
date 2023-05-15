@@ -6,6 +6,7 @@ Created on 17/5/2015
 '''
 import uuid
 
+from djgentelella.models import ChunkedUpload
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 from django.utils.decorators import method_decorator
@@ -23,7 +24,6 @@ from django.views.generic.edit import UpdateView
 from django.views.generic import DetailView
 
 from django_ajax.decorators import ajax
-from chunked_upload.models import ChunkedUpload
 from async_notifications.utils import send_email_from_template
 
 from matricula.models import Professor, Student, Enroll
