@@ -3,7 +3,7 @@ from async_notifications.register import update_template_context
 
 def load_email_temp_academica():
     update_template_context(
-        'new_user_created_academy', 'Sólo un paso más para registrarte - UPo.',
+        'new_user_created_academy', 'Sólo un paso más para registrarte - Academica.',
         [('user'), ('student'), ('url'), ('domain')],
         'email_confirmation.html', as_template=True)
 

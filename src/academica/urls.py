@@ -18,7 +18,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path, include, re_path
 from django.views.generic import RedirectView
 from django.views.static import serve
-from ajax_select import urls as ajax_select_urls
+#from ajax_select import urls as ajax_select_urls
 from async_notifications.markitup.views import preview_newsletter
 from membership_core.urls import urlpatterns as url_core
 from django.conf import settings
@@ -31,7 +31,7 @@ urlpatterns = djgentelellaurls + [
     path('async_notifications/', include('async_notifications.urls')),
     path('api/', include('api.urls')),
     path('admin/', admin.site.urls),
-    re_path(r'^ajax_select/', include(ajax_select_urls)),
+    #re_path(r'^ajax_select/', include(ajax_select_urls)),
     re_path(r'^media/(?P<path>.*)$',
             serve,
             {'document_root': settings.MEDIA_ROOT,}

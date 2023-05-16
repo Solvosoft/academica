@@ -1,16 +1,12 @@
 
-<center>
-	<div id="header_content" >
-		<img src="https://www.universidadpopular.us/wp-content/uploads/2018/10/cropped-UP_logo_Square-e1539875905697-7.png" alt="logo"/>
-	</div>
-</center>
+
 
 <div id="content" >
 	<br>
 	<div >
 		<center>
 			<p>
-				La Universidad Popular de Costa Rica {{ enrollment.group.enroll_finish.year }}
+				Academica {{ enrollment.group.enroll_finish.year }}
 				otorga el presente <strong>certificado de aprobación</strong> a:
 			</p>
 			<h1 style="color:#709f2c; font-size: 3em">{{ enrollment.student.user.get_full_name }}</h1>
@@ -20,7 +16,7 @@
 			</p>
 			<br>
 			<p>
-				Dado en la ciudad de San José, Costa Rica, el dia 13/05/2021
+				Dado en la ciudad de San José, Costa Rica, el dia {{now}}
 			</p>
 
 		</center>

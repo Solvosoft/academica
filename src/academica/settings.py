@@ -21,14 +21,17 @@ BASE_NOCODE_DIR = BASE_DIR.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'iv7m3*rs0dqdk$w160!_l^q!d@l7kb(zqtdm%wvm*8757((89$'
-
-# SECURITY WARNING: don't run with debug turned on in production!
+SECRET_KEY = os.getenv('SECRET_KEY', 'iv7m3*rs0dqdk$w160!_l^q!d@l7kb(zqtdm%wvm*8757((89$')
 DEBUG = True
+# SECURITY WARNING: don't run with debug turned on in production!
+if os.getenv('ALLOWED_HOSTS', ''):
+    ALLOWED_HOSTS = [c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
+    CSRF_TRUSTED_ORIGINS = ["https://"+c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
 
-ALLOWED_HOSTS = []
+else:
+    ALLOWED_HOSTS = []
 
-ADMINS = [('support', 'sitio@solvosoft.com') ]
+ADMINS = [('Solvo', 'sitio@solvosoft.com'),]
 
 # Application definition
 
@@ -41,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
     'membership_core',
-    'ajax_select',
+   # 'ajax_select',
     'async_notifications',
     'markitup',
     'djgentelella',
@@ -176,13 +179,14 @@ TINYMCE_UPLOAD_PATH = MEDIA_ROOT / 'tinymce'
 EMAIL_HOST = os.getenv('EMAIL_HOST', 'localhost')
 EMAIL_PORT = os.getenv('EMAIL_PORT', '1025')
 EMAIL_HOST_PASSWORD =  os.getenv('EMAIL_HOST_PASSWORD', '')
-EMAIL_HOST_USER =  os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL' ,'webmaster@localhost')
+SERVER_EMAIL = os.getenv('SERVER_EMAIL' ,'webmaster@localhost')
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS','False').lower() == "true"
 EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL','False').lower() == "true"
 
 
-CELERY_RESULT_BACKEND = 'django-db'
+CELERY_RESULT_BACKEND =os.getenv('CELERY_RESULT_BACKEND', 'django-db')
 CELERY_CACHE_BACKEND = 'django-cache'
 CELERY_MODULE = "academica.celery"
 CELERY_TIMEZONE = TIME_ZONE
@@ -238,7 +242,7 @@ ASYNC_NEWSLETTER_SEVER_CONFIGS={
     #use_tls=my_use_tls
 }
 """
-PAYPAL_ERROR_EMAIL_NOFIFY = ("secretaria@universidadpopular.red",)
+PAYPAL_ERROR_EMAIL_NOFIFY = ("info@solvosoft.com",)
 PROFESSOR_GROUP_NAME = "Profesores"
 ADMIN_GROUP_NAME = "Administradores Académica"
 HOURS_TO_PAY = 4

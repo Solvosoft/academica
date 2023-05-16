@@ -1,0 +1,50 @@
+version: '2'
+
+services:
+  rabbitmq:
+    image: "rabbitmq:3"
+    container_name: "rabbitmq"
+    networks:
+      - apps
+    environment:
+      - RABBITMQ_DEFAULT_USER=academica
+      - RABBITMQ_DEFAULT_PASS=4c4d3m1c4
+      - RABBITMQ_DEFAULT_VHOST=vhostacademica
+
+  postgresdb:
+    image: postgres
+    restart: always
+    container_name: "postgresdb"
+    environment:
+      - POSTGRES_PASSWORD=NOUSARENPROD
+      - POSTGRES_USER=academica_user
+      - POSTGRES_DB=academica
+      
+    networks:
+      - apps
+
+  mail:
+    image: mailhog/mailhog
+    restart: always
+    container_name: "mail"
+    ports:
+      - 8026:8025
+
+  academica:
+    image: "academica"
+    container_name: "academica"
+    networks:
+      - apps
+    environment:
+      - DBHOST=postgresdb
+      - BROKER_URL=amqp://academica:4c4d3m1c4@rabbitmq:5672/vhostacademica
+      - EMAIL_HOST=mail
+      
+    ports:
+      - 8011:80
+
+networks:
+  apps:
+    driver: bridge
+
+
