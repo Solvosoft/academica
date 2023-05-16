@@ -1,5 +1,5 @@
 """
-ASGI config for upo project.
+ASGI config for Academica project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 

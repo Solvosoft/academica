@@ -44,7 +44,7 @@ def course_topics_report(request):
     context = {
         'form': form,
         'url': reverse('course_topics_api-list'),
-        'title': 'Temas de los cursos que se han impartido en la Upo en total, por año o por mes.'
+        'title': 'Temas de los cursos que se han impartido en total, por año o por mes.'
     }
     return render(request, 'reports/course_topics_report.html', context=context)
 

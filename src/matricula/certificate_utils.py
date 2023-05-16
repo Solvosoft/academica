@@ -77,13 +77,13 @@ def build_pdf_certificate(enroll):
 
     with open (template_file, 'r' ) as f:
         student_name = enroll.student.user.get_full_name()
-        upo_hours = str(enroll.group.duration_hours) + " horas"
-        upo_date = enroll.group.expedition_date
-        if upo_date is None:
-            upo_date = now().strftime("%Y-%m-%d")
+        academica_hours = str(enroll.group.duration_hours) + " horas"
+        academica_date = enroll.group.expedition_date
+        if academica_date is None:
+            academica_date = now().strftime("%Y-%m-%d")
         else:
-            upo_date = str(upo_date)
-        upo_course = str(enroll.group.course.name)
+            academica_date = str(academica_date)
+        academica_course = str(enroll.group.course.name)
         content = f.read()
         small_course = ""
         medium_course = ""
@@ -91,25 +91,25 @@ def build_pdf_certificate(enroll):
         small_course2 = ""
         medium_course2 = ""
         big_course2 = ""
-        if len(upo_course)<50:
-            big_course = upo_course
-        elif len(upo_course) <= 100:
+        if len(academica_course)<50:
+            big_course = academica_course
+        elif len(academica_course) <= 100:
             for i in range(50,0,-1):
-                if upo_course[i] == " ":
-                    big_course = upo_course[:i+1]
-                    big_course2 = upo_course[i+1:]
+                if academica_course[i] == " ":
+                    big_course = academica_course[:i+1]
+                    big_course2 = academica_course[i+1:]
                     break;
-        elif len(upo_course)<=200:
+        elif len(academica_course)<=200:
             for i in range(100, 0, -1):
-                if upo_course[i] == " ":
-                    medium_course = upo_course[:i+1] 
-                    medium_course2 = upo_course[i+1:]
+                if academica_course[i] == " ":
+                    medium_course = academica_course[:i+1] 
+                    medium_course2 = academica_course[i+1:]
                     break
         else:
             for i in range(150,0, -1):
-                if upo_course[i] == " ":
-                    small_course = upo_course[:i+1]
-                    small_course2 = upo_course[i+1:]
+                if academica_course[i] == " ":
+                    small_course = academica_course[:i+1]
+                    small_course2 = academica_course[i+1:]
                     break
                 
         content = content.replace(
@@ -127,9 +127,9 @@ def build_pdf_certificate(enroll):
         ).replace(
             '{{CursoPequeno2}}', small_course2
         ).replace(
-            '{{Cargahoraria}}', upo_hours
+            '{{Cargahoraria}}', academica_hours
         ).replace(
-            '{{Fecha}}', upo_date
+            '{{Fecha}}', academica_date
         )
     tmpdir = tempfile.mkdtemp()
     with open(tmpdir+'/'+file_name, 'w') as tmfile:

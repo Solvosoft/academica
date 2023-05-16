@@ -1,4 +1,4 @@
-{% extends 'gentelalla/base.html' %}
+{% extends 'gentelella/base.html' %}
 {% load static i18n %}
 {% load utils matriculabase %}
 
@@ -14,7 +14,7 @@
         <div class="container position-relative" data-aos="fade-up" data-aos-delay="100">
             <div class="detalle-cursos">
                 <div class="col-xl-12 col-lg-12">
-<h1 class="desc-title">{{ course }}</h1>
+                    <h1 class="desc-title">{{ course }}</h1>
 
 
     {% if request.user.is_authenticated and not request.user.student %}
@@ -30,21 +30,16 @@
 
         {{ course.content | safe }}
 
-
-
-
-
 </div></div></div>
     </section>
 <main id="main">
     <div id="group_message"></div>
-        <section id="cta" class="cta">
+
+<section id="cta" class="cta">
       <div class="container" >
         <div class="text-center">
             {% if not course|is_open %}
            <h3> No hay grupos disponibles. </h3>
-
-
         {% else %}
             <div class="row icon-boxes">
             {% for group in course|is_open %}
@@ -107,8 +102,7 @@
         {% endif %}
     </div>
         </div>
-      </div>
-    </section>
+</section>
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
@@ -116,7 +110,7 @@
     <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'courses' %}">Atrás</a></li>
   </ol>
 </nav>
-      {% include 'newstyle/faq.html' %}
+
 </main>
 {% endblock %}
 {% block js %}

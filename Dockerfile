@@ -7,7 +7,7 @@ ARG UID=1000
 ENV USER="academica"
 RUN useradd -u $UID -ms /bin/bash $USER
 
-RUN mkdir -p /app/logs/ /run/static/
+RUN mkdir -p /app/logs/ /run/static/ /run/logs /app/src/ /app/run/
 WORKDIR /app
 
 RUN apt-get update && \
@@ -29,15 +29,18 @@ RUN sed -i 's/user www-data;/user academica;/g' /etc/nginx/nginx.conf
 COPY deploy/nginx.conf /etc/nginx/sites-available/default
 COPY deploy/supervisor.conf /etc/supervisor/conf.d/
 COPY deploy/nginx_personalize.py /app/nginx_personalize.py
-ADD src /app/
+COPY deploy/gunicorn_start /app/gunicorn_start
+ADD src /app/src/
 
+WORKDIR /app/src/
 RUN python manage.py compilemessages -l es --settings=academica.settings
 RUN python manage.py collectstatic  --noinput --settings=academica.settings
 
-ADD docker/entrypoint.sh /run/
+ADD deploy/entrypoint.sh /run/
 RUN chown -R academica:academica /run/
 
 RUN chmod +x /run/entrypoint.sh
+RUN chmod +x /app/gunicorn_start
 RUN sed -i 's/proxy_set_header X-Forwarded-Proto $scheme;/proxy_set_header X-Forwarded-Proto https;/g' /etc/nginx/proxy_params
 
 EXPOSE 80 8000

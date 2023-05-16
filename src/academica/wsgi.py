@@ -1,5 +1,5 @@
 """
-WSGI config for upo project.
+WSGI config for Academica project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

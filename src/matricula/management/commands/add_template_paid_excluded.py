@@ -8,6 +8,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         update_template_context(
-            'enroll_paid_excluded', 'Correo de beca completa asignada - UPo',
+            'enroll_paid_excluded', 'Correo de beca completa asignada',
             [('user'), ('url'),("domain"),('group')],
             'enroll_paid_excluded.html', as_template=True)

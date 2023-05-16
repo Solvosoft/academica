@@ -1,6 +1,6 @@
 # Gestor de cursos
 
-Este proyecto ayuda a gestionar cursos de la Universidad Popular.
+Este proyecto ayuda a gestionar cursos de la Universidad.
 
 
 # Installation 
@@ -68,7 +68,7 @@ o también ver https://github.com/mailhog/MailHog
 
 # Create Rabbitmq 
 
-    rabbitmqctl add_user upo upopass
-    rabbitmqctl add_vhost upovhost
-    rabbitmqctl set_user_tags upo upotag
-    rabbitmqctl set_permissions -p upovhost upo ".*" ".*" ".*"
+    rabbitmqctl add_user academica academicapass
+    rabbitmqctl add_vhost academicavhost
+    rabbitmqctl set_user_tags academica academicatag
+    rabbitmqctl set_permissions -p academicavhost academica ".*" ".*" ".*"

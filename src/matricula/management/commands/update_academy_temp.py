@@ -19,7 +19,7 @@ class Command(BaseCommand):
         TemplateContext.objects.filter(code__in=templates).delete()
 
         update_template_context(
-            'set_email_first_academy', 'Sólo un paso más para registrarte - UPo.',
+            'set_email_first_academy', 'Sólo un paso más para registrarte',
             [('url'), ('student'),("domain")], 'set_email_first.html',
             as_template=True)
 
@@ -33,10 +33,10 @@ class Command(BaseCommand):
             [('user'), ('professor'), ('url'),("domain")],
             'welcome_professor.html', as_template=True)
 
-        update_template_context("coupon_code_notification",  "¡Felicidades! Has recibido un cupón de descuento para tu curso - UPO",
+        update_template_context("coupon_code_notification",  "¡Felicidades! Has recibido un cupón de descuento para tu curso",
                             [('coupon'),  ("domain")], 'coupons/coupon_code_notification.html',
                             as_template=True)
 
-        update_template_context("coupon_code_notification_updated",  "¡Felicidades de nuevo! Tu cupón de descuento ha sido actualizado - UPO",
+        update_template_context("coupon_code_notification_updated",  "¡Felicidades de nuevo! Tu cupón de descuento ha sido actualizado",
                             [('coupon'),  ("domain")], 'coupons/coupon_code_notification_update.html',
                             as_template=True)

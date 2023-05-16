@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /app
+cd /app/src
 
 mkdir -p /run/logs/
 chown -R academica:academica /app
