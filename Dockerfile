@@ -26,9 +26,9 @@ RUN  apt-get remove libxslt-dev libxml2-dev libffi-dev  -y && \
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 RUN sed -i 's/user www-data;/user academica;/g' /etc/nginx/nginx.conf
 
-COPY docker/nginx.conf /etc/nginx/sites-available/default
-COPY docker/supervisor.conf /etc/supervisor/conf.d/
-COPY docker/nginx_personalize.py /app/nginx_personalize.py
+COPY deploy/nginx.conf /etc/nginx/sites-available/default
+COPY deploy/supervisor.conf /etc/supervisor/conf.d/
+COPY deploy/nginx_personalize.py /app/nginx_personalize.py
 ADD src /app/
 
 RUN python manage.py compilemessages -l es --settings=academica.settings
