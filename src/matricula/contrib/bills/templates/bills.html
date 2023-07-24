@@ -1,8 +1,16 @@
 {% extends 'gentelella/base.html'%}
+{% load billtemplatetag %}
 {% block extra_css %}
 	<style>
 		td{
 			padding-right:20px;
+		}
+		.helptext {
+			font-weight: 150;
+		}
+		.price-tax {
+		  font-size: 11px;
+
 		}
 	</style>
 {% endblock %}
@@ -13,7 +21,7 @@
 		<form method="post" action="{% url 'add_student' %}">
 			{% csrf_token %}
 			<div class="alert alert-warning alert-dismissible" role="alert">
-				<strong>Advertencia!</strong> Para tomar cursos usted debe tener rol de estudiante. 
+				<strong>Advertencia!</strong> Para tomar cursos usted debe tener rol de estudiante.
 				<button type="submit" class="btn btn-sm btn-primary">Crear</button>
 			</div>
 		</form>
@@ -25,11 +33,21 @@
 		<div class="x_panel">
 			{% if not_paid %}
 				<div class="alert alert-warning text-center" role="alert">
-					{% trans 'Paid bills using Paypal take between 2 or 3 minutes to be updated, refresh to see most recent changes' %} 
+					{% trans 'Paid bills using Paypal take between 2 or 3 minutes to be updated, refresh to see most recent changes' %}
 					<a class="btn btn-primary" href="{% url 'bills' %}">{% trans 'Refresh' %}</a>
 				</div>
 			{% endif %}
 			{% for bill in not_paid%}
+				{% have_payment_verification bill.obj as have_verification %}
+				{% if have_verification %}
+				<div class="card">
+						<div class="card-body">
+					{% trans 'We are processing your payment, a notification will send you confirming you pay' %}
+							<br>
+							{{have_verification}}
+						</div>
+				</div>
+				{% else %}
 				<div class="product_price">
 					<h1 class="price green">{{bill.obj.short_drescription}}</h1>
 					<div class="col-md-6 col-lg-6 col-sm-12">
@@ -44,6 +62,57 @@
 					</div>
 					<div class="clearfix"></div>
 				</div>
+				<div class="product_price">
+					<h3 class="green">Sinpe Movil</h3>
+					<div class="card text-justify" >
+						<div class="card-body">
+							<p>Has tu transferencia al:<br>
+							<span class="w-100">Teléfono:</span><span>8751-7195</span><br>
+							<span class="w-100">A nombre de:</span><span>Luis Zárate Montero</span><br>
+							</p>
+						</div>
+					</div><br><br>
+					<form action="{% url 'pay_using_sinpemovil' %}" method="post">{% csrf_token %}
+						<div class="col-md-10 col-lg-10 col-sm-12">
+						<div class="price-tax">
+							{% sinpemovil_form bill as sinpeform%}
+							{{sinpeform}}
+						</div>
+						</div>
+						<div class="col-md-2 col-lg-2 col-sm-2">
+							<button type="submit" class="btn btn-success btn-lg">{% trans 'Pay' %}</button>
+						</div>
+					</form>
+					<div class="clearfix"></div>
+				</div>
+				<div class="product_price">
+					<h3 class=" green">Depósito bancario</h3>
+					<div class="card text-justify" >
+						<div class="card-body">
+							<p>Has tu transferencia la cuenta:<br>
+Banco: Banco De Costa Rica<br>
+Moneda: Colones<br>
+Cuenta: CC-001-03150313<br>
+SINPE: 15201001031503134<br>
+IBAN: CR68015201001031503134<br>
+A nombre de: Solvosoft S.A. (3-101-678373)
+							</p>
+						</div>
+					</div><br><br>
+					<form action="{% url 'pay_using_banktransfer' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+					<div class="col-md-10 col-lg-10 col-sm-12">
+						<div class="price-tax">
+							{% bank_form bill as bankform %}
+							{{bankform}}
+						</div>
+					</div>
+						<div class="col-md-2 col-lg-2 col-sm-2">
+							<button type="submit" class="btn btn-info btn-lg">{% trans 'Pay' %}</button>
+						</div>
+					</form>
+					<div class="clearfix"></div>
+				</div>
+				{% endif %}
 			{% empty %}
 				<div class="alert alert-info text-center" role="alert">
 					{% trans "You don't have Unpaid bills" %}

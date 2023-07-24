@@ -6,13 +6,16 @@ Created on 17/5/2015
 '''
 
 from django.conf import settings
-from django.shortcuts import render
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
 from paypal.standard.forms import PayPalPaymentsForm
 
+from matricula.contrib.bills.forms import SinpeMovilBillForm, BankBillForm
 from matricula.contrib.bills.models import Bill
 from membership_core.models import SystemCurrency
 
@@ -58,4 +61,37 @@ def get_my_bills(request):
     paid = Bill.objects.none()
     not_paid_forms = []
     return render(
-            request, 'bills.html', {'paid': paid, 'not_paid': not_paid_forms})    
+            request, 'bills.html', {'paid': paid, 'not_paid': not_paid_forms})
+
+@login_required
+def pay_using_sinpemovil(request):
+    form = SinpeMovilBillForm(request.POST)
+    if form.is_valid():
+        form.save()
+        send_mail("New SinpeMovil payment for a course %s"%(form.cleaned_data['group_name']),
+            "Please check %s to see details"%(request.get_host()),
+            None,
+            settings.PAYMENT_NOTIFICATION_MAIL
+
+        )
+    else:
+        messages.error("Hubo un error procesando su solicitud, por favor vuelva a intentarlo")
+    return redirect(reverse('bills'))
+
+@login_required
+def pay_using_banktransfer(request):
+    form = BankBillForm(request.POST, files=request.FILES)
+    if form.is_valid():
+        form.save()
+        send_mail("New Bank payment for a course %s"%(form.cleaned_data['group_name']),
+            "Please check %s to see details"%(request.get_host()),
+            None,
+            settings.PAYMENT_NOTIFICATION_MAIL
+        )
+    else:
+        messages.error(request,
+                       "Hubo un error procesando su solicitud, por favor vuelva a intentarlo, recuerde adjuntar el comprobante %s"%(
+                           form.errors
+                       ))
+    return redirect(reverse('bills'))
+

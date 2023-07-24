@@ -7,7 +7,7 @@ Created on 03/11/2020
 '''
 from django import forms
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
-from .models import Bill
+from .models import Bill, SinpeMovilBill, BankBill
 from matricula.models import Student, Group
 from djgentelella.widgets import core as djgentelella
 from djgentelella.forms.forms import GTForm
@@ -81,3 +81,28 @@ class BillCreateForm(forms.ModelForm, GTForm):
                 self.fields['student'].initial = kwargs['initial']['student_id']
             if 'currency_id' in kwargs['initial']:
                 self.fields['currency'].initial = kwargs['initial']['currency_id']
+
+
+class SinpeMovilBillForm(forms.ModelForm, GTForm):
+    class Meta:
+        model = SinpeMovilBill
+        exclude=['verified']
+        widgets = {
+            'name': djgentelella.TextInput,
+            'group_name': djgentelella.TextInput,
+            'transaction_code': djgentelella.TextInput,
+            'bill': djgentelella.HiddenInput,
+            'description': djgentelella.Textarea
+        }
+
+
+class BankBillForm(forms.ModelForm, GTForm):
+    class Meta:
+        model = BankBill
+        exclude=['verified']
+        widgets = {
+            'name': djgentelella.TextInput,
+            'group_name': djgentelella.TextInput,
+            'bill': djgentelella.HiddenInput,
+            'description': djgentelella.Textarea
+        }

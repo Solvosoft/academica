@@ -636,8 +636,8 @@ def create_group(request):
             form.fields['currency'].required = True
         context['form'] = form
         if form.is_valid():
-            preenroll = form.cleaned_data['pre_enroll_finish'] >= form.cleaned_data['pre_enroll_start'] 
-            enroll = form.cleaned_data['enroll_finish'] >= form.cleaned_data['enroll_start'] 
+            preenroll = form.cleaned_data['pre_enroll_finish'] >= form.cleaned_data['pre_enroll_start']
+            enroll = form.cleaned_data['enroll_finish'] >= form.cleaned_data['enroll_start']
             in_ranges = form.cleaned_data['pre_enroll_finish'] <= form.cleaned_data['enroll_start']
             if preenroll and enroll and in_ranges:
                 group = Group(
@@ -700,17 +700,16 @@ def edit_group(request, pk=None):
             if request.POST.get("is_paid") == 'on':
                 form.fields['currency'].required = True
             if form.is_valid():
-                preenroll = form.cleaned_data['pre_enroll_finish'] >= form.cleaned_data['pre_enroll_start'] 
-                enroll = form.cleaned_data['enroll_finish'] >= form.cleaned_data['enroll_start'] 
-                in_ranges = form.cleaned_data['pre_enroll_finish'] <= form.cleaned_data['enroll_start']
-                if preenroll and enroll and in_ranges:
+                preenroll = form.cleaned_data['pre_enroll_finish'] >= form.cleaned_data['pre_enroll_start']
+                enroll = form.cleaned_data['enroll_finish'] >= form.cleaned_data['enroll_start']
+
+                if preenroll and enroll :
                     form.save()
                     messages.success(request, "Grupo guardado con éxito")
                     return HttpResponseRedirect(reverse('groups_enroll'))
                 else:
                     msg = "Fechas incorrectas en prematrícula. La fecha de inicio debe ser menor a la fecha fin."
                     if not enroll: msg = "Fechas incorrectas en matrícula. La fecha de inicio debe ser menor a la fecha fin."
-                    if not in_ranges: msg = "Error en rangos de fechas. Pre-matrícula debe finalizar antes de la fecha de inicio de matrícula."
                     messages.error(request, msg)
                     return render(request, 'groups/group_update.html', {'form': form})
             else:
@@ -1304,7 +1303,7 @@ class GroupDetailView(DetailView):
         context['form'] = EnrollCreateForm(
             initial={'group': self.get_object(), 'enroll_finished':True})
         return context
-    
+
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         context = super(GroupDetailView, self).get_context_data(**kwargs)

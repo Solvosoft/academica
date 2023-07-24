@@ -3,117 +3,135 @@
 {% load utils matriculabase %}
 
 {% block content %}
+<style>
+.cta-btn{
+    min-height: 5em;
+    min-width: 10em;
+    display: inline-block;
+    padding: 2em;
+}
+</style>
 <nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/">Inicio</a></li>
-    <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'root' %}">Cursos</a></li>
-  </ol>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'root' %}">Cursos</a></li>
+    </ol>
 </nav>
 
-    <section id="hero" class="detalle-general-curso">
-        <div class="container position-relative" data-aos="fade-up" data-aos-delay="100">
-            <div class="detalle-cursos">
-                <div class="col-xl-12 col-lg-12">
-                    <h1 class="desc-title">{{ course }}</h1>
-
-
-    {% if request.user.is_authenticated and not request.user.student %}
-        <form method="post" action="{% url 'add_student' %}">
-            {% csrf_token %}
-            <div class="alert alert-warning alert-dismissible" role="alert">
-                <strong>Advertencia!</strong> Para tomar cursos usted debe tener rol de estudiante.
-                <button type="submit" class="btn btn-sm btn-primary">Crear</button>
+<section id="hero" class="detalle-general-curso">
+    <div class="container position-relative" data-aos="fade-up" data-aos-delay="100">
+        <div class="detalle-cursos">
+            <div class="col-xl-12 col-lg-12">
+                <h1 class="desc-title">{{ course }}</h1>
+                {% if request.user.is_authenticated and not request.user.student %}
+                <form method="post" action="{% url 'add_student' %}">
+                    {% csrf_token %}
+                    <div class="alert alert-warning alert-dismissible" role="alert">
+                        <strong>Advertencia!</strong> Para tomar cursos usted debe tener rol de estudiante.
+                        <button type="submit" class="btn btn-sm btn-primary">Crear</button>
+                    </div>
+                </form>
+                {% endif %}
+                {{ course.content | safe }}
             </div>
-        </form>
-    {% endif %}
-
-
-        {{ course.content | safe }}
-
-</div></div></div>
-    </section>
+        </div>
+    </div>
+</section>
+<div class="clearfix"></div>
 <main id="main">
     <div id="group_message"></div>
 
-<section id="cta" class="cta">
-      <div class="container" >
-        <div class="text-center">
-            {% if not course|is_open %}
-           <h3> No hay grupos disponibles. </h3>
-        {% else %}
-            <div class="row icon-boxes">
-            {% for group in course|is_open %}
+    <section id="cta" class="cta">
+        <div class="container">
+            <div class="text-center">
+                {% if not course|is_open %}
+                <h3> No hay grupos disponibles. </h3>
+                {% else %}
+                <div class="row icon-boxes">
+                    {% for group in course|is_open %}
 
-            <div class="col-xl-12 col-lg-12 {% if not forloop.first %}my-3 {%endif%}" >
+                    <div class="col-xl-12 col-lg-12 {% if not forloop.first %}my-3 {%endif%}">
 
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item"><strong>Categoría: </strong>{{ group.course.category }}</li>
-                {%if group.schedule %}<li class="list-group-item"><strong>Horario: </strong>{{ group.schedule }}</li> {% endif %}
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Categoría: </strong>{{ group.course.category }}</li>
+                            {%if group.schedule %}
+                            <li class="list-group-item"><strong>Horario: </strong>{{ group.schedule }}</li>
+                            {% endif %}
 
-     {% if group.is_paid %}<li class="list-group-item"><strong>Inversión: </strong>{{ group.cost }} {{ group.currency }} </li> {% endif %}
+                            {% if group.is_paid %}
+                            <li class="list-group-item"><strong>Inversión: </strong>
+                                {{ group.cost }} {{ group.currency }}
+                            </li>
+                            {% endif %}
 
-                <li class="list-group-item">
-                   <strong>Rango pre-inscripción: </strong>{{ group.pre_enroll_start }} - {{ group.pre_enroll_finish }}
-                </li>
-                <li class="list-group-item"><strong>Rango matriculación: </strong>{{ group.enroll_start }} - {{ group.enroll_finish }}</li>
-                <li class="list-group-item">   {% if group.is_paid %}
-                                    <span class="badge bg-green">Curso pagado</span>
+                            <li class="list-group-item">
+                                <strong>Rango pre-inscripción: </strong>
+                                {{ group.pre_enroll_start }} - {{ group.pre_enroll_finish }}
+                            </li>
+                            <li class="list-group-item"><strong>Rango matriculación: </strong>{{ group.enroll_start }} -
+                                {{ group.enroll_finish }}
+                            </li>
+                            <li class="list-group-item"> {% if group.is_paid %}
+                                <span class="badge bg-green">Curso pagado</span>
                                 {% else %}
-                                    <span class="badge bg-blue">Curso gratis</span>
+                                <span class="badge bg-blue">Curso gratis</span>
                                 {% endif %}
-                </li>
-                <li class="list-group-item">
+                            </li>
+                            <li class="list-group-item">
                                 {% if request.user.is_authenticated and request.user.student %}
-                                    {% if group.in_preenrollment %}
-                                        <a class="btn-success cta-btn btn-sm" data-href="{% url 'enrollme' group.pk %}"
-                                           data-ajax="true">
-                                            {% if group.flow == group.AUTO_ENROLL %}{% trans 'Enroll me' %}{% else %}
-                                                {% trans 'Pre-enroll me' %}{% endif %}
-                                        </a>
-                                    {% endif %}
-
-                                    {% if group.in_enrollment %}
-                                        {% can_enroll group request.user  as show_enroll %}
-                                        {% if show_enroll %}
-                                            <a class="btn-success cta-btn btn-sm" data-href="{% url 'enrollme' group.pk %}"
-                                            data-ajax="true">  {% trans 'Enroll me' %}
-                                            </a>
-                                        {% endif %}
-                                    {% endif %}
-                                {% else %}
-                                    {% if group.in_enrollment and group.flow == group.AUTO_ENROLL  %}
-                                        <a style="margin-botton:10px;" class="btn-success cta-btn btn-sm" href="{% url 'login' %}?next={% url 'course_detail' course.pk %}">
-                                            {% trans 'Enroll me' %}
-                                        </a>
-                                    {% elif group.in_preenrollment %}
-                                        <a style="margin-botton:10px;" class="btn-success cta-btn btn-sm" href="{% url 'login' %}?next={% url 'course_detail' course.pk %}">
-                                            {% trans 'Pre-enroll me' %}
-                                        </a>
-                                    {% endif %}
+                                {% if group.in_preenrollment %}
+                                <a class="btn-success cta-btn" data-href="{% url 'enrollme' group.pk %}"
+                                   data-ajax="true">
+                                    {% if group.flow == group.AUTO_ENROLL %}{% trans 'Enroll me' %}{% else %}
+                                    {% trans 'Pre-enroll me' %}{% endif %}
+                                </a>
                                 {% endif %}
-                </li>
-            </ul>
 
+                                {% if group.in_enrollment %}
+                                {% can_enroll group request.user as show_enroll %}
+                                {% if show_enroll %}
+                                <a class="btn-success cta-btn" data-href="{% url 'enrollme' group.pk %}"
+                                   data-ajax="true"> {% trans 'Enroll me' %}
+                                </a>
+                                {% endif %}
+                                {% endif %}
+                                {% else %}
+                                {% if group.in_enrollment and group.flow == group.AUTO_ENROLL %}
+                                <a style="margin-botton:10px;" class="btn-success cta-btn "
+                                   href="{% url 'login' %}?next={% url 'course_detail' course.pk %}">
+                                    {% trans 'Enroll me' %}
+                                </a>
+                                {% elif group.in_preenrollment %}
+                                <a style="margin-botton:10px;" class="btn-success cta-btn "
+                                   href="{% url 'login' %}?next={% url 'course_detail' course.pk %}">
+                                    {% trans 'Pre-enroll me' %}
+                                </a>
+                                {% endif %}
+                                {% endif %}
+                            </li>
+                        </ul>
+
+                    </div>
+
+
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
-
-
-            {% endfor %}
-            </div>
-        {% endif %}
-    </div>
         </div>
-</section>
+    </section>
 
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
 
-    <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'courses' %}">Atrás</a></li>
-  </ol>
-</nav>
+            <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'courses' %}">Atrás</a></li>
+        </ol>
+    </nav>
 
 </main>
 {% endblock %}
 {% block js %}
-    <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}?v={% get_version %}"></script>
-    <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}?v={% get_version %}"></script>
+<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}?v={% get_version %}"></script>
+<script type="text/javascript"
+        src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}?v={% get_version %}"></script>
 {% endblock %}

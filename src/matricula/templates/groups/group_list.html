@@ -183,10 +183,10 @@
 	{% block js %}
 		<script type="text/javascript">
 			function deleteitem(element){
-				$(function(){
-					$("#deleteitem").attr("href", $(element).data('url'));
-					$("#modaldeleteitem").modal();
-				});
+
+				$("#deleteitem").attr("href", $(element).data('url'));
+				$("#modaldeleteitem").modal();
+
 				return false
 			}
 		</script>
