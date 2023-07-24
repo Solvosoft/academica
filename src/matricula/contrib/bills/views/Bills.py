@@ -68,8 +68,8 @@ def pay_using_sinpemovil(request):
     form = SinpeMovilBillForm(request.POST)
     if form.is_valid():
         form.save()
-        send_mail("New SinpeMovil payment for a course %s"%(form.cleaned_data['group_name']),
-            "Please check %s to see details"%(request.get_host()),
+        send_mail("New SinpeMovil payment for a course %s"%(form.cleaned_data['bill'].student),
+            "Please check %s to see details for course %s"%(request.get_host(), form.cleaned_data['group_name']),
             None,
             settings.PAYMENT_NOTIFICATION_MAIL
 
@@ -83,8 +83,8 @@ def pay_using_banktransfer(request):
     form = BankBillForm(request.POST, files=request.FILES)
     if form.is_valid():
         form.save()
-        send_mail("New Bank payment for a course %s"%(form.cleaned_data['group_name']),
-            "Please check %s to see details"%(request.get_host()),
+        send_mail("New Bank payment from %s"%(form.cleaned_data['bill'].student),
+            "Please check %s to see details for course %s"%(request.get_host(), form.cleaned_data['group_name']),
             None,
             settings.PAYMENT_NOTIFICATION_MAIL
         )
