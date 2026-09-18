@@ -226,9 +226,9 @@ MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
 MARKITUP_SET = 'markitup/sets/markdown/'
 JQUERY_URL = None
 
-PAYPAL_TEST = True
-PAYPAL_RECEIVER_EMAIL = "luisza14-buyer@gmail.com"
-MY_PAYPAL_HOST = "http://academica.ngrok.io"
+PAYPAL_TEST = False
+PAYPAL_RECEIVER_EMAIL = "paypal@solvosoft.com"
+MY_PAYPAL_HOST = "https://matricula.solvosoft.com"
 
 """
 ASYNC_NEWSLETTER_SEVER_CONFIGS={
