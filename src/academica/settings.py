@@ -222,6 +222,40 @@ PROFESSOR_GROUP_NAME = "Profesores"
 ADMIN_GROUP_NAME = "Administradores Académica"
 HOURS_TO_PAY = 4
 
+# Errores a GlitchTip. El DSN lo entrega la plataforma (un proyecto por
+# tenant); sin DSN, o en DEBUG, no se inicializa nada.
+GLITCHTIP_DSN = os.getenv('GLITCHTIP_DSN', '')
+if GLITCHTIP_DSN and not DEBUG:
+    import sentry_sdk
+    from sentry_sdk.integrations.celery import CeleryIntegration
+    from sentry_sdk.integrations.django import DjangoIntegration
+
+    sentry_sdk.init(
+        dsn=GLITCHTIP_DSN,
+        integrations=[DjangoIntegration(), CeleryIntegration()],
+        environment=os.getenv('GLITCHTIP_ENVIRONMENT', 'production'),
+        traces_sample_rate=0.0,
+        send_default_pii=False,
+    )
+
+# Logs a stdout: en un contenedor es lo unico que recoge `docker logs` (y el
+# recolector de la plataforma). Sin esto, los errores de Django se pierden.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {'format': '%(asctime)s %(levelname)s %(name)s %(message)s'},
+    },
+    'handlers': {
+        'console': {'class': 'logging.StreamHandler', 'formatter': 'simple'},
+    },
+    'root': {'handlers': ['console'], 'level': os.getenv('LOG_LEVEL', 'INFO')},
+    'loggers': {
+        'django': {'handlers': ['console'], 'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+                   'propagate': False},
+    },
+}
+
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SESSION_COOKIE_SECURE = env_bool('SESSION_COOKIE_SECURE', True)

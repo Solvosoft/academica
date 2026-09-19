@@ -13,3 +13,4 @@ gunicorn
 Pillow
 requests
 python-dotenv
+sentry-sdk

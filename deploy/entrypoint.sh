@@ -12,9 +12,19 @@ cd /app/src
 mkdir -p /run/logs/ "${MEDIA_ROOT:-/app/media/}"
 chown -R academica:academica /run/logs/ "${MEDIA_ROOT:-/app/media/}"
 
+# Con argumentos, se ejecutan tal cual y no se arranca ningun rol. El motor de
+# AppPacks lanza el bootstrap.job y el lifecycle.upgrade asi (el comando va como
+# Args del contenedor) y el job hereda SERVICE_TYPE=web del servicio: sin esto
+# levantaria nginx+gunicorn en vez de /run/install.sh y no terminaria nunca
+# (medido con payments, 2026-09-18).
+if [ "$#" -gt 0 ]; then
+  exec "$@"
+fi
+
 # Migraciones, tabla de caché, grupos y plantillas de correo (idempotente).
 # Con varias réplicas conviene correrlo una sola vez: ACADEMICA_BOOT_INSTALL=false
-# en los demás contenedores.
+# en los demás contenedores. El AppPack lo apaga en TODOS y deja la instalacion
+# a /run/install.sh, que corre una vez y con compuerta.
 if [ "${ACADEMICA_BOOT_INSTALL:-true}" = "true" ]; then
   runuser -p -u academica -- python manage.py academica_install
 fi

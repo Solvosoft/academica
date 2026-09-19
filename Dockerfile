@@ -57,8 +57,13 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf && \
 COPY deploy/nginx.conf /etc/nginx/sites-available/default
 COPY deploy/supervisor.conf /etc/supervisor/conf.d/academica.conf
 COPY deploy/nginx_personalize.py /app/nginx_personalize.py
-COPY --chmod=755 deploy/gunicorn_start /app/gunicorn_start
-COPY --chmod=755 deploy/entrypoint.sh /run/entrypoint.sh
+# Sin `COPY --chmod`: el builder del autodeploy de la plataforma invoca un
+# `docker build` legacy (sin BuildKit) y esa opcion lo hace fallar.
+COPY deploy/gunicorn_start /app/gunicorn_start
+COPY deploy/entrypoint.sh /run/entrypoint.sh
+# Lo lanzan el bootstrap.job y el lifecycle.upgrade del AppPack; no el arranque.
+COPY deploy/install.sh /run/install.sh
+RUN chmod 0755 /app/gunicorn_start /run/entrypoint.sh /run/install.sh
 
 COPY --from=builder --chown=academica:academica /app/src /app/src
 COPY --from=builder --chown=academica:academica /app/locale /app/locale
@@ -69,4 +74,6 @@ WORKDIR /app/src
 
 EXPOSE 80 8000
 
-CMD ["/run/entrypoint.sh"]
+# ENTRYPOINT y no CMD: el motor de AppPacks lanza sus jobs pasando el comando
+# como argumentos, y el entrypoint los ejecuta (ver deploy/entrypoint.sh).
+ENTRYPOINT ["/run/entrypoint.sh"]

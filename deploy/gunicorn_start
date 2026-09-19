@@ -6,7 +6,7 @@ DJANGODIR=/app/src/                               # Django project directory
 SOCKFILE=unix:/app/run/gunicorn.sock #0.0.0.0:8000  # we will communicte using this unix socket
 USER=academica                                          # the user to run as
 GROUP=academica                                         # the group to run as
-NUM_WORKERS=2                                       # how many worker processes should Gunicorn spawn
+NUM_WORKERS=${GUNICORN_WORKERS:-2}                  # how many worker processes should Gunicorn spawn
 DJANGO_SETTINGS_MODULE=academica.settings   # which settings file should Django use
 DJANGO_WSGI_MODULE=academica.wsgi           # WSGI module name
 
