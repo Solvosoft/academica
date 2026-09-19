@@ -17,12 +17,11 @@ from paypal.standard.forms import PayPalPaymentsForm
 
 from matricula.contrib.bills.forms import SinpeMovilBillForm, BankBillForm
 from matricula.contrib.bills.models import Bill
-from membership_core.models import SystemCurrency
 
 
 def get_amount(bill):
-    currency = SystemCurrency.objects.get(currency=bill.currency)
-    return bill.amount / currency.rates
+    """Monto de la factura en dólares (PayPal cobra en USD)."""
+    return bill.amount / bill.currency.rates
 
 
 @csrf_exempt

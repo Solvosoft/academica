@@ -348,3 +348,36 @@ msgstr "Nombre"
 
 msgid "Actions"
 msgstr "Acciones"
+
+msgid "Card payment"
+msgstr "Pago con tarjeta"
+
+msgid "Card payments"
+msgstr "Pagos con tarjeta"
+
+msgid "Pending"
+msgstr "Pendiente"
+
+msgid "In process"
+msgstr "En proceso"
+
+msgid "Completed"
+msgstr "Aprobado"
+
+msgid "Failed"
+msgstr "Rechazado"
+
+msgid "Expired"
+msgstr "Expirado"
+
+msgid "Abandoned"
+msgstr "Abandonado"
+
+msgid "Check status in the payment service"
+msgstr "Consultar estado en el servicio de pagos"
+
+msgid "Order"
+msgstr "Orden"
+
+msgid "Status"
+msgstr "Estado"

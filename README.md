@@ -78,3 +78,33 @@ Los países y las monedas (con su tipo de cambio respecto al dólar) se administ
 en *Catálogos* (`/catalog/countries/`, `/catalog/currencies/`). La instalación
 carga todos los países y las monedas USD y CRC. **El tipo de cambio de CRC hay que
 ajustarlo en el catálogo.**
+
+## Pago con tarjeta
+
+En `/bills/`, además de PayPal, Sinpe Móvil y depósito, el estudiante puede pagar
+con tarjeta a través del servicio de pagos webcheckout (repositorio `payments`,
+que usa PlaceToPay/Evertec). La opción aparece cuando están configurados
+`WEBCHECKOUT_API_TOKEN` y `WEBCHECKOUT_BUSINESS_ID`.
+
+| Variable | Uso |
+|---|---|
+| `WEBCHECKOUT_BASE_URL` | URL del servicio de pagos |
+| `WEBCHECKOUT_API_TOKEN` | Token de API del usuario del Business |
+| `WEBCHECKOUT_BUSINESS_ID` | UUID del Business |
+| `WEBCHECKOUT_NOTIFICATION_TOKEN` | Igual al `id_token` del Business; autentica las notificaciones |
+| `SITE_BASE_URL` | URL pública de Académica; el servicio vuelve y notifica aquí |
+
+Funcionamiento:
+
+- Cada curso tiene un producto en el servicio. Se crea al primer pago, o con
+  `make sync-products`, que además actualiza los nombres.
+- Las facturas en CRC o USD se cobran en su moneda; las demás se convierten a USD
+  con el catálogo de monedas.
+- El estudiante paga en el checkout del servicio, donde también puede pedir la
+  factura electrónica.
+- Las notificaciones llegan a `/bills/card/webhook/`. Académica **no confía en el
+  estado que trae la notificación**: vuelve a consultar la orden en la API antes de
+  marcar la factura como pagada.
+- La tarea `poll_card_payments` revisa cada 5 minutos las órdenes abiertas, por si
+  una notificación no llega.
+- En el admin (*Pagos con tarjeta*) se puede consultar el estado de una orden a mano.

@@ -16,6 +16,10 @@ app.conf.beat_schedule = {
         'task': 'matricula.tasks.process_async_notifications',
         'schedule': crontab(minute='*/5'),
     },
+    'poll_card_payments': {  # respaldo del webhook del servicio de pagos con tarjeta
+        'task': 'matricula.tasks.poll_card_payments',
+        'schedule': crontab(minute='*/5'),
+    },
     'remove_invoices': {  # elimina las facturas no pagadas dentro del periodo de gracia
         'task': 'matricula.tasks.remove_invoices',
         'schedule': crontab(minute='*/20'),

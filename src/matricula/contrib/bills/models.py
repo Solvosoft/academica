@@ -73,3 +73,42 @@ class BankBill(models.Model):
         """%(self.created_date.strftime("%Y-%m-%d %H:%M:%S"), self.payment_document.url,  self.group_name
 
         ))
+
+
+class CardPayment(models.Model):
+    """Orden de pago con tarjeta creada en el servicio webcheckout."""
+
+    class Status(models.TextChoices):
+        PENDING = 'PENDING', _('Pending')
+        IN_PROCESS = 'IN_PROCESS', _('In process')
+        COMPLETED = 'COMPLETED', _('Completed')
+        FAILED = 'FAILED', _('Failed')
+        EXPIRED = 'EXPIRED', _('Expired')
+        ABANDONED = 'ABANDONED', _('Abandoned')
+
+    TERMINAL_STATUSES = (Status.COMPLETED, Status.FAILED, Status.EXPIRED, Status.ABANDONED)
+
+    bill = models.ForeignKey(Bill, on_delete=models.CASCADE, related_name='card_payments',
+                             verbose_name=_("Bill"))
+    order_id = models.UUIDField(unique=True, verbose_name=_("Order"))
+    checkout_url = models.URLField(max_length=500)
+    amount = models.DecimalField(max_digits=12, decimal_places=2, verbose_name=_("Amount"))
+    currency = models.CharField(max_length=3, verbose_name=_("Currency"))
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING,
+                              verbose_name=_("Status"))
+    status_reason = models.TextField(blank=True, default='')
+    authorization_code = models.CharField(max_length=100, blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def is_terminal(self):
+        return self.status in self.TERMINAL_STATUSES
+
+    def __str__(self):
+        return "%s %s %s (%s)" % (self.order_id, self.amount, self.currency, self.get_status_display())
+
+    class Meta:
+        verbose_name = _("Card payment")
+        verbose_name_plural = _("Card payments")
+        ordering = ['-created_at']

@@ -125,6 +125,8 @@ class Course(models.Model):
     name = models.CharField(max_length=300, verbose_name=_("Name")+ " * ")
     content = models.TextField(verbose_name=_("Content")+" * ")
     workload = models.IntegerField(help_text="En horas", verbose_name="Carga horaria", default=20)
+    # Producto correspondiente en el servicio de pagos con tarjeta (webcheckout)
+    gateway_product_id = models.UUIDField(null=True, blank=True, editable=False)
 
     def __str__(self):
         return self.name

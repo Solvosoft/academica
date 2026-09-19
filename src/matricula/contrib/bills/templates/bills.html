@@ -50,7 +50,7 @@
 				</div>
 				{% else %}
 				<div class="product_price">
-					<h1 class="price green">{{bill.obj.short_drescription}}</h1>
+					<h1 class="price green">{{bill.obj.short_description}}</h1>
 					<div class="col-md-6 col-lg-6 col-sm-12">
 						<div class="price-tax">
 							{{bill.obj.description|safe}}
@@ -63,6 +63,27 @@
 					</div>
 					<div class="clearfix"></div>
 				</div>
+				{% card_payment bill as card %}
+				{% if card %}
+				<div class="product_price">
+					<h3 class="green"><i class="fa fa-credit-card"></i> Tarjeta de crédito o débito</h3>
+					<div class="card text-justify">
+						<div class="card-body">
+							<p>Monto a cobrar: <strong>{{ card.amount }} {{ card.currency }}</strong><br>
+							Será dirigido a la página segura de pago; allí puede solicitar la factura electrónica.</p>
+							{% if card.last and card.last.is_terminal and card.last.status != 'COMPLETED' %}
+								<p class="text-danger">Último intento: {{ card.last.get_status_display }}</p>
+							{% endif %}
+						</div>
+					</div>
+					<form action="{% url 'pay_with_card' bill.obj.pk %}" method="post" class="text-end mt-2">{% csrf_token %}
+						<button type="submit" class="btn btn-primary btn-lg">
+							{% if card.in_progress %}Continuar pago{% else %}Pagar con tarjeta{% endif %}
+						</button>
+					</form>
+					<div class="clearfix"></div>
+				</div>
+				{% endif %}
 				<div class="product_price">
 					<h3 class="green">Sinpe Movil</h3>
 					<div class="card text-justify" >

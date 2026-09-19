@@ -203,6 +203,18 @@ MY_PAYPAL_HOST = os.getenv('MY_PAYPAL_HOST', "https://matricula.solvosoft.com")
 PAYPAL_ERROR_EMAIL_NOFIFY = tuple(env_list('PAYPAL_ERROR_EMAIL_NOFIFY', "info@solvosoft.com"))
 PAYMENT_NOTIFICATION_MAIL = env_list('PAYMENT_NOTIFICATION_MAIL', 'german.zarate@solvosoft.com')
 
+# URL pública del sitio: la usan los servicios externos para volver o notificar.
+SITE_BASE_URL = os.getenv('SITE_BASE_URL', MY_PAYPAL_HOST).rstrip('/')
+
+# Pago con tarjeta mediante el servicio webcheckout (../payments)
+WEBCHECKOUT_BASE_URL = os.getenv('WEBCHECKOUT_BASE_URL', 'https://payments.dev.solvosoft.com').rstrip('/')
+WEBCHECKOUT_API_TOKEN = os.getenv('WEBCHECKOUT_API_TOKEN', '')
+WEBCHECKOUT_BUSINESS_ID = os.getenv('WEBCHECKOUT_BUSINESS_ID', '')
+# Debe coincidir con el id_token del Business en el servicio (autentica el webhook)
+WEBCHECKOUT_NOTIFICATION_TOKEN = os.getenv('WEBCHECKOUT_NOTIFICATION_TOKEN', '')
+WEBCHECKOUT_TIMEOUT = int(os.getenv('WEBCHECKOUT_TIMEOUT', '10'))
+CARD_PAYMENTS_ENABLED = bool(WEBCHECKOUT_API_TOKEN and WEBCHECKOUT_BUSINESS_ID)
+
 # Académica
 PROFESSOR_GROUP_NAME = "Profesores"
 ADMIN_GROUP_NAME = "Administradores Académica"

@@ -4,7 +4,11 @@ from django.core.mail import send_mail
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from matricula.menues import add_main_menu
-from matricula.contrib.bills.models import Bill, BankBill, SinpeMovilBill
+from django.contrib import messages
+
+from matricula.contrib.bills.card_payments import refresh_card_payment
+from matricula.contrib.bills.models import Bill, BankBill, SinpeMovilBill, CardPayment
+from matricula.contrib.bills.webcheckout import WebCheckoutError
 
 
 def approve_payment(modeladmin, request, queryset):
@@ -31,4 +35,25 @@ class PaymentAdmin(admin.ModelAdmin):
 admin.site.register(BankBill, PaymentAdmin)
 admin.site.register(SinpeMovilBill, PaymentAdmin)
 admin.site.register(Bill)
+
+
+@admin.action(description=_("Check status in the payment service"))
+def refresh_status(modeladmin, request, queryset):
+    for card_payment in queryset:
+        try:
+            refresh_card_payment(card_payment)
+        except WebCheckoutError as exc:
+            messages.error(request, "%s: %s" % (card_payment.order_id, exc))
+
+
+@admin.register(CardPayment)
+class CardPaymentAdmin(admin.ModelAdmin):
+    list_display = ('order_id', 'bill', 'amount', 'currency', 'status', 'created_at')
+    list_filter = ('status', 'currency')
+    search_fields = ('order_id', 'bill__student__user__email', 'authorization_code')
+    readonly_fields = [field.name for field in CardPayment._meta.fields]
+    actions = [refresh_status]
+
+    def has_add_permission(self, request):
+        return False
 add_main_menu((_("Bills"), 'bills', True, 3, True))

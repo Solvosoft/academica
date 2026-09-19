@@ -94,6 +94,10 @@ celery: ## Worker de celery con beat embebido (necesita redis)
 load-templates: ## Crea las plantillas de correo que falten (OVERWRITE=1 las reemplaza)
 	$(MANAGE) load_email_templates $(if $(OVERWRITE),--overwrite,)
 
+.PHONY: sync-products
+sync-products: ## Crea/actualiza los productos de los cursos en el servicio de pagos con tarjeta
+	$(MANAGE) sync_gateway_products
+
 .PHONY: send-emails
 send-emails: ## Envía los correos encolados de djgentelella
 	$(MANAGE) process_notifications
