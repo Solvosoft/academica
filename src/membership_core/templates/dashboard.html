@@ -1,5 +1,5 @@
 {% extends 'gentelella/base.html' %}
-{% load gtsettings i18n %}
+{% load gtsettings gtflags i18n %}
 
 {% block pre_head %}
 {% define_true  "use_chartjs" %}
@@ -34,8 +34,8 @@
                     <ul class="list-unstyled top_profiles " style="overflow: auto">
                         {% for pais in countries%}
                         <li class="media event">
-                        <a class="pull-left {% cycle 'border-aero' 'border-green ' %} profile_thumb">
-                        <i class="{{pais.0}}"></i>
+                        <a class="float-start {% cycle 'border-aero' 'border-green ' %} profile_thumb">
+                        {% flag pais.0 title=pais.1 %}
                         </a>
                         <div class="media-body">
                         <a class="title" href="#">{{pais.1}}</a>
@@ -71,7 +71,7 @@
                 <div class="x_content">
                     <ul class="list-unstyled top_profiles ">
                 {% for se in servicios_stats%}
-                        <li> {{ se.0 }} <span class="badge pull-right">{{ se.1}} </span> </li>
+                        <li> {{ se.0 }} <span class="badge float-end">{{ se.1}} </span> </li>
                 {% endfor %}
                     </ul>
                 </div>

@@ -1,3 +1,4 @@
+from matricula.tests.utils import login_report_admin
 from django.test import TestCase
 from django.test import Client
 from django.urls import reverse
@@ -10,6 +11,7 @@ class OrganizationsperCountryReportTestCase(TestCase):
 
     def setUp(self):
         self.client = Client()
+        login_report_admin(self.client)
         self.user = User.objects.create_user(username='diego1',
                                         email='diego1@…',
                                         password='12345')
@@ -25,7 +27,7 @@ class OrganizationsperCountryReportTestCase(TestCase):
                                  email='diego%d@upo.com'%self.organizations_enroll,
                                  password='12345')
         self.organizations_enroll+=1
-        country, created =Country.objects.get_or_create(name='Costa Rica', flag='cr', code='CRC')
+        country, created =Country.objects.get_or_create(code='CRC', defaults={'name': 'Costa Rica'})
         student = Student.objects.create(
             user =  user,
             organization = 'est',
@@ -91,7 +93,7 @@ class OrganizationsperCountryReportTestCase(TestCase):
                 flow = 0)
         groups=[groupOne, groupTwo, groupThree]
 
-        country, created =Country.objects.get_or_create(name='México', flag='mx', code='MX')
+        country, created =Country.objects.get_or_create(code='MX', defaults={'name': 'México'})
         student = Student.objects.create(
             user = self.user,
             organization = 'est',

@@ -4,8 +4,8 @@ from datetime import datetime
 from django.db.models.signals import post_save
 from django.template.loader import render_to_string
 from django.dispatch import receiver
-from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import smart_text
+from django.utils.translation import gettext_lazy as _
+from django.utils.encoding import smart_str
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.html import mark_safe
 from django.conf import settings
@@ -14,7 +14,7 @@ from paypal.standard.ipn.signals import valid_ipn_received
 from paypal.standard.models import ST_PP_COMPLETED
 
 from matricula.models import Enroll, Coupon, Group, Student
-from async_notifications.utils import send_email_from_template
+from djgentelella.async_notification.sending import send_email_from_template
 from .models import Bill
 
 
@@ -47,7 +47,7 @@ def create_bill(sender, **kwargs):
                 'invoice_enroll.html',
                 {
                     'student': instance.student,
-                    'enroll': smart_text(instance.group),
+                    'enroll': smart_str(instance.group),
                     'discount': discount,
                     'total': total,
                     'date': instance.enroll_date.strftime("%Y-%m-%d %H:%M"),

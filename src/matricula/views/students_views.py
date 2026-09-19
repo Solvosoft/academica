@@ -9,7 +9,7 @@ from django.utils.decorators import method_decorator
 from django.db.models.expressions import Q
 from django.views.generic import ListView
 
-from django_ajax.decorators import ajax
+from matricula.ajax import ajax
 
 from matricula.decorators import user_group_perms
 from matricula.forms import QualifyStudentForm
@@ -35,7 +35,7 @@ def qualify_students(request, pk):
 
 @ajax
 def update_enroll(request):
-    if request.is_ajax():
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         enroll_list = json.loads(request.body)
 
         for enroll in enroll_list:
@@ -52,7 +52,7 @@ def update_enroll(request):
 
 @ajax
 def update_enroll_status(request, pk, status):
-    if request.is_ajax():
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         enroll_list = json.loads(request.body)
 
         for enroll in enroll_list:

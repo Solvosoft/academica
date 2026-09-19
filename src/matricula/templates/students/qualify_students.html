@@ -19,7 +19,7 @@
                                 <label style="color:red">Calificar estudiantes</label>
                             </div>
                             <div class="col-sm-3 col-xs-12">
-                                <a title="Calificar estudiantes" class="edit-link" data-toggle="modal" data-target="#qualifystudentmodal" style="color:red;"><i class="fa fa-pencil-square-o fa-2x"></i></a>
+                                <a title="Calificar estudiantes" class="edit-link" data-bs-toggle="modal" data-bs-target="#qualifystudentmodal" style="color:red;"><i class="fa fa-pencil-square-o fa-2x"></i></a>
                             </div>
                         </div>
 
@@ -28,7 +28,7 @@
                             <thead>
                                 <tr id="trhead">
                                     <th title="Seleccionar todos" class="text-center" style="padding-right: 6px;" id="selecction">
-                                        <input type="checkbox" id="selectall" class="flat" data-widget="CheckboxInput" data-key="0">
+                                        <input type="checkbox" id="selectall" class="gt-check" data-key="0">
                                     </th>
                                     <th class="text-center">Nombre completo</th>
                                     <th class="text-center">Correo electrónico</th>
@@ -40,7 +40,7 @@
                             {% for enroll in enroll_list %}
                             <tr>
                                 <td class="checkselection">
-                                    <input type="checkbox" class="flat checkstudent" data-widget="CheckboxInput" style="opacity: 0;" data-id="{{enroll.pk}}" data-key="0">
+                                    <input type="checkbox" class="gt-check checkstudent" data-id="{{enroll.pk}}" data-key="0">
                                 </td>
                                 <td>{{ enroll.student.user.get_full_name }}</td>
                                 <td>{{ enroll.student.user.email }}</td>
@@ -79,7 +79,7 @@
     <div class="modal-content">
         <form method="post" id="qualifystudentform">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         <h4 class="modal-title">Calificar estudiantes</h4>
           <h5><strong>Esta acción modificará los estados de los estudiantes seleccionados.</strong></h5>
       </div>
@@ -89,7 +89,7 @@
           {{form.as_horizontal}}
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
         <button type="button" onclick="qualify_status()" class="btn btn-success">Guardar</button>
       </div>
         </form>
@@ -105,69 +105,22 @@
 {% block js %}
 {{ block.super }}
 <script>
-function select_rows(object_checkbox){
-
-    var list_rows = $('.icheckbox_flat-green').children();
-
-    if(object_checkbox.parent().hasClass("checked")){
-        object_checkbox.parent().removeClass("checked");
-        $('.icheckbox_flat-green').removeClass("checked");
-        $('#formgroupquality').hide();
-
-        $(list_rows).each(function(index, element){
-            if(element.hasAttribute("data-id")){
-                $(element).attr("data-key", "0");
-            }
-        });
-
-    }else{
-        object_checkbox.parent().addClass("checked");
-        $('.icheckbox_flat-green').addClass("checked");
-
-        $(list_rows).each(function(index, element){
-
-            if(element.hasAttribute("data-id")){
-                $(element).attr("data-key", "1");
-            }
-        });
-        $('#formgroupquality').show();
-    }
+function toggle_quality_form(){
+    $('#formgroupquality').toggle($('.checkstudent:checked').length > 0);
 }
 
-
-function base(){
-
-    var checkList = new Array();
-
-    $("tbody tr").each(function () {
-      $(this).find("td div input").each(function(i, v) {
-
-        if(i === 0){
-            checkList.push($(this).children().children().context.dataset['key']);
-        }
-      });
+function select_rows(object_checkbox){
+    var checked = object_checkbox.prop('checked');
+    $('.checkstudent').each(function(){
+        this.checked = checked;
+        $(this).attr("data-key", checked ? "1" : "0");
     });
-
-    return checkList;
+    toggle_quality_form();
 }
 
 function change_key(object_checkbox){
-    $(object_checkbox).removeAttr("data-key");
-    if(object_checkbox.parent().hasClass("checked")){
-        object_checkbox.attr("data-key", "0");
-    }else{
-        object_checkbox.attr("data-key", "1");
-    }
-
-    var list_checkbox = base();
-
-    if (list_checkbox.indexOf("1") !== -1 ) {
-        $('#formgroupquality').show();
-    }else{
-        $('#formgroupquality').hide();
-    }
-
-    list_checkbox.splice(0, list_checkbox.length);
+    object_checkbox.attr("data-key", object_checkbox.prop('checked') ? "1" : "0");
+    toggle_quality_form();
 }
 
 function json_table(){
@@ -187,7 +140,7 @@ function json_table(){
       $(this).find("td").each(function(i, v) {
 
         if(i === 0){
-            cur[heads[i]] = $(this).children().children().data('id')
+            cur[heads[i]] = $(this).find('.checkstudent').data('id')
         }else{
 
             if(i === 3 || i === 4){
@@ -235,8 +188,8 @@ function qualify_status(){
       cur = {};
       $(this).find("td").each(function(i, v) {
 
-        if(i === 0 && $(this).children().hasClass("checked")){
-            cur[heads[i]] = $(this).children().children().data('id')
+        if(i === 0 && $(this).find('.checkstudent').prop('checked')){
+            cur[heads[i]] = $(this).find('.checkstudent').data('id')
         }
       });
       rows.push(cur);
@@ -259,14 +212,13 @@ $.ajax({
 
 
 (function(){
-    $(window).load(function() {
+    $(window).on('load', function() {
         $('.select2-container').width('100%');
-        $(".icheckbox_flat-green").removeClass("checked");
-        $("#selectall").on("ifChanged", function(){
+        $("#selectall").on("change", function(){
             select_rows($(this));
         });
 
-        $('.checkstudent').on("ifChanged", function(){
+        $('.checkstudent').on("change", function(){
             change_key($(this));
         });
         $('#studentstable').DataTable();

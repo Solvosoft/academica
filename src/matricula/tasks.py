@@ -2,13 +2,20 @@ from datetime import  timedelta
 
 from django.utils import timezone as datetime
 from django.conf import settings
+from django.core.management import call_command
 
-from async_notifications.utils import send_email_from_template
+from djgentelella.async_notification.sending import send_email_from_template
 
 from matricula.certificate_utils import build_pdf_certificate
 from academica.celery import app
 from matricula.contrib.bills.models import Bill
 from matricula.models import Enroll
+
+
+@app.task
+def process_async_notifications():
+    """Envía los correos encolados (``enqueued=True``) de djgentelella."""
+    call_command('process_notifications')
 
 
 @app.task

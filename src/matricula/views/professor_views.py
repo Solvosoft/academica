@@ -13,7 +13,7 @@ from matricula.forms import ProfessorEditForm, ProfessorSearchForm, \
     ProfessorAddForm, UserCreateForm, UserEditForm
 from matricula.models import Professor
 
-from async_notifications.utils import send_email_from_template
+from djgentelella.async_notification.sending import send_email_from_template
 from djgentelella.models import ChunkedUpload
 from matricula.views.utils import checking_user
 
@@ -47,8 +47,8 @@ def edit_profile(request):
             'first_name': user.first_name,
             'last_name': user.last_name,
             'email': user.email,
-            'email_students': professor.email,
-            'description': professor.description
+            'email_students': professor.email if professor else '',
+            'description': professor.description if professor else '',
         })
 
     context = {'form': form}

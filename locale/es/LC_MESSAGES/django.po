@@ -315,3 +315,36 @@ msgstr "Español"
 #: src/upo/settings.py:132
 msgid "English"
 msgstr "Ingles"
+
+msgid "Catalogs"
+msgstr "Catálogos"
+
+msgid "Create country"
+msgstr "Crear país"
+
+msgid "Update country"
+msgstr "Actualizar país"
+
+msgid "Delete country"
+msgstr "Eliminar país"
+
+msgid "Create currency"
+msgstr "Crear moneda"
+
+msgid "Update currency"
+msgstr "Actualizar moneda"
+
+msgid "Delete currency"
+msgstr "Eliminar moneda"
+
+msgid "Flag"
+msgstr "Bandera"
+
+msgid "Code"
+msgstr "Código"
+
+msgid "Name"
+msgstr "Nombre"
+
+msgid "Actions"
+msgstr "Acciones"

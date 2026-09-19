@@ -1,3 +1,4 @@
+from matricula.tests.utils import login_report_admin
 from django.contrib.auth.models import User, Permission
 from django.test import TestCase
 from django.test import Client
@@ -14,6 +15,7 @@ class NeverAttendStudentsTestCase(TestCase):
 
     def setUp(self):
         self.client = Client()
+        login_report_admin(self.client)
         self.url = reverse('student_without_lessons_report-list')
         self.generate_scenarius()
 
@@ -23,7 +25,7 @@ class NeverAttendStudentsTestCase(TestCase):
                                  password='password')
         self.user_count+=1
 
-        country, created =Country.objects.get_or_create(name='Costa Rica', flag='cr', code='CRC')
+        country, created =Country.objects.get_or_create(code='CRC', defaults={'name': 'Costa Rica'})
         student = Student.objects.create(
             user=user,
             organization='org',
@@ -92,7 +94,7 @@ class NeverAttendStudentsTestCase(TestCase):
             flow=0)
 
 
-        Country.objects.get_or_create(name='Costa Rica', flag='cr', code='CRC')
+        Country.objects.get_or_create(code='CRC', defaults={'name': 'Costa Rica'})
 
         groups = [c1g1, c2g1, c3g1]
 

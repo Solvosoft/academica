@@ -40,11 +40,11 @@
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						<h4 class="modal-title">¿Realmente desea eliminar la página?</h4>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+						<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
 						<a class="btn btn-danger" id="deleteitem">Eliminar</a>
 					</div>
 				</div>
@@ -58,11 +58,11 @@
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						<h4 class="modal-title">¿Realmente desea eliminar el menú?</h4>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+						<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
 						<a class="btn btn-danger" id="deletemenu">Eliminar</a>
 					</div>
 				</div>
@@ -94,7 +94,7 @@
 							<ul class="list-unstyled user_data">
 								<li><strong>Slug: </strong>{{object.slug}}</li>
 								<li>
-									<a href="#" style="display:inline-block" data-placement="top" data-toggle="tooltip" data-original-title="{{object.content|safe|striptags}}">
+									<a href="#" style="display:inline-block" data-bs-placement="top" data-bs-toggle="tooltip" data-original-title="{{object.content|safe|striptags}}">
 										<strong>Contenido: </strong>{{object.content|safe|striptags|truncatechars:150}}
 									</a>
 								</li>
@@ -166,7 +166,7 @@
 <script>
 	// Tooltip
 	$(document).ready(function () {
-		$('[data-toggle="tooltip"]').tooltip({
+		$('[data-bs-toggle="tooltip"]').tooltip({
 			container: 'body'
 		});
 	});

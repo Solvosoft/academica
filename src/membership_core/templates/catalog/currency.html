@@ -1,0 +1,73 @@
+{% extends 'gentelella/base.html' %}
+{% load i18n static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="page-header text-center">
+            <h3 class="heading-1"><span>{% trans 'Currencies' %}</span></h3>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <table class="table table-striped w-100" id="currency_table"></table>
+</div>
+
+{% url "api-currency-list" as create_obj_url %}
+{% trans 'Create currency' as create_obj_title %}
+{% include 'gentelella/blocks/modal_template.html' with form=create_form id="create_obj_modal" title=create_obj_title form_id="create_obj_form" url=create_obj_url %}
+
+{% url "api-currency-detail" 0 as update_obj_url %}
+{% trans 'Update currency' as update_obj_title %}
+{% include 'gentelella/blocks/modal_template.html' with form=update_form id="update_obj_modal" title=update_obj_title form_id="update_obj_form" url=update_obj_url %}
+
+{% include 'gentelella/blocks/modal_template_detail.html' with id="detail_obj_modal" %}
+
+{% url "api-currency-detail" 0 as delete_obj_url %}
+{% trans 'Delete currency' as delete_obj_title %}
+{% include 'gentelella/blocks/modal_template_delete.html' with id="delete_obj_modal" title=delete_obj_title form_id="delete_obj_form" url=delete_obj_url %}
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script>
+    let currencyconfig = {
+        urls: {
+            list_url: "{% url 'api-currency-list' %}",
+            destroy_url: "{% url 'api-currency-detail' 0 %}",
+            detail_url: "{% url 'api-currency-detail' 0 %}",
+            detail_template_url: "{% url 'api-currency-detail-template' %}",
+            get_values_for_update_url: "{% url 'api-currency-get-values-for-update' 0 %}",
+            create_url: "{{ create_obj_url }}",
+            update_url: "{{ update_obj_url }}"
+        },
+        datatable_element: "#currency_table",
+        modal_ids: {
+            create: "#create_obj_modal",
+            update: "#update_obj_modal",
+            detail: "#detail_obj_modal",
+            destroy: "#delete_obj_modal"
+        },
+        actions: {
+            table_actions: [],
+            object_actions: [],
+            title: "{% trans 'Actions' %}",
+            className: "no-export-col"
+        },
+        datatable_inits: {
+            columns: [
+                {data: "id", name: "id", title: "Id", type: "string", visible: false},
+                {data: "currency", name: "currency", title: "{% trans 'Currency' %}", type: "string", visible: true},
+                {data: "currency_display", name: "currency_display", title: "{% trans 'Name' %}", type: "string",
+                 visible: true, orderable: false, searchable: false},
+                {data: "rates", name: "rates", title: "{% trans 'Change type' %}", type: "string", visible: true},
+                {data: "actions", name: "actions", title: "{% trans 'Actions' %}", type: "string", visible: true}
+            ],
+            addfilter: true
+        },
+        add_filter: true,
+        delete_display: data => data['currency']
+    };
+    ObjectCRUD("currency_catalog", currencyconfig).init();
+</script>
+{% endblock %}

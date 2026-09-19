@@ -13,3 +13,8 @@ src/celerybeat-schedule.dir
 src/celerybeat-schedule
 .vscode/
 venv/
+.venv/
+.env
+static/
+__pycache__/
+deploy/academica.env

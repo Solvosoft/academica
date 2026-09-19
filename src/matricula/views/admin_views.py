@@ -21,8 +21,8 @@ from django.views.decorators.http import require_http_methods
 
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
-from django.utils.translation import ugettext_lazy as _
-from django_ajax.decorators import ajax
+from django.utils.translation import gettext_lazy as _
+from matricula.ajax import ajax
 
 from django.conf import settings
 from django.core.paginator import Paginator
@@ -32,10 +32,9 @@ from django.template.loader import get_template, render_to_string
 from django.urls import reverse
 
 from djgentelella.models import MenuItem as DJMenuItem
-from async_notifications.utils import send_email_from_template
+from djgentelella.async_notification.sending import send_email_from_template
 from djgentelella.models import ChunkedUpload
-from xhtml2pdf import pisa
-import django_excel as excel
+from matricula.reports.xlsx import xlsx_response, tagify_to_text
 
 from matricula.certificate_utils import build_pdf_certificate
 from matricula.forms import CategoryCreateForm, CategorySearchForm, \
@@ -50,7 +49,7 @@ from matricula.models import Category, Course, Period, Group, \
     Enroll, Student, Page, Professor, WaitingList
 from matricula.tasks import task_generate_group_certificate
 from matricula.views.utils import get_expire_date
-from matricula.certificate_utils import link_callback
+from matricula.certificate_utils import render_pdf_response
 from matricula.contrib.bills.models import Bill
 from membership_core.models import Country
 
@@ -119,9 +118,9 @@ class CategoryDelete(DeleteView):
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
 
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         messages.success(self.request, self.success_message)
-        return super(CategoryDelete, self).delete(request, *args, **kwargs)
+        return super(CategoryDelete, self).form_valid(form)
 
 
 @permission_required('matricula.change_category')
@@ -222,9 +221,9 @@ class CourseDelete(DeleteView):
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
 
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         messages.success(self.request, self.success_message)
-        return super(CourseDelete, self).delete(request, *args, **kwargs)
+        return super(CourseDelete, self).form_valid(form)
 
 
 @permission_required('matricula.change_course')
@@ -340,11 +339,11 @@ class MenuItemDelete(DeleteView):
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
 
-    def delete(self, request, *args, **kwargs):
-        menuitem = self.get_object()
+    def form_valid(self, form):
+        menuitem = self.object
         menuitem.permission.remove(*menuitem.permission.all())
         messages.success(self.request, self.success_message)
-        return super(MenuItemDelete, self).delete(request, *args, **kwargs)
+        return super(MenuItemDelete, self).form_valid(form)
 
 
 @permission_required('djgentelella.change_menuitem')
@@ -423,9 +422,9 @@ class PeriodDelete(DeleteView):
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
 
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         messages.success(self.request, self.success_message)
-        return super(PeriodDelete, self).delete(request, *args, **kwargs)
+        return super(PeriodDelete, self).form_valid(form)
 
 
 @permission_required('matricula.change_period')
@@ -686,9 +685,9 @@ class GroupDelete(DeleteView):
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
 
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         messages.success(self.request, self.success_message)
-        return super(GroupDelete, self).delete(request, *args, **kwargs)
+        return super(GroupDelete, self).form_valid(form)
 
 
 @permission_required('matricula.change_group')
@@ -882,16 +881,8 @@ def export_enrolled_group(request, pk=None):
     if request.GET.get('finished', '0') == '1':
         attrs['enroll_finished'] = True
     student_list = Enroll.objects.filter(**attrs)
-    template = get_template('Pdf/student_list.html')
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
-    html = template.render({
-        'student_list': student_list, 'group': group, **attrs})
-    pisa_status = pisa.CreatePDF(
-        html, dest=response, link_callback=link_callback)
-    if not pisa_status.err:
-        return response
-    return HttpResponse("Error " + str(pisa_status.err) + "  " + html)
+    return render_pdf_response('Pdf/student_list.html', {
+        'student_list': student_list, 'group': group, **attrs}, 'report.pdf')
 
 
 @method_decorator(permission_required('matricula.view_enroll'), name='dispatch')
@@ -1062,9 +1053,9 @@ class EnrollDelete(DeleteView):
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
 
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         messages.success(self.request, self.success_message)
-        return super(EnrollDelete, self).delete(request, *args, **kwargs)
+        return super(EnrollDelete, self).form_valid(form)
 
 
 @method_decorator(permission_required('matricula.view_student'), name='dispatch')
@@ -1120,11 +1111,10 @@ class StudentList(ListView):
                     'Ciudad',
                     'Teléfono',
                 ]
-                sheet = excel.pe.get_sheet(query_sets=query_sets, column_names=column_names)
-                sheet.name_columns_by_row(0)
-                sheet.colnames = sheet_header
-                return excel.make_response(sheet, 'xls',file_name='students')
-            except:
+                if not query_sets.exists():
+                    raise ValueError("Sin datos")
+                return xlsx_response(query_sets, column_names, sheet_header, 'students')
+            except Exception:
                 messages.error(request, "No fue posible exportar el excel por que no hay datos a mostrar")
         return super().get(request, *args, **kwargs)
 
@@ -1273,8 +1263,8 @@ class StudentDelete(DeleteView):
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
 
-    def delete(self, request, *args, **kwargs):
-        student = self.get_object()
+    def form_valid(self, form):
+        student = self.object
         professor = hasattr(student.user, 'professor')
         admin = student.user.groups.filter(name=settings.ADMIN_GROUP_NAME)
         if professor or admin.exists():
@@ -1384,21 +1374,8 @@ def export_waitinglist_xls(request, pk=None):
         messages.error(request, "No hay registros para exportar")
         return redirect(reverse('waitinglist_group', kwargs={"pk": pk}))
     else:
-        sheet = excel.pe.get_sheet(query_sets=waitinglist, column_names=column_names)
-        sheet.name_columns_by_row(0)  # this will take row 0 into colnames
-        sheet.colnames = sheet_header
-        for x in range(len(sheet.column[5])):
-            d=str(sheet['F%d'%x])
-            if 'value' in d:
-                try:
-                    xdic=json.loads(d)
-                    xl = ", ".join([z['value'] for z in xdic])
-                    sheet['F%d'%x] = xl
-                except Exception as e:
-                    print(e)
-        return excel.make_response(sheet, 'xls', file_name=group_name)
-#        return excel.make_response_from_query_sets(
-#            waitinglist, column_names, 'xlsx', file_name=group_name)
+        return xlsx_response(waitinglist, column_names, sheet_header, group_name,
+                             converters={5: tagify_to_text})
 
 
 @permission_required('matricula.can_recovery_pass_student')
@@ -1563,11 +1540,11 @@ class PageDelete(DeleteView):
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
 
-    def delete(self, request, *args, **kwargs):
-        page = self.get_object()
+    def form_valid(self, form):
+        page = self.object
         DJMenuItem.objects.filter(url_name="/enrrolment_pages/" + page.slug).delete()
         messages.success(self.request, self.success_message)
-        return super(PageDelete, self).delete(request, *args, **kwargs)
+        return super(PageDelete, self).form_valid(form)
 
 
 @method_decorator(permission_required('matricula.delete_page'), name='dispatch')
@@ -1583,9 +1560,9 @@ class MenuPageDelete(DeleteView):
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
 
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         messages.success(self.request, self.success_message)
-        return super(MenuPageDelete, self).delete(request, *args, **kwargs)
+        return super(MenuPageDelete, self).form_valid(form)
 
 
 @staff_member_required

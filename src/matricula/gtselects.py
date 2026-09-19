@@ -57,7 +57,7 @@ class UserProfessorGModelLookup(BaseSelect2View):
 
 
 @register_lookups(prefix="studentuser", basename="studentuser")
-class UserProfessorGModelLookup(BaseSelect2View):
+class StudentUserGModelLookup(BaseSelect2View):
     model = User
     fields = ['username']
 
@@ -86,7 +86,7 @@ class GroupGModelLookup(BaseSelect2View):
 
 
 @register_lookups(prefix="studentenroll", basename="studentenroll")
-class StudentGModelLookup(BaseSelect2View):
+class StudentEnrollGModelLookup(BaseSelect2View):
     model = Student
     fields = ['full_name']
 
@@ -98,7 +98,7 @@ class StudentGModelLookup(BaseSelect2View):
 
 
 @register_lookups(prefix="studentsearch", basename="studentsearch")
-class UserStudentGModelLookup(BaseSelect2View):
+class StudentSearchGModelLookup(BaseSelect2View):
     model = Student
     fields = ['full_name', 'email']
 

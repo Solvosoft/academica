@@ -1,14 +1,14 @@
 {% load static menu i18n %}
 {% load utils %}
 {% load gentelellamenu gtsettings %}
-<div class="left_col scroll-view">
+<div class="left_col gt-sidebar">
     <div class="navbar nav_title" style="border: 0;">
         <a href="{% url 'root' %}"  class="site_title" style="font-size: 17px;">{% trans 'Cursos' %}</a>
     </div>
 
     <div class="clearfix"></div>
 
-    <div class="main_menu_side hidden-print main_menu" id="sidebar-menu">
+    <div class="main_menu_side d-print-none main_menu" id="sidebar-menu">
         <div class="menu_section">
              <ul class="nav side-menu">
                 <li>
@@ -73,7 +73,26 @@
                     </ul>
                 {% endif %}
             {% endif %}
-            {% if perms.bills.view_bill or perms.membership_core.view_systemcurrency %}
+            {% if perms.membership_core.view_country or perms.membership_core.view_systemcurrency %}
+                <ul class="nav side-menu">
+                    <li>
+                        <a>
+                            <i class="fa fa-book"></i>
+                            {% trans 'Catalogs' %}
+                            <span class="fa fa-chevron-down"></span>
+                        </a>
+                        <ul class="nav child_menu">
+                            {% if perms.membership_core.view_country %}
+                                <li><a href="{% url 'catalog_country' %}">{% trans 'Countries' %}</a></li>
+                            {% endif %}
+                            {% if perms.membership_core.view_systemcurrency %}
+                                <li><a href="{% url 'catalog_currency' %}">{% trans 'Currencies' %}</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                </ul>
+            {% endif %}
+            {% if perms.bills.view_bill %}
                 <ul class="nav side-menu">
                     <li>
                         <a>
@@ -82,9 +101,6 @@
                             <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">
-                            {% if perms.membership_core.view_systemcurrency %}
-                                <li><a href="{% url 'colonexchange' %}">{% trans "Currency Exchanges"%}</a></li>
-                            {% endif %}
                             {% if perms.bills.view_bill %}
                                 <li><a href="{% url 'listbills' %}">{% trans 'Bill list' %}</a></li>
                             {% endif %}

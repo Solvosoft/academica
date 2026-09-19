@@ -12,26 +12,6 @@ from matricula.models import Student, Group
 from djgentelella.widgets import core as djgentelella
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import tinymce
-from membership_core.models import SystemCurrency
-
-
-class ColonExchangeSearchForm(GTForm, forms.Form):
-    rates = forms.CharField(
-        required=False, widget=djgentelella.TextInput,
-        label="Monto")
-    currency = forms.ModelMultipleChoiceField(
-        queryset=SystemCurrency.objects.all(), label="Moneda",
-        required=False, widget=djgentelella.SelectMultiple)
-
-
-class ColonExchangeCreateForm(forms.ModelForm, GTForm):
-    class Meta:
-        model = SystemCurrency
-        fields = '__all__'
-        widgets = {
-            'currency': djgentelella.Select,
-            'rates': djgentelella.TextInput
-        }
 
 
 class BillSearchForm(GTForm, forms.Form):

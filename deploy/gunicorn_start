@@ -28,6 +28,6 @@ exec $ENVIRONMENT_PATH/gunicorn ${DJANGO_WSGI_MODULE}:application \
   --workers $NUM_WORKERS \
   --user=$USER --group=$GROUP \
   --bind=$SOCKFILE \
-  --log-level=info  
+  --log-level=info
  
 

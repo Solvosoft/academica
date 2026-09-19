@@ -1,9 +1,9 @@
 # encoding: utf-8
 from django.db import models
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from matricula.models import Student
-from membership_core.models import SystemCurrency
+from membership_core.models import SystemCurrency, get_default_currency
 
 
 class Bill(models.Model):
@@ -15,7 +15,7 @@ class Bill(models.Model):
     student = models.ForeignKey(
         Student, verbose_name=_("Student"), on_delete=models.CASCADE)
     currency = models.ForeignKey(
-        SystemCurrency, verbose_name=_("Currency"), default=4,
+        SystemCurrency, verbose_name=_("Currency"), default=get_default_currency,
         on_delete=models.CASCADE)
     is_paid = models.BooleanField(default=False)
     paid_date = models.DateTimeField(auto_now_add=True)

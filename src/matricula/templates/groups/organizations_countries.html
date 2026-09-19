@@ -33,7 +33,7 @@
         </div>
 
         <div class="x_content">
-            <div class="btn pull-right">
+            <div class="btn float-end">
             <label for="countryselect">Filtar países: </label>
             <select id="countryselect" autocomplete="off">
                 <option value="all" selected>Todos los países</option>
@@ -74,7 +74,7 @@
     function render_flag(data, type, row, meta){
         var flag = '';
         if(data){
-            flag = "<span style='font-size: 2em;' class='"+data+"'></span>"
+            flag = '<img src="' + data + '" width="32" alt="">'
         }
         return flag;
     }

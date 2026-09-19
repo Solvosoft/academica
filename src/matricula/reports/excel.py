@@ -6,16 +6,8 @@ from django.urls import reverse
 
 from matricula.forms import CourseWithCoursefilterGraphForm
 from matricula.models import Enroll, Period
-import django_excel as excel
-import json
-from matricula.views.utils import get_active_period
+from matricula.reports.xlsx import xlsx_response, tagify_to_text
 
-
-"""
-
-
-
-"""
 
 @permission_required('matricula.view_reports')
 def export_student_status_xls(request, period, status='approved'):
@@ -73,21 +65,8 @@ def export_student_status_xls(request, period, status='approved'):
     sheet_header  = ['Grupo', "Nombre de usuario", "Correo", "Nombre", "Apellidos", "Organización",
                      "Fecha matricula", "Estado" ]
 
-    sheet = excel.pe.get_sheet(query_sets=queryset, column_names=column_names)
-    sheet.name_columns_by_row(0)
-    sheet.colnames = sheet_header
-    status = dict(Enroll.COURSE_STATUS)
-    for x in range(len(sheet.column[5])):
-        d = str(sheet['F%d' % x])
-        if 'value' in d:
-            try:
-                xdic = json.loads(d)
-                xl = ", ".join([z['value'] for z in xdic])
-                sheet['F%d' % x] = xl
-            except Exception as e:
-                print(e)
-    for x in range(len(sheet.column[7])):
-        d = str(sheet['H%d' % x])
-        if d in status:
-            sheet['H%d' % x] = str(status[d])
-    return excel.make_response(sheet, 'xls', file_name=file_name)
+    status_labels = {key: str(label) for key, label in Enroll.COURSE_STATUS}
+    return xlsx_response(queryset, column_names, sheet_header, file_name, converters={
+        5: tagify_to_text,
+        7: lambda value: status_labels.get(value, value),
+    })

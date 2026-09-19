@@ -1,74 +1,80 @@
-# Gestor de cursos
+# Académica
 
-Este proyecto ayuda a gestionar cursos de la Universidad.
+Gestor de cursos, matrícula y facturación de cursos.
 
+- Python 3.13, Django 6.0, [djgentelella](https://github.com/solvosoft/djgentelella) 0.6
+- PostgreSQL (con la extensión `unaccent`), Redis como broker de Celery
+- Correos con `djgentelella.async_notification` (plantillas editables desde el sitio)
 
-# Installation 
-La instalación por defecto se realiza con docker compose
+Todos los comandos del proyecto están en el `Makefile`: `make help` los lista.
 
-    docker-compose up
+## Instalación con Docker (recomendada)
 
-# Instalación de desarrollo
+```bash
+make env        # crea deploy/academica.env (y .env) desde env.example
+make build      # construye la imagen academica:<versión>
+make up         # postgres, redis, mailhog, web, celery y beat
+make dsuperuser # crea el usuario administrador
+```
 
-Install postgresql 
+- Sitio: http://localhost:8011
+- MailHog (correos enviados): http://localhost:8026
 
-    sudo apt install postgresql 
-    sudo su postgres
-    psql 
-    \password
+Al arrancar, el contenedor web ejecuta `manage.py academica_install`, que es
+idempotente: migraciones, tabla de caché, grupos de permisos y plantillas de
+correo. Otros comandos útiles: `make logs`, `make ps`, `make dshell`,
+`make dtest`, `make dmanage CMD="showmigrations"`, `make down`.
 
-Edit this file `/etc/postgresql/9.6/main/pg_hba.conf` changing postgres user from peer to md5
-restart the server
+### Desarrollo dentro de Docker
 
-    sudo systemctrl postgresql restart 
+```bash
+make dev        # monta ./src y corre runserver + celery -B en http://localhost:8000
+```
 
+## Desarrollo local
 
+```bash
+make setup      # crea .venv con python3.13 e instala dependencias
+make env        # crea .env desde env.example
+make services   # postgres (5433), redis (6379) y mailhog (1026 / http://localhost:8026)
+make install    # migraciones, caché, grupos y plantillas de correo
+make superuser
+make run        # http://127.0.0.1:8000
+make celery     # en otra terminal: worker + beat
+```
 
-Clone the repository
+Pruebas: `make test` (o `make test TEST=matricula.tests.test_upgrade`).
 
-    git clone git@gitlab.com:solvosoft/upo.git
-    
-Install django code 
+## Imagen y roles de contenedor
 
-     virtualenv -p python3 ~/entornos/upo
-     pip install -r requirements.txt
-     
- Create the database
- 
-     python manage.py migrate
-     python manage.py createcachetable
-     
- Create a superuser 
- 
-     python manage.py createsuperuser 
+La imagen elige el proceso con `SERVICE_TYPE`:
 
-Compile translations
+| SERVICE_TYPE | Proceso |
+|---|---|
+| `web` | gunicorn + nginx (supervisor) |
+| `celery` | worker de Celery |
+| `beat` | Celery beat (`django_celery_beat`) |
+| `all` | web + worker + beat en un contenedor |
+| `dev` | runserver + worker con beat embebido |
 
-    python manage.py compilemessages -l es
+Con varias réplicas, solo una debe correr la instalación al arrancar; en las
+demás se usa `ACADEMICA_BOOT_INSTALL=false`.
 
-Update email templates
+## Correos
 
-    python manage.py update_academy_temp
+Las plantillas viven en `EmailTemplate` (`djgentelella.async_notification`) y se
+editan en `/async_notification/`. Su contenido inicial sale de los `.html` listados
+en `matricula/utils.py:EMAIL_TEMPLATES`:
 
-Create permission groups
+- `make load-templates` crea las que falten.
+- `make load-templates OVERWRITE=1` las reemplaza con el contenido de los archivos.
 
-    python manage.py permission_groups
- 
- Run the development server 
- 
-     python manage.py runserver
-     
-# Sending Email on development
+Los correos con `enqueued=True` los envía la tarea `process_async_notifications`
+cada 5 minutos (Celery beat), o a mano con `make send-emails`.
 
-    python -m smtpd -c DebuggingServer -n localhost:1025
+## Catálogos
 
-o también ver https://github.com/mailhog/MailHog
- 
- 
-
-# Create Rabbitmq 
-
-    rabbitmqctl add_user academica academicapass
-    rabbitmqctl add_vhost academicavhost
-    rabbitmqctl set_user_tags academica academicatag
-    rabbitmqctl set_permissions -p academicavhost academica ".*" ".*" ".*"
+Los países y las monedas (con su tipo de cambio respecto al dólar) se administran
+en *Catálogos* (`/catalog/countries/`, `/catalog/currencies/`). La instalación
+carga todos los países y las monedas USD y CRC. **El tipo de cambio de CRC hay que
+ajustarlo en el catálogo.**

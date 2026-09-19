@@ -70,7 +70,7 @@
                                 <td>{{ coupon.student }}</td>
                                 <td>{% if coupon.group %}{{coupon.group}}{% else %}Sin asignar{% endif %}</td>
                                 <td>
-                                    <input type="checkbox" class="flat" data-widget="CheckboxInput" data-key="{{ coupon.is_used }}" disabled="disabled">
+                                    <input type="checkbox" class="gt-check" {% if coupon.is_used %}checked{% endif %} disabled="disabled">
                                 </td>
 
                                 <td>{{ coupon.discount_percentage }}%</td>
@@ -102,11 +102,11 @@
         <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 <h4 class="modal-title">¿Realmente desea eliminar este cupón?</h4>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
                 <a class="btn btn-danger" id="deletecoupon">Eliminar</a>
             </div>
         </div>
@@ -123,25 +123,10 @@ function delete_coupon(element){
     $("#modaldeletecoupon").modal();
 }
 
-function selectChecks(){
-
-    $("tbody tr").each(function () {
-      $(this).find("td div input").each(function(i, v) {
-
-        if($(this).children().children().context.dataset['key'] === "True"){
-            $(this).parent().addClass("checked");
-            $(this).parent().css('background-position', "-22px 0");
-        }
-      });
-    });
-}
-
-
 (function(){
     $("#couponstable").DataTable();
 
-    $(window).load(function() {
-      selectChecks();
+    $(window).on('load', function() {
     });
 })(jQuery);
 </script>

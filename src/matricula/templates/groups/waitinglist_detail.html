@@ -30,7 +30,7 @@
 								<tr>
 									<td class="name">{{enroll.student}}</td>
 									<td>{{enroll.created_at}}</td>
-									<td><button type="button" class="btn btn-success enroll" id="{{enroll.student.pk}}" data-toggle="modal" data-target="#exampleModal">Matricular</button></td>
+									<td><button type="button" class="btn btn-success enroll" id="{{enroll.student.pk}}" data-bs-toggle="modal" data-bs-target="#exampleModal">Matricular</button></td>
 								</tr>
 							{% empty %}
 								<tr>
@@ -49,9 +49,7 @@
 			<form method="post">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-						</button>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						<h2 class="modal-title" id="exampleModalLabel">Finalizar matrícula</h2>
 					</div>
 					<div class="modal-body">
@@ -59,7 +57,7 @@
 						{{form.as_horizontal}}
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
 						<input type="submit" class="btn btn-primary" value='Matricular' />
 					</div>
 				</div>

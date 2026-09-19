@@ -2,8 +2,7 @@
 from django.contrib import admin
 from django.core.mail import send_mail
 from django.utils.timezone import now
-from django.utils.translation import ugettext_lazy as _
-from matricula.admin import admin_site
+from django.utils.translation import gettext_lazy as _
 from matricula.menues import add_main_menu
 from matricula.contrib.bills.models import Bill, BankBill, SinpeMovilBill
 
@@ -33,4 +32,3 @@ admin.site.register(BankBill, PaymentAdmin)
 admin.site.register(SinpeMovilBill, PaymentAdmin)
 admin.site.register(Bill)
 add_main_menu((_("Bills"), 'bills', True, 3, True))
-admin_site.register(Bill)

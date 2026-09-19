@@ -44,11 +44,11 @@
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						<h4 class="modal-title">¿Realmente desea eliminar esta estudiante? La información asociada también será eliminada.</h4>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+						<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
 						<a class="btn btn-danger" id="deleteitem">Eliminar</a>
 					</div>
 				</div>
@@ -82,7 +82,7 @@
 						<div class="col-md-6 col-sm-6 col-xs-6">
 							<ul class="list-unstyled user_data">
 								<li>
-									<strong>Correo: </strong><a href="#" data-toggle="tooltip" title="{{object.user.email}}">{{object.user.email|truncatechars:20}}</a>
+									<strong>Correo: </strong><a href="#" data-bs-toggle="tooltip" title="{{object.user.email}}">{{object.user.email|truncatechars:20}}</a>
 								</li>
 								<li>
 									<strong>Usuarie: </strong>{{object.user}}

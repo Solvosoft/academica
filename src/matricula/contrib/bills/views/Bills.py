@@ -75,7 +75,7 @@ def pay_using_sinpemovil(request):
 
         )
     else:
-        messages.error("Hubo un error procesando su solicitud, por favor vuelva a intentarlo")
+        messages.error(request, "Hubo un error procesando su solicitud, por favor vuelva a intentarlo")
     return redirect(reverse('bills'))
 
 @login_required

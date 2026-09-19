@@ -6,8 +6,11 @@ Created on 17/5/2015
 '''
 import uuid
 
+from django.http import Http404
+from urllib.parse import urlencode
+
 from djgentelella.models import ChunkedUpload
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import now
 from django.utils.decorators import method_decorator
 from django.contrib.auth import login as djlogin
@@ -23,8 +26,8 @@ from django.template.loader import render_to_string
 from django.views.generic.edit import UpdateView
 from django.views.generic import DetailView
 
-from django_ajax.decorators import ajax
-from async_notifications.utils import send_email_from_template
+from matricula.ajax import ajax
+from djgentelella.async_notification.sending import send_email_from_template
 
 from matricula.models import Professor, Student, Enroll
 from matricula.views.utils import get_expire_date
@@ -148,7 +151,10 @@ def login(request):
 
 
 def recover_password(request):
-    token = request.GET.get('key','')
+    try:
+        token = uuid.UUID(request.GET.get('key', ''))
+    except ValueError:
+        raise Http404()
     student = get_object_or_404(Student, key=token)
     if request.method == 'GET':
         form = StudentResetPasswordForm(initial=student.__dict__)
@@ -174,7 +180,7 @@ def mail_recover_pass(request):
         student = students[0]
         schema = request.scheme+"://"
         send_email_from_template(
-                'email_recovery_academy', request.user.email, {
+                'email_recovery_academy', student.user.email, {
                     'url': request.build_absolute_uri(
                         reverse('recover_password')),
                     'domain': schema+request.get_host(),
@@ -285,8 +291,11 @@ def login_user(request):
         messages.info(request, _('Your user have not permission for see this page'))
         return redirect(reverse('courses'))
 
-    else:
-        return render(request, 'student_login.html')
+    # El inicio de sesión lo resuelve la vista de djgentelella.
+    login_url = reverse('login')
+    if request.GET.get('next'):
+        login_url += '?' + urlencode({'next': request.GET['next']})
+    return redirect(login_url)
 
 
 def parse_form_errors(form):

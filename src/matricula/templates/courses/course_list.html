@@ -42,11 +42,11 @@
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 							<h4 class="modal-title">¿Realmente desea eliminar este curso?</h4>
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+							<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
 							<a class="btn btn-danger" id="deleteitem">Eliminar</a>
 						</div>
 					</div>
@@ -88,7 +88,7 @@
 								<strong>Categoría: </strong>{{course.category.name}}
 							</li>
 							<li>
-								<a href="#" style="cursor:pointer" data-placement="top" data-toggle="tooltip" data-original-title="{{course.content|safe|striptags}}">
+								<a href="#" style="cursor:pointer" data-bs-placement="top" data-bs-toggle="tooltip" data-original-title="{{course.content|safe|striptags}}">
 									<strong>Contenido: </strong>{{course.content|safe|striptags|truncatechars:150|linebreaks}}
 								</a>
 							</li>
@@ -143,7 +143,7 @@
 	<script>
 		// Tooltip
 		$(document).ready(function () {
-			$('[data-toggle="tooltip"]').tooltip({
+			$('[data-bs-toggle="tooltip"]').tooltip({
 				container: 'body'
 			});
 		});

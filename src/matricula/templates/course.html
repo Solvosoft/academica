@@ -49,7 +49,7 @@
 					<div class="x_content">
 						<div class="col-md-6">
 							<strong>Curso: </strong>
-							<a href="#" data-toggle="tooltip" title="{{group.course}}">{{group.course|truncatechars:100}}</a>
+							<a href="#" data-bs-toggle="tooltip" title="{{group.course}}">{{group.course|truncatechars:100}}</a>
 						</div>
 						<div class="col-md-6">
 							<strong>Categoría: </strong>{{group.course.category}}
@@ -125,6 +125,5 @@
 	</div>
 {% endblock %}
 {% block js %}
-	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}?v={% get_version %}"></script>
-	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}?v={% get_version %}"></script>
+	<script type="text/javascript" src="{% static 'js/ajax_fragments.js' %}?v={% get_version %}"></script>
 {% endblock %}

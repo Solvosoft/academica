@@ -8,7 +8,7 @@ from collections import OrderedDict
 from django.utils.safestring import mark_safe
 from django import template
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.html import strip_tags
 from matricula.models import MenuItem
 

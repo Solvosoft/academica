@@ -1,3 +1,4 @@
+from matricula.tests.utils import login_report_admin
 from datetime import datetime
 
 from django.contrib.auth.models import User, Permission
@@ -14,6 +15,7 @@ class Courses_By_Year_TestCase(TestCase):
 
     def setUp(self):
         self.client = Client()
+        login_report_admin(self.client)
 
         self.user1 = User.objects.create_user(username='nombre1',
                                          email='prueba1@gmail.com',
@@ -112,9 +114,9 @@ class Courses_By_Year_TestCase(TestCase):
 
         groups = [c1g1, c2g1, c3g1, c3g2]
 
-        country1 = Country.objects.create(name='Costa Rica', flag='cr', code='CR')
-        country2 = Country.objects.create(name='Afganistán', flag='af', code='AF')
-        country3 = Country.objects.create(name='Australia', flag='au', code='AU')
+        country1 = Country.objects.get_or_create(code='CR', defaults={'name': 'Costa Rica'})[0]
+        country2 = Country.objects.get_or_create(code='AF', defaults={'name': 'Afganistán'})[0]
+        country3 = Country.objects.get_or_create(code='AU', defaults={'name': 'Australia'})[0]
 
         student1 = Student.objects.create(
             user=self.user1,
@@ -186,7 +188,7 @@ class Courses_By_Year_TestCase(TestCase):
         response = self.client.get(self.url)
 
         options = response.json()['options']
-        data = options['title']
+        data = options['plugins']['title']
         self.assertEqual(data['text'], 'Reporte total de cursos por año')
 
 
@@ -201,6 +203,7 @@ class Courses_By_Month_TestCase(TestCase):
 
     def setUp(self):
         self.client = Client()
+        login_report_admin(self.client)
 
         self.user1 = User.objects.create_user(username='nombre1',
                                          email='prueba1@gmail.com',
@@ -299,9 +302,9 @@ class Courses_By_Month_TestCase(TestCase):
 
         groups = [c1g1, c2g1, c3g1, c3g2]
 
-        country1 = Country.objects.create(name='Costa Rica', flag='cr', code='CR')
-        country2 = Country.objects.create(name='Afganistán', flag='af', code='AF')
-        country3 = Country.objects.create(name='Australia', flag='au', code='AU')
+        country1 = Country.objects.get_or_create(code='CR', defaults={'name': 'Costa Rica'})[0]
+        country2 = Country.objects.get_or_create(code='AF', defaults={'name': 'Afganistán'})[0]
+        country3 = Country.objects.get_or_create(code='AU', defaults={'name': 'Australia'})[0]
 
         student1 = Student.objects.create(
             user=self.user1,
@@ -373,7 +376,7 @@ class Courses_By_Month_TestCase(TestCase):
         response = self.client.get(self.url)
 
         options = response.json()['options']
-        data = options['title']
+        data = options['plugins']['title']
         self.assertEqual(data['text'], 'Reporte total de cursos por mes')
 
 

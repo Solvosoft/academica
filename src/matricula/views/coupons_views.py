@@ -5,13 +5,13 @@ from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
-from django_ajax.decorators import ajax
+from matricula.ajax import ajax
 
-from async_notifications.utils import send_email_from_template
+from djgentelella.async_notification.sending import send_email_from_template
 from matricula.contrib.bills.models import Bill
 from matricula.forms import CouponsSearchForm, CouponAddForm, CouponEditForm
 from matricula.models import Coupon, Group, Student, Enroll
-from django.utils.encoding import smart_text
+from django.utils.encoding import smart_str
 from django.db import transaction
 from django.core.exceptions import ValidationError
 
@@ -218,7 +218,7 @@ def create_cupon(request):
                                             'invoice_enroll.html',
                                             {
                                                 'student': bill.student,
-                                                'enroll': smart_text(bill.enrollment.group),
+                                                'enroll': smart_str(bill.enrollment.group),
                                                 'discount': discount,
                                                 'total': bill.amount - discount,
                                                 'date': bill.enrollment.enroll_date.strftime("%Y-%m-%d %H:%M"),
@@ -359,7 +359,7 @@ def update_bill(bill, discount, total, percentage, code, enrollment, user, reque
             'invoice_enroll.html',
             {
                 'student': bill.student,
-                'enroll': smart_text(bill.enrollment.group),
+                'enroll': smart_str(bill.enrollment.group),
                 'discount': discount,
                 'total': total,
                 'date': bill.enrollment.enroll_date.strftime("%Y-%m-%d %H:%M"),
@@ -376,7 +376,7 @@ def add_coupons_group(request, pk, percentage):
     group = get_object_or_404(Group, pk=pk)
     year = datetime.datetime.now().year
 
-    if request.is_ajax():
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
        students = json.loads(request.body)
 
        for student_pk in students:

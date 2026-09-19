@@ -1,0 +1,13 @@
+# Publica los puertos de los servicios para desarrollo local (`make services`).
+# Los puertos del host se pueden cambiar con variables de entorno.
+services:
+  postgresdb:
+    ports:
+      - ${DB_HOST_PORT:-5433}:5432
+  redis:
+    ports:
+      - ${REDIS_HOST_PORT:-6379}:6379
+  mail:
+    ports:
+      - ${SMTP_HOST_PORT:-1026}:1025
+      - 8026:8025

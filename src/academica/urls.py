@@ -1,40 +1,14 @@
-"""membresias_codigosur URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/2.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-from django.contrib import admin
-from django.contrib.auth.decorators import login_required
-from django.urls import path, include, re_path
-from django.views.generic import RedirectView
-from django.views.static import serve
-#from ajax_select import urls as ajax_select_urls
-from async_notifications.markitup.views import preview_newsletter
-from membership_core.urls import urlpatterns as url_core
 from django.conf import settings
+from django.contrib import admin
+from django.urls import include, path, re_path
+from django.views.static import serve
 from djgentelella.urls import urlpatterns as djgentelellaurls
+
 from matricula.urls import urlpatterns as enrollurls
-
-
+from membership_core.urls import urlpatterns as url_core
 
 urlpatterns = djgentelellaurls + [
-    path('async_notifications/', include('async_notifications.urls')),
-    path('api/', include('api.urls')),
+    path('async_notification/', include('djgentelella.async_notification.urls')),
     path('admin/', admin.site.urls),
-    #re_path(r'^ajax_select/', include(ajax_select_urls)),
-    re_path(r'^media/(?P<path>.*)$',
-            serve,
-            {'document_root': settings.MEDIA_ROOT,}
-            ),
-    re_path(r'^markitup/preview/$', login_required(preview_newsletter), name="markitup_preview"),
-    ] + url_core + enrollurls
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+] + url_core + enrollurls

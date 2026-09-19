@@ -1,3 +1,4 @@
+from matricula.tests.utils import login_report_admin
 from django.contrib.auth.models import User, Permission
 from django.test import TestCase
 from django.test import Client
@@ -16,7 +17,7 @@ class ListReportsTestCase(TestCase):
                                  email='jacob%d@upo.com'%self.user_count,
                                  password='password')
         self.user_count+=1
-        country, created =Country.objects.get_or_create(name='Costa Rica', flag='cr', code='CRC')
+        country, created =Country.objects.get_or_create(code='CRC', defaults={'name': 'Costa Rica'})
         student = Student.objects.create(
             user =  user,
             organization = 'org',
@@ -115,6 +116,7 @@ class ListReportsTestCase(TestCase):
 
     def setUp(self):
         self.client = Client()
+        login_report_admin(self.client)
         self.user = User.objects.create_user(username='jacob1',
                                         email='jacob1@…',
                                         password='password')

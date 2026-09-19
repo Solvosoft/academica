@@ -1,33 +1,23 @@
-from __future__ import absolute_import, unicode_literals
 import os
-from celery import Celery
 
-# set the default Django settings module for the 'celery' program.
+from celery import Celery
+from celery.schedules import crontab
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'academica.settings')
-from django.conf import settings  # noqa
 
 app = Celery('academica')
 
-# Using a string here means the worker doesn't have to serialize
-# the configuration object to child processes.
-# - namespace='CELERY' means all celery-related configuration keys
-#   should have a `CELERY_` prefix.
+# Toda la configuración de celery vive en settings.py con el prefijo CELERY_.
 app.config_from_object('django.conf:settings', namespace='CELERY')
-
 app.autodiscover_tasks()
-app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
-from celery.schedules import crontab
-
-app.conf.CELERYBEAT_SCHEDULE = {
-    'send_daily_emails': {  # this sends the emails in the email notifications list
-        'task': 'async_notifications.tasks.send_daily',
-        'schedule': crontab(minute='*/5'),  # execute every 5 minutes
+app.conf.beat_schedule = {
+    'process_async_notifications': {  # envía los correos encolados de djgentelella
+        'task': 'matricula.tasks.process_async_notifications',
+        'schedule': crontab(minute='*/5'),
     },
-    'remove_invoices': {  # remove invoices generated that were not paid in the grace period
+    'remove_invoices': {  # elimina las facturas no pagadas dentro del periodo de gracia
         'task': 'matricula.tasks.remove_invoices',
-        'schedule': crontab(minute='*/20'),  # execute every 20 minutes
+        'schedule': crontab(minute='*/20'),
     },
 }
-app.conf.CELERY_TIMEZONE = settings.TIME_ZONE

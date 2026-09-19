@@ -13,7 +13,7 @@ from .forms import UserEditForm, UserSearchForm, UserAddForm, GroupAddForm
 from .dashboard import TopStats
 from .models import Country
 
-from async_notifications.utils import send_email_from_template
+from djgentelella.async_notification.sending import send_email_from_template
 
 from matricula.models import Category, FakeGroup, Professor
 
@@ -28,12 +28,12 @@ def country_stats():
     for country in Country.objects.all().order_by('name'):
         total = country.student_set.count()
         if total:
-            yield (country.flag, country.name, total)
+            yield (country.code.lower(), country.name, total)
 
 
 @login_required
 def index(request):
-    if request.user.has_perm('membership_manager.can_show_dashboard'):
+    if request.user.has_perm('membership_core.can_show_dashboard'):
         context = {'topstat': TopStats(),
                 'vencimientoanual_url': reverse('vencimientoanual-list'),
                 'pagoanual_url': reverse('pagoanual-list'),

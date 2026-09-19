@@ -10,7 +10,7 @@ import re
 from django import forms
 from django.db.models import QuerySet
 from django.forms import FileInput
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.core import validators
 from django.contrib.auth.models import User, Permission
 
@@ -90,9 +90,9 @@ class StudentCreateForm(GTForm, forms.ModelForm):
         if re.search('[A-Z]', password)==None:
             raise forms.ValidationError("El password debe tener al menos una letra mayúscula.")
 
-        if not re.findall('[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
+        if not re.findall(r'[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
             raise forms.ValidationError(
-                _("The password must contain at least 1 symbol: ")+"()[]{}|\`~!@#$%^&*_-+=;:'\",<>./?"
+                _("The password must contain at least 1 symbol: ")+"()[]{}|\\`~!@#$%^&*_-+=;:'\",<>./?"
             )
 
         return password
@@ -682,9 +682,9 @@ class StudentChangePasswordForm(GTForm, forms.ModelForm):
         if re.search('[A-Z]', password)==None:
             raise forms.ValidationError("El password debe tener al menos una letra mayúscula.")
 
-        if not re.findall('[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
+        if not re.findall(r'[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
             raise forms.ValidationError(
-                _("The password must contain at least 1 symbol: ")+"()[]{}|\`~!@#$%^&*_-+=;:'\",<>./?"
+                _("The password must contain at least 1 symbol: ")+"()[]{}|\\`~!@#$%^&*_-+=;:'\",<>./?"
             )
 
         return password
@@ -714,9 +714,9 @@ class StudentResetPasswordForm(GTForm, forms.Form):
         if re.search('[A-Z]', password)==None:
             raise forms.ValidationError("El password debe tener al menos una letra mayúscula.")
 
-        if not re.findall('[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
+        if not re.findall(r'[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
             raise forms.ValidationError(
-                _("The password must contain at least 1 symbol: ")+"()[]{}|\`~!@#$%^&*_-+=;:'\",<>./?"
+                _("The password must contain at least 1 symbol: ")+"()[]{}|\\`~!@#$%^&*_-+=;:'\",<>./?"
             )
         return password
 

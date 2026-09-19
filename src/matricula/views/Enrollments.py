@@ -8,15 +8,15 @@ Created on 17/5/2015
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.db import IntegrityError, transaction
 from django.db.models import Q
 from django.contrib import messages
 from django.conf import settings
 
-from django_ajax.decorators import ajax
+from matricula.ajax import ajax
 
-from async_notifications.utils import send_email_from_template
+from djgentelella.async_notification.sending import send_email_from_template
 
 from matricula.models import Group, Enroll, WaitingList
 

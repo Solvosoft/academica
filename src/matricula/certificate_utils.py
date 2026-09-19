@@ -8,7 +8,11 @@ import logging
 
 from django.conf import settings
 from django.utils.timezone import now
+from django.contrib.staticfiles import finders
 from django.core.files.base import File
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
 
 logger = logging.getLogger(__name__)
@@ -32,41 +36,39 @@ MONTHS_DICT = {
 
 def link_callback(uri, rel):
     """
-    Convert HTML URIs to absolute system paths so xhtml2pdf can access those
-    resources
+    Convierte las URIs del HTML en rutas del sistema de archivos para que
+    xhtml2pdf pueda leer imágenes y hojas de estilo.
     """
     uri = re.sub('../../../', "/", uri)
-    sUrl = settings.STATIC_URL  # Typically /static/
-    sRoot = settings.STATIC_ROOT  # Typically /home/userX/project_static/
-    mUrl = settings.MEDIA_URL  # Typically /media/
-    mRoot = settings.MEDIA_ROOT  # Typically /home/userX/project_static/media/
-
-    if uri.startswith(mUrl):
-        path = os.path.join(mRoot, uri.replace(mUrl, ""))
-    elif uri.startswith(sUrl):
-        path = os.path.join(sRoot, uri.replace(sUrl, ""))
+    if uri.startswith(settings.MEDIA_URL):
+        path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, "", 1))
+    elif uri.startswith(settings.STATIC_URL):
+        relative = uri.replace(settings.STATIC_URL, "", 1)
+        path = os.path.join(settings.STATIC_ROOT, relative)
+        if not os.path.isfile(path):
+            # En desarrollo no hay collectstatic: se busca en las apps.
+            path = finders.find(relative) or path
     else:
         return uri
 
     if not os.path.isfile(path):
         raise Exception(
-            'media URI must start with %s or %s' % (sUrl, mUrl)
+            'media URI must start with %s or %s' % (settings.STATIC_URL, settings.MEDIA_URL)
         )
     return path
 
 
-def get_template_certificate_header(template):
-    with open(settings.BASE_NOCODE_DIR / 'src/matricula/templates/Pdf/certificate_header.html', 'r') as arch:
-        template = str(arch.read()).replace('CONTENT', template)
-    return template
+def render_pdf_response(template_name, context, filename):
+    """Renderiza una plantilla HTML a PDF con xhtml2pdf y la devuelve como descarga."""
+    html = get_template(template_name).render(context)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="%s"' % filename
+    pisa_status = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
+    if pisa_status.err:
+        logger.error("Error generando el PDF %s: %s", filename, pisa_status.err)
+        return HttpResponse("Error generando el PDF", status=500)
+    return response
 
-
-def get_context_certificate(enroll):
-    today = now()
-    context={
-
-
-    }
 
 def build_pdf_certificate(enroll):
     template_file = settings.BASE_NOCODE_DIR / 'src/matricula/static/certificado_base.svg'

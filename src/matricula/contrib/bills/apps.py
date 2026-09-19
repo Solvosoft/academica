@@ -1,7 +1,7 @@
 from django.apps import AppConfig
 
 
-class MyAppConfig(AppConfig):
+class BillsConfig(AppConfig):
 
     name = 'matricula.contrib.bills'
     verbose_name = 'bills'

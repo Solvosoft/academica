@@ -1,0 +1,20 @@
+# Desarrollo dentro de docker: monta el código y usa runserver + celery -B.
+#   make dev   ->  http://localhost:8000
+services:
+  academica-web:
+    environment:
+      SERVICE_TYPE: dev
+      DEBUG: "True"
+    volumes:
+      - ./src:/app/src
+      - media:/app/media/
+    ports:
+      - 8000:8000
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8000/"]
+
+  academica-celery:
+    profiles: ["prod"]
+
+  academica-beat:
+    profiles: ["prod"]

@@ -22,7 +22,7 @@
 							<div class="text-right" style="margin-top:10px;">
 								<a class="btn btn-dark" href="{% url 'courses' %}">{% trans 'Cancel' %}</a>
 								<button type="submit" class="btn btn-success" value="{% trans 'Save' %}" >
-									<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> {% trans 'Save' %}
+									<span class="fa fa-envelope" aria-hidden="true"></span> {% trans 'Save' %}
 								</button>
 							</div>
 						</form>
@@ -33,6 +33,5 @@
 	</div>
 {% endblock %}
 {% block js %}
-	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}?v={% get_version %}"></script>
-	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}?v={% get_version %}"></script>
+	<script type="text/javascript" src="{% static 'js/ajax_fragments.js' %}?v={% get_version %}"></script>
 {% endblock %}

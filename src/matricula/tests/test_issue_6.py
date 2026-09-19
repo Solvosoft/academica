@@ -1,3 +1,4 @@
+from matricula.tests.utils import login_report_admin
 from django.contrib.auth.models import User, Permission
 from django.test import TestCase
 from django.test import Client
@@ -12,6 +13,7 @@ class Uncompleted_Student_TestCase(TestCase):
 
     def setUp(self):
         self.client = Client()
+        login_report_admin(self.client)
         self.user = User.objects.create_user(username='nombre1',
                                               email='prueba1@gmail.com',
                                               password='password1')
@@ -96,7 +98,7 @@ class Uncompleted_Student_TestCase(TestCase):
 
         groups = [c1g1, c2g1, c3g1, c3g2]
 
-        country, created = Country.objects.get_or_create(name='Costa Rica', flag='cr', code='CRC')
+        country, created = Country.objects.get_or_create(code='CRC', defaults={'name': 'Costa Rica'})
         student = Student.objects.create(
             user=self.user,
             organization='org',

@@ -1,50 +1,113 @@
-version: '2'
+# Stack completo: `make env && make build && make up`
+# La aplicación queda en http://localhost:8011 y MailHog en http://localhost:8026
+x-academica: &academica
+  image: academica:latest
+  restart: unless-stopped
+  env_file: deploy/academica.env
+  environment: &academica-env
+    DBHOST: postgresdb
+    DBPORT: "5432"
+    BROKER_URL: redis://redis:6379/0
+    EMAIL_HOST: mail
+    EMAIL_PORT: "1025"
+  networks:
+    - apps
+  volumes:
+    - media:/app/media/
+  depends_on:
+    postgresdb:
+      condition: service_healthy
+    redis:
+      condition: service_started
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
 
 services:
-  rabbitmq:
-    image: "rabbitmq:3"
-    container_name: "rabbitmq"
+  postgresdb:
+    image: postgres:17
+    restart: always
+    env_file: deploy/academica.env
     networks:
       - apps
-    environment:
-      - RABBITMQ_DEFAULT_USER=academica
-      - RABBITMQ_DEFAULT_PASS=4c4d3m1c4
-      - RABBITMQ_DEFAULT_VHOST=vhostacademica
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
-  postgresdb:
-    image: postgres
+  redis:
+    image: redis:7
     restart: always
-    container_name: "postgresdb"
-    environment:
-      - POSTGRES_PASSWORD=NOUSARENPROD
-      - POSTGRES_USER=academica_user
-      - POSTGRES_DB=academica
-      
     networks:
       - apps
 
   mail:
     image: mailhog/mailhog
     restart: always
-    container_name: "mail"
+    networks:
+      - apps
     ports:
       - 8026:8025
 
-  academica:
-    image: "academica"
-    container_name: "academica"
-    networks:
-      - apps
+  academica-web:
+    <<: *academica
     environment:
-      - DBHOST=postgresdb
-      - BROKER_URL=amqp://academica:4c4d3m1c4@rabbitmq:5672/vhostacademica
-      - EMAIL_HOST=mail
-      
+      <<: *academica-env
+      SERVICE_TYPE: web
     ports:
       - 8011:80
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  academica-celery:
+    <<: *academica
+    environment:
+      <<: *academica-env
+      SERVICE_TYPE: celery
+      ACADEMICA_BOOT_INSTALL: "false"
+    depends_on:
+      academica-web:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "celery", "-A", "academica", "inspect", "ping", "--timeout", "10"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 60s
+
+  academica-beat:
+    <<: *academica
+    environment:
+      <<: *academica-env
+      SERVICE_TYPE: beat
+      ACADEMICA_BOOT_INSTALL: "false"
+    depends_on:
+      academica-web:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "test", "-f", "/tmp/celerybeat.pid"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
 
 networks:
   apps:
     driver: bridge
 
-
+volumes:
+  db-data:
+  media:

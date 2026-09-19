@@ -16,15 +16,3 @@ if nginx_access_log:
 
 with open('/etc/nginx/sites-enabled/default', 'w') as arch:
      arch.write(academica_conf)
-
-syslog_host=os.getenv('RSYSLOG_HOST', None)
-
-if syslog_host:
-    searchline="$IncludeConfig /etc/rsyslog.d/*.conf"
-
-    with open("/etc/rsyslog.conf", 'r') as arch:
-        rsyslog=arch.read()
-        rsyslog=rsyslog[0:rsyslog.find(searchline)]
-        rsyslog+="\n%s\n\n%s\n\n"%(searchline, syslog_host)
-    with open("/etc/rsyslog.conf", 'w') as arch:
-        arch.write(rsyslog)

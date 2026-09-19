@@ -61,7 +61,7 @@
 							<thead>
 								<tr class="headings">
 								<th>
-									<input type="checkbox" id="check-all" class="flat">
+									<input type="checkbox" id="check-all" class="gt-check">
 								</th>
 								<th class="column-title">Nombre Completo </th>
 								<th class="column-title">Fecha de pre-inscripción</th>
@@ -80,7 +80,7 @@
 								{% for enroll in pre_enroll_list %}
 									<tr class="{% cycle 'odd' 'even' %} pointer">
 										<td class="a-center ">
-											<input type="checkbox" value="{{enroll.pk}}" class="flat" name="students" data-id="{{enroll.student.pk}}">
+											<input type="checkbox" value="{{enroll.pk}}" class="gt-check" name="students" data-id="{{enroll.student.pk}}">
 										</td>
 										<td class="">
 											<a href="{% url 'enrolls' %}?student={{enroll.student.pk}}"><i class="fa fa-book" aria-hidden="true"></i></a>
@@ -99,7 +99,7 @@
 					</div>
 					<div class="text-center">
 						<a class="btn btn-dark" href="{% url 'groups_enroll' %}">Atras</a>
-						<a class="btn btn-success" id="assigncouponsbutton" title="Asignar cupones" data-toggle="modal" data-target="#assigncouponsmodal" style="display:none;">Asignar cupones</a>
+						<a class="btn btn-success" id="assigncouponsbutton" title="Asignar cupones" data-bs-toggle="modal" data-bs-target="#assigncouponsmodal" style="display:none;">Asignar cupones</a>
 						<input class="btn btn-primary" type="submit" name="action" value="Aperturar matrícula">
 						<input class="btn btn-primary" type="submit" name="action" value="Matricular">
 						<input class="btn btn-danger" type="submit" name="action" value="Rechazar pre-inscripción">
@@ -140,7 +140,7 @@
 		<div class="modal-content">
 			<form method="post">
 		  <div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			<h4 class="modal-title">Asignar cupones</h4>
 		  </div>
 		  <div class="modal-body">
@@ -158,7 +158,7 @@
 			  </div>
 		  </div>
 		  <div class="modal-footer">
-			<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
 			<button type="button" onclick="assign_coupons()" class="btn btn-primary">Asignar</button>
 		  </div>
 			</form>
@@ -185,7 +185,7 @@ function assign_coupons(){
       $(this).find("td").each(function(i, v) {
 
         if(i === 0){
-            cur[heads[i]] = $(this).children().children().data('id')
+            cur[heads[i]] = $(this).find("input[name='students']").data('id')
         }
       });
       rows.push(cur);
@@ -211,62 +211,28 @@ function assign_coupons(){
 
 }
 
-// iCheck
-$(document).ready(function () {
-	if ($("input.flat")[0]) {
-		$(document).ready(function () {
-			$('input.flat').iCheck({
-				checkboxClass: 'icheckbox_flat-green',
-				radioClass: 'iradio_flat-green'
-			});
-		});
-	}
-});
-// /iCheck
+// Selección de filas (checkbox nativos con la clase gt-check de djgentelella)
+function updateRowSelection(input) {
+	$(input).closest('tr').toggleClass('selected', input.checked);
+}
 
-// Table
-$('table input').on('ifChecked', function () {
-	checkState = '';
-	$(this).parent().parent().parent().addClass('selected');
+$(document).on('change', ".bulk_action input[name='students']", function () {
+	updateRowSelection(this);
 	countChecked();
-	$("#assigncouponsbutton").show();
-});
-$('table input').on('ifUnchecked', function () {
-	checkState = '';
-	$(this).parent().parent().parent().removeClass('selected');
-	countChecked();
-	$("#assigncouponsbutton").hide();
+	$("#assigncouponsbutton").toggle($(".bulk_action input[name='students']:checked").length > 0);
 });
 
-var checkState = '';
-
-$('.bulk_action input').on('ifChecked', function () {
-	checkState = '';
-	$(this).parent().parent().parent().addClass('selected');
+$(document).on('change', '.bulk_action input#check-all', function () {
+	var checked = this.checked;
+	$(".bulk_action input[name='students']").each(function () {
+		this.checked = checked;
+		updateRowSelection(this);
+	});
 	countChecked();
-});
-$('.bulk_action input').on('ifUnchecked', function () {
-	checkState = '';
-	$(this).parent().parent().parent().removeClass('selected');
-	countChecked();
-});
-$('.bulk_action input#check-all').on('ifChecked', function () {
-	checkState = 'all';
-	countChecked();
-});
-$('.bulk_action input#check-all').on('ifUnchecked', function () {
-	checkState = 'none';
-	countChecked();
+	$("#assigncouponsbutton").toggle(checked);
 });
 
 function countChecked() {
-	if (checkState === 'all') {
-		$(".bulk_action input[name='students']").iCheck('check');
-	}
-	if (checkState === 'none') {
-		$(".bulk_action input[name='students']").iCheck('uncheck');
-	}
-
 	var checkCount = $(".bulk_action input[name='students']:checked").length;
 
 	if (checkCount) {
@@ -293,7 +259,7 @@ $(document).ready(function () {
 	});
 });
 
-$(window).load(function() {
+$(window).on('load', function() {
 	$('.select2-container').width('100%');
 });
 </script>

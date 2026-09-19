@@ -50,6 +50,8 @@ class RankingCourseEnrollsViewSet(mixins.ListModelMixin, GenericViewSet):
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset().distinct())
         paginator = self.paginate_queryset(queryset)
+        if paginator is None:  # sin ?limit= se devuelven todos los registros
+            paginator = queryset
         response = {
             'data': paginator,
             'draw': self.request.GET.get('draw', 1),
@@ -91,6 +93,8 @@ class RankingCourseApprovedViewSet(mixins.ListModelMixin, GenericViewSet):
 
         queryset = self.filter_queryset(self.get_queryset().distinct())
         paginator = self.paginate_queryset(queryset)
+        if paginator is None:  # sin ?limit= se devuelven todos los registros
+            paginator = queryset
         response = {
             'data': paginator,
             'draw': self.request.GET.get('draw', 1),
@@ -134,6 +138,8 @@ class CourseTopicsViewSet(mixins.ListModelMixin, GenericViewSet):
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         paginator = self.paginate_queryset(queryset)
+        if paginator is None:  # sin ?limit= se devuelven todos los registros
+            paginator = queryset
         response = {
             'data': paginator,
             'draw': self.request.GET.get('draw', 1),
@@ -175,6 +181,8 @@ class CountriesGroupViewSet(mixins.ListModelMixin, GenericViewSet):
 
         queryset = self.filter_queryset(self.get_queryset().distinct())
         paginator = self.paginate_queryset(queryset)
+        if paginator is None:  # sin ?limit= se devuelven todos los registros
+            paginator = queryset
         response = {
             'data': paginator,
             'draw': self.request.GET.get('draw', 1),

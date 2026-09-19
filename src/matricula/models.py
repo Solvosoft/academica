@@ -7,9 +7,9 @@ from json import JSONDecodeError
 from django.db import models
 from django.contrib.auth.models import User, Group as AuthGroup
 from django.db.models import Q
-from django.utils.encoding import smart_text
+from django.utils.encoding import smart_str
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import now
 from django.utils.html import strip_tags
 
@@ -279,7 +279,7 @@ class Enroll(models.Model):
     go_to_one_class = models.BooleanField(default=True, verbose_name=_('Go to classes'))
 
     def __str__(self):
-        return self.student.user.username + " -- " + smart_text(self.group)
+        return self.student.user.username + " -- " + smart_str(self.group)
 
     @property
     def is_penalized(self):

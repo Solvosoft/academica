@@ -9,6 +9,7 @@ from djgentelella.widgets import core as widget
 from djgentelella.widgets.selects import AutocompleteSelectMultiple
 
 from matricula.models import FakeGroup
+from membership_core.models import Country, SystemCurrency
 
 
 class UserSearchForm(GTForm, forms.Form):
@@ -98,3 +99,23 @@ class GroupAddForm(GTForm, forms.ModelForm):
         if 'initial' in kwargs:
             if 'name' in kwargs['initial']:
                 self.fields['name'].initial = kwargs['initial']['name']
+
+
+class CountryForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = Country
+        fields = ['name', 'code']
+        widgets = {
+            'name': genwidgets.TextInput,
+            'code': genwidgets.TextInput,
+        }
+
+
+class SystemCurrencyForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = SystemCurrency
+        fields = ['currency', 'rates']
+        widgets = {
+            'currency': genwidgets.Select,
+            'rates': genwidgets.NumberInput,
+        }

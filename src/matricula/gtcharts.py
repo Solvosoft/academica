@@ -5,7 +5,7 @@ from djgentelella.groute import register_lookups
 
 from matricula.forms import CourseGraphForm, CourseWithCoursefilterGraphForm, GroupSearchForm
 from matricula.models import Course, Student, Group, Period
-from matricula.utils import get_label_months
+from matricula.utils import organization_names, get_label_months
 from matricula.views.utils import get_active_period
 from membership_core.gtcharts import BaseChart
 from membership_core.models import Country
@@ -424,13 +424,9 @@ def get_organizations_per_country(countries_list, extras={}):
     for org in orgs:
         if org['country'] not in countries:
             continue
-        try:
-            for value in json.loads(org["organization"]):
-                if value['value'].lower() not in countries[org['country']]['orgs']:
-                    countries[org['country']]['orgs'].append(value['value'].lower())
-        except json.decoder.JSONDecodeError as e:
-            if org["organization"].lower() not in countries[org['country']]['orgs']:
-                countries[org['country']]['orgs'].append(org["organization"].lower())
+        for name in organization_names(org["organization"]):
+            if name.lower() not in countries[org['country']]['orgs']:
+                countries[org['country']]['orgs'].append(name.lower())
 
     return update_organizations(countries)
 
@@ -614,13 +610,9 @@ class StudentByOrganizationReport(BaseChart, VerticalBarChart):
         orgsname=[]
         orgs = Student.objects.exclude(organization='').values('organization', 'country').distinct()
         for org in orgs:
-            try:
-                for value in json.loads(org["organization"]):
-                    if value['value'].lower() not in orgsname:
-                        orgsname.append(value['value'].lower())
-            except json.decoder.JSONDecodeError as e:
-                if org["organization"].lower() not in orgsname:
-                    orgsname.append(org["organization"].lower())
+            for name in organization_names(org["organization"]):
+                if name.lower() not in orgsname:
+                    orgsname.append(name.lower())
 
         return orgsname
 

@@ -131,7 +131,5 @@
 </main>
 {% endblock %}
 {% block js %}
-<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}?v={% get_version %}"></script>
-<script type="text/javascript"
-        src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}?v={% get_version %}"></script>
+<script type="text/javascript" src="{% static 'js/ajax_fragments.js' %}?v={% get_version %}"></script>
 {% endblock %}

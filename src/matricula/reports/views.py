@@ -1,3 +1,4 @@
+from matricula.utils import organization_names
 import json
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Count, Q
@@ -213,13 +214,9 @@ def get_organizations():
     orgsname=[]
     orgs = Student.objects.exclude(organization='').values('organization', 'country').distinct()
     for org in orgs:
-        try:
-            for value in json.loads(org["organization"]):
-                if value['value'].lower() not in orgsname:
-                    orgsname.append(value['value'].lower())
-        except json.decoder.JSONDecodeError as e:
-            if org["organization"].lower() not in orgsname:
-                orgsname.append(org["organization"].lower())
+        for name in organization_names(org["organization"]):
+            if name.lower() not in orgsname:
+                orgsname.append(name.lower())
 
     return orgsname
 
@@ -303,11 +300,8 @@ def get_organization_by_countries(country, extras={}):
     orgas_list = []
     orgs = Student.objects.filter(country__pk=country, **extras).exclude(organization='').values("organization")
     for org in orgs:
-        try:
-            for value in json.loads(org["organization"]):
-                orgas_list.append(value['value'].lower())
-        except json.decoder.JSONDecodeError as e:
-            orgas_list.append(org["organization"].lower())
+        for name in organization_names(org["organization"]):
+            orgas_list.append(name.lower())
 
     return orgas_list
 
