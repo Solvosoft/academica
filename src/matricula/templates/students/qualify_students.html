@@ -105,13 +105,21 @@
 {% block js %}
 {{ block.super }}
 <script>
+// DataTables pagina la tabla y quita del DOM las filas que no se ven: todo se
+// hace sobre table.rows().nodes() para no perder estudiantes de otras páginas.
+var studentsTable = null;
+
+function allRows(){
+    return $(studentsTable.rows().nodes());
+}
+
 function toggle_quality_form(){
-    $('#formgroupquality').toggle($('.checkstudent:checked').length > 0);
+    $('#formgroupquality').toggle(allRows().find('.checkstudent:checked').length > 0);
 }
 
 function select_rows(object_checkbox){
     var checked = object_checkbox.prop('checked');
-    $('.checkstudent').each(function(){
+    allRows().find('.checkstudent').each(function(){
         this.checked = checked;
         $(this).attr("data-key", checked ? "1" : "0");
     });
@@ -124,105 +132,53 @@ function change_key(object_checkbox){
 }
 
 function json_table(){
+    // Guarda el estado de cada estudiante (todas las páginas de la tabla)
+    var rows = allRows().map(function(){
+        var row = $(this);
+        var status = row.find("select[name='course_status']").val();
+        return {pk: row.find('.checkstudent').data('id'), Estado: status === "" ? null : status};
+    }).get();
 
-    var heads = [];
-    $("thead").find("th").each(function () {
-        if($(this).text().trim() === ""){
-            heads.push("pk");
-        }else{
-            heads.push($(this).text().trim());
+    $.ajax({
+        url: "{% url 'update_enroll' %}",
+        type: "POST",
+        data: JSON.stringify(rows),
+        headers: {'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest'},
+        dataType : 'json',
+        success: function() {
+            Swal.fire('Calificaciones', 'Actualizadas exitosamente.', 'success');
         }
     });
-
-    var rows = [];
-    $("tbody tr").each(function () {
-      cur = {};
-      $(this).find("td").each(function(i, v) {
-
-        if(i === 0){
-            cur[heads[i]] = $(this).find('.checkstudent').data('id')
-        }else{
-
-            if(i === 3 || i === 4){
-
-                if($(this).children().val() === ""){
-                    cur[heads[i]] = null;
-                }else{
-                cur[heads[i]] = $(this).children().val();
-                }
-
-            }else{
-                cur[heads[i]] = $(this).text().trim();
-            }
-        }
-      });
-      rows.push(cur);
-      cur = {};
-    });
-
-
-$.ajax({
-    url: "{% url 'update_enroll' %}",
-    type: "POST",
-    data: JSON.stringify(rows),
-    headers: {'X-CSRFToken': getCookie('csrftoken') },
-    dataType : 'json',
-    success: function() {
-
-        Swal.fire(
-          'Calificaciones',
-          'Actualizadas exitosamente.',
-          'success'
-        )
-    }
-});
 }
-
 
 function qualify_status(){
+    // Aplica el estado elegido en el modal a los estudiantes marcados
+    var rows = allRows().find('.checkstudent:checked').map(function(){
+        return {pk: $(this).data('id')};
+    }).get();
 
-    var heads = ["pk"];
-
-    var rows = [];
-    $("tbody tr").each(function () {
-      cur = {};
-      $(this).find("td").each(function(i, v) {
-
-        if(i === 0 && $(this).find('.checkstudent').prop('checked')){
-            cur[heads[i]] = $(this).find('.checkstudent').data('id')
+    $.ajax({
+        url: "/enrrolment/{{group.pk}}/qualify_students/"+ String($("#id_course_status").val())+"/",
+        type: "POST",
+        data: JSON.stringify(rows),
+        headers: {'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest'},
+        dataType : 'json',
+        success: function() {
+            $("#qualifystudentmodal").modal('hide');
+            window.location.href = "{% url 'qualify_students' pk=group.pk %}";
         }
-      });
-      rows.push(cur);
-      cur = {};
     });
-
-$.ajax({
-    url: "/enrrolment/{{group.pk}}/qualify_students/"+ String($("#id_course_status").val())+"/",
-    type: "POST",
-    data: JSON.stringify(rows),
-    headers: {'X-CSRFToken': getCookie('csrftoken') },
-    dataType : 'json',
-    success: function() {
-        $("#qualifystudentmodal").modal().hide();
-        window.location.href = "{% url 'qualify_students' pk=group.pk %}";
-    }
-});
-
 }
 
-
-(function(){
-    $(window).on('load', function() {
-        $('.select2-container').width('100%');
-        $("#selectall").on("change", function(){
-            select_rows($(this));
-        });
-
-        $('.checkstudent').on("change", function(){
-            change_key($(this));
-        });
-        $('#studentstable').DataTable();
+$(function(){
+    $('.select2-container').width('100%');
+    studentsTable = $('#studentstable').DataTable();
+    $("#selectall").on("change", function(){
+        select_rows($(this));
     });
-})(jQuery);
+    $(document).on("change", '.checkstudent', function(){
+        change_key($(this));
+    });
+});
 </script>
 {% endblock %}

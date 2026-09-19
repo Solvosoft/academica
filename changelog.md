@@ -1,5 +1,20 @@
 # Change log file
 
+19/09/2026
+
+- Pruebas de navegación con Selenium (historias de usuario por rol) en una pantalla
+  virtual: `make test-selenium`. Hoja de historias en `docs/HISTORIAS_DE_USUARIO.md`.
+- Corregido (regresiones de la migración a Django 6): las plantillas propias no se
+  usaban por el orden de `INSTALLED_APPS`, y los borrados daban error 500.
+- Seguridad:
+  - un profesor ya no puede calificar grupos ajenos;
+  - las APIs de calificación validan permisos;
+  - borrar o desactivar solo se permite por POST.
+- Cupones: asignación desde pre-inscritos, edición y eliminación recalculan la
+  factura; una beca completa deja la factura pagada.
+- Reportes: conteos correctos de "no completaron" y de organizaciones; orden estable.
+- La suite normal (`make test`) queda en verde.
+
 18/09/2026 — versión 2.0.0
 
 Actualización completa. **Requiere una base de datos nueva**: las migraciones se

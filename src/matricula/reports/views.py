@@ -1,13 +1,11 @@
-from matricula.utils import organization_names
-import json
+from matricula.utils import organization_names, count_students_by_organization
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-from django.utils.text import slugify
 from matricula.forms import CourseGraphForm, CourseWithCoursefilterGraphForm, CourseTableForm, CountryForm
-from matricula.gtcharts import OrganitationsPerCountryReport, get_organizations_per_country
+from matricula.gtcharts import get_organizations_per_country
 from matricula.models import Student, Period, Course
 from matricula.serializers import GroupSerializer
 from matricula.views.utils import get_active_period
@@ -210,32 +208,8 @@ def countries_in_courses_report(request):
     }
     return render(request, 'reports/countries_in_courses_report.html', context=context)
 
-def get_organizations():
-    orgsname=[]
-    orgs = Student.objects.exclude(organization='').values('organization', 'country').distinct()
-    for org in orgs:
-        for name in organization_names(org["organization"]):
-            if name.lower() not in orgsname:
-                orgsname.append(name.lower())
-
-    return orgsname
-
 def get_students():
-    orgs = get_organizations()
-    queryset=Student.objects.all() #.filter(enroll__enroll_finished=True)
-    queryparams = {}
-    for org in orgs:
-        if '"' in org:
-            queryparams[slugify(org)] = Count('pk', filter=Q(organization__icontains=json.dumps(org)))
-        else:
-            queryparams[slugify(org)] = Count('pk', filter=Q(organization__icontains=org))
-    queryset=queryset.aggregate(**queryparams)
-
-    orga_dict = {}
-    for org in orgs:
-        orga_dict[org.title()]=queryset[slugify(org)]
-
-    return orga_dict
+    return count_students_by_organization(Student.objects.all())
 
 @permission_required('matricula.view_reports')
 def student_by_organization_report(request):

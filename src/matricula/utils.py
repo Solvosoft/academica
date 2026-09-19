@@ -124,7 +124,22 @@ def organization_names(raw):
         data = json.loads(raw)
     except (ValueError, TypeError):
         return [raw]
+    if isinstance(data, dict):
+        data = [data]
     if isinstance(data, list):
         return [str(item['value']) if isinstance(item, dict) and 'value' in item else str(item)
                 for item in data]
     return [raw]
+
+
+def count_students_by_organization(students):
+    """
+    Cantidad de estudiantes por organización, comparando el nombre exacto sin
+    distinguir mayúsculas ("org" y "Org" son la misma; "otraorg" no cuenta como
+    "org"). Devuelve {nombre en formato título: cantidad} ordenado por nombre.
+    """
+    counts = {}
+    for organization in students.values_list('organization', flat=True):
+        for name in {name.strip().lower() for name in organization_names(organization) if name.strip()}:
+            counts[name] = counts.get(name, 0) + 1
+    return {name.title(): counts[name] for name in sorted(counts)}

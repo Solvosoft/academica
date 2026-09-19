@@ -143,7 +143,7 @@ class Countries_In_Courses_TestCase(TestCase):
 
         enroll1 = self.get_enroll(groups[0], self.user1, student1)
         enroll1.go_to_one_class = False
-        enroll1.course_status = "uncomplete"
+        enroll1.course_status = "uncompleted"
 
         enroll2 = self.get_enroll(groups[1], self.user1, student1)
         enroll2.go_to_one_class = True
@@ -155,7 +155,7 @@ class Countries_In_Courses_TestCase(TestCase):
 
         enroll4 = self.get_enroll(groups[3], self.user2, student2)
         enroll4.go_to_one_class = True
-        enroll4.course_status = "uncomplete"
+        enroll4.course_status = "uncompleted"
 
         enroll1.save()
         enroll2.save()
@@ -190,4 +190,4 @@ class Countries_In_Courses_TestCase(TestCase):
         response = self.client.get(self.url)
 
         data = response.json()['data']
-        self.assertEqual(data['labels'], ['Afganistán', 'Australia', 'Costa Rica'])
+        self.assertEqual(data['labels'], ['Afganistán (1)', 'Australia (1)', 'Costa Rica (2)'])

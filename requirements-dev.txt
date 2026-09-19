@@ -1,1 +1,5 @@
 pyflakes
+selenium
+# Sin tblib, `manage.py test --parallel` aborta toda la corrida al primer fallo
+# ("cannot pickle traceback object").
+tblib

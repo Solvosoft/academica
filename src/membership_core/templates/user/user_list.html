@@ -49,8 +49,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
-                        <a class="btn btn-success" id="deactivateuser">Desactivar</a>
-                        <a class="btn btn-danger" id="deleteuser">Eliminar</a>
+                        <a class="btn btn-success" id="deactivateuser" data-post>Desactivar</a>
+                        <a class="btn btn-danger" id="deleteuser" data-post>Eliminar</a>
                     </div>
                 </div>
             </div>
@@ -140,7 +140,7 @@
 function deleteuser(element){
     $("#deleteuser").attr("href", $(element).data('url'));
     $("#deactivateuser").attr("href", $(element).data('href'));
-    $("#modaldeleteuser").modal();
+    $("#modaldeleteuser").modal('show');
 }
 </script>
 {% endblock js%}

@@ -83,7 +83,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
-                    <a class="btn btn-danger" id="deletegroup">Eliminar</a>
+                    <a class="btn btn-danger" id="deletegroup" data-post>Eliminar</a>
                 </div>
             </div>
         </div>
@@ -96,7 +96,7 @@
 
 function delete_group(element){
     $("#deletegroup").attr("href", $(element).data('url'));
-    $("#modaldeletegroup").modal();
+    $("#modaldeletegroup").modal('show');
 }
 
 (function(){

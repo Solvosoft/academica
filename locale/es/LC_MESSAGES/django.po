@@ -381,3 +381,6 @@ msgstr "Orden"
 
 msgid "Status"
 msgstr "Estado"
+
+msgid "We are processing your payment, a notification will send you confirming you pay"
+msgstr "Estamos procesando su pago; le enviaremos una notificación cuando sea confirmado."

@@ -45,7 +45,7 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
-						<a class="btn btn-danger" id="deleteitem">Eliminar</a>
+						<a class="btn btn-danger" id="deleteitem" data-post>Eliminar</a>
 					</div>
 				</div>
 			</div>
@@ -63,7 +63,7 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
-						<a class="btn btn-danger" id="deletemenu">Eliminar</a>
+						<a class="btn btn-danger" id="deletemenu" data-post>Eliminar</a>
 					</div>
 				</div>
 			</div>
@@ -146,7 +146,7 @@
 		function deleteitem(element){
 			$(function(){
 				$("#deleteitem").attr("href", $(element).data('url'));
-				$("#modaldeleteitem").modal();
+				$("#modaldeleteitem").modal('show');
 			});
 			return false
 		}
@@ -157,7 +157,7 @@
 		function deletemenu(element){
 			$(function(){
 				$("#deletemenu").attr("href", $(element).data('url'));
-				$("#modaldeletemenu").modal();
+				$("#modaldeletemenu").modal('show');
 			});
 			return false
 		}

@@ -15,7 +15,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
-from ..card_payments import refresh_card_payment
+from ..card_payments import apply_order_status, refresh_card_payment
 from ..models import Bill, CardPayment
 from ..webcheckout import WebCheckoutError, charge_amount, create_order
 
@@ -55,9 +55,11 @@ def pay_with_card(request, pk):
         return redirect('bills')
 
     amount, currency = charge_amount(bill)
-    CardPayment.objects.create(
+    card_payment = CardPayment.objects.create(
         bill=bill, order_id=order['id'], checkout_url=order['checkout_url'],
-        amount=amount, currency=currency, status=order.get('status', CardPayment.Status.PENDING))
+        amount=amount, currency=currency)
+    # El estado que devuelve el servicio pasa por la misma lógica que el webhook.
+    apply_order_status(card_payment, order)
     return redirect(order['checkout_url'])
 
 

@@ -49,8 +49,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
-                        <a class="btn btn-success" id="deactivateprofessor">{% trans 'Deactivate' %}</a>
-                        <a class="btn btn-danger" id="deleteprofessor">{% trans 'Delete' %}</a>
+                        <a class="btn btn-success" id="deactivateprofessor" data-post>{% trans 'Deactivate' %}</a>
+                        <a class="btn btn-danger" id="deleteprofessor" data-post>{% trans 'Delete' %}</a>
                     </div>
                 </div>
             </div>
@@ -125,7 +125,7 @@
 function deleteprofessor(element){
     $("#deleteprofessor").attr("href", $(element).data('url'));
     $("#deactivateprofessor").attr("href", $(element).data('href'));
-    $("#modaldeleteprofessor").modal();
+    $("#modaldeleteprofessor").modal('show');
 }
 </script>
 {% endblock js%}

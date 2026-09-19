@@ -1,3 +1,4 @@
+from django.views.decorators.http import require_POST
 from django.shortcuts import render
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required, login_required
@@ -123,6 +124,7 @@ class EditUser(UpdateView):
 
 
 @permission_required('auth.delete_user')
+@require_POST
 def delete_user(request, pk):
     user = User.objects.filter(pk=pk).first()
 
@@ -133,6 +135,7 @@ def delete_user(request, pk):
 
 
 @permission_required('auth.change_user')
+@require_POST
 def deactivate_user(request, pk):
     user = User.objects.filter(pk=pk).first()
     if user:
@@ -192,6 +195,7 @@ class EditGroup(UpdateView):
 
 
 @permission_required('auth.delete_group')
+@require_POST
 def delete_group(request, pk):
     group = Group.objects.filter(pk=pk).first()
 

@@ -169,46 +169,27 @@
 {%block js%}
 <script>
 function assign_coupons(){
-
-	var heads = [];
-    $("thead").find("th").each(function () {
-        if($(this).text().trim() === ""){
-            heads.push("pk");
-        }else{
-            heads.push($(this).text().trim());
-        }
-    });
-
-    var rows = [];
-    $("tbody tr").each(function () {
-      cur = {};
-      $(this).find("td").each(function(i, v) {
-
-        if(i === 0){
-            cur[heads[i]] = $(this).find("input[name='students']").data('id')
-        }
-      });
-      rows.push(cur);
-      cur = {};
-    });
-
+	// Solo los estudiantes marcados
+	var rows = $(".bulk_action input[name='students']:checked").map(function () {
+		return {pk: $(this).data('id')};
+	}).get();
 
 	$.ajax({
-		url: "/enrrolment/coupons/{{object.pk}}/"+ $("#id_discount_percentage").val()+"/group/",
+		url: "{% url 'add_coupons_group' object.pk 0 %}".replace('/0/group/', '/' + $("#id_discount_percentage").val() + '/group/'),
 		type: "POST",
 		data: JSON.stringify(rows),
-		headers: {'X-CSRFToken': getCookie('csrftoken') },
+		headers: {'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest'},
 		dataType : 'json',
-		success: function() {
+		success: function(response) {
 			$("#assigncouponsmodal").modal('hide');
-			Swal.fire(
-			  'Cupones',
-			  'Se registraron y se notificó a los estudiantes éxitosamente.',
-			  'success'
-			)
+			var content = response.content || {};
+			if (response.status !== 200 || content.error) {
+				Swal.fire('Cupones', content.error || 'No fue posible asignar los cupones.', 'error');
+				return;
+			}
+			Swal.fire('Cupones', 'Se registraron y se notificó a los estudiantes éxitosamente.', 'success');
 		}
 	});
-
 }
 
 // Selección de filas (checkbox nativos con la clase gt-check de djgentelella)

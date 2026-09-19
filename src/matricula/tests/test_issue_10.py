@@ -92,7 +92,7 @@ class ListReportsTestCase(TestCase):
             if x%4 == 0:
                 enroll.go_to_one_class = False
             if x == 7:
-                enroll.course_status = "uncomplete"
+                enroll.course_status = "uncompleted"
 
             if x%3==0:
                 enroll.course_status = "reproved"

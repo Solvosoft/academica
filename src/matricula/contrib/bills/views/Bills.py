@@ -73,6 +73,7 @@ def pay_using_sinpemovil(request):
             settings.PAYMENT_NOTIFICATION_MAIL
 
         )
+        messages.success(request, "Recibimos su reporte de pago; lo verificaremos pronto.")
     else:
         messages.error(request, "Hubo un error procesando su solicitud, por favor vuelva a intentarlo")
     return redirect(reverse('bills'))
@@ -87,6 +88,7 @@ def pay_using_banktransfer(request):
             None,
             settings.PAYMENT_NOTIFICATION_MAIL
         )
+        messages.success(request, "Recibimos su reporte de pago; lo verificaremos pronto.")
     else:
         messages.error(request,
                        "Hubo un error procesando su solicitud, por favor vuelva a intentarlo, recuerde adjuntar el comprobante %s"%(

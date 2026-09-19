@@ -1,3 +1,4 @@
+from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.auth.models import Group, User
@@ -19,41 +20,9 @@ from matricula.views.utils import checking_user
 
 
 @login_required
-@user_group_perms(perm='matricula.change_profile')
 def edit_profile(request):
-    user = request.user
-    professor = Professor.objects.filter(user=user).first()
-
-    if request.method == "POST":
-
-        form = ProfessorEditForm(request.POST)
-
-        if form.is_valid():
-
-            user.email = form.cleaned_data['email']
-            user.first_name = form.cleaned_data['first_name']
-            user.last_name = form.cleaned_data['last_name']
-            user.save()
-
-            if professor:
-                professor.email = form.cleaned_data['email_students']
-                professor.description = form.cleaned_data['description']
-                professor.save()
-            messages.success(request, "Información actualizada exitosamente.")
-            return redirect('courses')
-    else:
-        form = ProfessorEditForm(initial={
-            'username': user.username,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-            'email': user.email,
-            'email_students': professor.email if professor else '',
-            'description': professor.description if professor else '',
-        })
-
-    context = {'form': form}
-
-    return render(request, "professor/personal_information.html", context=context)
+    """El perfil del profesor se edita junto con el del usuario en ``myprofile``."""
+    return redirect('myprofile', pk=request.user.pk)
 
 
 @method_decorator(permission_required('matricula.view_professor'), name='dispatch')
@@ -177,6 +146,7 @@ class EditProfessor(UpdateView):
 
 
 @permission_required('matricula.delete_professor')
+@require_POST
 def delete_professor(request, pk):
     professor = Professor.objects.filter(pk=pk).first()
 
@@ -191,6 +161,7 @@ def delete_professor(request, pk):
 
 
 @permission_required('matricula.change_professor')
+@require_POST
 def deactivate_professor(request, pk):
     professor = Professor.objects.filter(pk=pk).first()
 

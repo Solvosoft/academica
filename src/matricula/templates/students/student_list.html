@@ -49,7 +49,7 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
-						<a class="btn btn-danger" id="deleteitem">Eliminar</a>
+						<a class="btn btn-danger" id="deleteitem" data-post>Eliminar</a>
 					</div>
 				</div>
 			</div>
@@ -161,7 +161,7 @@
 			function deleteitem(element){
 				$(function(){
 					$("#deleteitem").attr("href", $(element).data('url'));
-					$("#modaldeleteitem").modal();
+					$("#modaldeleteitem").modal('show');
 				});
 				return false
 			}

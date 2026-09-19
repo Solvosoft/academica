@@ -116,10 +116,11 @@ class StudentByOrganizationTestCase(TestCase):
             dataset_dict[item['label']] = item['data']
 
 
-        self.assertEqual(dataset_dict['org'], [2])  # organiza y Organi
-        self.assertEqual(dataset_dict['otraorg'], [1])  # organiza y Organi
-        self.assertEqual(dataset_dict['organiza'], [1])  # organiza y Organi
-        self.assertEqual(dataset_dict['onda verde'], [1])  # organiza y Organi
+        # "org" y "Org" son la misma organización; "otraorg" y "Organiza" no cuentan como "org".
+        self.assertEqual(dataset_dict['Org'], [2])
+        self.assertEqual(dataset_dict['Otraorg'], [1])
+        self.assertEqual(dataset_dict['Organiza'], [1])
+        self.assertEqual(dataset_dict['Onda Verde'], [1])
 
 
 

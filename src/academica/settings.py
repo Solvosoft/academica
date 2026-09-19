@@ -46,6 +46,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
+    # membership_core va antes de djgentelella: sobreescribe sus plantillas
+    # gentelella/app/* (sidebar, barra superior, mensajes) y registration/*.
+    'membership_core',
     'djgentelella',
     'djgentelella.async_notification',
     'rest_framework',
@@ -53,7 +56,6 @@ INSTALLED_APPS = [
     'django_celery_results',
     'django_celery_beat',
     'paypal.standard.ipn',
-    'membership_core',
     'matricula',
     'matricula.contrib.bills',
 ]

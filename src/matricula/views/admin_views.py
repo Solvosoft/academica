@@ -115,8 +115,8 @@ class CategoryDelete(DeleteView):
     success_url = "/enrrolment/categories/"
     success_message = "Categoría eliminada con éxito"
 
-    def get(self, *args, **kwargs):
-        return self.post(*args, **kwargs)
+    # Solo POST (los modales envían el formulario con CSRF, ver js/post_links.js)
+    http_method_names = ['post']
 
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
@@ -218,8 +218,8 @@ class CourseDelete(DeleteView):
     success_url = "/enrrolment/courses/"
     success_message = "Curso eliminado con éxito"
 
-    def get(self, *args, **kwargs):
-        return self.post(*args, **kwargs)
+    # Solo POST (los modales envían el formulario con CSRF, ver js/post_links.js)
+    http_method_names = ['post']
 
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
@@ -336,8 +336,8 @@ class MenuItemDelete(DeleteView):
     success_url = "/enrrolment/menuitems"
     success_message = "Menú eliminado con éxito"
 
-    def get(self, *args, **kwargs):
-        return self.post(*args, **kwargs)
+    # Solo POST (los modales envían el formulario con CSRF, ver js/post_links.js)
+    http_method_names = ['post']
 
     def form_valid(self, form):
         menuitem = self.object
@@ -419,8 +419,8 @@ class PeriodDelete(DeleteView):
     success_url = "/enrrolment/periods"
     success_message = "Periodo eliminado con éxito"
 
-    def get(self, *args, **kwargs):
-        return self.post(*args, **kwargs)
+    # Solo POST (los modales envían el formulario con CSRF, ver js/post_links.js)
+    http_method_names = ['post']
 
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
@@ -682,8 +682,8 @@ class GroupDelete(DeleteView):
     success_url = "/enrrolment/groups"
     success_message = "Grupo eliminado con éxito"
 
-    def get(self, *args, **kwargs):
-        return self.post(*args, **kwargs)
+    # Solo POST (los modales envían el formulario con CSRF, ver js/post_links.js)
+    http_method_names = ['post']
 
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
@@ -1050,8 +1050,8 @@ class EnrollDelete(DeleteView):
     success_url = "/enrrolment/enrolls"
     success_message = "Matrícula eliminada con éxito"
 
-    def get(self, *args, **kwargs):
-        return self.post(*args, **kwargs)
+    # Solo POST (los modales envían el formulario con CSRF, ver js/post_links.js)
+    http_method_names = ['post']
 
     def form_valid(self, form):
         messages.success(self.request, self.success_message)
@@ -1260,8 +1260,8 @@ class StudentDelete(DeleteView):
     success_url = "/enrrolment/students"
     success_message = "Estudiante eliminada con éxito"
 
-    def get(self, *args, **kwargs):
-        return self.post(*args, **kwargs)
+    # Solo POST (los modales envían el formulario con CSRF, ver js/post_links.js)
+    http_method_names = ['post']
 
     def form_valid(self, form):
         student = self.object
@@ -1537,8 +1537,8 @@ class PageDelete(DeleteView):
         """ Permission check for this class """
         return super(PageDelete, self).dispatch(*args, **kwargs)
 
-    def get(self, *args, **kwargs):
-        return self.post(*args, **kwargs)
+    # Solo POST (los modales envían el formulario con CSRF, ver js/post_links.js)
+    http_method_names = ['post']
 
     def form_valid(self, form):
         page = self.object
@@ -1557,8 +1557,8 @@ class MenuPageDelete(DeleteView):
         """ Permission check for this class """
         return super(MenuPageDelete, self).dispatch(*args, **kwargs)
 
-    def get(self, *args, **kwargs):
-        return self.post(*args, **kwargs)
+    # Solo POST (los modales envían el formulario con CSRF, ver js/post_links.js)
+    http_method_names = ['post']
 
     def form_valid(self, form):
         messages.success(self.request, self.success_message)

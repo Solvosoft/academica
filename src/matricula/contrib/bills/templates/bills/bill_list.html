@@ -44,7 +44,7 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
-						<a class="btn btn-danger" id="deleteitem">{% trans 'Delete' %}</a>
+						<a class="btn btn-danger" id="deleteitem" data-post>{% trans 'Delete' %}</a>
 					</div>
 				</div>
 			</div>
@@ -155,7 +155,7 @@
 			function deleteitem(element){
 				$(function(){
 					$("#deleteitem").attr("href", $(element).data('url'));
-					$("#modaldeleteitem").modal();
+					$("#modaldeleteitem").modal('show');
 				});
 				return false
 			}

@@ -52,7 +52,8 @@ class Courses_By_Year_TestCase(TestCase):
         c1 = Course.objects.create(category=cat, name='course1', content='course1')
         c2 = Course.objects.create(category=cat, name='course2', content='course2')
         c3 = Course.objects.create(category=cat, name='course3', content='course3')
-        period1 = Period.objects.create(name='per1', start_date=now(), finish_date=now())
+        # Fecha fija: con now() el orden de los años dependía del día en que corre la prueba.
+        period1 = Period.objects.create(name='per1', start_date='2030-01-01', finish_date='2030-06-30')
         period2 = Period.objects.create(name='per2', start_date='2026-10-10', finish_date='2027-10-10')
         period3 = Period.objects.create(name='per3', start_date='2010-11-11', finish_date='2011-11-11')
 
@@ -147,7 +148,7 @@ class Courses_By_Year_TestCase(TestCase):
 
         enroll1 = self.get_enroll(groups[0], self.user1, student1)
         enroll1.go_to_one_class = False
-        enroll1.course_status = "uncomplete"
+        enroll1.course_status = "uncompleted"
 
         enroll2 = self.get_enroll(groups[1], self.user1, student1)
         enroll2.go_to_one_class = True
@@ -159,7 +160,7 @@ class Courses_By_Year_TestCase(TestCase):
 
         enroll4 = self.get_enroll(groups[3], self.user2, student2)
         enroll4.go_to_one_class = True
-        enroll4.course_status = "uncomplete"
+        enroll4.course_status = "uncompleted"
 
         enroll1.save()
         enroll2.save()
@@ -335,7 +336,7 @@ class Courses_By_Month_TestCase(TestCase):
 
         enroll1 = self.get_enroll(groups[0], self.user1, student1)
         enroll1.go_to_one_class = False
-        enroll1.course_status = "uncomplete"
+        enroll1.course_status = "uncompleted"
 
         enroll2 = self.get_enroll(groups[1], self.user1, student1)
         enroll2.go_to_one_class = True
@@ -347,7 +348,7 @@ class Courses_By_Month_TestCase(TestCase):
 
         enroll4 = self.get_enroll(groups[3], self.user2, student2)
         enroll4.go_to_one_class = True
-        enroll4.course_status = "uncomplete"
+        enroll4.course_status = "uncompleted"
 
         enroll1.save()
         enroll2.save()

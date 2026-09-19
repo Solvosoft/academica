@@ -76,11 +76,11 @@
                                 <td>{{ coupon.discount_percentage }}%</td>
                                 <td>{{ coupon.code }}</td>
                                 <td>
-                                    {% if not coupon.is_used %}
+                                    {% if not coupon.bill or not coupon.bill.is_paid or coupon.bill.transaction_id == 'Cupón' %}
                                     <a title="Editar cupón" class="btn btn-sm" href="{% url 'edit_coupon' pk=coupon.pk %}"><i class="fa fa-edit fa-2x"></i> </a>
                                     <a title="Eliminar cupón" class="btn btn-sm" data-url="{% url 'delete_cupon' pk=coupon.pk %}" onclick="delete_coupon(this)"><i class="fa fa-trash fa-2x"></i></a>
                                     {% else %}
-                                        Este cupón ya fue utilizado.
+                                        Aplicado a una factura pagada.
                                     {% endif %}
                                 </td>
                             </tr>
@@ -107,7 +107,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
-                <a class="btn btn-danger" id="deletecoupon">Eliminar</a>
+                <a class="btn btn-danger" id="deletecoupon" data-post>Eliminar</a>
             </div>
         </div>
     </div>
@@ -120,7 +120,7 @@
 
 function delete_coupon(element){
     $("#deletecoupon").attr("href", $(element).data('url'));
-    $("#modaldeletecoupon").modal();
+    $("#modaldeletecoupon").modal('show');
 }
 
 (function(){

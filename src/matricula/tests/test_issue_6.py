@@ -114,15 +114,15 @@ class Uncompleted_Student_TestCase(TestCase):
 
         enroll2 = self.get_enroll(groups[1], self.user, student)
         enroll2.go_to_one_class = True
-        enroll2.course_status = "uncomplete"
+        enroll2.course_status = "uncompleted"
 
         enroll3 = self.get_enroll(groups[2], self.user, student)
         enroll3.go_to_one_class = False
-        enroll3.course_status = "uncomplete"
+        enroll3.course_status = "uncompleted"
 
         enroll4 = self.get_enroll(groups[3], self.user, student)
         enroll4.go_to_one_class = True
-        enroll4.course_status = "uncomplete"
+        enroll4.course_status = "uncompleted"
 
         enroll1.save()
         enroll2.save()

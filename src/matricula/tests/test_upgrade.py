@@ -121,3 +121,17 @@ class OrganizationNamesTestCase(TestCase):
         self.assertEqual(organization_names('UCR'), ['UCR'])
         self.assertEqual(organization_names('"UCR"'), ['"UCR"'])
         self.assertEqual(organization_names(''), [])
+
+
+class DestructiveLinksTestCase(TestCase):
+    """Borrar o desactivar solo se permite por POST (los modales envían el formulario con CSRF)."""
+    URL_NAMES = ['delete_category', 'delete_course', 'delete_menuitem', 'delete_period', 'delete_group_enroll',
+                 'delete_enroll', 'delete_student', 'delete_menupage', 'delete_page', 'delete_professor',
+                 'deactivate_professor', 'delete_cupon', 'delete_user', 'deactivate_user', 'delete_group',
+                 'delete_bill']
+
+    def test_get_is_not_allowed(self):
+        login_report_admin(self.client)
+        for name in self.URL_NAMES:
+            response = self.client.get(reverse(name, args=[999999]))
+            self.assertEqual(response.status_code, 405, name)

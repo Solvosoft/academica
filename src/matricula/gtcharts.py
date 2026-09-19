@@ -1,15 +1,13 @@
-from django.db.models import Count, Q, Func, F
-from django.utils.text import slugify
+from django.db.models import Count, Q
 from djgentelella.chartjs import VerticalBarChart, PieChart
 from djgentelella.groute import register_lookups
 
-from matricula.forms import CourseGraphForm, CourseWithCoursefilterGraphForm, GroupSearchForm
+from matricula.forms import CourseGraphForm, CourseWithCoursefilterGraphForm
 from matricula.models import Course, Student, Group, Period
-from matricula.utils import organization_names, get_label_months
+from matricula.utils import organization_names, get_label_months, count_students_by_organization
 from matricula.views.utils import get_active_period
 from membership_core.gtcharts import BaseChart
 from membership_core.models import Country
-import json
 
 
 @register_lookups(prefix="consolidadoestcurso", basename="consolidadoestcurso")
@@ -30,7 +28,7 @@ class ConsolidadoEstadisticasCurso(BaseChart, VerticalBarChart):
             uncomplete=Count('group__enroll', filter=Q(
                     group__enroll__enroll_finished = True,
                     group__enroll__go_to_one_class=True,
-                    group__enroll__course_status= """uncomplete""")),
+                    group__enroll__course_status="uncompleted")),
             reproved=Count('group__enroll', filter=Q(
                     group__enroll__enroll_finished = True,
                     group__enroll__go_to_one_class=True,
@@ -368,7 +366,7 @@ class CountriesInCoursesReport(BaseChart, PieChart):
         if self._countries is None:
             self._countries = Country.objects.all().annotate(
                 num_appearances=Count('student', filter=Q(student__enroll__enroll_activate=True, **filters))
-            ).filter(num_appearances__gt=0)
+            ).filter(num_appearances__gt=0).order_by('name')
             self.countries = self._countries
         return self.countries
 
@@ -436,7 +434,7 @@ class OrganitationsPerCountryReport(BaseChart, PieChart):
     def __init__(self, *args, **kwargs):
         self.countries = Country.objects.all().annotate(
             num_appearances=Count('student', filter=Q(student__enroll__enroll_activate=True))
-        ).filter(num_appearances__gt=0).values('id', 'name')
+        ).filter(num_appearances__gt=0).order_by('name').values('id', 'name')
         super().__init__(*args, **kwargs)
 
     def get_organizations_per_country(self):
@@ -617,19 +615,8 @@ class StudentByOrganizationReport(BaseChart, VerticalBarChart):
         return orgsname
 
     def get_students(self):
-        orgs = self.get_organizations()
-        queryset=Student.objects.filter(enroll__enroll_finished=True)
-        queryparams = {}
-        for org in orgs:
-            queryparams[slugify(org)] = Count('pk', filter=Q(organization__icontains=org))
-
-        queryset=queryset.aggregate(**queryparams)
-
-        orga_dict = {}
-        for org in orgs:
-            orga_dict[org]=queryset[slugify(org)]
-
-        return orga_dict
+        """Estudiantes con matrícula finalizada por organización."""
+        return count_students_by_organization(Student.objects.filter(enroll__enroll_finished=True).distinct())
 
     def get_labels(self):
 
@@ -642,7 +629,7 @@ class StudentByOrganizationReport(BaseChart, VerticalBarChart):
 
         for stud, val in students.items():
             dataset.append(
-                {'label': stud.title(),
+                {'label': stud,
                  'backgroundColor': self.get_color(),
                  'borderColor': self.get_color(),
                  'borderWidth': 1,

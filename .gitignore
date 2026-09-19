@@ -18,3 +18,4 @@ venv/
 static/
 __pycache__/
 deploy/academica.env
+selenium-results/

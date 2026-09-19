@@ -114,7 +114,7 @@ class CourseTopicsViewSet(mixins.ListModelMixin, GenericViewSet):
     serializer_class = CourseTopicsDataTableSerializer
     filter_class = CourseTopicsFilterSet
     ordering_fields = ['enroll_finish__year', 'enroll_finish__month']
-    ordering = ['course_id__name']
+    ordering = ['course_id__name', '-enroll_finish__year', '-enroll_finish__month']
     search_fields = ['course_id__name']
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)

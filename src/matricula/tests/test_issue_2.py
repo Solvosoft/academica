@@ -5,6 +5,9 @@ from django.contrib.auth.models import User, Permission
 from django.test import TestCase
 from django.test import Client
 from django.urls import reverse
+from django.utils import timezone
+
+from matricula.utils import get_label_months
 from django.utils.timezone import now
 
 from matricula.models import Category, Course, Period, Group, Enroll, Student
@@ -145,7 +148,7 @@ class Countries_In_Courses_TestCase(TestCase):
 
         enroll1 = self.get_enroll(groups[0], self.user1, student1)
         enroll1.go_to_one_class = False
-        enroll1.course_status = "uncomplete"
+        enroll1.course_status = "uncompleted"
 
         enroll2 = self.get_enroll(groups[1], self.user1, student1)
         enroll2.go_to_one_class = True
@@ -157,7 +160,7 @@ class Countries_In_Courses_TestCase(TestCase):
 
         enroll4 = self.get_enroll(groups[3], self.user2, student2)
         enroll4.go_to_one_class = True
-        enroll4.course_status = "uncomplete"
+        enroll4.course_status = "uncompleted"
 
         enroll1.save()
         enroll2.save()
@@ -166,18 +169,22 @@ class Countries_In_Courses_TestCase(TestCase):
 
 
     def test_graph_data(self):
+        """Ordenado por curso y, dentro de cada curso, del grupo más reciente al más antiguo."""
         response = self.client.get(self.url)
-
         data = response.json()['data']
+        today = timezone.localtime()
 
-        self.assertEqual(data[0], {'course_id__name': 'course2', 'enroll_finish__year': 2021,
-                                   'enroll_finish__month': 9, 'course_id__category_id__name': 'cat1'})
-        self.assertEqual(data[1], {'course_id__name': 'course3', 'enroll_finish__year': 2021,
-                                   'enroll_finish__month': 9, 'course_id__category_id__name': 'cat1'})
-        self.assertEqual(data[2], {'course_id__name': 'course3', 'enroll_finish__year': 2015,
-                                   'enroll_finish__month': 3, 'course_id__category_id__name': 'cat1'})
-        self.assertEqual(data[3], {'course_id__name': 'course1', 'enroll_finish__year': 2009,
-                                   'enroll_finish__month': 11, 'course_id__category_id__name': 'cat1'})
+        def row(course, year, month):
+            return {'course_id__name': course, 'enroll_finish__year': year,
+                    'enroll_finish__month': get_label_months(month),
+                    'course_id__category_id__name': 'cat1', 'course_id__workload': '20'}
+
+        self.assertEqual(data, [
+            row('course1', 2009, 11),
+            row('course2', today.year, today.month),
+            row('course3', today.year, today.month),
+            row('course3', 2015, 3),
+        ])
 
     def test_records_total(self):
         response = self.client.get(self.url)

@@ -88,8 +88,8 @@ class BillDelete(DeleteView):
         """ Permission check for this class """
         return super(BillDelete, self).dispatch(*args, **kwargs)
 
-    def get(self, *args, **kwargs):
-        return self.post(*args, **kwargs)
+    # Solo POST (los modales envían el formulario con CSRF, ver js/post_links.js)
+    http_method_names = ['post']
     
     def form_valid(self, form):
         messages.success(self.request, self.success_message)

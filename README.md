@@ -45,6 +45,21 @@ make celery     # en otra terminal: worker + beat
 
 Pruebas: `make test` (o `make test TEST=matricula.tests.test_upgrade`).
 
+### Pruebas de navegación (Selenium)
+
+Historias de usuario por rol (estudiante, profesor, administración y
+superusuario) que recorren el sitio y verifican las reglas de negocio. Corren en
+una pantalla virtual (`xvfb-run`), así que no abren ventanas en el escritorio.
+Requieren `chromium`, `chromedriver` y `xvfb`.
+
+```bash
+make setup check-selenium   # dependencias y verificación del entorno
+make test-selenium          # todas las historias en paralelo
+make test-selenium-single TEST=academica_test.tests.stories.test_profesor GIF=1
+```
+
+La hoja de historias está en [docs/HISTORIAS_DE_USUARIO.md](docs/HISTORIAS_DE_USUARIO.md).
+
 ## Imagen y roles de contenedor
 
 La imagen elige el proceso con `SERVICE_TYPE`:

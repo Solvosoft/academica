@@ -103,42 +103,28 @@ class OrganizationsperCountryReportTestCase(TestCase):
             expired_at = now()
         )
 
-        countries = self.get_organizations_per_country(groups[0], self.user, student)
-        countries.organization = 'org1'
-        countries.country = country
+        # México: una organización ("est"), con matrícula activa
+        Enroll.objects.create(enroll_finished=True, enroll_activate=True, group=groups[0], student=student)
 
-        orgtanizations = self.get_organizations_per_country(groups[1], self.user, student)
-        orgtanizations.organization = 'est1'
-        orgtanizations.country = country
-
-        students = self.get_organizations_per_country(groups[2], self.user, student)
-        students.organization = 'aso1'
-        students.country = country
-
-
-        countries.save()
-        orgtanizations.save()
-        students.save()
+        # Costa Rica: tres estudiantes de tres organizaciones distintas
+        for group, organization in zip(groups, ('org1', 'est1', 'aso1')):
+            enroll = self.get_organizations_per_country(group, self.user, student)
+            enroll.student.organization = organization
+            enroll.student.save()
 
     def test_organizations_per_country_graph_data(self):
         '''
-        Test case for testing graph data
+        Gráfico de pastel: una porción por país con la cantidad de organizaciones distintas.
         '''
         response = self.client.get(self.url)
-
         data = response.json()['data']
-        dataset = data['datasets']
-
-        
-
-        self.assertListEqual(dataset[0]['data'], [1])
-        self.assertListEqual(dataset[1]['data'], [3])
-        
+        self.assertEqual(data['labels'], ['Costa Rica', 'México'])
+        self.assertListEqual(data['datasets'][0]['data'], [3, 1])
 
     def test_organizations_per_country_graph_type(self):
         '''
-        Test case to the graph type
+        El reporte se muestra como gráfico de pastel.
         '''
         response = self.client.get(self.url)
         data = response.json()
-        self.assertEqual(data['type'], 'bar')
+        self.assertEqual(data['type'], 'pie')

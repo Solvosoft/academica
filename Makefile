@@ -103,8 +103,52 @@ send-emails: ## Envía los correos encolados de djgentelella
 	$(MANAGE) process_notifications
 
 .PHONY: test
-test: ## Corre las pruebas (TEST=ruta.al.test para una sola)
-	$(MANAGE) test --no-input $(TEST)
+test: ## Corre las pruebas sin navegador (TEST=ruta.al.test para una sola)
+	$(MANAGE) test --no-input --exclude-tag=selenium $(TEST)
+
+##--- Pruebas de navegación (Selenium) -----------------------------------------
+# Corren dentro de una pantalla virtual (xvfb-run) para no abrir ventanas en el
+# escritorio. TEST=academica_test.tests.stories.<modulo>[.<Clase>.<prueba>]
+
+SELENIUM_RESULTS ?= $(ROOT_DIR)/selenium-results
+XVFB        = xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24"
+SELENIUM_TEST = $(PYTHON) manage.py test --settings=academica.test_settings --tag=selenium --no-input
+STORIES    ?= academica_test
+
+.PHONY: check-selenium
+check-selenium: ## Verifica chromium, chromedriver, xvfb-run, dependencias y PostgreSQL
+	$(PYTHON) scripts/check_selenium.py
+
+.PHONY: test-selenium
+test-selenium: ## Todas las historias en paralelo, en pantalla virtual (TEST=..., WORKERS=N)
+	$(XVFB) sh -c "cd src && $(SELENIUM_TEST) --parallel $(WORKERS) -v 2 $(or $(TEST),$(STORIES))"
+
+.PHONY: test-selenium-single
+test-selenium-single: ## Una historia, en serie y en su propia pantalla virtual (TEST=...; GIF=1 genera el GIF)
+	@test -n "$(TEST)" || { echo "Falta TEST=ruta.a.la.historia"; exit 2; }
+	$(XVFB) sh -c "cd src && GENERATE_SCREENSHOTS=$(if $(GIF),True,False) $(SELENIUM_TEST) -v 2 $(TEST)"
+
+.PHONY: test-selenium-dev
+test-selenium-dev: ## Historias en pantalla virtual reutilizando la BD de pruebas (--keepdb)
+	$(XVFB) sh -c "cd src && $(SELENIUM_TEST) --keepdb --parallel $(WORKERS) -v 2 $(or $(TEST),$(STORIES))"
+
+.PHONY: test-selenium-screen
+test-selenium-screen: ## OJO: abre Chrome en TU pantalla; solo para depurar una historia (TEST=...)
+	cd src && $(SELENIUM_TEST) -v 2 $(or $(TEST),$(STORIES))
+
+BITACORA ?= $(SELENIUM_RESULTS)/bitacora_$(shell date +%Y%m%d_%H%M%S).log
+
+.PHONY: test-selenium-bitacora
+test-selenium-bitacora: ## Historias en pantalla virtual; guarda el log en selenium-results/ y resume fallos
+	@mkdir -p $(SELENIUM_RESULTS)
+	-@$(XVFB) sh -c "cd src && $(SELENIUM_TEST) --parallel $(WORKERS) -v 2 $(or $(TEST),$(STORIES))" > $(BITACORA) 2>&1
+	@echo "----- resumen -----"
+	@grep -E '^(FAIL|ERROR): |^Ran |^OK|^FAILED' $(BITACORA) || echo "sin resultados"
+	@echo "Log completo: $(BITACORA)  ·  capturas de fallos: $(SELENIUM_RESULTS)/fallas/"
+
+.PHONY: stories-gif
+stories-gif: ## Genera los GIF de todas las historias en selenium-results/gif/ (lento, sin paralelo)
+	$(XVFB) sh -c "cd src && GENERATE_SCREENSHOTS=True $(SELENIUM_TEST) -v 2 $(or $(TEST),$(STORIES))"
 
 .PHONY: messages
 messages: ## Extrae los textos a traducir (es)
